@@ -1,0 +1,7 @@
+documentation:  need semicolon at end of use MyModule
+
+documentation:  Author info.  If I don't want Company / Website info, then I shouldn't get the dummy copy.
+
+When you ask for sub new to be inserted, it fails to not-insert Exporter info.
+
+MANIFEST needs one newline at end to avoid [noeol] in vi

@@ -1,4 +1,4 @@
-# t/02_simple.t; A very simple module to make sure the parts are created
+# t/03_quick.t
 
 use Test::More qw/no_plan/;
 #use Test::More tests => 11;
@@ -10,36 +10,35 @@ ok (chdir 'blib/testing' || chdir '../blib/testing', "chdir 'blib/testing'");
 
 my $MOD;
 
-ok ($MOD  = ExtUtils::ModuleMaker->new
-			(
-				NAME		=> 'Sample::Module',
-			),
-	"call ExtUtils::ModuleMaker->new");
-	
+ok ($MOD  = ExtUtils::ModuleMaker->new ( {
+                NAME        => 'Sample::Module',
+            } ),
+    "call ExtUtils::ModuleMaker->new for Sample-Module");
+    
 ok ($MOD->complete_build (),
-	"call $MOD->complete_build");
+    "call $MOD->complete_build");
 
-###########################################################################
+########################################################################
 
 ok (chdir 'Sample/Module',
-	"cd Sample/Module");
+    "cd Sample/Module");
 
 #        MANIFEST.SKIP .cvsignore
 for (qw/Changes MANIFEST Makefile.PL LICENSE
-		README lib t/) {
+        README lib t/) {
     ok (-e,
-		"$_ exists");
+        "$_ exists");
 }
 
-###########################################################################
+########################################################################
 
 ok (open (FILE, 'LICENSE'),
-	"reading 'LICENSE'");
+    "reading 'LICENSE'");
 my $filetext = do {local $/; <FILE>};
 close FILE;
 
 ok ($filetext =~ m/Terms of Perl itself/,
-	"correct LICENSE generated");
+    "correct LICENSE generated");
 
-###########################################################################
+########################################################################
 

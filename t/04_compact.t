@@ -1,4 +1,4 @@
-# t/02_simple.t; A very simple module to make sure the parts are created
+# t/04_compact.t
 
 use Test::More qw/no_plan/;
 #use Test::More tests => 12;
@@ -6,22 +6,22 @@ use Test::More qw/no_plan/;
 BEGIN { use_ok( 'ExtUtils::ModuleMaker' ); }
 ok (chdir 'blib/testing' || chdir '../blib/testing', "chdir 'blib/testing'");
 
-###########################################################################
+#######################################################################
 
 my $MOD;
 
 ok ($MOD  = ExtUtils::ModuleMaker->new
-			(
+			( {
 				NAME		=> 'Sample::Module::Foo',
 				COMPACT		=> 1,
 				LICENSE		=> 'looselips',
-			),
-	"call ExtUtils::ModuleMaker->new");
+			} ),
+	"call ExtUtils::ModuleMaker->new for Sample-Module-Foo");
 	
 ok ($MOD->complete_build (),
 	"call $MOD->complete_build");
 
-###########################################################################
+########################################################################
 
 ok (chdir 'Sample-Module-Foo',
 	"cd Sample-Module-Foo");
@@ -33,7 +33,7 @@ for (qw/Changes MANIFEST Makefile.PL LICENSE
 		"$_ exists");
 }
 
-###########################################################################
+########################################################################
 
 ok (open (FILE, 'LICENSE'),
 	"reading 'LICENSE'");
@@ -43,5 +43,5 @@ close FILE;
 ok ($filetext =~ m/Loose lips sink ships/,
 	"correct LICENSE generated");
 
-###########################################################################
+########################################################################
 

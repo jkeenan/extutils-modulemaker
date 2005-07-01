@@ -1,6 +1,5 @@
+# t/02_simple.t; A very simple module to make sure the parts are created
 # -*- perl -*-
-
-# t/01_ini.t - check module loading
 
 use Test::More tests => 3;
 
