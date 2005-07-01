@@ -1,0 +1,353 @@
+#!#!#!#!#
+##   9 ##
+########################################### main pod documentation begin ##
+
+=head1 PRIVATE METHODS
+
+Each private function/method is described here.
+These methods and functions are considered private and are intended for
+internal use by this module. They are B<not> considered part of the public
+interface and are described here for documentation purposes.
+
+If you choose to make a subclass of this module to customize ModuleMaker
+for your environment you may need to replace some or all of these functions
+to get what you need.  But as a general rule programs should not be using them
+directly.
+
+=cut
+
+############################################# main pod documentation end ##
+
+################################################ subroutine header begin ##
+
+=head2 sample_function
+
+ Usage     : How to use this function/method
+ Purpose   : What it does
+ Returns   : What it returns
+ Argument  : What it wants to know
+ Throws    : Exceptions and other anomolies
+ Comments  : This is a sample subroutine header.
+           : It is polite to include more pod and fewer comments.
+
+See Also   : 
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##   3 ##
+################################################ subroutine header begin ##
+
+=head2 default_values
+
+ Usage     : $self->default_values ()
+ Purpose   : Defaults for 'new'.
+ Returns   : A hash of defaults as the basis for 'new'.
+ Argument  : n/a
+ Throws    : n/a
+ Comments  : 
+
+See Also   : 
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##   5 ##
+################################################ subroutine header begin ##
+
+=head2 verify_values
+
+ Usage     : $self->verify_values ()
+ Purpose   : Verify module values are valid and complete.
+ Returns   : Error message if there is a problem
+ Argument  : n/a
+ Throws    : Will die with a death_message if errors and not interactive.
+ Comments  : 
+
+See Also   : 
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##  12 ##
+################################################ subroutine header begin ##
+
+=head2 Create_Base_Directory
+
+ Usage     : 
+ Purpose   :
+             Create the directory where all the files will be created.
+ Returns   :
+             $DIR = directory name where the files will live
+ Argument  :
+             $package_name = name of module separated by '::'
+ Throws    : 
+ Comments  : 
+
+See Also   : Check_Dir
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##  18 ##
+################################################ subroutine header begin ##
+
+=head2 Check_Dir
+
+ Usage     :
+             Check_Dir ($dir, $MODE);
+ Purpose   :
+             Creates a directory with the correct mode if needed.
+ Returns   : n/a
+ Argument  :
+             $dir = directory name
+             $MODE = mode of directory (e.g. 0777, 0755)
+ Throws    : 
+ Comments  : 
+
+See Also   : 
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##  24 ##
+=head2 Block_Begin
+
+ Usage     : $self->Block_Begin ()
+ Purpose   : Build part of a module pm file
+ Returns   : Part of the file being built
+ Argument  : $module: pointer to the module being built, for the primary
+                      module it is a pointer to $self
+ Throws    : n/a
+ Comments  : This method is a likely candidate for alteration in a subclass
+
+See Also   : 
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##  28 ##
+################################################ subroutine header begin ##
+
+=head2 Block_New_Method
+
+ Usage     : $self->Block_New_Method ()
+ Purpose   : Build part of a module pm file
+ Returns   : Part of the file being built
+ Argument  : $module: pointer to the module being built, for the primary
+                      module it is a pointer to $self
+ Throws    : n/a
+ Comments  : This method is a likely candidate for alteration in a subclass
+
+See Also   : 
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##  30 ##
+################################################ subroutine header begin ##
+
+=head2 Block_Module_Header
+
+ Usage     : $self->Block_Module_Header ()
+ Purpose   : Build part of a module pm file
+ Returns   : Part of the file being built
+ Argument  : $module: pointer to the module being built, for the primary
+                      module it is a pointer to $self
+ Throws    : n/a
+ Comments  : This method is a likely candidate for alteration in a subclass
+
+See Also   : 
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##  32 ##
+################################################ subroutine header begin ##
+
+=head2 Block_Subroutine_Header
+
+ Usage     : $self->Block_Subroutine_Header ()
+ Purpose   : Build part of a module pm file
+ Returns   : Part of the file being built
+ Argument  : $module: pointer to the module being built, for the primary
+                      module it is a pointer to $self
+ Throws    : n/a
+ Comments  : This method is a likely candidate for alteration in a subclass
+
+See Also   : 
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##  34 ##
+################################################ subroutine header begin ##
+
+=head2 Block_Final_One
+
+ Usage     : $self->Block_Final_One ()
+ Purpose   : Make module return a true value
+ Returns   : Part of the file being built
+ Argument  : $module: pointer to the module being built, for the primary
+                      module it is a pointer to $self
+ Throws    : n/a
+ Comments  : This method is a likely candidate for alteration in a subclass
+
+See Also   : 
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##  36 ##
+################################################ subroutine header begin ##
+
+=head2 FileText_README
+
+ Usage     : $self->FileText_README ()
+ Purpose   : Build a supporting file
+ Returns   : Text of the file being built
+ Argument  : n/a
+ Throws    : n/a
+ Comments  : This method is a likely candidate for alteration in a subclass
+
+See Also   : 
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##  38 ##
+################################################ subroutine header begin ##
+
+=head2 FileText_Changes
+
+ Usage     : $self->FileText_Changes ()
+ Purpose   : Build a supporting file
+ Returns   : Text of the file being built
+ Argument  : $only_in_pod:  True value to get only a HISTORY section for POD
+                            False value to get whole Changes file
+ Throws    : n/a
+ Comments  : This method is a likely candidate for alteration in a subclass
+
+See Also   : 
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##  40 ##
+################################################ subroutine header begin ##
+
+=head2 FileText_ToDo
+
+ Usage     : $self->FileText_ToDo ()
+ Purpose   : Build a supporting file
+ Returns   : Text of the file being built
+ Argument  : n/a
+ Throws    : n/a
+ Comments  : This method is a likely candidate for alteration in a subclass
+
+See Also   : 
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##  42 ##
+################################################ subroutine header begin ##
+
+=head2 FileText_Makefile
+
+ Usage     : $self->FileText_Makefile ()
+ Purpose   : Build a supporting file
+ Returns   : Text of the file being built
+ Argument  : n/a
+ Throws    : n/a
+ Comments  : This method is a likely candidate for alteration in a subclass
+
+See Also   : 
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##  44 ##
+################################################ subroutine header begin ##
+
+=head2 FileText_Buildfile
+
+ Usage     : $self->FileText_Buildfile ()
+ Purpose   : Build a supporting file
+ Returns   : Text of the file being built
+ Argument  : n/a
+ Throws    : n/a
+ Comments  : This method is a likely candidate for alteration in a subclass
+
+See Also   :
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##  46 ##
+################################################ subroutine header begin ##
+
+=head2 FileText_Proxy_Makefile
+
+ Usage     : $self->FileText_Proxy_Makefile ()
+ Purpose   : Build a supporting file
+ Returns   : Text of the file being built
+ Argument  : n/a
+ Throws    : n/a
+ Comments  : This method is a likely candidate for alteration in a subclass
+
+See Also   :
+
+=cut
+
+################################################## subroutine header end ##
+
+#!#!#!#!#
+##  48 ##
+################################################ subroutine header begin ##
+
+=head2 FileText_Test
+
+ Usage     : $self->FileText_Test ()
+ Purpose   : Build a supporting file
+ Returns   : Text of the file being built
+ Argument  : n/a
+ Throws    : n/a
+ Comments  : This method is a likely candidate for alteration in a subclass
+             Will make a test with or without a checking for method new.
+
+See Also   : 
+
+=cut
+
+
