@@ -1,0 +1,69 @@
+Revision history for Perl extension ExtUtils::ModuleMaker.
+
+0.32 June 16 2003 (YAPC::Boca_Raton)
+	- Removed Fakefile.PL that was for testing but only caused
+	  problems.  The content has been held over after __END__
+	  in Makefile.PL
+	- Added missing fullname for libpng license which was causing
+	  an odd number of parts in a hash
+	- Added support for Module::Build (patch from Dave Rolsky)
+	- Fixed misplaced backslash when generating the new method
+	- Generated Makefile.PL now has a prerequisite of Test::Simple
+
+
+--------------------------------------------------------------
+
+0.312_29  September 2002 (YAPC::Munich)
+	- Complete rewrite from the ground up for the 0.3xxx line
+	- Created by ExtUtils::ModuleMaker 0.202
+	- Now object oriented for customizability
+	- Licenses in two new modules:
+		ExtUtils::ModuleMaker::Licenses::Standard
+		ExtUtils::ModuleMaker::Licenses::Local
+	- Customize for local environment by subclassing, example in
+		ExtUtils::ModuleMaker::SecondStyle
+	- Tests now use Test::More
+	- New interactive script 'modulemaker'
+	- Removed old scripts 'newmodule' and 'eumm'
+	- Old functions are deprecated, but still here for now
+		Quick_Module
+		Generate_Module_Files
+	- Fixed missing VERSION_FROM in Makefile.PL
+	- pod and new method can now be optional in extra modules
+		and different in each module
+
+--------------------------------------------------------------
+
+0.204_01 Fri May 31 2002 - joshua@cpan.org
+	- Renamed eumm to the more memorable newmodule
+	- Documented newmodule
+	- More testing. We use Test::More now
+	- Verbose prints to STDOUT not STDERR
+	- Minor internal changes
+
+0.202_02 Wed May 29 2002 - joshua@cpan.org
+	- New feature: create compact base directories
+	- New program: eumm (name TBD) frontend.
+
+0.202_01 Sat May 25 2002 - joshua@cpan.org
+	- Creates .cvsignore
+	- Creates MANIFEST.SKIP
+
+0.202  Fri Dec 28  2001
+	- Fixed typo on line 134 of Licences.pm
+
+0.201_02  Fri Jul 27  2001
+	- Coming out party for the module at TPC 5.0
+	- Change name of module from ModuleMaker to ExtUtils::ModuleMaker
+	- Added Licences.pm including:
+	  - LICENSE file added to the manifest
+	  - Now support all 21 licenses approved by opensource.org
+	- Added simple tests
+	- Need to add INLINE hooks, XS hooks, and better testing
+
+0.2001+  Wed Jul 18  2001
+	- Minor housekeeping details
+
+0.2  Sun Jul 08 20:47:34 2001
+	- original version; created by ModuleMaker 0.2
+	- Amazingly incestuous isn't it.
