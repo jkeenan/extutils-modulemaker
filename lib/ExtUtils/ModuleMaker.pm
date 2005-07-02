@@ -736,7 +736,7 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
     $mod = ExtUtils::ModuleMaker->new( {
         NAME => 'Sample::Module' 
     } );
-    $mod->complete_build ();
+    $mod->complete_build();
 
 =head2 Change of Interface
 
@@ -748,19 +748,19 @@ simply enclose the list of key-value pairs in curly braces:  C<{ }>.
 
 =head1 DESCRIPTION
 
-This module is a replacement for the most typical use of the I<h2xs> 
+This module is a replacement for the most typical use of the F<h2xs> 
 utility bundled with all Perl distributions:  the creation of the 
 directories and files required for a pure-Perl module to be distributable 
 on the Comprehensive Perl Archive Network (CPAN).
 
-I<h2xs> has many options which are useful -- indeed, necessary -- for 
+F<h2xs> has many options which are useful -- indeed, necessary -- for 
 the creation of a properly structured distribution that includes C code 
-as well as Perl code.  Most of the time, however, I<h2xs> is used as follows
+as well as Perl code.  Most of the time, however, F<h2xs> is used as follows
 
     % h2xs -AXn My::Module
 
 to create a distribution containing only Perl code.  ExtUtils::ModuleMaker is 
-intended to be an easy-to-use replacement for I<this> use of I<h2xs>.  
+intended to be an easy-to-use replacement for I<this> use of F<h2xs>.  
 
 While ExtUtils::ModuleMaker can be called from within a Perl script (as in 
 the SYNOPSIS above), it is most easily used by a command-prompt invocation 
@@ -780,7 +780,7 @@ distribution via CPAN.
     make test
     make install
 
-On Windows machines use I<nmake> rather than I<make>.
+On Windows machines use F<nmake> rather than F<make>.
 
 =head1 USAGE
 
@@ -813,7 +813,7 @@ callable functions.  These are how you should interact with this module.
 
 The I<only> required feature.  This is the name of the primary module 
 (with 'C<::>' separators if needed).  Will also support the older style 
-separator ''C<'>'' like the module I<D'Oh>.
+separator ''C<'>'' like the module F<D'Oh>.
 
 =item * ABSTRACT
 
@@ -888,10 +888,10 @@ the distribution.  As with the primary module only NAME is required and
 primary module values will be used if no value is given here.
 
 Each extra module will be created in the correct relative place in the
-I<lib> directory, but no extra supporting documents, like README or
+F<lib> directory, but no extra supporting documents, like README or
 Changes.
 
-This is one major improvement over the earlier I<h2xs> as you can now
+This is one major improvement over the earlier F<h2xs> as you can now
 build multi-module packages.
 
 =item * COMPACT
