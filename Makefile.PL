@@ -12,7 +12,7 @@ WriteMakefile(
     PREREQ_PM    => {
                         Test::More      => 0.44,
                         Getopt::Std     => 0, # in the Perl core
-                        Getopt::Long    => 0, # in the Perl core
+#                        Getopt::Long    => 0, # in the Perl core
                         File::Basename  => 0, # in the Perl core
                         File::Path      => 0, # in the Perl core
                     },

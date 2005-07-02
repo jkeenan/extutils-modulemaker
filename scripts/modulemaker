@@ -7,7 +7,6 @@ use strict;
 use warnings;
 
 use Getopt::Std;
-# use lib ("/Users/jimk/learn/perl/ExtUtils-ModuleMaker-0.32_01/lib");
 use ExtUtils::ModuleMaker 0.32_06;
 use ExtUtils::ModuleMaker::Licenses::Standard;
 use ExtUtils::ModuleMaker::Licenses::Local;
@@ -16,7 +15,7 @@ use Data::Dumper;
 
 use vars qw (%opts $VERSION %destinations %messages);
 
-$VERSION = 0.32_07;    # hacked by James E Keenan January 3 2005
+$VERSION = 0.33;
 
 ########## BEGIN DECLARATIONS ##########
 
