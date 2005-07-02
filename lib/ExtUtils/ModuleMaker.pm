@@ -1,17 +1,16 @@
 package ExtUtils::ModuleMaker;
 use strict;
+use warnings;
 
 use ExtUtils::ModuleMaker::Licenses::Standard;
 use ExtUtils::ModuleMaker::Licenses::Local;
 use File::Path;
-use Data::Dumper;
 
 BEGIN {
     use Exporter ();
     use vars qw ($VERSION @ISA @EXPORT);
     @ISA     = qw (Exporter);
-    $VERSION = 0.32_07; # hacked by James E Keenan January 3 2005
-
+    $VERSION = 0.33;
 }
 
 #!#!#!#!#
@@ -722,7 +721,7 @@ EOF
 __END__
 
 #################### DOCUMENTATION ####################
-#
+
 #!#!#!#!#
 ##   1 ##
 
@@ -734,10 +733,18 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
     use ExtUtils::ModuleMaker;
 
-    my $MOD = ExtUtils::ModuleMaker->new( {
+    $mod = ExtUtils::ModuleMaker->new( {
         NAME => 'Sample::Module' 
     } );
-    $MOD->complete_build ();
+    $mod->complete_build ();
+
+=head2 Change of Interface
+
+Beginning with version 0.33 (July 2005), C<ExtUtils::ModuleMaker::new()>
+takes as its sole argument a reference to a hash holding key-value
+pairs.  In earlier versions C<new()> took a list of those same key-value 
+pairs as its arguments.  To adapt scripts written with earlier versions, 
+simply enclose the list of key-value pairs in curly braces:  C<{ }>.
 
 =head1 DESCRIPTION
 
@@ -748,7 +755,7 @@ on the Comprehensive Perl Archive Network (CPAN).
 
 I<h2xs> has many options which are useful -- indeed, necessary -- for 
 the creation of a properly structured distribution that includes C code 
-as well as Perl code, but most of the time it is used as follows:
+as well as Perl code.  Most of the time, however, I<h2xs> is used as follows
 
     % h2xs -AXn My::Module
 
@@ -757,12 +764,12 @@ intended to be an easy-to-use replacement for I<this> use of I<h2xs>.
 
 While ExtUtils::ModuleMaker can be called from within a Perl script (as in 
 the SYNOPSIS above), it is most easily used by a command-prompt invocation 
-of the I<modulemaker> script bundled with this distribution:
+of the F<modulemaker> script bundled with this distribution:
 
     % modulemaker
 
 and then responding to the prompts.  For Perl programmers, laziness is a 
-virtue -- and I<modulemaker> is far and away the laziest way to create a 
+virtue -- and F<modulemaker> is far and away the laziest way to create a 
 pure Perl distribution which meets all the requirements for worldwide 
 distribution via CPAN.
 
@@ -777,11 +784,11 @@ On Windows machines use I<nmake> rather than I<make>.
 
 =head1 USAGE
 
-=head2 Usage from the command-line with I<modulemaker>
+=head2 Usage from the command-line with F<modulemaker>
 
-The easiest, laziest way to use ExtUtils::Modulemaker is to invoke the 
-I<modulemaker> script from the command-line.  See the documentation for 
-I<modulemaker> bundled with this distribution.
+The easiest, laziest way to use ExtUtils::ModuleMaker is to invoke the 
+F<modulemaker> script from the command-line.  See the documentation for 
+F<modulemaker> bundled with this distribution.
 
 =head2 Usage within a Perl script
 
@@ -790,7 +797,7 @@ callable functions.  These are how you should interact with this module.
 
 =over 4
 
-=item I<new>
+=item C<new>
 
     Usage     : 
     Purpose   : Creates an object for modules
@@ -802,29 +809,29 @@ callable functions.  These are how you should interact with this module.
 
 =over 4
 
-=item NAME
+=item * NAME
 
 The I<only> required feature.  This is the name of the primary module 
 (with 'C<::>' separators if needed).  Will also support the older style 
-separator "C<'>" like the module I<D'Oh>.
+separator ''C<'>'' like the module I<D'Oh>.
 
-=item ABSTRACT
+=item * ABSTRACT
 
 A short (44-character maximum) description of the module.  CPAN likes 
 to use this feature to describe the module.
 
-=item VERSION
+=item * VERSION
 
 A real number to be the version number.  Do not use Linux style numbering 
 with multiple dots like 2.4.24.  For alpha releases, include an underscore 
 to the right of the dot like 0.31_21. (Default is 0.01.)
 
-=item LICENSE
+=item * LICENSE
 
 Which license to include in the Copyright section.  You can choose one of 
 the standard licenses by including 'perl', 'gpl', 'artistic', and 18 others 
 approved by opensource.org.  The default is to choose the 'perl' flavor 
-which is to share it "under the same terms as Perl itself".
+which is to share it ''under the same terms as Perl itself.''
 
 Other licenses can be added by individual module authors to 
 ExtUtils::ModuleMaker::Licenses::Local to keep your company lawyers happy.
@@ -832,7 +839,7 @@ ExtUtils::ModuleMaker::Licenses::Local to keep your company lawyers happy.
 Some licenses include placeholders that will be replaced with AUTHOR 
 information.
 
-=item BUILD_SYSTEM
+=item * BUILD_SYSTEM
 
 This can take one of three values.  These are 'ExtUtils::MakeMaker',
 'Module::Build', and 'Module::Build and Proxy'.  The first generates a
@@ -843,38 +850,38 @@ runs the Build.PL script.  This option is recommended if you want to
 use Module::Build as your build system.  See Module::Build::Compat for
 more details.
 
-=item AUTHOR
+=item * AUTHOR
 
 A hash containing information about the author to pass on to all the
 necessary places in the files.
 
 =over 4
 
-=item NAME
+=item * NAME
 
 Name of the author.
 
-=item EMAIL
+=item * EMAIL
 
 Email address of the author.
 
-=item CPANID
+=item * CPANID
 
 The CPANID of the author.  If this is omitted, then the line will not
 be added to the documentation.
 
-=item WEBSITE
+=item * WEBSITE
 
 The personal or organizational website of the author.
 
-=item ORGANIZATION
+=item * ORGANIZATION
 
 Company or group owning the module.  If this is omitted, then the line 
 will not be added to the documentation
 
 =back
 
-=item EXTRA_MODULES
+=item * EXTRA_MODULES
 
 An array of hashes that each contain values for additional modules in
 the distribution.  As with the primary module only NAME is required and
@@ -887,46 +894,46 @@ Changes.
 This is one major improvement over the earlier I<h2xs> as you can now
 build multi-module packages.
 
-=item COMPACT
+=item * COMPACT
 
-For a module named "Foo::Bar::Baz" creates a base directory named
-"Foo-Bar-Baz" instead of Foo/Bar/Baz. (Default off)
+For a module named ''Foo::Bar::Baz'' creates a base directory named
+''Foo-Bar-Baz'' instead of Foo/Bar/Baz. (Default off)
 
-=item VERBOSE
+=item * VERBOSE
 
 Prints messages as it creates directories, writes files, etc. (Default off)
 
-=item INTERACTIVE
+=item * INTERACTIVE
 
 Suppresses 'die' when something goes wrong.  Should only be used by interactive
-scripts like I<modulemaker>. (Default off)
+scripts like F<modulemaker>. (Default off)
 
-=item PERMISSIONS
+=item * PERMISSIONS
 
 Used to create new directories.  (Default is 0755:  group and world can not 
 write.)
 
-=item USAGE_MESSAGE
+=item * USAGE_MESSAGE
 
 Message given when the module 'die's.  Scripts should set this to the same 
 string it would print if the user asked for help (often with a -h flag).
 
-=item NEED_POD
+=item * NEED_POD
 
 Include POD section in modules. (Default is on)
 
-=item NEED_NEW_METHOD
+=item * NEED_NEW_METHOD
 
 Include a simple 'new' method in the object oriented module.  (Default is on)
 
-=item CHANGES_IN_POD
+=item * CHANGES_IN_POD
 
 Don't include a 'Changes' file, but instead add a HISTORY section to the POD. 
 (Default is off).
 
 =back
 
-=item I<complete_build>
+=item C<complete_build>
 
 [to come]
 
@@ -936,17 +943,14 @@ Don't include a 'Changes' file, but instead add a HISTORY section to the POD.
 
 =head1 SUPPORT
 
-Send email to modulemaker@PlatypiVentures.com.
+Send email to jkeenan [at] cpan [dot] org.
 
 =head1 AUTHOR
 
-    R. Geoffrey Avery
-    CPAN ID: RGEOFFREY
-    modulemaker@PlatypiVentures.com
-    http://www.PlatypiVentures.com/perl/modules/ModuleMaker.shtml
-
-Version 0.32_07 is an unofficial version containing revisions made by 
-James E. Keenan (jkeenan@cpan.org) on January 3 2005.
+ExtUtils::ModuleMaker was originally written in 2001-02 by R. Geoffrey Avery
+(modulemaker [at] PlatypiVentures [dot] com).  Since version 0.33 (July
+2005) it has been maintained by James E. Keenan (jkeenan [at] cpan [dot]
+org).
 
 =head1 COPYRIGHT
 
@@ -959,6 +963,6 @@ LICENSE file included with this module.
 
 =head1 SEE ALSO
 
-I<modulemaker>, I<perlnewmod>, I<h2xs>, I<ExtUtils::MakeMaker>
+F<modulemaker>, F<perlnewmod>, F<h2xs>, F<ExtUtils::MakeMaker>.
 
 =cut
