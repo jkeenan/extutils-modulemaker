@@ -578,67 +578,67 @@ Currently Supported Features
 
 =over 4
 
-=item  -a
+=item * -a
 
 Specify (in quotes) an abstract for this extension
 
-=item  -b
+=item * -b
 
 Specify a build system for this extension
 
-=item  -c
+=item * -c
 
 Flag for compact base directory name
 
-=item  -C
+=item * -C
 
 Omit creating the Changes file, add HISTORY heading to stub POD
 
-=item  -e
+=item * -e
 
 Specify author's e-mail address
 
-=item  -h
+=item * -h
 
 Display this help message
 
-=item  -I
+=item * -I
 
 Disable INTERACTIVE mode, the command line arguments better be complete
 
-=item  -l
+=item * -l
 
 Specify a license for this extension
 
-=item  -n
+=item * -n
 
 Specify a name to use for the extension (required)
 
-=item  -o
+=item * -o
 
 Specify (in quotes) author's organization
 
-=item  -p
+=item * -p
 
 Specify author's CPAN ID
 
-=item  -P
+=item * -P
 
 Omit the stub POD section
 
-=item  -u
+=item * -u
 
 Specify (in quotes) author's name
 
-=item  -v
+=item * -v
 
 Specify a version number for this extension
 
-=item  -V
+=item * -V
 
 Flag for verbose messages during module creation
 
-=item  -w
+=item * -w
 
 Specify author's web site
 

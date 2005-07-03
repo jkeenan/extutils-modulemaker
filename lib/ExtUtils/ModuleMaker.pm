@@ -8,12 +8,7 @@ use ExtUtils::ModuleMaker::Licenses::Standard;
 use ExtUtils::ModuleMaker::Licenses::Local;
 use File::Path;
 
-#BEGIN {
-#    use Exporter ();
-#    use vars qw ($VERSION @ISA @EXPORT);
-#    @ISA     = qw (Exporter);
-#    $VERSION = 0.33;
-#}
+#################### PUBLICLY CALLABLE METHODS ####################
 
 #!#!#!#!#
 ##   2 ##
@@ -39,6 +34,51 @@ sub new {
     $self->{MANIFEST} = ['MANIFEST'];
     return ($self);
 }
+
+#!#!#!#!#
+##   7 ##
+sub complete_build {
+    my $self = shift;
+
+    $self->verify_values();
+
+    $self->create_base_directory();
+    $self->check_dir( map { "$self->{Base_Dir}/$_" } qw (lib t scripts) );
+
+    $self->print_file( 'LICENSE', $self->{LicenseParts}{LICENSETEXT} );
+    $self->print_file( 'README',  $self->file_text_README() );
+    $self->print_file( 'Todo',    $self->file_text_ToDo() );
+
+    unless ( $self->{CHANGES_IN_POD} ) {
+        $self->print_file( 'Changes', $self->file_text_Changes() );
+    }
+
+    my $ct = 1;
+    foreach my $module ( $self, @{ $self->{EXTRA_MODULES} } ) {
+        $self->generate_pm_file($module);
+        my $testfile = sprintf( "t/%03d_load.t", $ct );
+        $self->print_file( $testfile,
+            $self->file_text_test( $testfile, $module ) );
+        $ct++;
+    }
+
+    #Makefile must be created after generate_pm_file which sets $self->{FILE}
+    if ( $self->{BUILD_SYSTEM} eq 'ExtUtils::MakeMaker' ) {
+        $self->print_file( 'Makefile.PL', $self->file_text_Makefile() );
+    }
+    else {
+        $self->print_file( 'Build.PL', $self->file_text_Buildfile() );
+        if ( $self->{BUILD_SYSTEM} eq 'Module::Build and proxy Makefile.PL' ) {
+            $self->print_file( 'Makefile.PL',
+                $self->file_text_proxy_makefile() );
+        }
+    }
+
+    $self->print_file( 'MANIFEST', join( "\n", @{ $self->{MANIFEST} } ) );
+    return 1;
+}
+
+#################### INTERNAL SUBROUTINES ####################
 
 #!#!#!#!#
 ##   4 ##
@@ -102,60 +142,17 @@ sub verify_values {
 }
 
 #!#!#!#!#
-##   7 ##
-sub complete_build {
-    my $self = shift;
-
-    $self->verify_values();
-
-    $self->Create_Base_Directory();
-    $self->Check_Dir( map { "$self->{Base_Dir}/$_" } qw (lib t scripts) );
-
-    $self->print_file( 'LICENSE', $self->{LicenseParts}{LICENSETEXT} );
-    $self->print_file( 'README',  $self->FileText_README() );
-    $self->print_file( 'Todo',    $self->FileText_ToDo() );
-
-    unless ( $self->{CHANGES_IN_POD} ) {
-        $self->print_file( 'Changes', $self->FileText_Changes() );
-    }
-
-    my $ct = 1;
-    foreach my $module ( $self, @{ $self->{EXTRA_MODULES} } ) {
-        $self->generate_pm_file($module);
-        my $testfile = sprintf( "t/%03d_load.t", $ct );
-        $self->print_file( $testfile,
-            $self->FileText_Test( $testfile, $module ) );
-        $ct++;
-    }
-
-    #Makefile must be created after generate_pm_file which sets $self->{FILE}
-    if ( $self->{BUILD_SYSTEM} eq 'ExtUtils::MakeMaker' ) {
-        $self->print_file( 'Makefile.PL', $self->FileText_Makefile() );
-    }
-    else {
-        $self->print_file( 'Build.PL', $self->FileText_Buildfile() );
-        if ( $self->{BUILD_SYSTEM} eq 'Module::Build and proxy Makefile.PL' ) {
-            $self->print_file( 'Makefile.PL',
-                $self->FileText_Proxy_Makefile() );
-        }
-    }
-
-    $self->print_file( 'MANIFEST', join( "\n", @{ $self->{MANIFEST} } ) );
-    return 1;
-}
-
-#!#!#!#!#
 ##   8 ##
 sub generate_pm_file {
     my ( $self, $module ) = @_;
 
-    $self->Create_PM_Basics($module);
+    $self->create_pm_basics($module);
 
-    my $page = $self->Block_Begin($module) .
+    my $page = $self->block_begin($module) .
 
       (
         ( $self->module_value( $module, 'NEED_POD' ) )
-        ? $self->Block_Module_Header($module)
+        ? $self->block_module_header($module)
         : ()
       )
       .
@@ -165,19 +162,19 @@ sub generate_pm_file {
                  ( $self->module_value( $module, 'NEED_POD' ) )
               && ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
         )
-        ? $self->Block_Subroutine_Header($module)
+        ? $self->block_subroutine_header($module)
         : ()
       )
       .
 
       (
         ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
-        ? $self->Block_New_Method($module)
+        ? $self->block_new_method($module)
         : ()
       )
       .
 
-      $self->Block_Final_One($module);
+      $self->block_final_one($module);
 
     $self->print_file( $module->{FILE}, $page );
 }
@@ -209,23 +206,23 @@ sub set_author_data {
 
 #!#!#!#!#
 ##  13 ##
-sub Create_Base_Directory {
+sub create_base_directory {
     my $self = shift;
 
     $self->{Base_Dir} =
       join( ( $self->{COMPACT} ) ? '-' : '/', split( /::|'/, $self->{NAME} ) );
-    $self->Check_Dir( $self->{Base_Dir} );
+    $self->check_dir( $self->{Base_Dir} );
 }
 
 #!#!#!#!#
 ##  14 ##
-sub Create_PM_Basics {
+sub create_pm_basics {
     my ( $self, $module ) = @_;
     my @layers = split( /::|'/, $module->{NAME} );
     my $file   = pop(@layers);
     my $dir    = join( '/', 'lib', @layers );
 
-    $self->Check_Dir("$self->{Base_Dir}/$dir");
+    $self->check_dir("$self->{Base_Dir}/$dir");
     $module->{FILE} = "$dir/$file.pm";
 }
 
@@ -287,7 +284,7 @@ sub print_file {
 
 #!#!#!#!#
 ##  19 ##
-sub Check_Dir {
+sub check_dir {
     my $self = shift;
 
     return mkpath( \@_, $self->{VERBOSE}, $self->{PERMISSIONS} );
@@ -353,7 +350,7 @@ EOFBLOCK
 
 #!#!#!#!#
 ##  25 ##
-sub Block_Begin {
+sub block_begin {
     my ( $self, $module ) = @_;
 
     my $version = $self->module_value( $module, 'VERSION' );
@@ -380,7 +377,7 @@ EOFBLOCK
 
 # #!#!#!#!#
 ##  29 ##
-sub Block_New_Method {
+sub block_new_method {
     my ( $self, $module ) = @_;
 
     my $string = <<'EOFBLOCK';
@@ -401,7 +398,7 @@ EOFBLOCK
 
 #!#!#!#!#
 ##  31 ##
-sub Block_Module_Header {
+sub block_module_header {
     my ( $self, $module ) = @_;
 
     my $description = <<EOFBLOCK;
@@ -430,7 +427,7 @@ EOFBLOCK
         (
             ( $self->{CHANGES_IN_POD} )
             ? $self->pod_section(
-                HISTORY => $self->FileText_Changes('only pod')
+                HISTORY => $self->file_text_Changes('only pod')
               )
             : ()
         ),
@@ -449,7 +446,7 @@ EOFBLOCK
 
 #!#!#!#!#
 ##  33 ##
-sub Block_Subroutine_Header {
+sub block_subroutine_header {
     my ( $self, $module ) = @_;
 
     my $string = <<EOFBLOCK;
@@ -480,7 +477,7 @@ EOFBLOCK
 
 #!#!#!#!#
 ##  35 ##
-sub Block_Final_One {
+sub block_final_one {
     my ( $self, $module ) = @_;
 
     my $string = <<EOFBLOCK;
@@ -495,7 +492,7 @@ EOFBLOCK
 
 #!#!#!#!#
 ##  37 ##
-sub FileText_README {
+sub file_text_README {
     my ($self) = @_;
 
     my $build_instructions;
@@ -540,7 +537,7 @@ EOF
 
 #!#!#!#!#
 ##  39 ##
-sub FileText_Changes {
+sub file_text_Changes {
     my ( $self, $only_in_pod ) = @_;
 
     my $page;
@@ -567,7 +564,7 @@ EOF
 
 #!#!#!#!#
 ##  41 ##
-sub FileText_ToDo {
+sub file_text_ToDo {
     my ($self) = @_;
 
     my $page = <<EOF;
@@ -583,7 +580,7 @@ EOF
 
 #!#!#!#!#
 ##  43 ##
-sub FileText_Makefile {
+sub file_text_Makefile {
     my ($self) = @_;
     my $page = <<EOF;
 use ExtUtils::MakeMaker;
@@ -604,7 +601,7 @@ EOF
 
 #!#!#!#!#
 ##  45 ##
-sub FileText_Buildfile {
+sub file_text_Buildfile {
     my ($self) = @_;
 
     # As of 0.15, Module::Build only allows a few licenses
@@ -636,7 +633,7 @@ EOF
 
 #!#!#!#!#
 ##  47 ##
-sub FileText_Proxy_Makefile {
+sub file_text_proxy_makefile {
     my ($self) = @_;
 
     # This comes directly from the docs for Module::Build::Compat
@@ -675,7 +672,7 @@ EOF
 
 #!#!#!#!#
 ##  49 ##
-sub FileText_Test {
+sub file_text_test {
     my ( $self, $testnum, $module ) = @_;
 
     my $name    = $self->module_value( $module, 'NAME' );
