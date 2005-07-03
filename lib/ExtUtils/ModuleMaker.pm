@@ -1,17 +1,19 @@
 package ExtUtils::ModuleMaker;
 use strict;
 use warnings;
+use vars qw ($VERSION);
+$VERSION = 0.33;
 
 use ExtUtils::ModuleMaker::Licenses::Standard;
 use ExtUtils::ModuleMaker::Licenses::Local;
 use File::Path;
 
-BEGIN {
-    use Exporter ();
-    use vars qw ($VERSION @ISA @EXPORT);
-    @ISA     = qw (Exporter);
-    $VERSION = 0.33;
-}
+#BEGIN {
+#    use Exporter ();
+#    use vars qw ($VERSION @ISA @EXPORT);
+#    @ISA     = qw (Exporter);
+#    $VERSION = 0.33;
+#}
 
 #!#!#!#!#
 ##   2 ##
@@ -139,6 +141,7 @@ sub complete_build {
     }
 
     $self->print_file( 'MANIFEST', join( "\n", @{ $self->{MANIFEST} } ) );
+    return 1;
 }
 
 #!#!#!#!#
@@ -799,13 +802,10 @@ callable functions.  These are how you should interact with this module.
 
 =item C<new>
 
-    Usage     : 
-    Purpose   : Creates an object for modules
-    Returns   : the module object
-    Argument  : A reference to a hash with the information for 
-                the new module(s)
-    Throws    : 
-    Comments  : 
+Creates and returns an ExtUtils::ModuleMaker object.  Takes a reference to 
+a hash containing key-value pairs with information specifying the
+structure and content of the new module(s).  Keys which may be specified
+are:
 
 =over 4
 
@@ -935,7 +935,10 @@ Don't include a 'Changes' file, but instead add a HISTORY section to the POD.
 
 =item C<complete_build>
 
-[to come]
+Creates all directories and files specified in the key-value pairs
+passed by hash reference to C<ExtUtils::ModuleMaker::new>.  Returns a
+true value if all specified files are created -- but this says nothing
+about whether those files have been created with the correct content.
 
 =back
 
@@ -943,7 +946,8 @@ Don't include a 'Changes' file, but instead add a HISTORY section to the POD.
 
 =head1 SUPPORT
 
-Send email to jkeenan [at] cpan [dot] org.
+Send email to jkeenan [at] cpan [dot] org.  Please include 'modulemaker'
+in the subject line.
 
 =head1 AUTHOR
 
