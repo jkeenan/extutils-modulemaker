@@ -26,7 +26,6 @@ ok( $mod->complete_build(), 'call complete_build()' );
 ok (chdir 'Sample-Module-Foo',
 	"cd Sample-Module-Foo");
 
-#        MANIFEST.SKIP .cvsignore
 for (qw/Changes MANIFEST Makefile.PL LICENSE
 		README lib t/) {
     ok (-e,
