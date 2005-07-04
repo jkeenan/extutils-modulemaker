@@ -1,13 +1,16 @@
 # t/06_build.t
 use strict;
 use warnings;
-use Test::More tests => 14;
+use Test::More tests => 13;
 
 BEGIN { use_ok('ExtUtils::ModuleMaker'); }
 BEGIN { use_ok( 'File::Temp', qw| tempdir |); }
 
 use lib ("./t/testlib");
-use _Auxiliary qw( read_file_string read_file_array );
+use _Auxiliary qw(
+    read_file_string
+    six_file_tests
+);
 
 my $tdir = tempdir( CLEANUP => 1);
 ok(chdir $tdir, 'changed to temp directory for testing');
@@ -19,7 +22,7 @@ my $testmod = 'Gamma';
 
 SKIP: {
     eval { require Module::Build };
-    skip "Module::Build not installed", 11 if $@;
+    skip "Module::Build not installed", 10 if $@;
 
     ok( 
         $mod = ExtUtils::ModuleMaker->new( {
@@ -43,29 +46,10 @@ SKIP: {
     
     ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
     
-    my ($filetext, @filetext);
+    my ($filetext);
     ok($filetext = read_file_string('Build.PL'),
         'Able to read Build.PL');
     
-    ok(@filetext = read_file_array('MANIFEST'),
-        'Able to read MANIFEST');
-    ok(@filetext == 7,
-        'Correct number of entries in MANIFEST');
-    
-    ok(chdir 'lib/Alpha', 'Directory is now lib/Alpha');
-    ok($filetext = read_file_string("$testmod.pm"),
-        "Able to read $testmod.pm");
-    ok($filetext =~ m|Alpha::$testmod\s-\sTest\sof\sthe\scapacities\sof\sEU::MM|,
-        'POD contains module name and abstract');
-    ok($filetext =~ m|=head1\sHISTORY|,
-        'POD contains history head');
-    ok($filetext =~ m|
-            Phineas\sT\.\sBluster\n
-            \s+CPAN\sID:\s+PTBLUSTER\n
-            \s+Peanut\sGallery\n
-            \s+phineas\@anonymous\.com\n
-            \s+http:\/\/www\.anonymous\.com\/~phineas
-            |xs,
-        'POD contains correct author info');
+    six_file_tests(7, $testmod); # first arg is # entries in MANIFEST
 }
 

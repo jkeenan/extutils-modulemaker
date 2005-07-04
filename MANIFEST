@@ -17,3 +17,4 @@ lib/ExtUtils/ModuleMaker.pm
 lib/ExtUtils/ModuleMaker/SecondStyle.pm
 lib/ExtUtils/ModuleMaker/Licenses/Standard.pm
 lib/ExtUtils/ModuleMaker/Licenses/Local.pm
+META.yml                                 Module meta-data (added by MakeMaker)
