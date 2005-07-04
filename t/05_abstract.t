@@ -13,11 +13,12 @@ ok( chdir 'blib/testing' || chdir '../blib/testing',
 
 ########################################################################
 
-my $MOD;
+my $mod;
+my $testmod = 'Beta';
 
 ok( 
-    $MOD = ExtUtils::ModuleMaker->new( {
-        NAME           => 'Alpha::Beta',
+    $mod = ExtUtils::ModuleMaker->new( {
+        NAME           => "Alpha::$testmod",
         ABSTRACT       => 'Test of the capacities of EU::MM',
         COMPACT        => 1,
         CHANGES_IN_POD => 1,
@@ -29,12 +30,12 @@ ok(
            'WEBSITE'      => 'http://www.anonymous.com/~phineas',
         },
     } ),
-    "call ExtUtils::ModuleMaker->new for Alpha-Beta"
+    "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
 );
 
-ok( $MOD->complete_build(), "call $MOD->complete_build" );
+ok( $mod->complete_build(), 'call complete_build()' );
 
-ok( chdir 'Alpha-Beta', "cd Alpha-Beta" );
+ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
 
 for ( qw/LICENSE Makefile.PL MANIFEST README Todo/) {
     ok( -f, "file $_ exists" );
@@ -59,10 +60,10 @@ ok(@filetext = read_file_array('MANIFEST'),
 ok(@filetext == 7,
     'Correct number of entries in MANIFEST');
 
-ok(chdir 'lib/Alpha', 'Directory is now lib/alpha');
-ok($filetext = read_file_string('Beta.pm'),
-    'Able to read Beta.pm');
-ok($filetext =~ m|Alpha::Beta\s-\sTest\sof\sthe\scapacities\sof\sEU::MM|,
+ok(chdir 'lib/Alpha', 'Directory is now lib/Alpha');
+ok($filetext = read_file_string("$testmod.pm"),
+    "Able to read $testmod.pm");
+ok($filetext =~ m|Alpha::$testmod\s-\sTest\sof\sthe\scapacities\sof\sEU::MM|,
     'POD contains module name and abstract');
 ok($filetext =~ m|=head1\sHISTORY|,
     'POD contains history head');
