@@ -82,12 +82,15 @@ sub complete_build {
 
 #!#!#!#!#
 ##   4 ##
-# Usage     : $self->default_values ()
-# Purpose   : Defaults for 'new'.
-# Returns   : A hash of defaults as the basis for 'new'.
+# Usage     : $self->default_values() inside new()
+# Purpose   : Defaults for new()
+# Returns   : A reference to a hash of defaults as the basis for 'new'.
 # Argument  : n/a
 # Throws    : n/a
-# Comments  : 
+# Comments  : Geoff probably put this into a subroutine so it would be 
+#             subclassable.  I'm leaving it here so that the defaults
+#             are encapsulated within a subroutine rather than creating
+#             a file-scoped lexical. 
 sub default_values {
     my %defaults = (
         NAME     => 'None yet',
@@ -223,7 +226,7 @@ sub set_author_data {
 # Returns    $DIR = directory name where the files will live
 # Argument   $package_name = name of module separated by '::'
 # Throws    : 
-# Comments  : See Also   : Check_Dir
+# Comments  : see also:  check_dir()
 sub create_base_directory {
     my $self = shift;
 

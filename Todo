@@ -12,3 +12,11 @@ particularly the modulemaker utility.
 3.  Finally, add features suggested by other modules (e.g.,
 Module::Starter) which have themselves been influenced by EU::MM.
 
+-----
+Short-range plan:
+* Test death_message().
+* Refactor BEGIN blocks in lib/ExtUtils/Modulemaker/Licenses/*.pm.
+* Analyze whether SecondStyle.pm is still needed.  Geoff used it to
+* demonstrate subclassability -- but my version is now pure-OO and I
+* don't want internals subclassed.
+ 
