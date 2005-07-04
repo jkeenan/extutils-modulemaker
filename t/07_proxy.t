@@ -7,8 +7,8 @@ BEGIN {
     use_ok('ExtUtils::ModuleMaker'); 
     use_ok('Module::Build')
 }
-use lib ("./t");
-use Test::Readfile qw( read_file_string read_file_array );
+use lib ("./t/testlib");
+use _Auxiliary qw( read_file_string read_file_array );
 
 ok( chdir 'blib/testing' || chdir '../blib/testing', 
     "chdir 'blib/testing'" );
