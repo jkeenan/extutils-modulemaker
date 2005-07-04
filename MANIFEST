@@ -4,7 +4,6 @@ Makefile.PL
 README
 MANIFEST
 MANIFEST.SKIP
-.cvsignore
 t/01_ini.t
 t/03_quick.t
 t/04_compact.t
