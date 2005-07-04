@@ -1,4 +1,3 @@
-
 package ExtUtils::ModuleMaker::Licenses::Standard;
 use strict;
 
