@@ -1,15 +1,17 @@
 # t/05_abstract.t
 
-use Test::More qw/no_plan/;
+use Test::More tests => 26;
 use strict;
 use warnings;
 
 BEGIN { use_ok('ExtUtils::ModuleMaker'); }
+BEGIN { use_ok( 'File::Temp', qw| tempdir |); }
+
 use lib ("./t/testlib");
 use _Auxiliary qw( read_file_string read_file_array );
 
-ok( chdir 'blib/testing' || chdir '../blib/testing', 
-    "chdir 'blib/testing'" );
+my $tdir = tempdir( CLEANUP => 1);
+ok(chdir $tdir, 'changed to temp directory for testing');
 
 ########################################################################
 

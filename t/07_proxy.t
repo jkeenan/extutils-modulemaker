@@ -1,16 +1,16 @@
 # t/07_proxy.t
 use strict;
 use warnings;
-use Test::More tests => 25;
+use Test::More tests => 26;
 
-BEGIN { 
-    use_ok('ExtUtils::ModuleMaker'); 
-}
+BEGIN { use_ok('ExtUtils::ModuleMaker'); }
+BEGIN { use_ok( 'File::Temp', qw| tempdir |); }
+
 use lib ("./t/testlib");
 use _Auxiliary qw( read_file_string read_file_array );
 
-ok( chdir 'blib/testing' || chdir '../blib/testing', 
-    "chdir 'blib/testing'" );
+my $tdir = tempdir( CLEANUP => 1);
+ok(chdir $tdir, 'changed to temp directory for testing');
 
 ########################################################################
 
