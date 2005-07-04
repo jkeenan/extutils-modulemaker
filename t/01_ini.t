@@ -6,9 +6,11 @@ use warnings;
 
 use Test::More tests => 6;
 
-BEGIN { use_ok( 'ExtUtils::ModuleMaker' ); }
-BEGIN { use_ok( 'ExtUtils::ModuleMaker::Licenses::Standard' ); }
-BEGIN { use_ok( 'ExtUtils::ModuleMaker::Licenses::Local' ); }
+BEGIN {
+    use_ok( 'ExtUtils::ModuleMaker' );
+    use_ok( 'ExtUtils::ModuleMaker::Licenses::Standard' );
+    use_ok( 'ExtUtils::ModuleMaker::Licenses::Local' );
+}
 
 ###########################################################################
 

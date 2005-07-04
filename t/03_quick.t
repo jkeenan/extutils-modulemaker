@@ -1,6 +1,6 @@
 # t/03_quick.t
 
-use Test::More qw/no_plan/;
+use Test::More tests => 14;
 use strict;
 use warnings;
 
@@ -9,15 +9,14 @@ ok (chdir 'blib/testing' || chdir '../blib/testing', "chdir 'blib/testing'");
 
 ###########################################################################
 
-my $MOD;
+my $mod;
 
-ok ($MOD  = ExtUtils::ModuleMaker->new ( {
+ok ($mod  = ExtUtils::ModuleMaker->new ( {
                 NAME        => 'Sample::Module',
             } ),
     "call ExtUtils::ModuleMaker->new for Sample-Module");
     
-ok ($MOD->complete_build (),
-    "call $MOD->complete_build");
+ok( $mod->complete_build(), 'call complete_build()' );
 
 ########################################################################
 
