@@ -118,6 +118,12 @@ ENDOFUSAGE
 
 #!#!#!#!#
 ##   6 ##
+# Usage     : $self->verify_values() within complete_build()
+# Purpose   : Verify module values are valid and complete.
+# Returns   : Error message if there is a problem
+# Argument  : n/a
+# Throws    : Will die with a death_message if errors and not interactive.
+# Comments  : 
 sub verify_values {
     my ($self) = @_;
     my @errors;
@@ -206,6 +212,12 @@ sub set_author_data {
 
 #!#!#!#!#
 ##  13 ##
+# Usage     : 
+# Purpose   : Create the directory where all the files will be created.
+# Returns    $DIR = directory name where the files will live
+# Argument   $package_name = name of module separated by '::'
+# Throws    : 
+# Comments  : See Also   : Check_Dir
 sub create_base_directory {
     my $self = shift;
 
@@ -284,6 +296,13 @@ sub print_file {
 
 #!#!#!#!#
 ##  19 ##
+# Usage     : check_dir ($dir, $MODE);
+# Purpose   : Creates a directory with the correct mode if needed.
+# Returns   : n/a
+# Argument  : $dir = directory name
+#             $MODE = mode of directory (e.g. 0777, 0755)
+# Throws    : 
+# Comments  : 
 sub check_dir {
     my $self = shift;
 
@@ -350,6 +369,13 @@ EOFBLOCK
 
 #!#!#!#!#
 ##  25 ##
+# Usage     : $self->block_begin() within generate_pm_file()
+# Purpose   : Build part of a module pm file
+# Returns   : Part of the file being built
+# Argument  : $module: pointer to the module being built, for the primary
+#                      module it is a pointer to $self
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
 sub block_begin {
     my ( $self, $module ) = @_;
 
@@ -377,6 +403,13 @@ EOFBLOCK
 
 # #!#!#!#!#
 ##  29 ##
+# Usage     : $self->block_new_method() within generate_pm_file()
+# Purpose   : Build part of a module pm file
+# Returns   : Part of the file being built
+# Argument  : $module: pointer to the module being built, for the primary
+#                      module it is a pointer to $self
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
 sub block_new_method {
     my ( $self, $module ) = @_;
 
@@ -398,6 +431,13 @@ EOFBLOCK
 
 #!#!#!#!#
 ##  31 ##
+# Usage     : $self->block_module_header ()
+# Purpose   : Build part of a module pm file
+# Returns   : Part of the file being built
+# Argument  : $module: pointer to the module being built, for the primary
+#                      module it is a pointer to $self
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
 sub block_module_header {
     my ( $self, $module ) = @_;
 
@@ -446,6 +486,13 @@ EOFBLOCK
 
 #!#!#!#!#
 ##  33 ##
+# Usage     : $self->block_subroutine_header() within generate_pm_file()
+# Purpose   : Build part of a module pm file
+# Returns   : Part of the file being built
+# Argument  : $module: pointer to the module being built, for the primary
+#                      module it is a pointer to $self
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
 sub block_subroutine_header {
     my ( $self, $module ) = @_;
 
@@ -477,6 +524,13 @@ EOFBLOCK
 
 #!#!#!#!#
 ##  35 ##
+# Usage     : $self->block_final_one ()
+# Purpose   : Make module return a true value
+# Returns   : Part of the file being built
+# Argument  : $module: pointer to the module being built, for the primary
+#                      module it is a pointer to $self
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
 sub block_final_one {
     my ( $self, $module ) = @_;
 
@@ -492,6 +546,12 @@ EOFBLOCK
 
 #!#!#!#!#
 ##  37 ##
+# Usage     : $self->file_text_README within complete_build()
+# Purpose   : Build a supporting file
+# Returns   : Text of the file being built
+# Argument  : n/a
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
 sub file_text_README {
     my ($self) = @_;
 
@@ -537,6 +597,13 @@ EOF
 
 #!#!#!#!#
 ##  39 ##
+# Usage     : $self->file_text_Changes within block_module_header()
+# Purpose   : Build a supporting file
+# Returns   : Text of the file being built
+# Argument  : $only_in_pod:  True value to get only a HISTORY section for POD
+#                            False value to get whole Changes file
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
 sub file_text_Changes {
     my ( $self, $only_in_pod ) = @_;
 
@@ -564,6 +631,12 @@ EOF
 
 #!#!#!#!#
 ##  41 ##
+# Usage     : $self->file_text_ToDo() within complete_build()
+# Purpose   : Build a supporting file
+# Returns   : Text of the file being built
+# Argument  : n/a
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
 sub file_text_ToDo {
     my ($self) = @_;
 
@@ -580,6 +653,12 @@ EOF
 
 #!#!#!#!#
 ##  43 ##
+# Usage     : $self->file_text_Makefile 
+# Purpose   : Build a supporting file
+# Returns   : Text of the file being built
+# Argument  : n/a
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
 sub file_text_Makefile {
     my ($self) = @_;
     my $page = <<EOF;
@@ -601,6 +680,12 @@ EOF
 
 #!#!#!#!#
 ##  45 ##
+# Usage     : $self->file_text_Buildfile within complete_build() 
+# Purpose   : Build a supporting file
+# Returns   : Text of the file being built
+# Argument  : n/a
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
 sub file_text_Buildfile {
     my ($self) = @_;
 
@@ -633,6 +718,12 @@ EOF
 
 #!#!#!#!#
 ##  47 ##
+# Usage     : $self->file_text_proxy_makefile within complete_build()
+# Purpose   : Build a supporting file
+# Returns   : Text of the file being built
+# Argument  : n/a
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
 sub file_text_proxy_makefile {
     my ($self) = @_;
 
@@ -672,6 +763,13 @@ EOF
 
 #!#!#!#!#
 ##  49 ##
+# Usage     : $self->file_text_test within complete_build()
+# Purpose   : Build a supporting file
+# Returns   : Text of the file being built
+# Argument  : n/a
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
+#             Will make a test with or without a checking for method new.
 sub file_text_test {
     my ( $self, $testnum, $module ) = @_;
 
