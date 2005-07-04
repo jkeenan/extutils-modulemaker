@@ -1,7 +1,8 @@
 # t/04_compact.t
 
 use Test::More qw/no_plan/;
-#use Test::More tests => 12;
+use strict;
+use warnings;
 
 BEGIN { use_ok( 'ExtUtils::ModuleMaker' ); }
 ok (chdir 'blib/testing' || chdir '../blib/testing', "chdir 'blib/testing'");

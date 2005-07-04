@@ -1,11 +1,13 @@
 # t/06_build.t
 use warnings;
 use Test::More qw(no_plan);
+use strict;
+use warnings;
+
 BEGIN { 
     use_ok('ExtUtils::ModuleMaker'); 
     use_ok('Module::Build')
 }
-use strict;
 use lib ("./t");
 use Test::Readfile qw( read_file_string read_file_array );
 

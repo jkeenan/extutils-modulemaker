@@ -1,8 +1,13 @@
 # t/05_abstract.t
 
 use Test::More qw/no_plan/;
+use strict;
+use warnings;
 
 BEGIN { use_ok('ExtUtils::ModuleMaker'); }
+use lib ("./t");
+use Test::Readfile qw( read_file_string read_file_array );
+
 ok( chdir 'blib/testing' || chdir '../blib/testing', 
     "chdir 'blib/testing'" );
 
@@ -69,22 +74,4 @@ ok($filetext =~ m|
         \s+http:\/\/www\.anonymous\.com\/~phineas
         |xs,
     'POD contains correct author info');
-
-########################################################################
-
-sub read_file_string {
-    my $file = shift;
-    open FH, $file;
-    my $filetext = do { local $/; <FH> };
-    close FH;
-    return $filetext;
-}
-
-sub read_file_array {
-    my $file = shift;
-    open FH, $file;
-    my @filetext = <FH>;
-    close FH;
-    return @filetext;
-}
 

@@ -1,11 +1,12 @@
 # t/07_proxy.t
+use strict;
 use warnings;
+
 use Test::More qw(no_plan);
 BEGIN { 
     use_ok('ExtUtils::ModuleMaker'); 
     use_ok('Module::Build')
 }
-use strict;
 use lib ("./t");
 use Test::Readfile qw( read_file_string read_file_array );
 

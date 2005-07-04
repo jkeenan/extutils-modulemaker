@@ -82,6 +82,12 @@ sub complete_build {
 
 #!#!#!#!#
 ##   4 ##
+# Usage     : $self->default_values ()
+# Purpose   : Defaults for 'new'.
+# Returns   : A hash of defaults as the basis for 'new'.
+# Argument  : n/a
+# Throws    : n/a
+# Comments  : 
 sub default_values {
     my %defaults = (
         NAME     => 'None yet',

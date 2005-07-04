@@ -1,6 +1,8 @@
 # -*- perl -*-
 
 # t/01_ini.t - check module loading and create testing directory
+use strict;
+use warnings;
 
 use Test::More tests => 6;
 
