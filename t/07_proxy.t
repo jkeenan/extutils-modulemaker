@@ -20,7 +20,6 @@ my $testmod = 'Delta';
 
 ok( 
     $mod = ExtUtils::ModuleMaker->new( {
-#        NAME           => 'Alpha::Delta',
         NAME           => "Alpha::$testmod",
         ABSTRACT       => 'Test of the capacities of EU::MM',
         COMPACT        => 1,

@@ -7,17 +7,17 @@ our @EXPORT_OK   = qw( read_file_string read_file_array );
 
 sub read_file_string {
     my $file = shift;
-    open FH, $file;
-    my $filetext = do { local $/; <FH> };
-    close FH;
+    open my $fh, $file or die "Unable to open filehandle: $!";
+    my $filetext = do { local $/; <$fh> };
+    close $fh or die "Unable to close filehandle: $!";
     return $filetext;
 }
 
 sub read_file_array {
     my $file = shift;
-    open FH, $file;
-    my @filetext = <FH>;
-    close FH;
+    open my $fh, $file or die "Unable to open filehandle: $!";
+    my @filetext = <$fh>;
+    close $fh or die "Unable to close filehandle: $!";
     return @filetext;
 }
 
