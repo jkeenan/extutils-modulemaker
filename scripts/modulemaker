@@ -285,7 +285,9 @@ sub Main_Menu {
     my $MOD = shift;
 
     my $string = $messages{'Main Menu'};
-    $string =~ s|##name##|$MOD->{NAME}|;
+    defined $MOD->{NAME} 
+	? $string =~ s|##name##|$MOD->{NAME}|
+	: $string =~ s|##name##||;
     $string =~ s|##abstract##|$MOD->{ABSTRACT}|;
     $string =~ s|##license##|$MOD->{LICENSE}|;
     $string =~ s|##build##|$MOD->{BUILD_SYSTEM}|;

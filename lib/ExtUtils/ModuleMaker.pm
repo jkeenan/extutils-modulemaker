@@ -849,7 +849,7 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
 Beginning with version 0.33 (July 2005), C<ExtUtils::ModuleMaker::new()>
 takes as its sole argument a reference to a hash holding key-value
-pairs.  In earlier versions C<new()> took a list of those same key-value 
+pairs.  In earlier versions C<new()> took a I<list> of those same key-value 
 pairs as its arguments.  To adapt scripts written with earlier versions, 
 simply enclose the list of key-value pairs in curly braces:  C<{ }>.
 
@@ -880,15 +880,6 @@ virtue -- and F<modulemaker> is far and away the laziest way to create a
 pure Perl distribution which meets all the requirements for worldwide 
 distribution via CPAN.
 
-=head1 INSTALLATION
-
-    perl Makefile.PL
-    make
-    make test
-    make install
-
-On Windows machines use F<nmake> rather than F<make>.
-
 =head1 USAGE
 
 =head2 Usage from the command-line with F<modulemaker>
@@ -917,7 +908,7 @@ are:
 
 The I<only> required feature.  This is the name of the primary module 
 (with 'C<::>' separators if needed).  Will also support the older style 
-separator ''C<'>'' like the module F<D'Oh>.
+separator ''C<'>'' like the module F<D'Oh>.  Current default is 'None yet'. 
 
 =item * ABSTRACT
 

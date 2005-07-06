@@ -1,14 +1,14 @@
 ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
-This document refers to version 0.32_07 of ExtUtils::ModuleMaker.  
-This version was released January 3, 2005.
+This document refers to version 0.33 of ExtUtils::ModuleMaker.  
+This version was released July 12, 2005.
 
 To install this module on your system, place the tarball archive file in a 
 temporary directory and call the following:
 
-% gunzip ExtUtils-ModuleMaker-0.32_07.tar.gz
-% tar xf ExtUtils-ModuleMaker-0.32_07.tar
-% cd ExtUtils-ModuleMaker-0.32_07
+% gunzip ExtUtils-ModuleMaker-0.33.tar.gz
+% tar xf ExtUtils-ModuleMaker-0.33.tar
+% cd ExtUtils-ModuleMaker-0.33
 % perl Makefile.PL
 % make
 % make test
@@ -32,13 +32,14 @@ substitute 'nmake' for 'make' in the sequence of commands above.
 In sending e-mail to the author, please put "ExtUtils::ModuleMaker" or 
 "ExtUtils-ModuleMaker" in the subject line.
 
-Author:  R. Geoffrey Avery,
+Original author:  R. Geoffrey Avery
 CPAN ID: RGEOFFREY
 modulemaker@PlatypiVentures.com
 http://www.PlatypiVentures.com/perl/modules/ModuleMaker.shtml
 
-Version 0.32_07 is an unofficial version containing revisions made by 
-James E. Keenan (jkeenan@cpan.org) on January 3, 2005.
+Maintainer since version 0.33: James E. Keenan
+CPAN ID:  JKEENAN
+jkeenan@cpan.org
 
 Copyright (c) 2001-2002 R. Geoffrey Avery. All rights reserved.
 This program is free software; you can redistribute
