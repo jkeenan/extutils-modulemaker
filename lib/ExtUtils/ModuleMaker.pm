@@ -1,6 +1,6 @@
 package ExtUtils::ModuleMaker;
 use strict;
-use warnings;
+local $^W = 1;
 use vars qw ($VERSION);
 $VERSION = 0.33;
 
@@ -297,6 +297,7 @@ sub print_file {
       unless ( $filename eq 'MANIFEST' );
     $self->log_message("writing file '$filename'");
 
+    local *FILE;
     open( FILE, ">$self->{Base_Dir}/$filename" )
       or $self->death_message("Could not write '$filename', $!");
     print FILE ($page);

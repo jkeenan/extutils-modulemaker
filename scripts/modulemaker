@@ -4,7 +4,7 @@ eval 'exec /usr/local/bin/perl  -S $0 ${1+"$@"}'
   if 0;    # not running under some shell
 
 use strict;
-use warnings;
+local $^W = 1;
 
 use Getopt::Std;
 use ExtUtils::ModuleMaker 0.32_06;

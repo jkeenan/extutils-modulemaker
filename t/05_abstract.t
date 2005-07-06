@@ -2,7 +2,7 @@
 
 use Test::More tests => 25;
 use strict;
-use warnings;
+local $^W = 1;
 
 BEGIN { use_ok('ExtUtils::ModuleMaker'); }
 BEGIN { use_ok( 'File::Temp', qw| tempdir |); }

@@ -1,6 +1,6 @@
-
 package ExtUtils::ModuleMaker::SecondStyle;
 use strict;
+local $^W = 1;
 
 use ExtUtils::ModuleMaker::Licenses::Standard;
 use ExtUtils::ModuleMaker::Licenses::Local;
@@ -8,8 +8,8 @@ use ExtUtils::ModuleMaker;
 
 BEGIN {
 	use Exporter ();
-	use vars qw ($VERSION @ISA);
-	$VERSION     = 0.32;
+	use vars qw ( @ISA );
+#	$VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
 	@ISA         = qw (Exporter ExtUtils::ModuleMaker);
 }
 

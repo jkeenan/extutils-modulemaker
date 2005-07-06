@@ -2,7 +2,7 @@
 
 use Test::More tests => 15;
 use strict;
-use warnings;
+local $^W = 1;
 
 BEGIN { use_ok( 'ExtUtils::ModuleMaker' ); }
 BEGIN { use_ok( 'File::Temp', qw| tempdir |); }
@@ -34,10 +34,14 @@ for (qw/Changes MANIFEST Makefile.PL LICENSE
 
 ########################################################################
 
-ok(open (FILE, 'LICENSE'),
-    "reading 'LICENSE'");
-my $filetext = do {local $/; <FILE>};
-close FILE;
+my $filetext;
+{
+    local *FILE;
+    ok(open (FILE, 'LICENSE'),
+        "reading 'LICENSE'");
+    $filetext = do {local $/; <FILE>};
+    close FILE;
+}
 
 ok($filetext =~ m/Terms of Perl itself/,
     "correct LICENSE generated");

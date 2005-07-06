@@ -1,15 +1,13 @@
 package ExtUtils::ModuleMaker::Licenses::Standard;
 use strict;
+local $^W = 1;
 
 BEGIN {
 	use Exporter ();
-	use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-	$VERSION     = 0.32;
+	use vars qw ( @ISA @EXPORT );
+#	$VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
 	@ISA         = qw (Exporter);
-	#Give a hoot don't pollute, do not export more than needed by default
 	@EXPORT      = qw (&Get_Standard_License &Verify_Standard_License);
-	@EXPORT_OK   = qw ();
-	%EXPORT_TAGS = ();
 }
 
 ########################################### main pod documentation begin ##

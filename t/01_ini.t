@@ -1,6 +1,6 @@
 # t/01_ini.t - check module loading
 use strict;
-use warnings;
+local $^W = 1;
 
 use Test::More tests => 4;
 

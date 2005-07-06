@@ -14,9 +14,18 @@ Module::Starter) which have themselves been influenced by EU::MM.
 
 -----
 Short-range plan:
+
 * Test death_message().
+
 * Refactor BEGIN blocks in lib/ExtUtils/Modulemaker/Licenses/*.pm.
+
 * Analyze whether SecondStyle.pm is still needed.  Geoff used it to
 * demonstrate subclassability -- but my version is now pure-OO and I
 * don't want internals subclassed.
- 
+
+* For backward compatibility, replace use warnings with 'local $^W = 1;'.  Also
+* eliminate lexically scoped filehandles $fh. (I didn't actually have
+* any, but t/03..04 had a filehandle FILE which I lexically scoped:
+* 'local *FH;')  DONE
+
+
