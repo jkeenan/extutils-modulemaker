@@ -14,9 +14,9 @@ ok(chdir $tdir, 'changed to temp directory for testing');
 
 my $mod;
 
-ok($mod  = ExtUtils::ModuleMaker->new ( {
+ok($mod  = ExtUtils::ModuleMaker->new (
                 NAME        => 'Sample::Module',
-            } ),
+    ),
     "call ExtUtils::ModuleMaker->new for Sample-Module");
     
 ok( $mod->complete_build(), 'call complete_build()' );

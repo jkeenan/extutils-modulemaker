@@ -15,11 +15,11 @@ ok(chdir $tdir, 'changed to temp directory for testing');
 my $mod;
 
 ok($mod  = ExtUtils::ModuleMaker->new
-			( {
+			( 
 				NAME		=> 'Sample::Module::Foo',
 				COMPACT		=> 1,
 				LICENSE		=> 'looselips',
-			} ),
+			 ),
 	"call ExtUtils::ModuleMaker->new for Sample-Module-Foo");
 	
 ok( $mod->complete_build(), 'call complete_build()' );

@@ -6,7 +6,9 @@ Revision history for Perl extension ExtUtils::ModuleMaker.
 0.32_06 December 18 2004
 	- Further cleanup by James E Keenan:
 	    - Eliminate causes of warnings while using 'modulemaker' utility
-	    - Change to ExtUtils::ModuleMaker::new():  Instead of passing a hash-like list, pass a reference to an anonymous hash, i.e., enclose list of arguments inside {}
+	    - Change to ExtUtils::ModuleMaker::new():  Instead of
+	      passing a hash-like list, pass a reference to an anonymous
+hash, i.e., enclose list of arguments inside {} (CANCELLED in 0.33)
 
 0.32_05 December 1 2004
 	- Further cleanup by James E Keenan:

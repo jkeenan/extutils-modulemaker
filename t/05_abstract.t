@@ -22,7 +22,7 @@ my $mod;
 my $testmod = 'Beta';
 
 ok( 
-    $mod = ExtUtils::ModuleMaker->new( {
+    $mod = ExtUtils::ModuleMaker->new( 
         NAME           => "Alpha::$testmod",
         ABSTRACT       => 'Test of the capacities of EU::MM',
         COMPACT        => 1,
@@ -34,7 +34,7 @@ ok(
            'EMAIL'        => 'phineas@anonymous.com',
            'WEBSITE'      => 'http://www.anonymous.com/~phineas',
         },
-    } ),
+    ),
     "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
 );
 

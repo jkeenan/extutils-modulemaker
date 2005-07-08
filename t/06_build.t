@@ -25,7 +25,7 @@ SKIP: {
     skip "Module::Build not installed", 10 if $@;
 
     ok( 
-        $mod = ExtUtils::ModuleMaker->new( {
+        $mod = ExtUtils::ModuleMaker->new( 
             NAME           => "Alpha::$testmod",
             ABSTRACT       => 'Test of the capacities of EU::MM',
             COMPACT        => 1,
@@ -38,7 +38,7 @@ SKIP: {
                'EMAIL'        => 'phineas@anonymous.com',
                'WEBSITE'      => 'http://www.anonymous.com/~phineas',
             },
-        } ),
+        ),
         "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
     );
     

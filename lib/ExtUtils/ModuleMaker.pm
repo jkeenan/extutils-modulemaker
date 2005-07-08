@@ -13,8 +13,9 @@ use File::Path;
 #!#!#!#!#
 ##   2 ##
 sub new {
-    my ( $class, $paramsref ) = @_;
-    my %parameters = %{$paramsref};
+#    my ( $class, $paramsref ) = @_;
+#    my %parameters = %{$paramsref};
+    my ( $class, %parameters ) = @_;
     my $self = bless( default_values(), ref($class) || $class );
     foreach my $param ( keys %parameters ) {
         if ( ref( $parameters{$param} ) eq 'HASH' ) {
@@ -841,18 +842,10 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
     use ExtUtils::ModuleMaker;
 
-    $mod = ExtUtils::ModuleMaker->new( {
+    $mod = ExtUtils::ModuleMaker->new(
         NAME => 'Sample::Module' 
-    } );
+    );
     $mod->complete_build();
-
-=head2 Change of Interface
-
-Beginning with version 0.33 (July 2005), C<ExtUtils::ModuleMaker::new()>
-takes as its sole argument a reference to a hash holding key-value
-pairs.  In earlier versions C<new()> took a I<list> of those same key-value 
-pairs as its arguments.  To adapt scripts written with earlier versions, 
-simply enclose the list of key-value pairs in curly braces:  C<{ }>.
 
 =head1 DESCRIPTION
 
@@ -898,10 +891,11 @@ callable functions.  These are how you should interact with this module.
 
 =item C<new>
 
-Creates and returns an ExtUtils::ModuleMaker object.  Takes a reference to 
-a hash containing key-value pairs with information specifying the
-structure and content of the new module(s).  Keys which may be specified
-are:
+Creates and returns an ExtUtils::ModuleMaker object.  Takes a list 
+containing key-value pairs with information specifying the
+structure and content of the new module(s).  Like most such lists of
+key-value pairs, this list is probably best held in a hash.   Keys 
+which may be specified are:
 
 =over 4
 
@@ -1031,8 +1025,8 @@ Don't include a 'Changes' file, but instead add a HISTORY section to the POD.
 
 =item C<complete_build>
 
-Creates all directories and files specified in the key-value pairs
-passed by hash reference to C<ExtUtils::ModuleMaker::new>.  Returns a
+Creates all directories and files as configured by the key-value pairs
+passed to C<ExtUtils::ModuleMaker::new>.  Returns a
 true value if all specified files are created -- but this says nothing
 about whether those files have been created with the correct content.
 
