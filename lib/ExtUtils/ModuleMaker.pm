@@ -69,7 +69,9 @@ sub complete_build {
     }
     else {
         $self->print_file( 'Build.PL', $self->file_text_Buildfile() );
-        if ( $self->{BUILD_SYSTEM} eq 'Module::Build and proxy Makefile.PL' ) {
+#        if ( $self->{BUILD_SYSTEM} eq 'Module::Build and proxy Makefile.PL' ) {
+	if ( $self->{BUILD_SYSTEM} eq 'Module::Build and proxy Makefile.PL' 
+         or  $self->{BUILD_SYSTEM} eq 'Module::Build and Proxy') {
             $self->print_file( 'Makefile.PL',
                 $self->file_text_proxy_makefile() );
         }
@@ -870,7 +872,7 @@ of the F<modulemaker> script bundled with this distribution:
     % modulemaker
 
 and then responding to the prompts.  For Perl programmers, laziness is a 
-virtue -- and F<modulemaker> is far and away the laziest way to create a 
+virtue -- and F<modulemaker> is the laziest way to create a 
 pure Perl distribution which meets all the requirements for worldwide 
 distribution via CPAN.
 
@@ -878,7 +880,7 @@ distribution via CPAN.
 
 =head2 Usage from the command-line with F<modulemaker>
 
-The easiest, laziest way to use ExtUtils::ModuleMaker is to invoke the 
+The easiest way to use ExtUtils::ModuleMaker is to invoke the 
 F<modulemaker> script from the command-line.  See the documentation for 
 F<modulemaker> bundled with this distribution.
 
@@ -893,9 +895,10 @@ callable functions.  These are how you should interact with this module.
 
 Creates and returns an ExtUtils::ModuleMaker object.  Takes a list 
 containing key-value pairs with information specifying the
-structure and content of the new module(s).  Like most such lists of
-key-value pairs, this list is probably best held in a hash.   Keys 
-which may be specified are:
+structure and content of the new module(s).  With the exception of 
+keys AUTHOR and EXTRA_MODULES (see below), the values in these pairs 
+are all strings.  Like most such lists of key-value pairs, this list 
+is probably best held in a hash.   Keys which may be specified are:
 
 =over 4
 
@@ -929,16 +932,37 @@ ExtUtils::ModuleMaker::Licenses::Local to keep your company lawyers happy.
 Some licenses include placeholders that will be replaced with AUTHOR 
 information.
 
-=item * BUILD_SYSTEM
+=item BUILD_SYSTEM
 
-This can take one of three values.  These are 'ExtUtils::MakeMaker',
-'Module::Build', and 'Module::Build and Proxy'.  The first generates a
-basic Makefile.PL file for your module.  The second creates a Build.PL
-file, and the last creates a Build.PL along with a proxy Makefile.PL
+This can take one of three values:  
+
+=over 4
+
+=item * C<'ExtUtils::MakeMaker'>
+
+The first generates a basic Makefile.PL file for your module.
+
+=item * C<'Module::Build'>
+
+The second creates a Build.PL file.
+
+=item * C<Module::Build and Proxy>
+
+The third creates a Build.PL along with a proxy Makefile.PL
 script that attempts to install Module::Build if necessary, and then
 runs the Build.PL script.  This option is recommended if you want to
 use Module::Build as your build system.  See Module::Build::Compat for
 more details.
+
+B<Note:>  To correct a discrepancy between the documentation and code in
+earlier versions of ExtUtils::ModuleMaker, we now explicitly provide
+this synonym for the third option:
+
+    'Module::Build and proxy Makefile.PL'
+
+(Thanks to David A Golden for spotting this bug.)
+
+=back
 
 =item * AUTHOR
 
