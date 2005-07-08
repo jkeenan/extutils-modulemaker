@@ -648,13 +648,10 @@ Specify author's web site
 
 =head1 AUTHOR
 
-    R. Geoffrey Avery
-    CPAN ID: RGEOFFREY
-    modulemaker@PlatypiVentures.com
-    http://www.PlatypiVentures.com/perl/modules/ModuleMaker.shtml
-
-Version 0.32_07 is an unofficial version with revisions made by 
-James E. Keenan on January 3 2005.
+ExtUtils::ModuleMaker was originally written in 2001-02 by R. Geoffrey Avery
+(modulemaker [at] PlatypiVentures [dot] com).  Since version 0.33 (July
+2005) it has been maintained by James E. Keenan (jkeenan [at] cpan [dot]
+org).
 
 =cut
 
