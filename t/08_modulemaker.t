@@ -6,20 +6,15 @@ use Test::More
 qw(no_plan);
 
 BEGIN { use_ok('ExtUtils::ModuleMaker'); }
-BEGIN { use_ok( 'Cwd' ); }
 use lib ("./t/testlib");
 use _Auxiliary qw(
-    rmtree
+    setuptmpdir
+    cleanuptmpdir
 );
 
-my $cwd = cwd();
+my ($cwd, $tmp);
 
-# Manually create 'tmp' directory for testing and move into it
-
-my $tmp = 'tmp';
-
-ok((mkdir $tmp, 0755), "able to create testing directory");
-ok(chdir $tmp, 'changed to tmp directory for testing');
+($cwd, $tmp) = setuptmpdir();  # generates 2 oks
 
 # Simple test of modulemaker utility in non-interactive mode
 
@@ -32,9 +27,4 @@ ok(-f "XYZ-ABC/$_", "$_ file created")
 ok(-d "XYZ-ABC/$_", "$_ directory created")
     for qw| lib t |;
 
-# Cleanup 'tmp' directory following testing
-
-ok(chdir $cwd, 'changed back to original directory after testing');
-rmtree($tmp);
-ok(! -d $tmp, "tmp directory has been removed");
-
+cleanuptmpdir($cwd, $tmp);  # generates 2 oks

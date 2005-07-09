@@ -11,10 +11,13 @@ require Exporter;
     read_file_array
     six_file_tests
     rmtree
+    setuptmpdir
+    cleanuptmpdir
 ); 
 *ok = *Test::More::ok;
 *is = *Test::More::is;
 use File::Find;
+use Cwd;
 
 sub read_file_string {
     my $file = shift;
@@ -70,6 +73,23 @@ sub rmtree {
         }
     );
     File::Find::find { %findargs } => $dir;
+}
+
+sub setuptmpdir {
+    # Manually create 'tmp' directory for testing and move into it
+    my $cwd = cwd();
+    my $tmp = 'tmp';
+    ok((mkdir $tmp, 0755), "able to create testing directory");
+    ok(chdir $tmp, 'changed to tmp directory for testing');
+    return ($cwd, $tmp);
+}
+
+sub cleanuptmpdir {
+    # Cleanup 'tmp' directory following testing
+    my ($cwd, $tmp) = @_;
+    ok(chdir $cwd, 'changed back to original directory after testing');
+    rmtree($tmp);
+    ok(! -d $tmp, "tmp directory has been removed");
 }
 
 1;
