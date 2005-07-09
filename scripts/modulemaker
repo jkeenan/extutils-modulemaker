@@ -7,7 +7,6 @@ use strict;
 local $^W = 1;
 
 use Getopt::Std;
-use lib ( qw| ./blib ./blib/lib | );
 use ExtUtils::ModuleMaker;
 use ExtUtils::ModuleMaker::Licenses::Standard;
 use ExtUtils::ModuleMaker::Licenses::Local;
@@ -16,7 +15,7 @@ use Data::Dumper;
 
 use vars qw (%opts $VERSION %destinations %messages);
 
-$VERSION = 0.33;
+$VERSION = 0.34;
 
 ########## BEGIN DECLARATIONS ##########
 

@@ -1,5 +1,7 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.34
+
 0.33 July 8, 2005
 	- Primary maintenance taken over by James E Keenan
 	  (jkeenan@cpan.org).

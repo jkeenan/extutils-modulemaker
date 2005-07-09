@@ -2,7 +2,7 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 use vars qw ($VERSION);
-$VERSION = 0.33;
+$VERSION = 0.34;
 
 use ExtUtils::ModuleMaker::Licenses::Standard;
 use ExtUtils::ModuleMaker::Licenses::Local;
