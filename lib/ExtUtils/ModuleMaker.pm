@@ -889,9 +889,7 @@ F<modulemaker> bundled with this distribution.
 In this version of ExtUtils::ModuleMaker there are only two publicly 
 callable functions.  These are how you should interact with this module.
 
-=over 4
-
-=item C<new>
+=head3 C<new>
 
 Creates and returns an ExtUtils::ModuleMaker object.  Takes a list 
 containing key-value pairs with information specifying the
@@ -932,7 +930,7 @@ ExtUtils::ModuleMaker::Licenses::Local to keep your company lawyers happy.
 Some licenses include placeholders that will be replaced with AUTHOR 
 information.
 
-=item BUILD_SYSTEM
+=item * BUILD_SYSTEM
 
 This can take one of three values:  
 
@@ -1047,16 +1045,12 @@ Don't include a 'Changes' file, but instead add a HISTORY section to the POD.
 
 =back
 
-=item C<complete_build>
+=head3 C<complete_build>
 
 Creates all directories and files as configured by the key-value pairs
 passed to C<ExtUtils::ModuleMaker::new>.  Returns a
 true value if all specified files are created -- but this says nothing
 about whether those files have been created with the correct content.
-
-=back
-
-=cut
 
 =head1 SUPPORT
 

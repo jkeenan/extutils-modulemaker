@@ -1,47 +1,41 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
-0.32_07 January 3 2005
-	- Correction of documentation error:  ExtUtils::ModuleMaker::new() now takes a hash reference rather than a list.
-
-0.32_06 December 18 2004
-	- Further cleanup by James E Keenan:
-	    - Eliminate causes of warnings while using 'modulemaker' utility
-	    - Change to ExtUtils::ModuleMaker::new():  Instead of
-	      passing a hash-like list, pass a reference to an anonymous
-hash, i.e., enclose list of arguments inside {} (CANCELLED in 0.33)
-
-0.32_05 December 1 2004
-	- Further cleanup by James E Keenan:
-	    - Deletion of superseded/deprecated subroutines and
-              corresponding POD
-
-0.32_03 November 13 2004
-	- James E Keenan's patches:
-        - ModuleMaker.pm:
-            - Corrected typing errors in several places
-            - Modified ORGANIZATION in POD to parallel wording of CPANID
-            - Changed $defaults{ABSTRACT} to 'Module abstract 
-              (<= 44 characters) goes here'
-            - Allowed for ORGANIZATION, where defined, to be included in 
-              AUTHOR COMPOSITE and thereby included in Author section of POD
-	    - Fixed Block_Begin() and Block_Begin_BareBones() to eliminate 
-              blank first line in .pm files
+0.33 July 8, 2005
+	- Primary maintenance taken over by James E Keenan
+	  (jkeenan@cpan.org).
+        - scripts/modulemaker
+	  - modulemaker utility revised with objective of making it
+	    possible to specify all options on the command-line
+          - Included ABSTRACT in Main Menu and created prompt for new abstract
+          - Allowed for additional command-line options for specification 
+            of abstract and author info
+          - Modified Usage message to reflect additional command-line 
+            options; placed options in alphabetical order
+        - lib/ExtUtils/ModuleMaker.pm:
+          - Corrected typing errors in several places
+          - Modified ORGANIZATION in POD to parallel wording of CPANID
+          - Changed $defaults{ABSTRACT} to 'Module abstract 
+            (<= 44 characters) goes here'
+          - Allowed for ORGANIZATION, where defined, to be included in 
+            AUTHOR COMPOSITE and thereby included in Author section of POD
+	  - Fixed Block_Begin() and Block_Begin_BareBones() to eliminate 
+            blank first line in .pm files
+	  - Deletion of superseded/deprecated subroutines and
+            corresponding POD
         - t/*.t
-	    - Corrected names of test files on first lines of each of 
-              02_simple.t, 03_quick.t and 04_compact.t
-            - Created 05_abstract. to test current and new features:
+	  - Corrected names of test files on first lines of each of 
+            02_simple.t, 03_quick.t and 04_compact.t
+          - Created 05_abstract. to test current and new features:
               -- correct Author and Email in Makefile.PL
               -- placement of Abstract in POD
               -- placement of Author info in POD
               -- placement of History info in POD rather than in Changes
-        - scripts/modulemaker
-            - Included ABSTRACT	in Main Menu and created prompt for
-              new abstract
-            - Allowed for additional command-line options for specification 
-              of abstract and author info
-            - Modified Usage message to reflect additional command-line 
-              options; placed options in alphabetical order
+          - Created t/06_build.t and t/07_proxy.t to test alternative
+            BUILD_SYSTEMs
+	  - Created t/08_modulemaker.t to pave the way for testing of
+	    the modulemaker utility (much to be done)
 
+--------------------------------------------------------------
 
 0.32 June 16 2003 (YAPC::Boca_Raton)
 	- Removed Fakefile.PL that was for testing but only caused
