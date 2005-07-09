@@ -10,9 +10,11 @@ require Exporter;
     read_file_string
     read_file_array
     six_file_tests
+    rmtree
 ); 
 *ok = *Test::More::ok;
 *is = *Test::More::is;
+use File::Find;
 
 sub read_file_string {
     my $file = shift;
@@ -53,6 +55,22 @@ sub six_file_tests {
             |xs,
         'POD contains correct author info');
 } 
+
+sub rmtree {
+    my $dir = shift;
+    my %findargs = (
+        bydepth   => 1,
+        no_chdir  => 1,
+        wanted    => sub {
+            if (! -l && -d _) {
+                rmdir  or warn "Couldn't rmdir $_: $!";
+            } else {
+                unlink or warn "Couldn't unlink $_: $!";
+            }
+        }
+    );
+    File::Find::find { %findargs } => $dir;
+}
 
 1;
 
