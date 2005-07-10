@@ -11,25 +11,6 @@ use Carp;
 
 #################### PACKAGE VARIABLES #################### 
 
-# keys permitted in top-level of hash passed to constructor
-my %keys_permitted = map {$_, 1} qw|
-    NAME
-    ABSTRACT
-    VERSION
-    LICENSE
-    BUILD_SYSTEM
-    AUTHOR
-    EXTRA_MODULES
-    COMPACT
-    VERBOSE
-    INTERACTIVE
-    PERMISSIONS
-    USAGE_MESSAGE
-    NEED_POD
-    NEED_NEW_METHOD
-    CHANGES_IN_POD
-|;
-
 #################### PUBLICLY CALLABLE METHODS ####################
 
 #!#!#!#!#
@@ -41,6 +22,24 @@ sub new {
         if (@arglist % 2);
     my %parameters = @arglist;
     my @badkeys;
+    my %keys_permitted = map {$_, 1} qw|
+        NAME
+        ABSTRACT
+        VERSION
+        LICENSE
+        BUILD_SYSTEM
+        AUTHOR
+        EXTRA_MODULES
+        COMPACT
+        VERBOSE
+        INTERACTIVE
+        PERMISSIONS
+        USAGE_MESSAGE
+        NEED_POD
+        NEED_NEW_METHOD
+        CHANGES_IN_POD
+    |;
+    
     for (keys %parameters) {
         push(@badkeys, $_) unless $keys_permitted{$_};
     }
