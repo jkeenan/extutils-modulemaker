@@ -358,11 +358,13 @@ sub death_message {
     my $self = shift;
     my @errors = @_;
 
-#    croak( join "\n", @_, '', $self->{USAGE_MESSAGE} )
     croak( join "\n", @errors, '', $self->{USAGE_MESSAGE} )
       unless $self->{INTERACTIVE};
-#    print( join "\n", 'Oops, there are the following errors:', @_, '', '' );
-    print( join "\n", 'Oops, there are the following errors:', @errors, '', '' );
+    my %err = map {$_, 1} @errors;
+    delete $err{'NAME is required'} if $err{'NAME is required'};
+    @errors = keys %err;
+    print( join "\n", 'Oops, there are the following errors:', @errors, '', '' )
+        if @errors;;
 }
 
 #!#!#!#!#
