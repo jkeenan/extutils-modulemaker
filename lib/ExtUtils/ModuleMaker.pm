@@ -7,15 +7,45 @@ $VERSION = 0.34;
 use ExtUtils::ModuleMaker::Licenses::Standard;
 use ExtUtils::ModuleMaker::Licenses::Local;
 use File::Path;
+use Carp;
+
+#################### PACKAGE VARIABLES #################### 
+
+# keys permitted in top-level of hash passed to constructor
+my %keys_permitted = map {$_, 1} qw|
+    NAME
+    ABSTRACT
+    VERSION
+    LICENSE
+    BUILD_SYSTEM
+    AUTHOR
+    EXTRA_MODULES
+    COMPACT
+    VERBOSE
+    INTERACTIVE
+    PERMISSIONS
+    USAGE_MESSAGE
+    NEED_POD
+    NEED_NEW_METHOD
+    CHANGES_IN_POD
+|;
 
 #################### PUBLICLY CALLABLE METHODS ####################
 
 #!#!#!#!#
 ##   2 ##
 sub new {
-#    my ( $class, $paramsref ) = @_;
-#    my %parameters = %{$paramsref};
-    my ( $class, %parameters ) = @_;
+    my ( $class, @arglist ) = @_;
+    local $_;
+    croak "Must be hash or balanced list of key-value pairs: $!"
+        if (@arglist % 2);
+    my %parameters = @arglist;
+    my @badkeys;
+    for (keys %parameters) {
+        push(@badkeys, $_) unless $keys_permitted{$_};
+    }
+    croak "Dying due to bad input to constructor (@badkeys): $!"
+        if (@badkeys);
     my $self = bless( default_values(), ref($class) || $class );
     foreach my $param ( keys %parameters ) {
         if ( ref( $parameters{$param} ) eq 'HASH' ) {
@@ -328,7 +358,7 @@ sub check_dir {
 sub death_message {
     my $self = shift;
 
-    die( join "\n", @_, '', $self->{USAGE_MESSAGE} )
+    croak( join "\n", @_, '', $self->{USAGE_MESSAGE} )
       unless $self->{INTERACTIVE};
     print( join "\n", 'Oops, there are the following errors:', @_, '', '' );
 }
