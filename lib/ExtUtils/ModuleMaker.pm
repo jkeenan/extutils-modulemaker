@@ -46,7 +46,8 @@ sub new {
     }
     croak "Dying due to bad input to constructor (@badkeys): $!"
         if (@badkeys);
-    my $self = bless( default_values(), ref($class) || $class );
+    my $self = ref($class) ? bless( default_values(), ref($class) )
+                           : bless( default_values(), $class );
     foreach my $param ( keys %parameters ) {
         if ( ref( $parameters{$param} ) eq 'HASH' ) {
             foreach ( keys( %{ $parameters{$param} } ) ) {
@@ -1113,6 +1114,8 @@ F<modulemaker>, F<perlnewmod>, F<h2xs>, F<ExtUtils::MakeMaker>.
 =cut
 
 __END__
+
+#    my $self = bless( default_values(), ref($class) || $class );
 
         && ( length($self->{AUTHOR}{CPANID}) >= 3 and 
 	     length($self->{AUTHOR}{CPANID}) <= 9 ) );

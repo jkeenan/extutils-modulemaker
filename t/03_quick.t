@@ -1,8 +1,8 @@
 # t/03_quick.t
 
 use Test::More 
-# qw(no_plan);
-tests => 26;
+qw(no_plan);
+# tests => 26;
 use strict;
 local $^W = 1;
 
@@ -81,16 +81,14 @@ is($modgrandchild->{ABSTRACT}, 'The quick brown fox',
 
 __END__
 
-my $stepchild;
+## code below fails
 
-#ok($stepchild  = ExtUtils::ModuleMaker::new(
-$stepchild  = ExtUtils::ModuleMaker::new(
+my $stepchild  = ExtUtils::ModuleMaker::new(
     'ExtUtils::ModuleMaker',
     NAME => 'Sample::Module',
     ABSTRACT => 'The quick brown fox'
-#), "call ExtUtils::ModuleMaker->new for Sample-Module");
 );
-#isa_ok($stepchild, "ExtUtils::ModuleMaker", "object is an EU::MM object");
-#is($stepchild->{NAME}, 'Sample::Module', "NAME is correct");
-#is($stepchild->{ABSTRACT}, 'The quick brown fox', "ABSTRACT is correct");
+isa_ok($stepchild, "ExtUtils::ModuleMaker", "object is an EU::MM object");
+is($stepchild->{NAME}, 'Sample::Module', "NAME is correct");
+is($stepchild->{ABSTRACT}, 'The quick brown fox', "ABSTRACT is correct");
 
