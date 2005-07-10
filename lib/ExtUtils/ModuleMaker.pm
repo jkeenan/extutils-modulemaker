@@ -1116,3 +1116,4 @@ __END__
 
         && ( length($self->{AUTHOR}{CPANID}) >= 3 and 
 	     length($self->{AUTHOR}{CPANID}) <= 9 ) );
+
