@@ -99,7 +99,7 @@ sub complete_build {
     }
     else {
         $self->print_file( 'Build.PL', $self->file_text_Buildfile() );
-	if ( $self->{BUILD_SYSTEM} eq 'Module::Build and proxy Makefile.PL' 
+        if ( $self->{BUILD_SYSTEM} eq 'Module::Build and proxy Makefile.PL' 
          or  $self->{BUILD_SYSTEM} eq 'Module::Build and Proxy') {
             $self->print_file( 'Makefile.PL',
                 $self->file_text_proxy_makefile() );
@@ -131,7 +131,7 @@ sub default_values {
         ABSTRACT => 'Module abstract (<= 44 characters) goes here',
         AUTHOR   => {
             NAME         => 'A. U. Thor',
-	    CPANID       => 'AUTHOR',
+            CPANID       => 'AUTHOR',
             ORGANIZATION => 'XYZ Corp.',
             WEBSITE      => 'http://a.galaxy.far.far.away/modules',
             EMAIL        => 'a.u.thor@a.galaxy.far.far.away',
@@ -174,8 +174,7 @@ sub verify_values {
     push( @errors, 'ABSTRACTs are limited to 44 characters' )
       if ( length( $self->{ABSTRACT} ) > 44 );
     push( @errors, 'CPAN IDs are 3-9 characters' )
-      if ( ( exists( $self->{AUTHOR}{CPANID} ) )
-        && ( $self->{AUTHOR}{CPANID} !~ m/^\w{3,9}$/ ) );
+      if ( $self->{AUTHOR}{CPANID} !~ m/^\w{3,9}$/ );
     push( @errors, 'EMAIL addresses need to have an at sign' )
       if ( $self->{AUTHOR}{EMAIL} !~ m/.*\@.*/ );
     push( @errors, 'WEBSITEs should start with an "http:" or "https:"' )
