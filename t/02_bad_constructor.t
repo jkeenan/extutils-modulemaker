@@ -32,3 +32,10 @@ eval { $mod  = ExtUtils::ModuleMaker->new (
 ok($@ =~ /^Dying due to bad input to constructor/,
     "Constructor correctly failed due to invalid keys");
 
+eval { $mod  = ExtUtils::ModuleMaker->new (
+    'ABSTRACT' => 'The quick brown fox jumps over the lazy dog',
+    'COMPACT'  => 1,
+); };
+ok($@ =~ /^NAME is required/,
+    "Constructor correctly failed due to lack of NAME for module");
+

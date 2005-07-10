@@ -63,6 +63,8 @@ sub new {
     $self->initialize_license();
 
     $self->{MANIFEST} = ['MANIFEST'];
+    $self->verify_values();
+
     return ($self);
 }
 
@@ -70,8 +72,6 @@ sub new {
 ##   7 ##
 sub complete_build {
     my $self = shift;
-
-    $self->verify_values();
 
     $self->create_base_directory();
     $self->check_dir( map { "$self->{Base_Dir}/$_" } qw (lib t scripts) );
@@ -99,7 +99,6 @@ sub complete_build {
     }
     else {
         $self->print_file( 'Build.PL', $self->file_text_Buildfile() );
-#        if ( $self->{BUILD_SYSTEM} eq 'Module::Build and proxy Makefile.PL' ) {
 	if ( $self->{BUILD_SYSTEM} eq 'Module::Build and proxy Makefile.PL' 
          or  $self->{BUILD_SYSTEM} eq 'Module::Build and Proxy') {
             $self->print_file( 'Makefile.PL',
@@ -125,8 +124,8 @@ sub complete_build {
 #             are encapsulated within a subroutine rather than creating
 #             a file-scoped lexical. 
 sub default_values {
+    # NAME key is intentionally missing; must cause fatal error
     my %defaults = (
-        NAME     => 'None yet',
         LICENSE  => 'perl',
         VERSION  => 0.01,
         ABSTRACT => 'Module abstract (<= 44 characters) goes here',
@@ -357,10 +356,13 @@ sub check_dir {
 ##  20 ##
 sub death_message {
     my $self = shift;
+    my @errors = @_;
 
-    croak( join "\n", @_, '', $self->{USAGE_MESSAGE} )
+#    croak( join "\n", @_, '', $self->{USAGE_MESSAGE} )
+    croak( join "\n", @errors, '', $self->{USAGE_MESSAGE} )
       unless $self->{INTERACTIVE};
-    print( join "\n", 'Oops, there are the following errors:', @_, '', '' );
+#    print( join "\n", 'Oops, there are the following errors:', @_, '', '' );
+    print( join "\n", 'Oops, there are the following errors:', @errors, '', '' );
 }
 
 #!#!#!#!#
