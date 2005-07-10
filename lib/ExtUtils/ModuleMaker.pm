@@ -937,7 +937,7 @@ is probably best held in a hash.   Keys which may be specified are:
 
 The I<only> required feature.  This is the name of the primary module 
 (with 'C<::>' separators if needed).  Will also support the older style 
-separator ''C<'>'' like the module F<D'Oh>.  Current default is 'None yet'. 
+separator ''C<'>'' like the module F<D'Oh>.  There is no current default.
 
 =item * ABSTRACT
 

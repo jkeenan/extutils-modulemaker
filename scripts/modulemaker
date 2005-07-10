@@ -286,8 +286,8 @@ sub Main_Menu {
 
     my $string = $messages{'Main Menu'};
     defined $MOD->{NAME} 
-	? $string =~ s|##name##|$MOD->{NAME}|
-	: $string =~ s|##name##||;
+        ? $string =~ s|##name##|$MOD->{NAME}|
+        : $string =~ s|##name##||;
     $string =~ s|##abstract##|$MOD->{ABSTRACT}|;
     $string =~ s|##license##|$MOD->{LICENSE}|;
     $string =~ s|##build##|$MOD->{BUILD_SYSTEM}|;
@@ -298,13 +298,11 @@ sub Main_Menu {
       if ( exists $destinations{'Main Menu'}{$response} );
 
     if ( $response eq 'G' ) {
-          $MOD->{AUTHOR}{COMPOSITE} =
-              "\t"
-               . join( "\n\t",
-                  $MOD->{AUTHOR}{NAME},
-                  ( $MOD->{AUTHOR}{CPANID} ) ? "CPAN ID: $MOD->{AUTHOR}{CPANID}" : (),
-                  ( $MOD->{AUTHOR}{ORGANIZATION} ) ? "$MOD->{AUTHOR}{ORGANIZATION}" : (),
-                  $MOD->{AUTHOR}{EMAIL}, $MOD->{AUTHOR}{WEBSITE},
+        $MOD->{AUTHOR}{COMPOSITE} = "\t" . join( "\n\t",
+            $MOD->{AUTHOR}{NAME},
+            ( $MOD->{AUTHOR}{CPANID} ) ? "CPAN ID: $MOD->{AUTHOR}{CPANID}" : (),
+            ( $MOD->{AUTHOR}{ORGANIZATION} ) ? "$MOD->{AUTHOR}{ORGANIZATION}" : (),
+            $MOD->{AUTHOR}{EMAIL}, $MOD->{AUTHOR}{WEBSITE},
           );
         $MOD->complete_build();
         print "Module files generated\n";

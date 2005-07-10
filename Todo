@@ -28,4 +28,15 @@ Short-range plan:
 * any, but t/03..04 had a filehandle FILE which I lexically scoped:
 * 'local *FH;')  DONE
 
+* modulemaker utility is failing to put author's name in appropriate spot
+* in Makefile.PL (e-mail is OK).  Similarly, AUTHOR info in lib//*.pm
+* file is not getting author's name, organization, or website (e-mail is
+* OK; version number is OK; CPAN ID not yet determined).  These *are*
+* being correctly picked up if a pure hash is passed to the constructor,
+* so the problem must be in the utility.
 
+* further inspection fails to confirm this problem.  When I call 'perl
+* -Mblib scripts/modulemaker" and go interactive, the Makefile.PL comes
+* out okay, as does the AUTHOR section in lib//*.pm. It may have been the
+* case that I was picking up the system version of the distro (v0.33)
+* rather than the working version.
