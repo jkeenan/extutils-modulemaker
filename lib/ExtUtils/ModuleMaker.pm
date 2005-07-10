@@ -180,7 +180,7 @@ sub verify_values {
       if ( $self->{AUTHOR}{EMAIL} !~ m/.*\@.*/ );
     push( @errors, 'WEBSITEs should start with an "http:" or "https:"' )
       if ( $self->{AUTHOR}{WEBSITE} !~ m/https?:\/\/.*/ );
-    push( @errors, 'LICENSE is not recognized"' )
+    push( @errors, 'LICENSE is not recognized' )
       unless ( Verify_Local_License( $self->{LICENSE} )
         || Verify_Standard_License( $self->{LICENSE} ) );
 
@@ -1110,3 +1110,8 @@ LICENSE file included with this module.
 F<modulemaker>, F<perlnewmod>, F<h2xs>, F<ExtUtils::MakeMaker>.
 
 =cut
+
+__END__
+
+        && ( length($self->{AUTHOR}{CPANID}) >= 3 and 
+	     length($self->{AUTHOR}{CPANID}) <= 9 ) );
