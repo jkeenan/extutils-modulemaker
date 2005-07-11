@@ -40,3 +40,6 @@ Short-range plan:
 * out okay, as does the AUTHOR section in lib//*.pm. It may have been the
 * case that I was picking up the system version of the distro (v0.33)
 * rather than the working version.
+
+* but when I try to submit the author name from the command-line, I
+* fail!  This should be corrected at once!
