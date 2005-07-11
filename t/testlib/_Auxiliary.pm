@@ -13,6 +13,7 @@ require Exporter;
     rmtree
     setuptmpdir
     cleanuptmpdir
+    check_MakefilePL 
 ); 
 *ok = *Test::More::ok;
 *is = *Test::More::is;
@@ -90,6 +91,24 @@ sub cleanuptmpdir {
     ok(chdir $cwd, 'changed back to original directory after testing');
     rmtree($tmp);
     ok(! -d $tmp, "tmp directory has been removed");
+}
+
+sub check_MakefilePL {
+    my ($topdir, $predictref) = @_;
+    my @pred = @$predictref;
+
+    my $mkfl = "$topdir/Makefile.PL";
+    local *MAK;
+    open MAK, $mkfl or die "Unable to open Makefile.PL: $!";
+    my $bigstr;
+    {    local $/; $bigstr = <MAK>; }
+    return 1 if ($bigstr =~ /
+            NAME.+($pred[0]).+
+            VERSION_FROM.+($pred[1]).+
+            AUTHOR.+($pred[2]).+
+            ($pred[3]).+
+            ABSTRACT.+($pred[4]).+
+        /sx);
 }
 
 1;
