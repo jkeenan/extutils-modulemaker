@@ -224,12 +224,13 @@ EOF
 getopts( "bdhCIPVcn:a:v:l:u:p:o:w:e:", \%opts );
 die Usage() if ( $opts{h} );
 
-my %AUTHOR;
-$AUTHOR{'NAME'}         = $opts{u} ? $opts{u} : 'A. U. Thor';
-$AUTHOR{'CPANID'}       = $opts{p} ? $opts{p} : 'AUTHOR';
-$AUTHOR{'ORGANIZATION'} = $opts{o} ? $opts{o} : 'XYZ Corp.';
-$AUTHOR{'WEBSITE'}      = $opts{w} ? $opts{w} : 'http://a.galaxy.far.far.away/modules';
-$AUTHOR{'EMAIL'}        = $opts{e} ? $opts{e} : 'a.u.thor@a.galaxy.far.far.away';
+my %AUTHOR = (
+    NAME         => ($opts{u} ? $opts{u} : 'A. U. Thor'),
+    CPANID       => ($opts{p} ? $opts{p} : 'AUTHOR'),
+    ORGANIZATION => ($opts{o} ? $opts{o} : 'XYZ Corp.'),
+    WEBSITE      => ($opts{w} ? $opts{w} : 'http://a.galaxy.far.far.away/modules'),
+    EMAIL        => ($opts{e} ? $opts{e} : 'a.u.thor@a.galaxy.far.far.away'),
+);
 
 my $where = 'Main Menu';
 my $MOD   = ExtUtils::ModuleMaker->new(
@@ -243,17 +244,6 @@ my $MOD   = ExtUtils::ModuleMaker->new(
     ( ( $opts{b} ) ? ( BUILD_SYSTEM => $opts{b} ) : () ),
     ( ( $opts{v} ) ? ( VERSION      => $opts{v} ) : () ),
     ( ( $opts{l} ) ? ( LICENSE      => $opts{l} ) : () ),
-#    ( ( $opts{u} ) ? ( AUTHOR       => { NAME         => $opts{u} } ) : () ),
-#    ( ( $opts{p} ) ? ( AUTHOR       => { CPANID       => $opts{p} } ) : () ),
-#    ( ( $opts{o} ) ? ( AUTHOR       => { ORGANIZATION => $opts{o} } ) : () ),
-#    ( ( $opts{w} ) ? ( AUTHOR       => { WEBSITE      => $opts{w} } ) : () ),
-#    ( ( $opts{e} ) ? ( AUTHOR       => { EMAIL        => $opts{e} } ) : () ),
-
-#    ( ( $opts{u} ) ? ( AUTHOR{'NAME'}         => $opts{u} ) : () ),
-#    ( ( $opts{p} ) ? ( AUTHOR{'CPANID'}       => $opts{p} ) : () ),
-#    ( ( $opts{o} ) ? ( AUTHOR{'ORGANIZATION'} => $opts{o} ) : () ),
-#    ( ( $opts{w} ) ? ( AUTHOR{'WEBSITE'}      => $opts{w} ) : () ),
-#    ( ( $opts{e} ) ? ( AUTHOR{'EMAIL'}        => $opts{e} ) : () ),
     AUTHOR => \%AUTHOR,
     USAGE_MESSAGE => Usage(),
 );
