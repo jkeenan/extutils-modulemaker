@@ -12,7 +12,8 @@ t/04_compact.t
 t/05_abstract.t
 t/06_build.t
 t/07_proxy.t
-t/08_modulemaker.t
+# t/08_modulemaker.t
+t/09_mmkr.t
 t/testlib/_Auxiliary.pm
 scripts/modulemaker
 lib/ExtUtils/ModuleMaker.pm
