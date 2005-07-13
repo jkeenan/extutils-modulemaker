@@ -48,3 +48,12 @@ Short-range plan:
 * sure, I need to write a testing subroutine to test the content of
 * lib/*/.pm along the lines of check_Makefile.PL.  So that's next up.
 
+* In order to correct one of the bugs listed on rt.cpan.org, I have to
+* figure out how to account for apostrophes in the values passed to the
+* constructor ... particularly those data that appear in Makefile.PL.
+* Any apostrophe that appears in a module name, abstract, author name or
+* author e-mail must be escaped inside Makefile.PL.
+
+* To simplify matters, I am going to remove coverage for Perl 4 style
+* module names (D'oh).
+

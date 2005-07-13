@@ -262,7 +262,7 @@ sub create_base_directory {
     my $self = shift;
 
     $self->{Base_Dir} =
-      join( ( $self->{COMPACT} ) ? '-' : '/', split( /::|'/, $self->{NAME} ) );
+      join( ( $self->{COMPACT} ) ? '-' : '/', split( /::/, $self->{NAME} ) );
     $self->check_dir( $self->{Base_Dir} );
 }
 
@@ -270,7 +270,7 @@ sub create_base_directory {
 ##  14 ##
 sub create_pm_basics {
     my ( $self, $module ) = @_;
-    my @layers = split( /::|'/, $module->{NAME} );
+    my @layers = split( /::/, $module->{NAME} );
     my $file   = pop(@layers);
     my $dir    = join( '/', 'lib', @layers );
 

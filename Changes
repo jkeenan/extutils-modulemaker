@@ -1,6 +1,9 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
 0.34
+	- Removed support for Perl 4 style module names (e.g., D'oh).
+	  This was done to simplify solution to the problem of
+apostrophes appearing in values to keys which appear in Makefile.PL.
 
 0.33 July 8, 2005
 	- Primary maintenance taken over by James E Keenan
