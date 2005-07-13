@@ -8,6 +8,9 @@ local $^W = 1;
 
 BEGIN { use_ok( 'ExtUtils::ModuleMaker' ); }
 BEGIN { use_ok( 'File::Temp', qw| tempdir |); }
+BEGIN { use_ok( 'Cwd' ); }
+
+my $odir = cwd();
 
 my $tdir = tempdir( CLEANUP => 1);
 ok(chdir $tdir, 'changed to temp directory for testing');
@@ -79,16 +82,5 @@ is($modgrandchild->{NAME}, 'Gamma::Delta', "NAME is correct");
 is($modgrandchild->{ABSTRACT}, 'The quick brown fox', 
     "explicitly coded ABSTRACT is correct");
 
-__END__
-
-## code below fails
-
-my $stepchild  = ExtUtils::ModuleMaker::new(
-    'ExtUtils::ModuleMaker',
-    NAME => 'Sample::Module',
-    ABSTRACT => 'The quick brown fox'
-);
-isa_ok($stepchild, "ExtUtils::ModuleMaker", "object is an EU::MM object");
-is($stepchild->{NAME}, 'Sample::Module', "NAME is correct");
-is($stepchild->{ABSTRACT}, 'The quick brown fox', "ABSTRACT is correct");
+ok(chdir $odir, 'changed back to original directory after testing');
 

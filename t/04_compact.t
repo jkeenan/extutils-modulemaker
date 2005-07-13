@@ -1,12 +1,14 @@
 # t/04_compact.t
 
-use Test::More tests => 15;
+use Test::More tests => 17;
 use strict;
 local $^W = 1;
 
 BEGIN { use_ok( 'ExtUtils::ModuleMaker' ); }
 BEGIN { use_ok( 'File::Temp', qw| tempdir |); }
+BEGIN { use_ok( 'Cwd' ); }
 
+my $odir = cwd();
 my $tdir = tempdir( CLEANUP => 1);
 ok(chdir $tdir, 'changed to temp directory for testing');
 
@@ -50,4 +52,6 @@ ok($filetext =~ m/Loose lips sink ships/,
 	"correct LICENSE generated");
 
 ########################################################################
+
+ok(chdir $odir, 'changed back to original directory after testing');
 

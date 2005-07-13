@@ -2,13 +2,15 @@
 
 use Test::More 
 # qw(no_plan);
-tests => 14;
+tests => 16;
 use strict;
 local $^W = 1;
 
 BEGIN { use_ok( 'ExtUtils::ModuleMaker' ); }
 BEGIN { use_ok( 'File::Temp', qw| tempdir |); }
+BEGIN { use_ok( 'Cwd' ); }
 
+my $odir = cwd();
 my $tdir = tempdir( CLEANUP => 1);
 ok(chdir $tdir, 'changed to temp directory for testing');
 
@@ -99,3 +101,4 @@ eval { $mod  = ExtUtils::ModuleMaker->new (
 ok($@ =~ /^LICENSE is not recognized/,
     "Constructor correctly failed due to unrecognized LICENSE");
 
+ok(chdir $odir, 'changed back to original directory after testing');

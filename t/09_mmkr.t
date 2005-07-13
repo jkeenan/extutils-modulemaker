@@ -15,8 +15,8 @@ use _Auxiliary qw(
 
 # Simple tests of modulemaker utility in non-interactive mode
 
-my ($tdir, $topdir, @pred);
 my $cwd = cwd();
+my ($tdir, $topdir, @pred);
 
 {
     # provide name and call for compact top-level directory
@@ -43,6 +43,7 @@ my $cwd = cwd();
         "Module\\sabstract\\s\\(<=\\s44\\scharacters\\)\\sgoes\\shere",
     );
     check_MakefilePL($topdir, \@pred);
+    ok(chdir $cwd, 'changed back to original directory after testing');
 }
 
 {
@@ -70,6 +71,7 @@ my $cwd = cwd();
         "This\\sis\\svery\\sabstract\.",
     );
     check_MakefilePL($topdir, \@pred);
+    ok(chdir $cwd, 'changed back to original directory after testing');
 }
 
 {
@@ -97,6 +99,7 @@ my $cwd = cwd();
         "This\\sis\\svery\\sabstract\.",
     );
     check_MakefilePL($topdir, \@pred);
+    ok(chdir $cwd, 'changed back to original directory after testing');
 }
 
 {
@@ -124,5 +127,6 @@ my $cwd = cwd();
         "This\\sis\\svery\\sabstract\.",
     );
     check_MakefilePL($topdir, \@pred);
+    ok(chdir $cwd, 'changed back to original directory after testing');
 }
 
