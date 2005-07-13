@@ -166,7 +166,7 @@ ENDOFUSAGE
 # Throws    : Will die with a death_message if errors and not interactive.
 # Comments  : 
 sub verify_values {
-    my ($self) = @_;
+    my $self = shift;
     my @errors;
 
     push( @errors, 'NAME is required' )
@@ -237,7 +237,7 @@ sub set_dates {
 #!#!#!#!#
 ##  11 ##
 sub set_author_data {
-    my ($self) = @_;
+    my $self = shift;
 
     my $p_author = $self->{AUTHOR};
     $p_author->{COMPOSITE} = (
@@ -281,7 +281,7 @@ sub create_pm_basics {
 #!#!#!#!#
 ##  15 ##
 sub initialize_license {
-    my ($self) = @_;
+    my $self = shift;
 
     $self->{LICENSE} = lc( $self->{LICENSE} );
 
@@ -599,7 +599,7 @@ EOFBLOCK
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub file_text_README {
-    my ($self) = @_;
+    my $self = shift;
 
     my $build_instructions;
     if ( $self->{BUILD_SYSTEM} eq 'ExtUtils::MakeMaker' ) {
@@ -684,7 +684,7 @@ EOF
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub file_text_ToDo {
-    my ($self) = @_;
+    my $self = shift;
 
     my $page = <<EOF;
 TODO list for Perl module $self->{NAME}
@@ -706,7 +706,7 @@ EOF
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub file_text_Makefile {
-    my ($self) = @_;
+    my $self = shift;
     my $page = <<EOF;
 use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
@@ -733,7 +733,7 @@ EOF
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub file_text_Buildfile {
-    my ($self) = @_;
+    my $self = shift;
 
     # As of 0.15, Module::Build only allows a few licenses
     my $license_line = 1 if $self->{LICENSE} =~ /^(?:perl|gpl|artistic)$/;
@@ -771,7 +771,7 @@ EOF
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub file_text_proxy_makefile {
-    my ($self) = @_;
+    my $self = shift;
 
     # This comes directly from the docs for Module::Build::Compat
     my $page = <<'EOF';
