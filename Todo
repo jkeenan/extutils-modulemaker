@@ -43,3 +43,8 @@ Short-range plan:
 
 * but when I try to submit the author name from the command-line, I
 * fail!  This should be corrected at once!
+
+* I'm pretty certain that I've fixed the problem described above.  To be
+* sure, I need to write a testing subroutine to test the content of
+* lib/*/.pm along the lines of check_Makefile.PL.  So that's next up.
+

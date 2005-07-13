@@ -17,6 +17,7 @@ require Exporter;
 ); 
 *ok = *Test::More::ok;
 *is = *Test::More::is;
+*like = *Test::More::like;
 use File::Find;
 use Cwd;
 
@@ -102,13 +103,14 @@ sub check_MakefilePL {
     open MAK, $mkfl or die "Unable to open Makefile.PL: $!";
     my $bigstr;
     {    local $/; $bigstr = <MAK>; }
-    return 1 if ($bigstr =~ /
+    like($bigstr, qr/
             NAME.+($pred[0]).+
             VERSION_FROM.+($pred[1]).+
             AUTHOR.+($pred[2]).+
             ($pred[3]).+
             ABSTRACT.+($pred[4]).+
-        /sx);
+        /sx, "Makefile.PL has predicted values");
+    close MAK;
 }
 
 1;

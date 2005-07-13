@@ -15,7 +15,7 @@ use _Auxiliary qw(
 
 # Simple tests of modulemaker utility in non-interactive mode
 
-my ($tdir, $topdir);
+my ($tdir, $topdir, @pred);
 my $cwd = cwd();
 
 {
@@ -35,14 +35,94 @@ my $cwd = cwd();
     ok(-d "$topdir/$_", "$_ directory created")
         for qw| lib t |;
     
-#    my @pred = (
-#        "XYZ::ABC",
-#        "lib\/XYZ\/ABC\.pm",
-#        "A\.\\sU\.\\sThor",
-#        "a\.u\.thor\@a\.galaxy\.far\.far\.away",
-#        "Module\\sabstract\\s\\(<=\\s44\\scharacters\\)\\sgoes\\shere",
-#    );
-#    ok( (check_MakefilePL($topdir, \@pred)), 
-#        "Makefile.PL has predicted values");
-
+    @pred = (
+        "XYZ::ABC",
+        "lib\/XYZ\/ABC\.pm",
+        "A\.\\sU\.\\sThor",
+        "a\.u\.thor\@a\.galaxy\.far\.far\.away",
+        "Module\\sabstract\\s\\(<=\\s44\\scharacters\\)\\sgoes\\shere",
+    );
+    check_MakefilePL($topdir, \@pred);
 }
+
+{
+    # provide name and call for compact top-level directory
+    # add in abstract
+    $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
+
+    ok(! 
+      system("$^X -I$cwd/blib/lib $cwd/blib/script/modulemaker -Icn XYZ::ABC -a \"This is very abstract.\""), 
+        "able to call modulemaker utility with abstract");
+
+    $topdir = "XYZ-ABC"; 
+    ok(-d $topdir, "compact top directory created");
+    ok(-f "$topdir/$_", "$_ file created")
+        for qw| Changes LICENSE MANIFEST Makefile.PL README Todo |;
+    ok(-d "$topdir/$_", "$_ directory created")
+        for qw| lib t |;
+    
+    @pred = (
+        "XYZ::ABC",
+        "lib\/XYZ\/ABC\.pm",
+        "A\.\\sU\.\\sThor",
+        "a\.u\.thor\@a\.galaxy\.far\.far\.away",
+        "This\\sis\\svery\\sabstract\.",
+    );
+    check_MakefilePL($topdir, \@pred);
+}
+
+{
+    # provide name and call for compact top-level directory
+    # add in abstract and author-name
+    $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
+
+    ok(! 
+      system("$^X -I$cwd/blib/lib $cwd/blib/script/modulemaker -Icn XYZ::ABC -a \"This is very abstract.\" -u \"John Q Public\""), 
+        "able to call modulemaker utility with abstract");
+
+    $topdir = "XYZ-ABC"; 
+    ok(-d $topdir, "compact top directory created");
+    ok(-f "$topdir/$_", "$_ file created")
+        for qw| Changes LICENSE MANIFEST Makefile.PL README Todo |;
+    ok(-d "$topdir/$_", "$_ directory created")
+        for qw| lib t |;
+    
+    @pred = (
+        "XYZ::ABC",
+        "lib\/XYZ\/ABC\.pm",
+        "John\\sQ\\sPublic",
+        "a\.u\.thor\@a\.galaxy\.far\.far\.away",
+        "This\\sis\\svery\\sabstract\.",
+    );
+    check_MakefilePL($topdir, \@pred);
+}
+
+{
+    # provide name and call for compact top-level directory
+    # add in abstract and author-name and e-mail
+    $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
+
+    ok(! 
+      system("$^X -I$cwd/blib/lib $cwd/blib/script/modulemaker -Icn XYZ::ABC -a \"This is very abstract.\" -u \"John Q Public\" -e jqpublic\@calamity.jane.net"), 
+        "able to call modulemaker utility with abstract");
+
+    $topdir = "XYZ-ABC"; 
+    ok(-d $topdir, "compact top directory created");
+    ok(-f "$topdir/$_", "$_ file created")
+        for qw| Changes LICENSE MANIFEST Makefile.PL README Todo |;
+    ok(-d "$topdir/$_", "$_ directory created")
+        for qw| lib t |;
+    
+    @pred = (
+        "XYZ::ABC",
+        "lib\/XYZ\/ABC\.pm",
+        "John\\sQ\\sPublic",
+        "jqpublic\@calamity\.jane\.net",
+        "This\\sis\\svery\\sabstract\.",
+    );
+    check_MakefilePL($topdir, \@pred);
+}
+
