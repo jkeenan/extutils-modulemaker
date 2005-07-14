@@ -1,8 +1,6 @@
 # t/02_bad constructor.t
 
-use Test::More 
-# qw(no_plan);
-tests => 16;
+use Test::More tests => 16;
 use strict;
 local $^W = 1;
 

@@ -262,7 +262,7 @@ sub create_base_directory {
     my $self = shift;
 
     $self->{Base_Dir} =
-      join( ( $self->{COMPACT} ) ? '-' : '/', split( /::/, $self->{NAME} ) );
+      join( ( $self->{COMPACT} ) ? '-' : '/', split( /::|'/, $self->{NAME} ) );
     $self->check_dir( $self->{Base_Dir} );
 }
 
@@ -270,7 +270,7 @@ sub create_base_directory {
 ##  14 ##
 sub create_pm_basics {
     my ( $self, $module ) = @_;
-    my @layers = split( /::/, $module->{NAME} );
+    my @layers = split( /::|'/, $module->{NAME} );
     my $file   = pop(@layers);
     my $dir    = join( '/', 'lib', @layers );
 
@@ -707,21 +707,27 @@ EOF
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub file_text_Makefile {
     my $self = shift;
-    my $page = <<EOF;
+    my $page = sprintf q~
+
 use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
 WriteMakefile(
-    NAME         => '$self->{NAME}',
-    VERSION_FROM => '$self->{FILE}', # finds \$VERSION
-    AUTHOR       => '$self->{AUTHOR}{NAME} ($self->{AUTHOR}{EMAIL})',
-    ABSTRACT     => '$self->{ABSTRACT}',
+    NAME         => '%s',
+    VERSION_FROM => '%s', # finds \$VERSION
+    AUTHOR       => '%s (%s)',
+    ABSTRACT     => '%s',
     PREREQ_PM    => {
                      'Test::Simple' => 0.44,
                     },
 );
-EOF
-    return ($page);
+~,  map { my $s = $_; $s =~ s{'}{\\'}g; $s; }
+    $self->{NAME},
+    $self->{FILE},
+    $self->{AUTHOR}{NAME},
+    $self->{AUTHOR}{EMAIL},
+    $self->{ABSTRACT};
+    return $page;
 }
 
 #!#!#!#!#
@@ -937,12 +943,19 @@ is probably best held in a hash.   Keys which may be specified are:
 
 The I<only> required feature.  This is the name of the primary module 
 (with 'C<::>' separators if needed).  Will also support the older style 
-separator ''C<'>'' like the module F<D'Oh>.  There is no current default.
+separator ''C<'>'' like the module F<D'Oh>, though this feature is
+deprecated and is subject to removal in a future version.  In any event,
+if the module name contains an apostrophe, then the value corresponding
+to key <NAME> in the list passed must be double-quoted; otherwise
+F<Makefile.PL> gets messed up.  There is no current default for NAME.
 
 =item * ABSTRACT
 
 A short (44-character maximum) description of the module.  CPAN likes 
-to use this feature to describe the module.
+to use this feature to describe the module.  If the abstract contains an
+apostrophe (C<'>), then the value corresponding to key C<ABSTRACT> in
+the list passed to the constructor must be double-quoted; otherwise
+F<Makefile.PL> gets messed up.
 
 =item * VERSION
 
@@ -1004,11 +1017,16 @@ necessary places in the files.
 
 =item * NAME
 
-Name of the author.
+Name of the author.  If the author's name contains an apostrophe (C<'>), 
+then the corresponding value in the list passed to the constructor must 
+be double-quoted; otherwise F<Makefile.PL> gets messed up.
 
 =item * EMAIL
 
-Email address of the author.
+Email address of the author.  If the author's e-mail address contains 
+an apostrophe (C<'>), then the corresponding value in the list passed 
+to the constructor must be double-quoted; otherwise
+F<Makefile.PL> gets messed up.
 
 =item * CPANID
 
@@ -1085,17 +1103,23 @@ passed to C<ExtUtils::ModuleMaker::new>.  Returns a
 true value if all specified files are created -- but this says nothing
 about whether those files have been created with the correct content.
 
-=head1 SUPPORT
-
-Send email to jkeenan [at] cpan [dot] org.  Please include 'modulemaker'
-in the subject line.
-
 =head1 AUTHOR
 
 ExtUtils::ModuleMaker was originally written in 2001-02 by R. Geoffrey Avery
 (modulemaker [at] PlatypiVentures [dot] com).  Since version 0.33 (July
 2005) it has been maintained by James E. Keenan (jkeenan [at] cpan [dot]
 org).
+
+=head1 SUPPORT
+
+Send email to jkeenan [at] cpan [dot] org.  Please include 'modulemaker'
+in the subject line.
+
+=head1 ACKNOWLEDGMENTS
+
+Thanks to Geoff Avery for inventing and popularizing
+ExtUtils::Modulemaker.  Thanks for bug reports and fixes to David A
+Golden and an anonymous guest on rt.cpan.org.
 
 =head1 COPYRIGHT
 
@@ -1111,11 +1135,4 @@ LICENSE file included with this module.
 F<modulemaker>, F<perlnewmod>, F<h2xs>, F<ExtUtils::MakeMaker>.
 
 =cut
-
-__END__
-
-#    my $self = bless( default_values(), ref($class) || $class );
-
-        && ( length($self->{AUTHOR}{CPANID}) >= 3 and 
-	     length($self->{AUTHOR}{CPANID}) <= 9 ) );
 
