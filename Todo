@@ -57,3 +57,5 @@ Short-range plan:
 * To simplify matters, I am going to remove coverage for Perl 4 style
 * module names (D'oh).
 
+* Bug:  When VERBOSE => 1 but COMPACT => 0, I'm not getting a printout
+* of mkdirs -- only of writing files.
