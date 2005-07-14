@@ -24,8 +24,7 @@ my ($tdir, $topdir, @pred);
     $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
 
-    ok(! 
-      system("$^X -I$cwd/blib/lib $cwd/blib/script/modulemaker -Icn XYZ::ABC"), 
+    ok(! system(qq{$^X -I"$cwd/blib/lib" "$cwd/blib/script/modulemaker" -Icn XYZ::ABC}),
         "able to call modulemaker utility");
 
     $topdir = "XYZ-ABC"; 
@@ -52,8 +51,7 @@ my ($tdir, $topdir, @pred);
     $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
 
-    ok(! 
-      system("$^X -I$cwd/blib/lib $cwd/blib/script/modulemaker -Icn XYZ::ABC -a \"This is very abstract.\""), 
+    ok(! system(qq{$^X -I"$cwd/blib/lib" "$cwd/blib/script/modulemaker" -Icn XYZ::ABC -a \"This is very abstract.\"}),  #"
         "able to call modulemaker utility with abstract");
 
     $topdir = "XYZ-ABC"; 
@@ -80,8 +78,7 @@ my ($tdir, $topdir, @pred);
     $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
 
-    ok(! 
-      system("$^X -I$cwd/blib/lib $cwd/blib/script/modulemaker -Icn XYZ::ABC -a \"This is very abstract.\" -u \"John Q Public\""), 
+    ok(! system(qq{$^X -I"$cwd/blib/lib" "$cwd/blib/script/modulemaker" -Icn XYZ::ABC -a \"This is very abstract.\" -u \"John Q Public\"}), #"
         "able to call modulemaker utility with abstract");
 
     $topdir = "XYZ-ABC"; 
@@ -108,8 +105,7 @@ my ($tdir, $topdir, @pred);
     $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
 
-    ok(! 
-      system("$^X -I$cwd/blib/lib $cwd/blib/script/modulemaker -Icn XYZ::ABC -a \"This is very abstract.\" -u \"John Q Public\" -e jqpublic\@calamity.jane.net"), 
+    ok(! system(qq{$^X -I"$cwd/blib/lib" "$cwd/blib/script/modulemaker" -Icn XYZ::ABC -a \"This is very abstract.\" -u \"John Q Public\" -e jqpublic\@calamity.jane.net}),   #"
         "able to call modulemaker utility with abstract");
 
     $topdir = "XYZ-ABC"; 
