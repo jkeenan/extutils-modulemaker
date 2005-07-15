@@ -59,3 +59,31 @@ Short-range plan:
 
 * Bug:  When VERBOSE => 1 but COMPACT => 0, I'm not getting a printout
 * of mkdirs -- only of writing files.
+
+* Suggestions from David's session:  Make %keys_permitted replaceable
+* from outside the module.
+* check_dir():  final statement is currently unreachable.
+
+* For future extensibility:  EXTRA_MODULES is not easily subclassable
+* the way print_file works.
+
+* David's philosophy: EU::MM should be able to accommodate programmers
+* at different points on their learning curves.  As it does now, it
+* should provide the 'no-brainer' option as default.  But this could be
+* done by having EU::MM create a config file from the defaults.  Then, as a user becomes
+* accustomed to it, s/he doesn't want to constantly repeat typing in the
+* interactive mode, so the user can change the config file such that
+* *that* provides a new set of prompts in the interactive mode.
+(Cf. the way that many Unix utilities create a config file on first
+use.)
+
+* Higher stage:  ?? run the utility in non-interactive mode, but using
+* defaults provided by the config.  modulemaker is halfway there
+
+* Advantage of a config file:  Somehow who has to create modules more
+* than once will not want to re-type at the prompts.  They will want
+* simply to edit a config file as needed.
+
+* Cf.  Config::Find.  In OS-specific way, it determines where to put
+* configuration files.
+.
