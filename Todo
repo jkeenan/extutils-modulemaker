@@ -91,4 +91,60 @@ use.)
 
 * Cf.  Config::Find.  In OS-specific way, it determines where to put
 * configuration files.
-.
+
+--
+15 July 2005
+
+1.  I noted first of all that certain lines (361-366) in death_message() were
+never being reached by the test suite.  It turns out that they can only
+be tested when you are in interactive mode -- which I have yet to test
+in the test suite (only visually).
+2.  I further noted that by moving verify_values() to the constructor, I
+appeared to have caused a situation in which arguments entered via the
+interactive mode were not subject to even the minimal checking provided
+by verify_values.  That's because in the interactive mode, this is the
+sequence of events:
+a.  command-line options stored in %opts
+b.  constructor called; internally, it first stores the default values;
+then it pulls in the values passed in the list in modulemaker, i.e.,
+values determined by %opts; these values *replace* some or all of tthe
+defaults inside the object; these resulting values are then validated by
+verify_values and the ref to the object is returned.
+c.  if $opts{i} is now set, interactive mode begins; the values entered
+by the user at the prompts are *not* subject to further validation --
+which means bad values can be entered
+d.  if I tried to validate those values -- say, by calling
+$MOD->verify_values after the 'while' loop in the interactive mode --
+that would still not prevent bad values from being implemented, because
+death_message() is *not* set up to croak at bad values when in
+interactive mode!
+e.  the fact that I could call $MOD->verify_values inside modulemaker
+indicates that it's publicly accessible -- whether or not I document it;
+do I really want it to be publicly accessible?  (David pondered the
+possibility that it should be.)
+f.  then, upon closer inspection, I saw that code calling verify_values
+always was present inside modulemaker (lines 327-29), but it was never
+called, because it depended on a prompt 'V' which was never incorporated
+into the Main_Menu!
+
+3.  I should change the 2 License modules from @EXPORT to @EXPORT_OK.
+This will require explicitly importing those subs in Modulemaker.pm.
+(There are also subroutines called interact() in each of the License
+modules which are used in modulemaker by being called in the fully
+qualified manner (lines 50-51).
+
+4.  I'm uneasy with the fact that (presumably) every ModuleMaker
+subroutine is a publicly accessible method ... presumably, since almost
+of them start '$self = shift;'.  I think Geoff wanted it to be this way
+because his conception of how EU::MM would be subclassed/extended was
+that people would write new methods with the same names as EU::MM
+methods and simply override them.  That explains his discussing these in
+the POD and suggesting that they were candidates for subclassing.  But,
+notably, he did *not* mention them in the SYNOPSIS.  I am of the
+philosophy that *only* public methods should be presented in the
+SYNOPSIS, but also that *all* publicly available methods should be
+presented there as well.  I would rather restrict subclassing to passing
+different data to the object or overriding the 2 public methods.  Geoff
+would have permitted overriding methods which are called within those
+public methods.
+

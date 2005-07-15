@@ -15,7 +15,7 @@ use Data::Dumper;
 
 use vars qw (%opts $VERSION %destinations %messages);
 
-$VERSION = 0.34;
+$VERSION = 0.34_20050715;
 
 ########## BEGIN DECLARATIONS ##########
 

@@ -2,7 +2,7 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 use vars qw ($VERSION);
-$VERSION = 0.34;
+$VERSION = 0.34_20050715;
 
 use ExtUtils::ModuleMaker::Licenses::Standard;
 use ExtUtils::ModuleMaker::Licenses::Local;
@@ -58,6 +58,7 @@ sub new {
         }
     }
 
+    if ($self->{INTERACTIVE}) { print STDERR "Get data interactively!\n"; }
     $self->set_author_data();
     $self->set_dates();
     $self->initialize_license();
