@@ -17,13 +17,16 @@ use _Auxiliary qw(
 );
 
 my $odir = cwd();
-my $tdir = tempdir( CLEANUP => 1);
-ok(chdir $tdir, 'changed to temp directory for testing');
-my ($mod, $testmod, $filetext);
+my ($tdir, $mod, $testmod, $filetext);
 
 ########################################################################
+# Sets 1 and 2:  Test VERBOSE => 1 to make sure that logging messages
+# note each directory and file created. 1:  Compact top directory.
+# 2:  Non-compact top directory.
 
 {
+    $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
     $testmod = 'Beta';
     
     ok( $mod = ExtUtils::ModuleMaker->new( 
@@ -61,6 +64,8 @@ my ($mod, $testmod, $filetext);
 }
  
 {
+    $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
     $testmod = 'Gamma';
     
     ok( $mod = ExtUtils::ModuleMaker->new( 
@@ -73,15 +78,15 @@ my ($mod, $testmod, $filetext);
     
     my ($capture, %count);
     $capture = IO::Capture::Stdout->new();
-#    $capture->start();
+    $capture->start();
     ok( $mod->complete_build(), 'call complete_build()' );
-#    $capture->stop();
-#    for my $l ($capture->read()) {
-#        $count{'mkdir'}++ if $l =~ /^mkdir/;
-#        $count{'writing'}++ if $l =~ /^writing file/;
-#    }
-#    is($count{'mkdir'}, 6, "correct no. of directories created announced verbosely");
-#    is($count{'writing'}, 8, "correct no. of files created announced verbosely");
+    $capture->stop();
+    for my $l ($capture->read()) {
+        $count{'mkdir'}++ if $l =~ /^mkdir/;
+        $count{'writing'}++ if $l =~ /^writing file/;
+    }
+    is($count{'mkdir'}, 6, "correct no. of directories created announced verbosely");
+    is($count{'writing'}, 8, "correct no. of files created announced verbosely");
 
     ok( -d qq{Alpha/$testmod}, "non-compact top-level directories exist" );
     ok( chdir "Alpha/$testmod", "cd Alpha/$testmod" );

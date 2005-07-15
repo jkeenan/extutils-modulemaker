@@ -58,7 +58,9 @@ Short-range plan:
 * module names (D'oh).
 
 * Bug:  When VERBOSE => 1 but COMPACT => 0, I'm not getting a printout
-* of mkdirs -- only of writing files.
+* of mkdirs -- only of writing files.  FIXED:  It was a problem in the
+* test, not in the module.  I was accidentally reusing the same tempdir,
+* which meant that one directory was not newly created.
 
 * Suggestions from David's session:  Make %keys_permitted replaceable
 * from outside the module.

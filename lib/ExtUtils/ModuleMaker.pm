@@ -990,7 +990,7 @@ The first generates a basic Makefile.PL file for your module.
 
 The second creates a Build.PL file.
 
-=item * C<Module::Build and Proxy>
+=item * C<'Module::Build and Proxy'>
 
 The third creates a Build.PL along with a proxy Makefile.PL
 script that attempts to install Module::Build if necessary, and then
