@@ -15,7 +15,10 @@ Module::Starter) which have themselves been influenced by EU::MM.
 -----
 Short-range plan:
 
-* Test death_message().
+* Test death_message().  ANALYSIS:  Having moved all error-checking to
+* the constructor, all the conditions which previously would have
+* generated a death message may now be precluded.  NEEDS FURTHER
+* ANALYSIS.
 
 * Refactor BEGIN blocks in lib/ExtUtils/Modulemaker/Licenses/*.pm.
 

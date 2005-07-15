@@ -363,7 +363,7 @@ sub death_message {
     delete $err{'NAME is required'} if $err{'NAME is required'};
     @errors = keys %err;
     print( join "\n", 'Oops, there are the following errors:', @errors, '', '' )
-        if @errors;;
+        if @errors;
 }
 
 #!#!#!#!#
