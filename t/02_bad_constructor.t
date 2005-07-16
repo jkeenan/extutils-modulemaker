@@ -1,6 +1,8 @@
 # t/02_bad constructor.t
 
-use Test::More tests => 16;
+use Test::More 
+# tests => 14;
+qw(no_plan);
 use strict;
 local $^W = 1;
 
@@ -24,13 +26,13 @@ eval { $mod  = ExtUtils::ModuleMaker->new ( 'NAME' => 'Jim', 'ABSTRACT' ); };
 ok($@ =~ /^Must be hash or balanced list of key-value pairs:/,
     "Constructor correctly failed due to odd number of arguments");
 
-eval { $mod  = ExtUtils::ModuleMaker->new (
-    'NAME' => 'Jim',
-    'FIRST' => 'Avery',
-    'SECOND' => 'Keenan',
-); };
-ok($@ =~ /^Dying due to bad input to constructor/,
-    "Constructor correctly failed due to invalid keys");
+#eval { $mod  = ExtUtils::ModuleMaker->new (
+#    'NAME' => 'Jim',
+#    'FIRST' => 'Avery',
+#    'SECOND' => 'Keenan',
+#); };
+#ok($@ =~ /^Dying due to bad input to constructor/,
+#    "Constructor correctly failed due to invalid keys");
 
 eval { $mod  = ExtUtils::ModuleMaker->new (
     'ABSTRACT' => 'The quick brown fox jumps over the lazy dog',
@@ -69,7 +71,7 @@ eval { $mod  = ExtUtils::ModuleMaker->new (
     'NAME'     => 'ABC::XYZ',
     'CPANID'   => 'JKEENAN',
 ); };
-ok($@ =~ /^Dying due to bad input to constructor \(CPANID\):/,
+ok($@ =~ /^CPANID improper top-level key/,
     "Constructor correctly failed; argument must be in 2nd-level hash");
 
 eval { $mod  = ExtUtils::ModuleMaker->new (

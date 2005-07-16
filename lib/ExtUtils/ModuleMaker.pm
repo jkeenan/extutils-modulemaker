@@ -22,29 +22,18 @@ sub new {
         if (@arglist % 2);
     my %parameters = @arglist;
     my @badkeys;
-    my %keys_permitted = map {$_, 1} qw|
-        NAME
-        ABSTRACT
-        VERSION
-        LICENSE
-        BUILD_SYSTEM
-        AUTHOR
-        EXTRA_MODULES
-        COMPACT
-        VERBOSE
-        INTERACTIVE
-        PERMISSIONS
-        USAGE_MESSAGE
-        NEED_POD
-        NEED_NEW_METHOD
-        CHANGES_IN_POD
+    my %keys_forbidden = map {$_, 1} qw|
+        CPANID
+        ORGANIZATION
+        WEBSITE
+        EMAIL
     |;
-    
     for (keys %parameters) {
-        push(@badkeys, $_) unless $keys_permitted{$_};
+        push(@badkeys, $_) if $keys_forbidden{$_};
     }
-    croak "Dying due to bad input to constructor (@badkeys): $!"
+    croak "@badkeys improper top-level key: $!"
         if (@badkeys);
+
     my $self = ref($class) ? bless( default_values(), ref($class) )
                            : bless( default_values(), $class );
     foreach my $param ( keys %parameters ) {
