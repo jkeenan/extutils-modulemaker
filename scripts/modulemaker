@@ -302,25 +302,7 @@ sub Main_Menu {
         return ( $destinations{'Main Menu'}{$response} )
           if ( exists $destinations{'Main Menu'}{$response} );
     
-        if ( $response eq 'G' ) {
-#            $MOD->{AUTHOR}{COMPOSITE} = "\t" . join( "\n\t",
-#                $MOD->{AUTHOR}{NAME},
-#                ( $MOD->{AUTHOR}{CPANID} ) ? "CPAN ID: $MOD->{AUTHOR}{CPANID}" : (),
-#                ( $MOD->{AUTHOR}{ORGANIZATION} ) ? "$MOD->{AUTHOR}{ORGANIZATION}" : (),
-#                $MOD->{AUTHOR}{EMAIL}, $MOD->{AUTHOR}{WEBSITE},
-#              );
-            $MOD->set_author_data();
-	    # verify_values() returns an empty list if all values are
-	    # good; so if its return value is true, we need to repeat
-	    # the prompts; otherwise, we can proceed to complete_build()
-            if (! $MOD->verify_values()) {
-                $MOD->complete_build();
-                print "Module files generated\n";
-            } else {
-                next LOOP;
-            }
-        }
-        elsif ( $response eq 'N' ) {
+        if ( $response eq 'N' ) {
             my $value =
               Question_User( "Please enter a new value for Primary Module Name",
                 'data' );
@@ -337,6 +319,18 @@ sub Main_Menu {
     #        $MOD->verify_values();
     #        print "Module verification done\n";
     #    }
+        elsif ( $response eq 'G' ) {
+            $MOD->set_author_data();
+	    # verify_values() returns an empty list if all values are
+	    # good; so if its return value is true, we need to repeat
+	    # the prompts; otherwise, we can proceed to complete_build()
+            if (! $MOD->verify_values()) {
+                $MOD->complete_build();
+                print "Module files generated\n";
+            } else {
+                next LOOP;
+            }
+        }
     } # END LOOP
     return ('Main Menu');
 }
