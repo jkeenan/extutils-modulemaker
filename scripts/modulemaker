@@ -7,11 +7,9 @@ use strict;
 local $^W = 1;
 
 use Getopt::Std;
-use ExtUtils::ModuleMaker;
+use ExtUtils::ModuleMaker 0.34_20050715;
 use ExtUtils::ModuleMaker::Licenses::Standard;
 use ExtUtils::ModuleMaker::Licenses::Local;
-
-use Data::Dumper;
 
 use vars qw (%opts $VERSION %destinations %messages);
 
@@ -224,6 +222,8 @@ EOF
 getopts( "bdhCIPVcn:a:v:l:u:p:o:w:e:", \%opts );
 die Usage() if ( $opts{h} );
 
+# print STDERR "\nYo! modulemaker, just before the constructor call\n";
+
 my %AUTHOR = (
     NAME         => ($opts{u} ? $opts{u} : 'A. U. Thor'),
     CPANID       => ($opts{p} ? $opts{p} : 'AUTHOR'),
@@ -248,6 +248,8 @@ my $MOD   = ExtUtils::ModuleMaker->new(
     USAGE_MESSAGE => Usage(),
 );
 
+# partial_dump($MOD);
+    
 if ( $MOD->{INTERACTIVE} ) {
     while () {
         if ( $where eq 'done' ) {
@@ -288,45 +290,55 @@ print "\n------------------------\n\nGood bye.\n\n";
 sub Main_Menu {
     my $MOD = shift;
 
-    my $string = $messages{'Main Menu'};
-    defined $MOD->{NAME} 
-        ? $string =~ s|##name##|$MOD->{NAME}|
-        : $string =~ s|##name##||;
-    $string =~ s|##abstract##|$MOD->{ABSTRACT}|;
-    $string =~ s|##license##|$MOD->{LICENSE}|;
-    $string =~ s|##build##|$MOD->{BUILD_SYSTEM}|;
-
-    my $response = Question_User( $string, 'menu' );
-
-    return ( $destinations{'Main Menu'}{$response} )
-      if ( exists $destinations{'Main Menu'}{$response} );
-
-    if ( $response eq 'G' ) {
-        $MOD->{AUTHOR}{COMPOSITE} = "\t" . join( "\n\t",
-            $MOD->{AUTHOR}{NAME},
-            ( $MOD->{AUTHOR}{CPANID} ) ? "CPAN ID: $MOD->{AUTHOR}{CPANID}" : (),
-            ( $MOD->{AUTHOR}{ORGANIZATION} ) ? "$MOD->{AUTHOR}{ORGANIZATION}" : (),
-            $MOD->{AUTHOR}{EMAIL}, $MOD->{AUTHOR}{WEBSITE},
-          );
-        $MOD->complete_build();
-        print "Module files generated\n";
-    }
-    elsif ( $response eq 'N' ) {
-        my $value =
-          Question_User( "Please enter a new value for Primary Module Name",
-            'data' );
-        $MOD->{NAME} = $value;
-    }
-    elsif ( $response eq 'S' ) {
-        my $value =
-          Question_User( "Please enter a 44-character max Abstract for this extension",
-            'data' );
-        $MOD->{ABSTRACT} = $value;
-    }
-    elsif ( $response eq 'V' ) {
-        $MOD->verify_values();
-        print "Module verification done\n";
-    }
+    LOOP:  {
+        my $string = $messages{'Main Menu'};
+        defined $MOD->{NAME} 
+            ? $string =~ s|##name##|$MOD->{NAME}|
+            : $string =~ s|##name##||;
+        $string =~ s|##abstract##|$MOD->{ABSTRACT}|;
+        $string =~ s|##license##|$MOD->{LICENSE}|;
+        $string =~ s|##build##|$MOD->{BUILD_SYSTEM}|;
+    
+        my $response = Question_User( $string, 'menu' );
+    
+        return ( $destinations{'Main Menu'}{$response} )
+          if ( exists $destinations{'Main Menu'}{$response} );
+    
+        if ( $response eq 'G' ) {
+            $MOD->{AUTHOR}{COMPOSITE} = "\t" . join( "\n\t",
+                $MOD->{AUTHOR}{NAME},
+                ( $MOD->{AUTHOR}{CPANID} ) ? "CPAN ID: $MOD->{AUTHOR}{CPANID}" : (),
+                ( $MOD->{AUTHOR}{ORGANIZATION} ) ? "$MOD->{AUTHOR}{ORGANIZATION}" : (),
+                $MOD->{AUTHOR}{EMAIL}, $MOD->{AUTHOR}{WEBSITE},
+              );
+	    # verify_values() returns an empty list if all values are
+	    # good; so if its return value is true, we need to repeat
+	    # the prompts; otherwise, we can proceed to complete_build()
+            if (! $MOD->verify_values()) {
+                $MOD->complete_build();
+                print "Module files generated\n";
+            } else {
+                next LOOP;
+            }
+        }
+        elsif ( $response eq 'N' ) {
+            my $value =
+              Question_User( "Please enter a new value for Primary Module Name",
+                'data' );
+            $MOD->{NAME} = $value;
+        }
+        elsif ( $response eq 'S' ) {
+            my $value =
+              Question_User( "Please enter a 44-character max Abstract for this extension",
+                'data' );
+            $MOD->{ABSTRACT} = $value;
+        }
+        # not documented or yet included in main menu
+    #    elsif ( $response eq 'V' ) {
+    #        $MOD->verify_values();
+    #        print "Module verification done\n";
+    #    }
+    } # END LOOP
     return ('Main Menu');
 }
 
@@ -545,6 +557,18 @@ ExtUtils::ModuleMaker version: $ExtUtils::ModuleMaker::VERSION
 ENDOFUSAGE
 
     return ($message);
+}
+#'
+sub partial_dump {
+    my $obj = shift;
+    require Data::Dumper;
+    import Data::Dumper qw|Dumper|;
+    my ($k, $v, %retry);
+    while ( ($k, $v) = each %{$obj} ) {
+	    $retry{$k} = $v 
+	    	if ($k ne 'LicenseParts' and $k ne 'USAGE_MESSAGE');
+    }
+    print Dumper(\%retry);
 }
 
 ########## END SUBROUTINES ##########

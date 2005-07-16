@@ -58,7 +58,7 @@ sub new {
         }
     }
 
-    if ($self->{INTERACTIVE}) { print STDERR "Get data interactively!\n"; }
+#    if ($self->{INTERACTIVE}) { print STDERR "Get data interactively!\n"; }
     $self->set_author_data();
     $self->set_dates();
     $self->initialize_license();
@@ -363,8 +363,16 @@ sub death_message {
     my %err = map {$_, 1} @errors;
     delete $err{'NAME is required'} if $err{'NAME is required'};
     @errors = keys %err;
-    print( join "\n", 'Oops, there are the following errors:', @errors, '', '' )
-        if @errors;
+#    print( join "\n", 'Oops, there are the following errors:', @errors, '', '' )
+#    print( join "\n", 'Oops, there are the following errors:', @errors, '', $self->{USAGE_MESSAGE} )
+#        if @errors;
+    if (@errors) {
+        print( join "\n", 'Oops, there are the following errors:',
+		@errors, '' );
+        return 1;
+    } else {
+        return ();
+    }
 }
 
 #!#!#!#!#
@@ -867,6 +875,7 @@ EOF
 
     return ($page);
 }
+
 
 1;    #this line is important and will help the module return a true value
 __END__
