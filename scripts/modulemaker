@@ -273,17 +273,22 @@ if ( $MOD->{INTERACTIVE} ) {
             $where = Main_Menu($MOD);
         }
     }
+    build_and_close($MOD);
 }
 else {
-    $MOD->complete_build();
+    build_and_close($MOD);
 }
-
-print "\n------------------------\n\nGood bye.\n\n";
 
 ########## END STATEMENTS ##########
 
 ########## BEGIN SUBROUTINES ##########
 
+sub build_and_close {
+    my $MOD = shift;
+    $MOD->complete_build();
+    print "\n-------------------\n\nModule files generated.  Good bye.\n\n";
+}
+	
 #!#!#!#!#
 ##   2 ##
 sub Main_Menu {
@@ -326,8 +331,8 @@ sub Main_Menu {
 	    # good; so if its return value is true, we need to repeat
 	    # the prompts; otherwise, we can proceed to complete_build()
             if (! $MOD->verify_values()) {
-                $MOD->complete_build();
-                print "Module files generated\n";
+                print "Module files ready for generation.  Proceed to 'Q'.\n";
+		return ('Main Menu');
             } else {
                 next LOOP;
             }
