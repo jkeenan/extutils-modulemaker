@@ -13,7 +13,7 @@ use ExtUtils::ModuleMaker::Licenses::Local;
 
 use vars qw (%opts $VERSION %destinations %messages);
 
-$VERSION = 0.34_20050715;
+$VERSION = 0.34_20050716;
 
 ########## BEGIN DECLARATIONS ##########
 

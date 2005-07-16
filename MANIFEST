@@ -14,7 +14,7 @@ t/06_build.t
 t/07_proxy.t
 # t/08_modulemaker.t
 t/09_mmkr.t
-t/10_apostrophe.t
+# t/10_apostrophe.t
 t/11_miscargs.t
 t/testlib/_Auxiliary.pm
 scripts/modulemaker

@@ -2,7 +2,7 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 use vars qw ($VERSION);
-$VERSION = 0.34_20050715;
+$VERSION = 0.34_20050716;
 
 use ExtUtils::ModuleMaker::Licenses::Standard;
 use ExtUtils::ModuleMaker::Licenses::Local;
@@ -161,6 +161,8 @@ sub verify_values {
 
     push( @errors, 'NAME is required' )
       unless ( $self->{NAME} );
+    push( @errors, 'Module NAME contains illegal characters' )
+      unless ( $self->{NAME} and $self->{NAME} =~ m/^[\w:]+$/ );
     push( @errors, 'ABSTRACTs are limited to 44 characters' )
       if ( length( $self->{ABSTRACT} ) > 44 );
     push( @errors, 'CPAN IDs are 3-9 characters' )
@@ -251,7 +253,7 @@ sub create_base_directory {
     my $self = shift;
 
     $self->{Base_Dir} =
-      join( ( $self->{COMPACT} ) ? '-' : '/', split( /::|'/, $self->{NAME} ) );
+      join( ( $self->{COMPACT} ) ? '-' : '/', split( /::/, $self->{NAME} ) );
     $self->check_dir( $self->{Base_Dir} );
 }
 
@@ -259,7 +261,7 @@ sub create_base_directory {
 ##  14 ##
 sub create_pm_basics {
     my ( $self, $module ) = @_;
-    my @layers = split( /::|'/, $module->{NAME} );
+    my @layers = split( /::/, $module->{NAME} );
     my $file   = pop(@layers);
     my $dir    = join( '/', 'lib', @layers );
 
@@ -948,12 +950,9 @@ is probably best held in a hash.   Keys which may be specified are:
 =item * NAME
 
 The I<only> required feature.  This is the name of the primary module 
-(with 'C<::>' separators if needed).  Will also support the older style 
-separator ''C<'>'' like the module F<D'Oh>, though this feature is
-deprecated and is subject to removal in a future version.  In any event,
-if the module name contains an apostrophe, then the value corresponding
-to key <NAME> in the list passed must be double-quoted; otherwise
-F<Makefile.PL> gets messed up.  There is no current default for NAME.
+(with 'C<::>' separators if needed).  Will no longer support the older,
+Perl 4-style separator ''C<'>'' like the module F<D'Oh>.  There is no 
+current default for NAME.
 
 =item * ABSTRACT
 

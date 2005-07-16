@@ -26,19 +26,23 @@ eval { $mod  = ExtUtils::ModuleMaker->new ( 'NAME' => 'Jim', 'ABSTRACT' ); };
 ok($@ =~ /^Must be hash or balanced list of key-value pairs:/,
     "Constructor correctly failed due to odd number of arguments");
 
-#eval { $mod  = ExtUtils::ModuleMaker->new (
-#    'NAME' => 'Jim',
-#    'FIRST' => 'Avery',
-#    'SECOND' => 'Keenan',
-#); };
-#ok($@ =~ /^Dying due to bad input to constructor/,
-#    "Constructor correctly failed due to invalid keys");
-
 eval { $mod  = ExtUtils::ModuleMaker->new (
     'ABSTRACT' => 'The quick brown fox jumps over the lazy dog',
 ); };
 ok($@ =~ /^NAME is required/,
     "Constructor correctly failed due to lack of NAME for module");
+
+eval { $mod  = ExtUtils::ModuleMaker->new (
+    'NAME' => 'My::B!ad::Module',
+); };
+ok($@ =~ /^Module NAME contains illegal characters/,
+    "Constructor correctly failed due to illegal characters in module name");
+
+eval { $mod  = ExtUtils::ModuleMaker->new (
+    'NAME' => "My'BadModule",
+); };
+ok($@ =~ /^Module NAME contains illegal characters/,
+    "Perl 4-style single-quote path separators no longer supported");
 
 eval { $mod  = ExtUtils::ModuleMaker->new (
     'NAME'     => 'ABC::XYZ',
@@ -102,3 +106,14 @@ ok($@ =~ /^LICENSE is not recognized/,
     "Constructor correctly failed due to unrecognized LICENSE");
 
 ok(chdir $odir, 'changed back to original directory after testing');
+
+__END__
+
+#eval { $mod  = ExtUtils::ModuleMaker->new (
+#    'NAME' => 'Jim',
+#    'FIRST' => 'Avery',
+#    'SECOND' => 'Keenan',
+#); };
+#ok($@ =~ /^Dying due to bad input to constructor/,
+#    "Constructor correctly failed due to invalid keys");
+
