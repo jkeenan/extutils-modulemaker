@@ -222,8 +222,6 @@ EOF
 getopts( "bdhCIPVcn:a:v:l:u:p:o:w:e:", \%opts );
 die Usage() if ( $opts{h} );
 
-# print STDERR "\nYo! modulemaker, just before the constructor call\n";
-
 my %AUTHOR = (
     NAME         => ($opts{u} ? $opts{u} : 'A. U. Thor'),
     CPANID       => ($opts{p} ? $opts{p} : 'AUTHOR'),
@@ -248,8 +246,6 @@ my $MOD   = ExtUtils::ModuleMaker->new(
     USAGE_MESSAGE => Usage(),
 );
 
-# partial_dump($MOD);
-    
 if ( $MOD->{INTERACTIVE} ) {
     while () {
         if ( $where eq 'done' ) {
@@ -680,7 +676,8 @@ org).
 
 =head1 COPYRIGHT
 
-Copyright (c) 2001-2002 R. Geoffrey Avery. All rights reserved.
+Copyright (c) 2001-2002 R. Geoffrey Avery.
+Revisions from v0.33 forward (c) 2005 James E. Keenan.  All rights reserved.
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
 

@@ -363,15 +363,12 @@ sub death_message {
     my %err = map {$_, 1} @errors;
     delete $err{'NAME is required'} if $err{'NAME is required'};
     @errors = keys %err;
-#    print( join "\n", 'Oops, there are the following errors:', @errors, '', '' )
-#    print( join "\n", 'Oops, there are the following errors:', @errors, '', $self->{USAGE_MESSAGE} )
-#        if @errors;
     if (@errors) {
         print( join "\n", 'Oops, there are the following errors:',
 		@errors, '' );
         return 1;
     } else {
-        return ();
+        return (); # because verify_values() returns empty list if AOK
     }
 }
 
@@ -1133,7 +1130,8 @@ Golden and an anonymous guest on rt.cpan.org.
 
 =head1 COPYRIGHT
 
-Copyright (c) 2001-2002 R. Geoffrey Avery. All rights reserved.
+Copyright (c) 2001-2002 R. Geoffrey Avery.
+Revisions from v0.33 forward (c) 2005 James E. Keenan.  All rights reserved.
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
 
