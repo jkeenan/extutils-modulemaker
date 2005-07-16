@@ -353,8 +353,8 @@ sub death_message {
     delete $err{'NAME is required'} if $err{'NAME is required'};
     @errors = keys %err;
     if (@errors) {
-        print( join "\n", 'Oops, there are the following errors:',
-		@errors, '' );
+        print( join "\n", 
+            'Oops, there are the following errors:', @errors, '' );
         return 1;
     } else {
         return (); # because verify_values() returns empty list if AOK
@@ -864,12 +864,12 @@ EOF
 
 sub partial_dump {
     my $self = shift;
+    my %keys_not_shown = map {$_, 1} @_;
     require Data::Dumper;
     import Data::Dumper qw|Dumper|;
     my ($k, $v, %retry);
     while ( ($k, $v) = each %{$self} ) {
-	    $retry{$k} = $v 
-	    	if ($k ne 'LicenseParts' and $k ne 'USAGE_MESSAGE');
+        $retry{$k} = $v unless $keys_not_shown{$k};
     }
     print Dumper(\%retry);
 }

@@ -246,7 +246,7 @@ my $MOD   = ExtUtils::ModuleMaker->new(
     USAGE_MESSAGE => Usage(),
 );
 
-# $MOD->partial_dump();
+$MOD->partial_dump(qw| LicenseParts USAGE_MESSAGE |);
 
 if ( $MOD->{INTERACTIVE} ) {
     while () {
