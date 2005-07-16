@@ -862,6 +862,17 @@ EOF
     return ($page);
 }
 
+sub partial_dump {
+    my $self = shift;
+    require Data::Dumper;
+    import Data::Dumper qw|Dumper|;
+    my ($k, $v, %retry);
+    while ( ($k, $v) = each %{$self} ) {
+	    $retry{$k} = $v 
+	    	if ($k ne 'LicenseParts' and $k ne 'USAGE_MESSAGE');
+    }
+    print Dumper(\%retry);
+}
 
 1;    #this line is important and will help the module return a true value
 __END__
