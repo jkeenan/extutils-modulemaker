@@ -229,14 +229,13 @@ sub set_dates {
 sub set_author_data {
     my $self = shift;
 
-    my $p_author = $self->{AUTHOR};
-    $p_author->{COMPOSITE} = (
+    $self->{AUTHOR}->{COMPOSITE} = (
         "\t"
          . join( "\n\t",
-            $p_author->{NAME},
-            ( $p_author->{CPANID} ) ? "CPAN ID: $p_author->{CPANID}" : (),
-            ( $p_author->{ORGANIZATION} ) ? "$p_author->{ORGANIZATION}" : (),
-            $p_author->{EMAIL}, $p_author->{WEBSITE}, ),
+            $self->{AUTHOR}->{NAME},
+            ( $self->{AUTHOR}->{CPANID} ) ? "CPAN ID: $self->{AUTHOR}->{CPANID}" : (),
+            ( $self->{AUTHOR}->{ORGANIZATION} ) ? "$self->{AUTHOR}->{ORGANIZATION}" : (),
+            $self->{AUTHOR}->{EMAIL}, $self->{AUTHOR}->{WEBSITE}, ),
     );
 }
 
