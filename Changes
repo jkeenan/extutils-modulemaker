@@ -1,9 +1,20 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
-0.34
+0.35 July 17, 2005
 	- Removed support for Perl 4 style module names (e.g., D'oh).
-	  This was done to simplify solution to the problem of
-apostrophes appearing in values to keys which appear in Makefile.PL.
+	- Added many tests, including tests for the modulemaker utility
+	  in non-interactive mode.
+	- Extensive refactoring, including extraction of most variable 
+          and subroutine declarations from modulemaker utility and 
+          placed them in lib/ExtUtils/ModuleMaker/Interactive.pm.  
+          Done to simplify future maintenance and make coverage results 
+          more transparent.
+	- Added partial_dump() method to ModuleMaker.pm.  This is not
+	  yet viewed as publicly available but is used to diagnose the
+          content of the EUMM object during development.
+	- Improvements in documentation; more to come.
+
+0.34    - Intermediate version not released to CPAN.
 
 0.33 July 8, 2005
 	- Primary maintenance taken over by James E Keenan
