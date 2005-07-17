@@ -186,35 +186,71 @@ sub generate_pm_file {
 
     $self->create_pm_basics($module);
 
-    my $page = $self->block_begin($module) .
-
-      (
-        ( $self->module_value( $module, 'NEED_POD' ) )
-        ? $self->block_module_header($module)
-        : ()
-      )
-      .
-
-      (
-        (
-                 ( $self->module_value( $module, 'NEED_POD' ) )
-              && ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
-        )
-        ? $self->block_subroutine_header($module)
-        : ()
-      )
-      .
-
-      (
-        ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
-        ? $self->block_new_method($module)
-        : ()
-      )
-      .
-
-      $self->block_final_one($module);
+    my $page = $self->build_page($module);
 
     $self->print_file( $module->{FILE}, $page );
+}
+
+sub build_page {
+    my $self = shift;
+    my $module = shift;
+#    my $page = $self->block_begin($module) .
+#
+#      (
+#        ( $self->module_value( $module, 'NEED_POD' ) )
+#        ? $self->block_module_header($module)
+#        : ()
+#      )
+#      .
+#
+#      (
+#        (
+#                 ( $self->module_value( $module, 'NEED_POD' ) )
+#              && ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
+#        )
+#        ? $self->block_subroutine_header($module)
+#        : ()
+#      )
+#      .
+#
+#      (
+#        ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
+#        ? $self->block_new_method($module)
+#        : ()
+#      )
+#      .
+#
+#      $self->block_final_one($module);
+      
+    my $page = $self->block_begin($module);
+    $page .= (
+         ( $self->module_value( $module, 'NEED_POD' ) )
+         ? $self->block_module_header($module)
+#         : ()
+         : ''
+    );
+
+    $page .= (
+         (
+            (
+                 ( $self->module_value( $module, 'NEED_POD' ) )
+              && ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
+            )
+            ? $self->block_subroutine_header($module)
+#         : ()
+         : ''
+	 )
+    );
+
+    $page .= (
+        ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
+        ? $self->block_new_method($module)
+#         : ()
+         : ''
+    );
+
+    $page .= $self->block_final_one($module);
+    return ($module, $page);
 }
 
 #!#!#!#!#
@@ -235,9 +271,10 @@ sub set_author_data {
         "\t"
          . join( "\n\t",
             $self->{AUTHOR}->{NAME},
-            ( $self->{AUTHOR}->{CPANID} ) ? "CPAN ID: $self->{AUTHOR}->{CPANID}" : (),
-            ( $self->{AUTHOR}->{ORGANIZATION} ) ? "$self->{AUTHOR}->{ORGANIZATION}" : (),
-            $self->{AUTHOR}->{EMAIL}, $self->{AUTHOR}->{WEBSITE}, ),
+            "CPAN ID: $self->{AUTHOR}->{CPANID}", # will need to be modified
+            $self->{AUTHOR}->{ORGANIZATION},  # if defaults no longer provided
+            $self->{AUTHOR}->{EMAIL}, 
+	    $self->{AUTHOR}->{WEBSITE}, ),
     );
 }
 
@@ -579,7 +616,6 @@ sub block_final_one {
     my $string = <<EOFBLOCK;
 
 1; #this line is important and will help the module return a true value
-__END__
 
 EOFBLOCK
 
@@ -867,16 +903,15 @@ sub partial_dump {
     my $self = shift;
     my %keys_not_shown = map {$_, 1} @_;
     require Data::Dumper;
-    import Data::Dumper qw|Dumper|;
     my ($k, $v, %retry);
     while ( ($k, $v) = each %{$self} ) {
         $retry{$k} = $v unless $keys_not_shown{$k};
     }
-    print Dumper(\%retry);
+    my $d = Data::Dumper->new( [\%retry] );
+    return $d->Dump;
 }
 
 1;    #this line is important and will help the module return a true value
-__END__
 
 #################### DOCUMENTATION ####################
 
@@ -933,10 +968,12 @@ F<modulemaker> bundled with this distribution.
 
 =head2 Usage within a Perl script
 
+=head3 Public Methods
+
 In this version of ExtUtils::ModuleMaker there are only two publicly 
 callable functions.  These are how you should interact with this module.
 
-=head3 C<new>
+=head4 C<new>
 
 Creates and returns an ExtUtils::ModuleMaker object.  Takes a list 
 containing key-value pairs with information specifying the
@@ -1101,12 +1138,20 @@ Don't include a 'Changes' file, but instead add a HISTORY section to the POD.
 
 =back
 
-=head3 C<complete_build>
+=head4 C<complete_build>
 
 Creates all directories and files as configured by the key-value pairs
 passed to C<ExtUtils::ModuleMaker::new>.  Returns a
 true value if all specified files are created -- but this says nothing
 about whether those files have been created with the correct content.
+
+=head3 Private Methods
+
+There are a variety of other ExtUtil::ModuleMaker methods which are not
+currently in the public interface.  They are available for you to hack
+on, but, as they are primarily used within C<new()> and
+C<complete_build()>, their implementation and interface may change in
+the future.  See the code for inline documentation.
 
 =head1 AUTHOR
 

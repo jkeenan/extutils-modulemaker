@@ -24,7 +24,7 @@ my ($tdir, $mod, $testmod, $filetext);
 # note each directory and file created. 1:  Compact top directory.
 # 2:  Non-compact top directory.
 
-{
+{   # Set 1
     $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
     $testmod = 'Beta';
@@ -63,7 +63,7 @@ my ($tdir, $mod, $testmod, $filetext);
     ok(chdir $odir, 'changed back to original directory after testing');
 }
  
-{
+{   # Set 2
     $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
     $testmod = 'Gamma';
@@ -101,4 +101,50 @@ my ($tdir, $mod, $testmod, $filetext);
     
     ok(chdir $odir, 'changed back to original directory after testing');
 }
+
+{   # Set 3:  Test of new partial_dump() method.
+    $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
+    $testmod = 'Rho';
+    
+    ok( $mod = ExtUtils::ModuleMaker->new( 
+            NAME           => "Alpha::$testmod",
+            COMPACT        => 0,
+            VERBOSE        => 1,
+        ),
+        "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
+    );
+    
+    my $dump;
+    ok( $dump = $mod->partial_dump(qw| LicenseParts USAGE_MESSAGE |), 
+        'call partial_dump()' );
+    my @dumplines = split(/\n/, $dump);
+    my $excluded_keys_flag = 0;
+    for my $m ( @dumplines ) {
+        $excluded_keys_flag++ if $m =~ /^\s+'(LicenseParts|USAGE_MESSAGE)/;
+    } #'
+    is($excluded_keys_flag, 0, 
+        "keys intended to be excluded were excluded");
+    
+    ok(chdir $odir, 'changed back to original directory after testing');
+}
+
+##### Sets 4 & 5:  Tests of NEED_POD and NEED_NEW_METHOD options #####
+
+{
+    $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
+    $testmod = 'Phi';
+    
+    ok( $mod = ExtUtils::ModuleMaker->new( 
+            NAME           => "Alpha::$testmod",
+            COMPACT        => 1,
+            NEED_POD       => 0,
+        ),
+        "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
+    );
+    
+    ok(chdir $odir, 'changed back to original directory after testing');
+}
+    
  

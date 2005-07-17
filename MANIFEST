@@ -19,6 +19,7 @@ t/11_miscargs.t
 t/testlib/_Auxiliary.pm
 scripts/modulemaker
 lib/ExtUtils/ModuleMaker.pm
+lib/ExtUtils/ModuleMaker/Interactive.pm
 lib/ExtUtils/ModuleMaker/SecondStyle.pm
 lib/ExtUtils/ModuleMaker/Licenses/Standard.pm
 lib/ExtUtils/ModuleMaker/Licenses/Local.pm

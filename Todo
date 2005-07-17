@@ -148,3 +148,12 @@ different data to the object or overriding the 2 public methods.  Geoff
 would have permitted overriding methods which are called within those
 public methods.
 
+--
+17 July 2005
+
+1.  Calling the -P option to modulemaker (NO_POD option) causes a
+warning about an uninitialized value to be emitted.  Source:  line 189
+of ModuleMaker.pm:  my $page = $self->block_begin($module) etc.  I'm
+going to try to refactor this line, as I don't know where precisely the
+warning is coming from.
+
