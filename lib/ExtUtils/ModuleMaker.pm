@@ -194,39 +194,11 @@ sub generate_pm_file {
 sub build_page {
     my $self = shift;
     my $module = shift;
-#    my $page = $self->block_begin($module) .
-#
-#      (
-#        ( $self->module_value( $module, 'NEED_POD' ) )
-#        ? $self->block_module_header($module)
-#        : ()
-#      )
-#      .
-#
-#      (
-#        (
-#                 ( $self->module_value( $module, 'NEED_POD' ) )
-#              && ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
-#        )
-#        ? $self->block_subroutine_header($module)
-#        : ()
-#      )
-#      .
-#
-#      (
-#        ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
-#        ? $self->block_new_method($module)
-#        : ()
-#      )
-#      .
-#
-#      $self->block_final_one($module);
       
     my $page = $self->block_begin($module);
     $page .= (
          ( $self->module_value( $module, 'NEED_POD' ) )
          ? $self->block_module_header($module)
-#         : ()
          : ''
     );
 
@@ -237,7 +209,6 @@ sub build_page {
               && ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
             )
             ? $self->block_subroutine_header($module)
-#         : ()
          : ''
 	 )
     );
@@ -245,7 +216,6 @@ sub build_page {
     $page .= (
         ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
         ? $self->block_new_method($module)
-#         : ()
          : ''
     );
 
