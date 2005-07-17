@@ -1,0 +1,34 @@
+sub rmtree {
+    my $dir = shift;
+    my %findargs = (
+        bydepth   => 1,
+        no_chdir  => 1,
+        wanted    => sub {
+            if (! -l && -d _) {
+                rmdir  or warn "Couldn't rmdir $_: $!";
+            } else {
+                unlink or warn "Couldn't unlink $_: $!";
+            }
+        }
+    );
+    File::Find::find { %findargs } => $dir;
+}
+
+sub setuptmpdir {
+    # Manually create 'tmp' directory for testing and move into it
+    my $cwd = cwd();
+    my $tmp = 'tmp';
+    ok((mkdir $tmp, 0755), "able to create testing directory");
+    ok(chdir $tmp, 'changed to tmp directory for testing');
+    return ($cwd, $tmp);
+}
+
+sub cleanuptmpdir {
+    # Cleanup 'tmp' directory following testing
+    my ($cwd, $tmp) = @_;
+    ok(chdir $cwd, 'changed back to original directory after testing');
+    rmtree($tmp);
+    ok(! -d $tmp, "tmp directory has been removed");
+}
+
+
