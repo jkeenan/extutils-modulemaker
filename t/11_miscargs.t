@@ -144,6 +144,20 @@ my ($tdir, $mod, $testmod, $filetext);
         "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
     );
     
+    ok( $mod->complete_build(), 'call complete_build()' );
+
+    ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
+    ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
+    ok( -d, "directory $_ exists" ) for ( qw/lib scripts t/);
+    ok( -f, "file $_ exists" )
+        for ( qw/Changes LICENSE Makefile.PL MANIFEST README Todo/);
+    ok( -f, "file $_ exists" )
+        for ( "lib/Alpha/${testmod}.pm", "t/001_load.t" );
+    
+    ok($filetext = read_file_string('Makefile.PL'),
+        'Able to read Makefile.PL');
+    
+
     ok(chdir $odir, 'changed back to original directory after testing');
 }
     

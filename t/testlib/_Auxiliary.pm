@@ -1,6 +1,6 @@
 package _Auxiliary;
 # Contains test subroutines for distribution with ExtUtils::ModuleMaker
-# As of:  July 4, 2005
+# As of:  July 17, 2005
 use strict;
 use warnings;
 use vars qw| @ISA @EXPORT_OK |; 
@@ -10,16 +10,11 @@ require Exporter;
     read_file_string
     read_file_array
     six_file_tests
-    rmtree
-    setuptmpdir
-    cleanuptmpdir
     check_MakefilePL 
 ); 
 *ok = *Test::More::ok;
 *is = *Test::More::is;
 *like = *Test::More::like;
-use File::Find;
-use Cwd;
 
 sub read_file_string {
     my $file = shift;
@@ -60,39 +55,6 @@ sub six_file_tests {
             |xs,
         'POD contains correct author info');
 } 
-
-sub rmtree {
-    my $dir = shift;
-    my %findargs = (
-        bydepth   => 1,
-        no_chdir  => 1,
-        wanted    => sub {
-            if (! -l && -d _) {
-                rmdir  or warn "Couldn't rmdir $_: $!";
-            } else {
-                unlink or warn "Couldn't unlink $_: $!";
-            }
-        }
-    );
-    File::Find::find { %findargs } => $dir;
-}
-
-sub setuptmpdir {
-    # Manually create 'tmp' directory for testing and move into it
-    my $cwd = cwd();
-    my $tmp = 'tmp';
-    ok((mkdir $tmp, 0755), "able to create testing directory");
-    ok(chdir $tmp, 'changed to tmp directory for testing');
-    return ($cwd, $tmp);
-}
-
-sub cleanuptmpdir {
-    # Cleanup 'tmp' directory following testing
-    my ($cwd, $tmp) = @_;
-    ok(chdir $cwd, 'changed back to original directory after testing');
-    rmtree($tmp);
-    ok(! -d $tmp, "tmp directory has been removed");
-}
 
 sub check_MakefilePL {
     my ($topdir, $predictref) = @_;
