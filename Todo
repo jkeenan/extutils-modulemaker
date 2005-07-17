@@ -157,3 +157,7 @@ of ModuleMaker.pm:  my $page = $self->block_begin($module) etc.  I'm
 going to try to refactor this line, as I don't know where precisely the
 warning is coming from.
 
+2.  Just noticed that modulemaker has no command-line option to specify
+no new() method in module.
+
+

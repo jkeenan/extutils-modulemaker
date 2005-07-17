@@ -14,10 +14,11 @@ use lib ("./t/testlib");
 BEGIN { use_ok( 'IO::Capture::Stdout' ); }
 use _Auxiliary qw(
     read_file_string
+    read_file_array
 );
 
 my $odir = cwd();
-my ($tdir, $mod, $testmod, $filetext);
+my ($tdir, $mod, $testmod, $filetext, @filelines, %lines);
 
 ########################################################################
 # Sets 1 and 2:  Test VERBOSE => 1 to make sure that logging messages
@@ -129,7 +130,7 @@ my ($tdir, $mod, $testmod, $filetext);
     ok(chdir $odir, 'changed back to original directory after testing');
 }
 
-##### Sets 4 & 5:  Tests of NEED_POD and NEED_NEW_METHOD options #####
+##### Sets 4 & 5 & 6:  Tests of NEED_POD and NEED_NEW_METHOD options #####
 
 {
     $tdir = tempdir( CLEANUP => 1);
@@ -156,9 +157,81 @@ my ($tdir, $mod, $testmod, $filetext);
     
     ok($filetext = read_file_string('Makefile.PL'),
         'Able to read Makefile.PL');
-    
+    ok(@filelines = read_file_array("lib/Alpha/${testmod}.pm"),
+        'Able to read module into array');
+    is( (grep {/^=(head|cut)/} @filelines), 0, 
+        "no POD correctly detected in module");
 
     ok(chdir $odir, 'changed back to original directory after testing');
 }
     
+{
+    $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
+    $testmod = 'Chi';
+    
+    ok( $mod = ExtUtils::ModuleMaker->new( 
+            NAME            => "Alpha::$testmod",
+            COMPACT         => 1,
+            NEED_NEW_METHOD => 0,
+        ),
+        "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
+    );
+    
+    ok( $mod->complete_build(), 'call complete_build()' );
+
+    ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
+    ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
+    ok( -d, "directory $_ exists" ) for ( qw/lib scripts t/);
+    ok( -f, "file $_ exists" )
+        for ( qw/Changes LICENSE Makefile.PL MANIFEST README Todo/);
+    ok( -f, "file $_ exists" )
+        for ( "lib/Alpha/${testmod}.pm", "t/001_load.t" );
+    
+    ok($filetext = read_file_string('Makefile.PL'),
+        'Able to read Makefile.PL');
+    ok(@filelines = read_file_array("lib/Alpha/${testmod}.pm"),
+        'Able to read module into array');
+    is( (grep {/^sub new/} @filelines), 0, 
+        "no sub new() correctly detected in module");
+
+    ok(chdir $odir, 'changed back to original directory after testing');
+}
+    
+{
+    $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
+    $testmod = 'Xi';
+    
+    ok( $mod = ExtUtils::ModuleMaker->new( 
+            NAME            => "Alpha::$testmod",
+            COMPACT         => 1,
+            NEED_POD        => 0,
+            NEED_NEW_METHOD => 0,
+        ),
+        "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
+    );
+    
+    ok( $mod->complete_build(), 'call complete_build()' );
+
+    ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
+    ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
+    ok( -d, "directory $_ exists" ) for ( qw/lib scripts t/);
+    ok( -f, "file $_ exists" )
+        for ( qw/Changes LICENSE Makefile.PL MANIFEST README Todo/);
+    ok( -f, "file $_ exists" )
+        for ( "lib/Alpha/${testmod}.pm", "t/001_load.t" );
+    
+    ok($filetext = read_file_string('Makefile.PL'),
+        'Able to read Makefile.PL');
+    ok(@filelines = read_file_array("lib/Alpha/${testmod}.pm"),
+        'Able to read module into array');
+    is( (grep {/^(sub new|=(head|cut))/} @filelines), 0, 
+        "no sub new() correctly detected in module");
+
+    ok(chdir $odir, 'changed back to original directory after testing');
+}
+    
+ 
+ 
  
