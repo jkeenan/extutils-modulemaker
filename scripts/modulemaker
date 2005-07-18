@@ -12,9 +12,9 @@ use ExtUtils::ModuleMaker::Interactive qw| run_interactive |;
 
 use vars qw (%opts $VERSION);
 
-$VERSION = 0.35;
+$VERSION = 0.35_01;
 
-getopts( "bdhCIPVcn:a:v:l:u:p:o:w:e:", \%opts );
+getopts( "bdhqCIPVcn:a:v:l:u:p:o:w:e:", \%opts );
 die Usage() if ( $opts{h} );
 
 my %AUTHOR = (
@@ -26,11 +26,12 @@ my %AUTHOR = (
 );
 
 my $MOD   = ExtUtils::ModuleMaker->new(
-    COMPACT        => ( ( $opts{c} ) ? 1 : 0 ),
-    VERBOSE        => ( ( $opts{V} ) ? 1 : 0 ),
-    CHANGES_IN_POD => ( ( $opts{C} ) ? 1 : 0 ),
-    NEED_POD       => ( ( $opts{P} ) ? 0 : 1 ),
-    INTERACTIVE    => ( ( $opts{I} ) ? 0 : 1 ),
+    COMPACT          => ( ( $opts{c} ) ? 1 : 0 ),
+    VERBOSE          => ( ( $opts{V} ) ? 1 : 0 ),
+    CHANGES_IN_POD   => ( ( $opts{C} ) ? 1 : 0 ),
+    NEED_POD         => ( ( $opts{P} ) ? 0 : 1 ),
+    NEED_NEW_METHOD  => ( ( $opts{q} ) ? 0 : 1 ),
+    INTERACTIVE      => ( ( $opts{I} ) ? 0 : 1 ),
     ( ( $opts{n} ) ? ( NAME         => $opts{n} ) : () ),
     ( ( $opts{a} ) ? ( ABSTRACT     => $opts{a} ) : () ),
     ( ( $opts{b} ) ? ( BUILD_SYSTEM => $opts{b} ) : () ),
@@ -175,6 +176,10 @@ Specify author's CPAN ID
 =item * -P
 
 Omit the stub POD section
+
+=item * -q
+
+Do not include a constructor (C<new()>) in the F<*.pm> file.
 
 =item * -u
 

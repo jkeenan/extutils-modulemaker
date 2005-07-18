@@ -15,7 +15,7 @@ use vars qw ( @ISA @EXPORT_OK );
 # modulemaker's interactive mode.
 
 ########## BEGIN DECLARATIONS ##########
-#
+
 my %Author_Menu = (
     N => [ 'Name        ', 'NAME' ],
     C => [ 'CPAN ID     ', 'CPANID' ],
@@ -344,8 +344,7 @@ sub Directives_Menu {
     }
     else {
         my $value = Question_User(
-            "Please enter a new value for $Directives_Menu{$response}[0],"
-              . " (0,No,False  || 1,Yes,True)",
+            "Please enter a new value for $Directives_Menu{$response}[0]," . " (0,No,False  || 1,Yes,True)",
             'menu'
         );
         $value = $Flagged{$value};
