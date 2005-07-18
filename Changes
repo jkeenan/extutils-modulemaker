@@ -1,5 +1,22 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.36 July 18, 2005
+        - Corrected error pointed out by CPAN tester Scott R. Godin:
+          IO::Capture and subclasses were omitted from MANIFEST, 
+          causing failure in t/11_miscargs.t.
+        - Added additional command-line option '-q' to suppress sub new() 
+          in .pm file created by modulemaker.  Added tests to t/09_mmkr.t 
+          to test suppression of POD and suppression of sub new() in 
+          .pm file created by modulemaker.  Along the way, wrote 
+          additional testing subroutines and added them to 
+          t/testlib/_Auxiliary.pm:
+               exported:  check_pm_file make_compact
+               not exported:  pod_present constructor_present
+        - Typographic cleanup of what modulemaker prints to STDOUT for 
+          Directives menu (mistake caused by my wrap settings in vi).
+        - Commented out SecondStyles.pm so it will no longer be bundled 
+          via make dist and no longer be uploaded to CPAN.
+
 0.35 July 17, 2005
 	- Removed support for Perl 4 style module names (e.g., D'oh).
 	- Added many tests, including tests for the modulemaker utility

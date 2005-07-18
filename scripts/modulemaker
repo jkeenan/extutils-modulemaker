@@ -12,7 +12,7 @@ use ExtUtils::ModuleMaker::Interactive qw| run_interactive |;
 
 use vars qw (%opts $VERSION);
 
-$VERSION = 0.35_01;
+$VERSION = 0.36;
 
 getopts( "bdhqCIPVcn:a:v:l:u:p:o:w:e:", \%opts );
 die Usage() if ( $opts{h} );
@@ -103,8 +103,8 @@ modulemaker - interactive interface to ExtUtils::ModuleMaker
 
 =head1 VERSION
 
-This document references version 0.35 of modulemaker, released
-to CPAN on July 17, 2005.
+This document references version 0.36 of modulemaker, released
+to CPAN on July 18, 2005.
 
 =head1 USAGE
 
