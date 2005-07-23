@@ -1018,13 +1018,16 @@ will not be added to the documentation
 
 =item * EXTRA_MODULES
 
-An array of hashes that each contain values for additional modules in
+A reference to an array of hashes, each of which contains values for 
+additional modules in
 the distribution.  As with the primary module only NAME is required and
 primary module values will be used if no value is given here.
 
 Each extra module will be created in the correct relative place in the
-F<lib> directory, but no extra supporting documents, like README or
-Changes.
+F<lib> directory.  A test file will also be created in the F<t>
+directory corresponding to each extra module to test that it loads
+properly.  However, no other supporting documents (I<e.g.,> README, 
+Changes) will be created.
 
 This is one major improvement over the earlier F<h2xs> as you can now
 build multi-module packages.

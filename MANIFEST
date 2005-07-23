@@ -1,10 +1,16 @@
-LICENSE
-Changes
+LICENSE Changes
 Makefile.PL
 README
 MANIFEST
 MANIFEST.SKIP
 # .cvsignore
+lib/ExtUtils/ModuleMaker.pm
+lib/ExtUtils/ModuleMaker/Defaults.pm
+lib/ExtUtils/ModuleMaker/Interactive.pm
+# lib/ExtUtils/ModuleMaker/SecondStyle.pm
+lib/ExtUtils/ModuleMaker/Licenses/Standard.pm
+lib/ExtUtils/ModuleMaker/Licenses/Local.pm
+scripts/modulemaker
 t/01_ini.t
 t/02_bad_constructor.t
 t/03_quick.t
@@ -20,10 +26,4 @@ t/testlib/IO/Capture/ErrorMessages.pm
 t/testlib/IO/Capture/Stderr.pm
 t/testlib/IO/Capture/Stdout.pm
 t/testlib/IO/Capture/Tie_STDx.pm
-scripts/modulemaker
-lib/ExtUtils/ModuleMaker.pm
-lib/ExtUtils/ModuleMaker/Interactive.pm
-# lib/ExtUtils/ModuleMaker/SecondStyle.pm
-lib/ExtUtils/ModuleMaker/Licenses/Standard.pm
-lib/ExtUtils/ModuleMaker/Licenses/Local.pm
 META.yml                                 Module meta-data (added by MakeMaker)

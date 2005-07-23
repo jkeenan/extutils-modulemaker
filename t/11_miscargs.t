@@ -232,6 +232,51 @@ my ($tdir, $mod, $testmod, $filetext, @filelines, %lines);
     ok(chdir $odir, 'changed back to original directory after testing');
 }
     
+######### Set #7:  Test of EXTRA_MODULES Option ##########
  
+{
+    $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
+    $testmod = 'Sigma';
+    
+    ok( $mod = ExtUtils::ModuleMaker->new( 
+            NAME           => "Alpha::$testmod",
+            COMPACT        => 1,
+            EXTRA_MODULES  => [
+                { NAME => "Alpha::${testmod}::Gamma" },
+                { NAME => "Alpha::${testmod}::Delta" },
+                { NAME => "Alpha::${testmod}::Gamma::Epsilon" },
+            ],
+        ),
+        "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
+    );
+    
+    ok( $mod->complete_build(), 'call complete_build()' );
+
+    ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
+    ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
+    ok( -d, "directory $_ exists" ) for ( qw/lib scripts t/);
+    ok( -f, "file $_ exists" )
+        for ( qw/Changes LICENSE Makefile.PL MANIFEST README Todo/);
+    ok( -d, "directory $_ exists" ) for (
+            "lib/Alpha",
+            "lib/Alpha/${testmod}",
+            "lib/Alpha/${testmod}/Gamma",
+        );
+    ok( -f, "file $_ exists" )
+        for (
+            "lib/Alpha/${testmod}.pm",
+            "lib/Alpha/${testmod}/Gamma.pm",
+            "lib/Alpha/${testmod}/Delta.pm",
+            "lib/Alpha/${testmod}/Gamma/Epsilon.pm",
+            't/001_load.t',
+            't/002_load.t',
+            't/003_load.t',
+            't/004_load.t',
+        );
+    
+    ok(chdir $odir, 'changed back to original directory after testing');
+}
+    
  
  
