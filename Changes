@@ -1,5 +1,12 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.3602 July 22, 2005
+        - Intermediate version not released to CPAN.  After much sweat,
+          moved sub default_values() to new package
+lib/ExtUtils/ModuleMaker/Defaults.pm.
+        - Created sub failsafe() as testing subroutine for
+          t/02_bad_constructor.t.
+
 0.36 July 18, 2005
         - Corrected error pointed out by CPAN tester Scott R. Godin:
           IO::Capture and subclasses were omitted from MANIFEST, 

@@ -2,14 +2,13 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 use vars qw ($VERSION);
-$VERSION = 0.36_01;
+$VERSION = 0.36_02;
 
 use ExtUtils::ModuleMaker::Licenses::Standard;
 use ExtUtils::ModuleMaker::Licenses::Local;
+use ExtUtils::ModuleMaker::Defaults qw( default_values );
 use File::Path;
 use Carp;
-
-#################### PACKAGE VARIABLES #################### 
 
 #################### PUBLICLY CALLABLE METHODS ####################
 
@@ -55,7 +54,7 @@ sub new {
     $self->{MANIFEST} = ['MANIFEST'];
     $self->verify_values();
 
-    return ($self);
+    return $self;
 }
 
 #!#!#!#!#
@@ -113,39 +112,40 @@ sub complete_build {
 #             subclassable.  I'm leaving it here so that the defaults
 #             are encapsulated within a subroutine rather than creating
 #             a file-scoped lexical. 
-sub default_values {
+# sub default_values {
     # NAME key is intentionally missing; must cause fatal error
-    my %defaults = (
-        LICENSE  => 'perl',
-        VERSION  => 0.01,
-        ABSTRACT => 'Module abstract (<= 44 characters) goes here',
-        AUTHOR   => {
-            NAME         => 'A. U. Thor',
-            CPANID       => 'AUTHOR',
-            ORGANIZATION => 'XYZ Corp.',
-            WEBSITE      => 'http://a.galaxy.far.far.away/modules',
-            EMAIL        => 'a.u.thor@a.galaxy.far.far.away',
-        },
-        BUILD_SYSTEM    => 'ExtUtils::MakeMaker',
-        COMPACT         => 0,
-        VERBOSE         => 0,
-        INTERACTIVE     => 0,
-        NEED_POD        => 1,
-        NEED_NEW_METHOD => 1,
-        CHANGES_IN_POD  => 0,
-
-        PERMISSIONS => 0755,
-    );
-
-    $defaults{USAGE_MESSAGE} = <<ENDOFUSAGE;
-
-There were problems with your data supplied to ExtUtils::ModuleMaker.
-Please fix the problems listed above and try again.
-
-ENDOFUSAGE
-
-    return ( \%defaults );
-}
+#    my %defaults = (
+#        LICENSE  => 'perl',
+#        VERSION  => 0.01,
+#        ABSTRACT => 'Module abstract (<= 44 characters) goes here',
+#        AUTHOR   => {
+#            NAME         => 'A. U. Thor',
+#            CPANID       => 'AUTHOR',
+#            ORGANIZATION => 'XYZ Corp.',
+#            WEBSITE      => 'http://a.galaxy.far.far.away/modules',
+#            EMAIL        => 'a.u.thor@a.galaxy.far.far.away',
+#        },
+#        BUILD_SYSTEM    => 'ExtUtils::MakeMaker',
+#        COMPACT         => 0,
+#        VERBOSE         => 0,
+#        INTERACTIVE     => 0,
+#        NEED_POD        => 1,
+#        NEED_NEW_METHOD => 1,
+#        CHANGES_IN_POD  => 0,
+#
+#        PERMISSIONS => 0755,
+#    );
+#
+#    $defaults{USAGE_MESSAGE} = <<ENDOFUSAGE;
+#
+#There were problems with your data supplied to ExtUtils::ModuleMaker.
+#Please fix the problems listed above and try again.
+#
+#ENDOFUSAGE
+#
+#    return ( \%defaults );
+#     return \%default_values;
+# }
 
 #!#!#!#!#
 ##   6 ##
@@ -157,13 +157,14 @@ ENDOFUSAGE
 # Comments  : 
 sub verify_values {
     my $self = shift;
-    my @errors;
+    my @errors = ();
 
     push( @errors, 'NAME is required' )
       unless ( $self->{NAME} );
     push( @errors, 'Module NAME contains illegal characters' )
       unless ( $self->{NAME} and $self->{NAME} =~ m/^[\w:]+$/ );
     push( @errors, 'ABSTRACTs are limited to 44 characters' )
+#    push( @errors, "$self->{ABSTRACT} : ABSTRACTs are limited to 44 characters" )
       if ( length( $self->{ABSTRACT} ) > 44 );
     push( @errors, 'CPAN IDs are 3-9 characters' )
       if ( $self->{AUTHOR}{CPANID} !~ m/^\w{3,9}$/ );
@@ -175,8 +176,8 @@ sub verify_values {
       unless ( Verify_Local_License( $self->{LICENSE} )
         || Verify_Standard_License( $self->{LICENSE} ) );
 
-    return () unless (@errors);
-    $self->death_message(@errors);
+    return unless (@errors);
+    $self->death_message(\@errors);
 }
 
 #!#!#!#!#
@@ -315,7 +316,7 @@ sub module_value {
         return ( $self->{ $keys[0] }{ $keys[1] } );
     }
     else {
-        return ();
+        return;
     }
 }
 
@@ -328,7 +329,7 @@ sub print_file {
 
     local *FILE;
     open( FILE, ">$self->{Base_Dir}/$filename" )
-      or $self->death_message("Could not write '$filename', $!");
+      or $self->death_message( [ "Could not write '$filename', $!" ] );
     print FILE ($page);
     close FILE;
 }
@@ -346,14 +347,15 @@ sub check_dir {
     my $self = shift;
 
     return mkpath( \@_, $self->{VERBOSE}, $self->{PERMISSIONS} );
-    $self->death_message("Can't create a directory: $!");
+    $self->death_message( [ "Can't create a directory: $!" ] );
 }
 
 #!#!#!#!#
 ##  20 ##
 sub death_message {
     my $self = shift;
-    my @errors = @_;
+    my $errorref = shift;
+    my @errors = @{$errorref};
 
     croak( join "\n", @errors, '', $self->{USAGE_MESSAGE} )
       unless $self->{INTERACTIVE};
@@ -365,7 +367,7 @@ sub death_message {
             'Oops, there are the following errors:', @errors, '' );
         return 1;
     } else {
-        return (); # because verify_values() returns empty list if AOK
+        return; # because verify_values() returns empty list if AOK
     }
 }
 
@@ -389,7 +391,7 @@ $content
 ENDOFSTUFF
 
     $string =~ s/\n ====/\n=/g;
-    return ($string);
+    return $string;
 }
 
 #!#!#!#!#
@@ -413,7 +415,7 @@ EOFBLOCK
 EOFBLOCK
 
     $tail =~ s/\n ====/\n=/g;
-    return ( join( '', $head, $section, $tail ) );
+    return join( '', $head, $section, $tail );
 }
 
 #!#!#!#!#
@@ -447,7 +449,7 @@ BEGIN {
 
 EOFBLOCK
 
-    return ($string);
+    return $string;
 }
 
 # #!#!#!#!#
@@ -470,12 +472,12 @@ sub new
 
     my $self = bless ({}, ref ($class) || $class);
 
-    return ($self);
+    return $self;
 }
 
 EOFBLOCK
 
-    return ($string);
+    return $string;
 }
 
 #!#!#!#!#
@@ -530,7 +532,7 @@ EOFBLOCK
         $self->pod_section( 'SEE ALSO' => 'perl(1).' ),
     );
 
-    return ( $self->pod_wrapper($string) );
+    return $self->pod_wrapper($string);
 }
 
 #!#!#!#!#
@@ -568,7 +570,7 @@ See Also   :
 EOFBLOCK
 
     $string =~ s/\n ====/\n=/g;
-    return ($string);
+    return $string;
 }
 
 #!#!#!#!#
@@ -589,7 +591,7 @@ sub block_final_one {
 
 EOFBLOCK
 
-    return ($string);
+    return $string;
 }
 
 #!#!#!#!#
@@ -640,7 +642,7 @@ $build_instructions
 If you are on a windows box you should use 'nmake' rather than 'make'.
 EOF
 
-    return ($page);
+    return $page;
 }
 
 #!#!#!#!#
@@ -674,7 +676,7 @@ $self->{VERSION} $self->{timestamp}
 EOF
     }
 
-    return ($page);
+    return $page;
 }
 
 #!#!#!#!#
@@ -696,7 +698,7 @@ TODO list for Perl module $self->{NAME}
 
 EOF
 
-    return ($page);
+    return $page;
 }
 
 #!#!#!#!#
@@ -766,7 +768,7 @@ EOF
     )->create_build_script;
 EOF
 
-    return ($page);
+    return $page;
 
 }
 
@@ -812,7 +814,7 @@ Module::Build::Compat->run_build_pl(args => \@ARGV);
 Module::Build::Compat->write_makefile();
 EOF
 
-    return ($page);
+    return $page;
 }
 
 #!#!#!#!#
@@ -866,7 +868,7 @@ EOF
 
     }
 
-    return ($page);
+    return $page;
 }
 
 sub partial_dump {
