@@ -13,7 +13,10 @@ require Exporter;
     check_MakefilePL 
     check_pm_file
     make_compact
+    failsafe
 ); 
+use File::Temp qw| tempdir |;
+use Cwd;
 *ok = *Test::More::ok;
 *is = *Test::More::is;
 *like = *Test::More::like;
@@ -122,6 +125,19 @@ sub constructor_present {
     } else {
         isnt( $constructorcount, 0, "constructor correctly present in module");
     }
+}
+
+sub failsafe {
+   my ($argslistref, $pattern, $message) = @_;
+   my $odir = cwd();
+   my ($tdir, $mod);
+   $tdir = tempdir( CLEANUP => 1);
+   ok(chdir $tdir, 'changed to temp directory for testing');
+   local $@ = undef;
+   eval { $mod  = ExtUtils::ModuleMaker->new (@$argslistref); };
+   like($@, qr/$pattern/, $message);
+
+   ok(chdir $odir, 'changed back to original directory after testing');
 }
 
 1;

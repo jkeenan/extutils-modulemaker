@@ -8,43 +8,51 @@ local $^W = 1;
 use Data::Dumper;
 
 BEGIN { use_ok( 'ExtUtils::ModuleMaker' ); }
-BEGIN { use_ok( 'File::Temp', qw| tempdir |); }
-BEGIN { use_ok( 'Cwd' ); }
+use lib ("./t/testlib");
+use _Auxiliary qw(
+    failsafe
+);
 
 
 ###########################################################################
 
 failsafe([ 'NAME' ], "^Must be hash or balanced list of key-value pairs:",
-    "Constructor correctly failed due to odd number of arguments");
+    "Constructor correctly failed due to odd number of arguments"
+);
 
 failsafe( [ 'NAME' => 'Jim', 'ABSTRACT' ], 
     "^Must be hash or balanced list of key-value pairs:",
-    "Constructor correctly failed due to odd number of arguments");
+    "Constructor correctly failed due to odd number of arguments"
+);
 
 failsafe( [
     'ABSTRACT' => 'The quick brown fox jumps over the lazy dog',
 ], 
     "^NAME is required",
-    "Constructor correctly failed due to lack of NAME for module");
+    "Constructor correctly failed due to lack of NAME for module"
+);
 
 failsafe( [
     'NAME' => 'My::B!ad::Module',
 ], 
     "^Module NAME contains illegal characters",
-    "Constructor correctly failed due to illegal characters in module name");
+    "Constructor correctly failed due to illegal characters in module name"
+);
 
 failsafe( [
     'NAME' => "My'BadModule",
 ], 
     "^Module NAME contains illegal characters",
-    "Perl 4-style single-quote path separators no longer supported");
+    "Perl 4-style single-quote path separators no longer supported"
+);
 
 failsafe( [
     'NAME'     => 'ABC::XYZ',
     'ABSTRACT' => '123456789012345678901234567890123456789012345',
 ], 
     "^ABSTRACTs are limited to 44 characters",
-    "Constructor correctly failed due to ABSTRACT > 44 characters");
+    "Constructor correctly failed due to ABSTRACT > 44 characters"
+);
 
 failsafe( [
     'NAME'     => 'ABC::DEF',
@@ -54,7 +62,8 @@ failsafe( [
        },
 ], 
     "^CPAN IDs are 3-9 characters",
-    "Constructor correctly failed due to CPANID > 9 characters");
+    "Constructor correctly failed due to CPANID > 9 characters"
+);
 
 failsafe( [
     'NAME'     => 'ABC::XYZ',
@@ -64,14 +73,16 @@ failsafe( [
        },
 ], 
     "^CPAN IDs are 3-9 characters",
-    "Constructor correctly failed due to CPANID < 3 characters");
+    "Constructor correctly failed due to CPANID < 3 characters"
+);
 
 failsafe( [
     'NAME'     => 'ABC::XYZ',
     'CPANID'   => 'JKEENAN',
 ], 
     "^CPANID improper top-level key",
-    "Constructor correctly failed; argument must be in 2nd-level hash");
+    "Constructor correctly failed; argument must be in 2nd-level hash"
+);
 
 failsafe( [
     'NAME'     => 'ABC::XYZ',
@@ -81,7 +92,8 @@ failsafe( [
        },
 ], 
     "^EMAIL addresses need to have an at sign",
-    "Constructor correctly failed; e-mail must have '\@' sign");
+    "Constructor correctly failed; e-mail must have '\@' sign"
+);
 
 failsafe( [
     'NAME'     => 'ABC::XYZ',
@@ -91,24 +103,14 @@ failsafe( [
        },
 ], 
     "^WEBSITEs should start with an \"http:\" or \"https:\"",
-    "Constructor correctly failed; websites start 'http' or 'https'");
+    "Constructor correctly failed; websites start 'http' or 'https'"
+);
 
 failsafe( [
     'NAME'     => 'ABC::XYZ',
     'LICENSE'  => 'dka;fkkj3o9jflvbkja0 lkasd;ldfkJKD38kdd;llk45',
 ], 
     "^LICENSE is not recognized",
-    "Constructor correctly failed due to unrecognized LICENSE");
+    "Constructor correctly failed due to unrecognized LICENSE"
+);
 
-sub failsafe {
-   my ($argslistref, $pattern, $message) = @_;
-   my $odir = cwd();
-   my ($tdir, $mod);
-   $tdir = tempdir( CLEANUP => 1);
-   ok(chdir $tdir, 'changed to temp directory for testing');
-   local $@ = undef;
-   eval { $mod  = ExtUtils::ModuleMaker->new (@$argslistref); };
-   like($@, qr/$pattern/, $message);
-
-   ok(chdir $odir, 'changed back to original directory after testing');
-}

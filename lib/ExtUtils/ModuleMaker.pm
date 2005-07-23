@@ -102,52 +102,6 @@ sub complete_build {
 #################### INTERNAL SUBROUTINES ####################
 
 #!#!#!#!#
-##   4 ##
-# Usage     : $self->default_values() inside new()
-# Purpose   : Defaults for new()
-# Returns   : A reference to a hash of defaults as the basis for 'new'.
-# Argument  : n/a
-# Throws    : n/a
-# Comments  : Geoff probably put this into a subroutine so it would be 
-#             subclassable.  I'm leaving it here so that the defaults
-#             are encapsulated within a subroutine rather than creating
-#             a file-scoped lexical. 
-# sub default_values {
-    # NAME key is intentionally missing; must cause fatal error
-#    my %defaults = (
-#        LICENSE  => 'perl',
-#        VERSION  => 0.01,
-#        ABSTRACT => 'Module abstract (<= 44 characters) goes here',
-#        AUTHOR   => {
-#            NAME         => 'A. U. Thor',
-#            CPANID       => 'AUTHOR',
-#            ORGANIZATION => 'XYZ Corp.',
-#            WEBSITE      => 'http://a.galaxy.far.far.away/modules',
-#            EMAIL        => 'a.u.thor@a.galaxy.far.far.away',
-#        },
-#        BUILD_SYSTEM    => 'ExtUtils::MakeMaker',
-#        COMPACT         => 0,
-#        VERBOSE         => 0,
-#        INTERACTIVE     => 0,
-#        NEED_POD        => 1,
-#        NEED_NEW_METHOD => 1,
-#        CHANGES_IN_POD  => 0,
-#
-#        PERMISSIONS => 0755,
-#    );
-#
-#    $defaults{USAGE_MESSAGE} = <<ENDOFUSAGE;
-#
-#There were problems with your data supplied to ExtUtils::ModuleMaker.
-#Please fix the problems listed above and try again.
-#
-#ENDOFUSAGE
-#
-#    return ( \%defaults );
-#     return \%default_values;
-# }
-
-#!#!#!#!#
 ##   6 ##
 # Usage     : $self->verify_values() within complete_build()
 # Purpose   : Verify module values are valid and complete.
@@ -164,7 +118,6 @@ sub verify_values {
     push( @errors, 'Module NAME contains illegal characters' )
       unless ( $self->{NAME} and $self->{NAME} =~ m/^[\w:]+$/ );
     push( @errors, 'ABSTRACTs are limited to 44 characters' )
-#    push( @errors, "$self->{ABSTRACT} : ABSTRACTs are limited to 44 characters" )
       if ( length( $self->{ABSTRACT} ) > 44 );
     push( @errors, 'CPAN IDs are 3-9 characters' )
       if ( $self->{AUTHOR}{CPANID} !~ m/^\w{3,9}$/ );
@@ -176,7 +129,7 @@ sub verify_values {
       unless ( Verify_Local_License( $self->{LICENSE} )
         || Verify_Standard_License( $self->{LICENSE} ) );
 
-    return unless (@errors);
+    return unless @errors;
     $self->death_message(\@errors);
 }
 
@@ -367,7 +320,7 @@ sub death_message {
             'Oops, there are the following errors:', @errors, '' );
         return 1;
     } else {
-        return; # because verify_values() returns empty list if AOK
+        return;
     }
 }
 
@@ -905,7 +858,7 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
 =head1 VERSION
 
-This document references version 0.36_01 of ExtUtils::ModuleMaker, released
+This document references version 0.36_02 of ExtUtils::ModuleMaker, released
 to CPAN on July 18, 2005.
 
 =head1 DESCRIPTION
