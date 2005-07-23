@@ -1,5 +1,11 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.3603 July 23, 2005
+        - Intermediate version not released to CPAN.  Starting to move
+          standard copy to Defaults::standard_text(). Realized that
+block_final_one() was making no use of $module, so eliminated $module
+from sub's argument list.
+
 0.3602 July 22, 2005
         - Intermediate version not released to CPAN.  After much sweat,
           moved sub default_values() to new package

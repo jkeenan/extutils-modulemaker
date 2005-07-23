@@ -54,14 +54,68 @@ my %pod_wrapper = (
 
  ====cut
 
-############################################# main pod documentation end ##
+#################### main pod documentation end ###################
 
 ',
 );
 
+my $block_new_method = <<'EOFBLOCK';
+
+sub new
+{
+    my ($class, %parameters) = @_;
+
+    my $self = bless ({}, ref ($class) || $class);
+
+    return $self;
+}
+
+EOFBLOCK
+
+my $description = <<EOFBLOCK;
+Stub documentation for this module was created by ExtUtils::ModuleMaker.
+It looks like the author of the extension was negligent enough
+to leave the stub unedited.
+
+Blah blah blah.
+EOFBLOCK
+
+my $subroutine_header = <<EOFBLOCK;
+
+#################### subroutine header begin ####################
+
+ ====head2 sample_function
+
+ Usage     : How to use this function/method
+ Purpose   : What it does
+ Returns   : What it returns
+ Argument  : What it wants to know
+ Throws    : Exceptions and other anomolies
+ Comments  : This is a sample subroutine header.
+           : It is polite to include more pod and fewer comments.
+
+See Also   : 
+
+ ====cut
+
+#################### subroutine header end ####################
+
+EOFBLOCK
+
+my $block_final_one = <<EOFBLOCK;
+
+1;
+# The preceding line will help the module return a true value
+
+EOFBLOCK
+
 sub standard_text {
     my %standard_text = (
         pod_wrapper => \%pod_wrapper,
+	block_new_method => $block_new_method,
+	block_module_header_description => $description,
+	subroutine_header => $subroutine_header,
+	block_final_one => $block_final_one,
     );
     return { %standard_text };
 }

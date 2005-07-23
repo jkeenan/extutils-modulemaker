@@ -174,7 +174,8 @@ sub build_page {
          : ''
     );
 
-    $page .= $self->block_final_one($module);
+#    $page .= $self->block_final_one($module);
+    $page .= $self->block_final_one();
     return ($module, $page);
 }
 
@@ -352,22 +353,6 @@ ENDOFSTUFF
 ##  23 ##
 sub pod_wrapper {
     my ( $self, $section ) = @_;
-
-#    my $head = <<EOFBLOCK;
-#
-############################################ main pod documentation begin ##
-## Below is the stub of documentation for your module. You better edit it!
-#
-#EOFBLOCK
-#
-#    my $tail = <<EOFBLOCK;
-#
-# ====cut
-#
-############################################## main pod documentation end ##
-#
-#EOFBLOCK
-
     my ($head, $tail);
     $head = $self->{standard}{pod_wrapper}{head};
     $tail = $self->{standard}{pod_wrapper}{tail};
@@ -421,20 +406,21 @@ EOFBLOCK
 sub block_new_method {
     my ( $self, $module ) = @_;
 
-    my $string = <<'EOFBLOCK';
-
-sub new
-{
-    my ($class, %parameters) = @_;
-
-    my $self = bless ({}, ref ($class) || $class);
-
-    return $self;
-}
-
-EOFBLOCK
-
-    return $string;
+#    my $string = <<'EOFBLOCK';
+#
+#sub new
+#{
+#    my ($class, %parameters) = @_;
+#
+#    my $self = bless ({}, ref ($class) || $class);
+#
+#    return $self;
+#}
+#
+#EOFBLOCK
+#
+#    return $string;
+    $self->{standard}{block_new_method};
 }
 
 #!#!#!#!#
@@ -449,14 +435,7 @@ EOFBLOCK
 sub block_module_header {
     my ( $self, $module ) = @_;
 
-    my $description = <<EOFBLOCK;
-Stub documentation for this module was created by ExtUtils::ModuleMaker.
-It looks like the author of the extension was negligent enough
-to leave the stub unedited.
-
-Blah blah blah.
-EOFBLOCK
-
+    my $description = $self->{standard}{block_module_header_description};
     my $string = join(
         '',
         $self->pod_section(
@@ -503,29 +482,7 @@ EOFBLOCK
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub block_subroutine_header {
     my ( $self, $module ) = @_;
-
-    my $string = <<EOFBLOCK;
-
-################################################ subroutine header begin ##
-
- ====head2 sample_function
-
- Usage     : How to use this function/method
- Purpose   : What it does
- Returns   : What it returns
- Argument  : What it wants to know
- Throws    : Exceptions and other anomolies
- Comments  : This is a sample subroutine header.
-           : It is polite to include more pod and fewer comments.
-
-See Also   : 
-
- ====cut
-
-################################################## subroutine header end ##
-
-EOFBLOCK
-
+    my $string = $self->{standard}{subroutine_header};
     $string =~ s/\n ====/\n=/g;
     return $string;
 }
@@ -540,14 +497,16 @@ EOFBLOCK
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub block_final_one {
-    my ( $self, $module ) = @_;
+#    my ( $self, $module ) = @_;
+    my $self = shift;
 
-    my $string = <<EOFBLOCK;
+#    my $string = <<EOFBLOCK;
+#
+#1; #this line is important and will help the module return a true value
+#
+#EOFBLOCK
 
-1; #this line is important and will help the module return a true value
-
-EOFBLOCK
-
+    my $string = $self->{standard}{block_final_one};
     return $string;
 }
 
