@@ -5,7 +5,7 @@ local $^W = 1;
 use vars qw ( @ISA @EXPORT_OK );
 require Exporter;
 @ISA = ('Exporter');
-@EXPORT_OK = qw( default_values );
+@EXPORT_OK = qw( default_values standard_text );
 
 my $USAGE = <<ENDOFUSAGE;
 
@@ -38,6 +38,32 @@ sub default_values {
         USAGE_MESSAGE => $USAGE,
     );
     return { %default_values };
+}
+
+#######################################
+
+my %pod_wrapper = (
+    head => '
+
+#################### main pod documentation begin ###################
+## Below is the stub of documentation for your module. 
+## You better edit it!
+
+',
+    tail => '
+
+ ====cut
+
+############################################# main pod documentation end ##
+
+',
+);
+
+sub standard_text {
+    my %standard_text = (
+        pod_wrapper => \%pod_wrapper,
+    );
+    return { %standard_text };
 }
 
 1;

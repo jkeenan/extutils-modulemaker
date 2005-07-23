@@ -2,11 +2,11 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 use vars qw ($VERSION);
-$VERSION = 0.36_02;
+$VERSION = 0.36_03;
 
 use ExtUtils::ModuleMaker::Licenses::Standard;
 use ExtUtils::ModuleMaker::Licenses::Local;
-use ExtUtils::ModuleMaker::Defaults qw( default_values );
+use ExtUtils::ModuleMaker::Defaults qw( default_values standard_text );
 use File::Path;
 use Carp;
 
@@ -53,6 +53,7 @@ sub new {
 
     $self->{MANIFEST} = ['MANIFEST'];
     $self->verify_values();
+    $self->standard();
 
     return $self;
 }
@@ -352,21 +353,24 @@ ENDOFSTUFF
 sub pod_wrapper {
     my ( $self, $section ) = @_;
 
-    my $head = <<EOFBLOCK;
+#    my $head = <<EOFBLOCK;
+#
+############################################ main pod documentation begin ##
+## Below is the stub of documentation for your module. You better edit it!
+#
+#EOFBLOCK
+#
+#    my $tail = <<EOFBLOCK;
+#
+# ====cut
+#
+############################################## main pod documentation end ##
+#
+#EOFBLOCK
 
-########################################### main pod documentation begin ##
-# Below is the stub of documentation for your module. You better edit it!
-
-EOFBLOCK
-
-    my $tail = <<EOFBLOCK;
-
- ====cut
-
-############################################# main pod documentation end ##
-
-EOFBLOCK
-
+    my ($head, $tail);
+    $head = $self->{standard}{pod_wrapper}{head};
+    $tail = $self->{standard}{pod_wrapper}{tail};
     $tail =~ s/\n ====/\n=/g;
     return join( '', $head, $section, $tail );
 }
@@ -836,6 +840,11 @@ sub partial_dump {
     return $d->Dump;
 }
 
+sub standard {
+    my $self = shift;
+    $self->{standard} = standard_text();
+}
+
 1;    #this line is important and will help the module return a true value
 
 #################### DOCUMENTATION ####################
@@ -858,7 +867,7 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
 =head1 VERSION
 
-This document references version 0.36_02 of ExtUtils::ModuleMaker, released
+This document references version 0.36_03 of ExtUtils::ModuleMaker, released
 to CPAN on July 18, 2005.
 
 =head1 DESCRIPTION
