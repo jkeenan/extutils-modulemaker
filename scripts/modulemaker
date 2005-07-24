@@ -81,6 +81,7 @@ Currently Supported Features
     -o   Specify (in quotes) author's organization
     -p   Specify author's CPAN ID
     -P   Omit the stub POD section
+    -q   Flag to omit a constructor from module
     -u   Specify (in quotes) author's name
     -v   Specify a version number for this extension
     -V   Flag for verbose messages during module creation
@@ -120,7 +121,7 @@ At the command-prompt, simply call:
 
 At the command-prompt, call C<modulemaker> with as many options as you can type correctly:
 
-    modulemaker [-CIPVch] [-v version] [-n module_name] [-a abstract]
+    modulemaker [-CIPVchq] [-v version] [-n module_name] [-a abstract]
         [-u author_name] [-p author_CPAN_ID] [-o organization]
         [-w author_website] [-e author_e-mail]
         [-l license_name] [-b build_system]
