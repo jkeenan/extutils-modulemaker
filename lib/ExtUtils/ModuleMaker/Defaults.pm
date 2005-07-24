@@ -15,7 +15,8 @@ Please fix the problems listed above and try again.
 ENDOFUSAGE
 
 sub default_values {
-    my %default_values = (
+#    my %default_values = (
+    return {
         LICENSE  => 'perl',
         VERSION  => 0.01,
         ABSTRACT => 'Module abstract (<= 44 characters) goes here',
@@ -36,8 +37,9 @@ sub default_values {
 
         PERMISSIONS => 0755,
         USAGE_MESSAGE => $USAGE,
-    );
-    return { %default_values };
+#    );
+     }
+#    return { %default_values };
 }
 
 #######################################
@@ -109,6 +111,51 @@ my $block_final_one = <<EOFBLOCK;
 
 EOFBLOCK
 
+my $Makefile_text = q~
+
+use ExtUtils::MakeMaker;
+# See lib/ExtUtils/MakeMaker.pm for details of how to influence
+# the contents of the Makefile that is written.
+WriteMakefile(
+    NAME         => '%s',
+    VERSION_FROM => '%s', # finds \$VERSION
+    AUTHOR       => '%s (%s)',
+    ABSTRACT     => '%s',
+    PREREQ_PM    => {
+                     'Test::Simple' => 0.44,
+                    },
+);
+~;
+
+my %README_text = (
+    eumm_instructions => q~
+perl Makefile.PL
+make
+make test
+make install
+~,
+    mb_instructions => q~
+perl Build.PL
+./Build
+./Build test
+./Build install
+~,
+    readme_top => q~
+
+If this is still here it means the programmer was too lazy to create the readme file.
+
+You can create it now by using the command shown above from this directory.
+
+At the very least you should be able to use this set of instructions
+to install the module...
+
+~,
+    readme_bottom => q~
+
+If you are on a windows box you should use 'nmake' rather than 'make'.
+~,
+);
+
 sub standard_text {
     my %standard_text = (
         pod_wrapper => \%pod_wrapper,
@@ -116,6 +163,8 @@ sub standard_text {
 	block_module_header_description => $description,
 	subroutine_header => $subroutine_header,
 	block_final_one => $block_final_one,
+	Makefile_text => $Makefile_text,
+	README_text => \%README_text,
     );
     return { %standard_text };
 }

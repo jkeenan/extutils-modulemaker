@@ -16,7 +16,8 @@ use _Auxiliary qw(
 );
 
 my $odir = cwd();
-my ($tdir, $mod, $testmod, $filetext, @filelines);
+my ($tdir, $mod, $testmod, $filetext, @makefilelines, @pmfilelines,
+    @readmelines);
 
 ########################################################################
 
@@ -44,33 +45,55 @@ my ($tdir, $mod, $testmod, $filetext, @filelines);
     
     ok($filetext = read_file_string('Makefile.PL'),
         'Able to read Makefile.PL');
-    ok(@filelines = read_file_array("lib/Alpha/${testmod}.pm"),
+    ok(@pmfilelines = read_file_array("lib/Alpha/${testmod}.pm"),
         'Able to read module into array');
 
     # test of main pod wrapper
-    is( (grep {/^#{20} main pod documentation (begin|end)/} @filelines), 2, 
+    is( (grep {/^#{20} main pod documentation (begin|end)/} @pmfilelines), 2, 
         "standard text for POD wrapper found");
 
     # test of block new method
-    is( (grep {/^sub new/} @filelines), 1, 
+    is( (grep {/^sub new/} @pmfilelines), 1, 
         "new method found");
 
     # test of block module header description
-    is( (grep {/^sub new/} @filelines), 1, 
+    is( (grep {/^sub new/} @pmfilelines), 1, 
         "new method found");
 
     # test of stub documentation
-    is( (grep {/^Stub documentation for this module was created/} @filelines), 
+    is( (grep {/^Stub documentation for this module was created/} @pmfilelines), 
         1, 
         "stub documentation found");
 
     # test of subroutine header
-    is( (grep {/^#{20} subroutine header (begin|end)/} @filelines), 2, 
+    is( (grep {/^#{20} subroutine header (begin|end)/} @pmfilelines), 2, 
         "subroutine header found");
 
     # test of final block
-    is( (grep { /^(1;|# The preceding line will help the module return a true value)$/ } @filelines), 2, 
+    is( (grep { /^(1;|# The preceding line will help the module return a true value)$/ } @pmfilelines), 2, 
         "final module block found");
+
+    # test of Makefile text
+    ok(@makefilelines = read_file_array('Makefile.PL'),
+        'Able to read Makefile.PL into array');
+    is( (grep {/^# See lib\/ExtUtils\/MakeMaker.pm for details of how to influence/} @makefilelines), 1, 
+        "Makefile.PL has standard text");
+
+    # test of README text
+    ok(@readmelines = read_file_array('README'),
+        'Able to read README into array');
+    is( (grep {/^pod2text $mod->{NAME}/} @readmelines),
+        1,
+        "README has correct pod2text line");
+    is( (grep {/^If this is still here/} @readmelines),
+        1,
+        "README has correct top part");
+    is( (grep {/^(perl Makefile\.PL|make( (test|install))?)/} @readmelines), 
+        4, 
+        "README has appropriate build instructions for MakeMaker");
+    is( (grep {/^If you are on a windows box/} @readmelines),
+        1,
+        "README has correct bottom part");
 
     ok(chdir $odir, 'changed back to original directory after testing');
 }

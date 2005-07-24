@@ -132,6 +132,8 @@ This will require explicitly importing those subs in Modulemaker.pm.
 (There are also subroutines called interact() in each of the License
 modules which are used in modulemaker by being called in the fully
 qualified manner (lines 50-51).
+ADDENDUM 23 July 2005:  I still haven't
+looked at the two License modules or at interact().
 
 4.  I'm uneasy with the fact that (presumably) every ModuleMaker
 subroutine is a publicly accessible method ... presumably, since almost
@@ -147,6 +149,12 @@ presented there as well.  I would rather restrict subclassing to passing
 different data to the object or overriding the 2 public methods.  Geoff
 would have permitted overriding methods which are called within those
 public methods.
+ADDENDUM 23 July 2005:  Geoff knew what he was doing, even if the result
+was inelegant.  Most of these methods contain heredocs which themselves
+interpolate $self and other variables ... which means the heredocs are
+not easily extractable.  I suspect that, at best, I'll be able to put
+these methods into Defaults.pm, but a subclasser will have to override
+them.
 
 --
 17 July 2005
@@ -155,9 +163,12 @@ public methods.
 warning about an uninitialized value to be emitted.  Source:  line 189
 of ModuleMaker.pm:  my $page = $self->block_begin($module) etc.  I'm
 going to try to refactor this line, as I don't know where precisely the
-warning is coming from.
+warning is coming from.  DONE.
 
 2.  Just noticed that modulemaker has no command-line option to specify
-no new() method in module.
+no new() method in module. DONE.
+
+--
+23 July 2005
 
 

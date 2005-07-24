@@ -170,11 +170,10 @@ sub build_page {
 
     $page .= (
         ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
-        ? $self->block_new_method($module)
-         : ''
+        ? $self->block_new_method()
+        : ''
     );
 
-#    $page .= $self->block_final_one($module);
     $page .= $self->block_final_one();
     return ($module, $page);
 }
@@ -265,13 +264,10 @@ sub module_value {
           if ( exists( ( $module->{ $keys[0] } ) ) );
         return ( $self->{ $keys[0] } );
     }
-    elsif ( scalar(@keys) == 2 ) {
+    else { # only alternative currently possible is @keys == 2
         return ( $module->{ $keys[0] }{ $keys[1] } )
           if ( exists( ( $module->{ $keys[0] }{ $keys[1] } ) ) );
         return ( $self->{ $keys[0] }{ $keys[1] } );
-    }
-    else {
-        return;
     }
 }
 
@@ -404,22 +400,7 @@ EOFBLOCK
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub block_new_method {
-    my ( $self, $module ) = @_;
-
-#    my $string = <<'EOFBLOCK';
-#
-#sub new
-#{
-#    my ($class, %parameters) = @_;
-#
-#    my $self = bless ({}, ref ($class) || $class);
-#
-#    return $self;
-#}
-#
-#EOFBLOCK
-#
-#    return $string;
+    my $self = shift;
     $self->{standard}{block_new_method};
 }
 
@@ -497,17 +478,8 @@ sub block_subroutine_header {
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub block_final_one {
-#    my ( $self, $module ) = @_;
     my $self = shift;
-
-#    my $string = <<EOFBLOCK;
-#
-#1; #this line is important and will help the module return a true value
-#
-#EOFBLOCK
-
-    my $string = $self->{standard}{block_final_one};
-    return $string;
+    $self->{standard}{block_final_one};
 }
 
 #!#!#!#!#
@@ -521,44 +493,14 @@ sub block_final_one {
 sub file_text_README {
     my $self = shift;
 
-    my $build_instructions;
-    if ( $self->{BUILD_SYSTEM} eq 'ExtUtils::MakeMaker' ) {
-
-        $build_instructions = <<EOF;
-perl Makefile.PL
-make
-make test
-make install
-EOF
-
-    }
-    else {
-
-        $build_instructions = <<EOF;
-perl Build.PL
-./Build
-./Build test
-./Build install
-EOF
-
-    }
-
-    my $page = <<EOF;
-pod2text $self->{NAME}.pm > README
-
-If this is still here it means the programmer was too lazy to create the readme file.
-
-You can create it now by using the command shown above from this directory.
-
-At the very least you should be able to use this set of instructions
-to install the module...
-
-$build_instructions
-
-If you are on a windows box you should use 'nmake' rather than 'make'.
-EOF
-
-    return $page;
+    my $build_instructions =
+        ( $self->{BUILD_SYSTEM} eq 'ExtUtils::MakeMaker' )
+            ? $self->{standard}{README_text}{eumm_instructions}
+            : $self->{standard}{README_text}{mb_instructions};
+    return "pod2text $self->{NAME}.pm > README\n" . 
+        $self->{standard}{README_text}{readme_top} .
+	$build_instructions .
+        $self->{standard}{README_text}{readme_bottom};
 }
 
 #!#!#!#!#
@@ -627,21 +569,8 @@ EOF
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub file_text_Makefile {
     my $self = shift;
-    my $page = sprintf q~
-
-use ExtUtils::MakeMaker;
-# See lib/ExtUtils/MakeMaker.pm for details of how to influence
-# the contents of the Makefile that is written.
-WriteMakefile(
-    NAME         => '%s',
-    VERSION_FROM => '%s', # finds \$VERSION
-    AUTHOR       => '%s (%s)',
-    ABSTRACT     => '%s',
-    PREREQ_PM    => {
-                     'Test::Simple' => 0.44,
-                    },
-);
-~,  map { my $s = $_; $s =~ s{'}{\\'}g; $s; }
+    my $page = sprintf $self->{standard}{Makefile_text},
+        map { my $s = $_; $s =~ s{'}{\\'}g; $s; }
     $self->{NAME},
     $self->{FILE},
     $self->{AUTHOR}{NAME},
@@ -1106,7 +1035,8 @@ Thanks to Geoff Avery for inventing and popularizing
 ExtUtils::Modulemaker.  Thanks for bug reports and fixes to David A
 Golden and an anonymous guest on rt.cpan.org.  Thanks for suggestions
 about testing the F<modulemaker> utility to Michael G Schwern on perl.qa
-and A Sinan Unur and Paul Lalli on comp.lang.perl.misc.
+and A Sinan Unur and Paul Lalli on comp.lang.perl.misc.  Thanks for help
+in dealing with a nasty bug in the testing to Perlmonks davidrw and tlm.
 
 =head1 COPYRIGHT
 
