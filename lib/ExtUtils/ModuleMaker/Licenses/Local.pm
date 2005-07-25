@@ -3,129 +3,64 @@ use strict;
 local $^W = 1;
 
 BEGIN {
-	use Exporter ();
-	use vars qw ( @ISA @EXPORT );
-#	$VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
-	@ISA         = qw (Exporter);
-	@EXPORT      = qw (&Get_Local_License &Verify_Local_License);
+    use Exporter ();
+    use vars qw ( @ISA @EXPORT );
+#    $VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
+    @ISA         = qw (Exporter);
+    @EXPORT      = qw (&Get_Local_License &Verify_Local_License);
 }
 
-########################################### main pod documentation begin ##
-# Below is the stub of documentation for your module. You better edit it!
-
-=head1 NAME
-
-ExtUtils::ModuleMaker::Licenses::Local - Templates for the module's License/Copyright
-
-=head1 SYNOPSIS
-
-  use ExtUtils::ModuleMaker::Local::Licenses;
-  blah blah blah
-
-=head1 DESCRIPTION
-
-Stub documentation for this module was created by ExtUtils::ModuleMaker.
-It looks like the author of the extension was negligent enough
-to leave the stub unedited.
-
-Blah blah blah.
-
-=head1 USAGE
-
-=head1 BUGS
-
-=head1 SUPPORT
-
-=head1 AUTHOR
-
-	R. Geoffrey Avery
-	CPAN ID: RGEOFFREY
-	modulemaker@PlatypiVentures.com
-	http://www.PlatypiVentures.com/perl/modules/ModuleMaker.shtml
-
-=head1 COPYRIGHT
-
-Copyright (c) 2002 R. Geoffrey Avery. All rights reserved.
-This program is free software; you can redistribute
-it and/or modify it under the same terms as Perl itself.
-
-The full text of the license can be found in the
-LICENSE file included with this module.
-
-=head1 SEE ALSO
-
-perl(1).
-
-=head1 PUBLIC METHODS
-
-Each public function/method is described here.
-These are how you should interact with this module.
-
-=cut
-
-############################################# main pod documentation end ##
-
 my %licenses =
-			(
-			 looselips		=> { function => \&License_LooseLips,
-								 fullname => 'Loose Lips License (1.0)'
-							   },
-			);
+            (
+             looselips        => { function => \&License_LooseLips,
+                                 fullname => 'Loose Lips License (1.0)'
+                               },
+            );
 
 sub Get_Local_License
 {
-	my ($choice) = @_;
+    my ($choice) = @_;
 
-	$choice = lc ($choice);
-	return ($licenses{$choice}{function}) if (exists $licenses{$choice});
-	return ();
+    $choice = lc ($choice);
+    return ($licenses{$choice}{function}) if (exists $licenses{$choice});
+    return ();
 }
 
 sub Verify_Local_License
 {
-	my ($choice) = @_;
-	return (exists $licenses{lc ($choice)});
+    my ($choice) = @_;
+    return (exists $licenses{lc ($choice)});
 }
 
 sub interact
 {
-	my ($class) = @_;
-	return (bless ({map { ($licenses{$_}{fullname})
-							? ($_ => $licenses{$_}{fullname})
-							: ()
-						} keys (%licenses)
-				   }, ref ($class) || $class));
+    my ($class) = @_;
+    return (bless ({map { ($licenses{$_}{fullname})
+                            ? ($_ => $licenses{$_}{fullname})
+                            : ()
+                        } keys (%licenses)
+                   }, ref ($class) || $class));
 }
 
 sub Display_License
 {
-	my ($self, $choice) = @_;
-	my $p_license = Get_Local_License ($choice);
-	return (join ("\n\n",
-				  "=====================================================================",
-				  "=====================================================================",
-				  $p_license->{LICENSETEXT},
-				  "=====================================================================",
-				  "=====================================================================",
-				  $p_license->{COPYRIGHT},
-				  "=====================================================================",
-				  "=====================================================================",
-				 ));
+    my ($self, $choice) = @_;
+    my $p_license = Get_Local_License ($choice);
+    return (join ("\n\n",
+                  "=====================================================================",
+                  "=====================================================================",
+                  $p_license->{LICENSETEXT},
+                  "=====================================================================",
+                  "=====================================================================",
+                  $p_license->{COPYRIGHT},
+                  "=====================================================================",
+                  "=====================================================================",
+                 ));
 }
-
-################################################ subroutine header begin ##
-
-=head2 License_LooseLips
-
- Purpose   : Get the copyright pod text and LICENSE file text for this license
-
-=cut
-
-################################################## subroutine header end ##
 
 sub License_LooseLips
 {
-	my %license;
+    my %license;
 
 $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is licensed under the...
@@ -149,10 +84,75 @@ the organization.
 Remember, "Loose lips sink ships."
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
-1; #this line is important and will help the module return a true value
-__END__
+1;
 
+#################### DOCUMENTATION ####################
+
+=head1 NAME
+
+ExtUtils::ModuleMaker::Licenses::Local - Templates for the module's License/Copyright
+
+=head1 SYNOPSIS
+
+  use ExtUtils::ModuleMaker::Local::Licenses;
+  blah blah blah
+
+=head1 DESCRIPTION
+
+This package holds subroutines imported and used by
+ExtUtils::ModuleMaker to include license and copyright information in a
+standard Perl module distribution.
+
+=head1 USAGE
+
+This package always exports two functions:
+
+=over 4
+
+=item * C<Get_Local_License>
+
+=item * C<Verify_Local_License>
+
+=back
+
+=head2 License_LooseLips
+
+Purpose   : Get the copyright pod text and LICENSE file text for this license
+
+=head1 BUGS
+
+None known at this time.
+
+=head1 SUPPORT
+
+=head1 AUTHOR/MAINTAINER
+
+ExtUtils::ModuleMaker was originally written in 2001-02 by R. Geoffrey Avery
+(modulemaker [at] PlatypiVentures [dot] com).  Since version 0.33 (July
+2005) it has been maintained by James E. Keenan (jkeenan [at] cpan [dot]
+org).
+
+=head1 SUPPORT
+
+Send email to jkeenan [at] cpan [dot] org.  Please include 'modulemaker'
+in the subject line.
+
+=head1 COPYRIGHT
+
+Copyright (c) 2001-2002 R. Geoffrey Avery.
+Revisions from v0.33 forward (c) 2005 James E. Keenan.  All rights reserved.
+This program is free software; you can redistribute
+it and/or modify it under the same terms as Perl itself.
+
+The full text of the license can be found in the
+LICENSE file included with this module.
+
+=head1 SEE ALSO
+
+F<ExtUtils::ModuleMaker>, F<modulemaker>, perl(1).
+
+=cut
 
