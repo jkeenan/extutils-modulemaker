@@ -21,6 +21,7 @@ t/07_proxy.t
 t/09_mmkr.t
 t/11_miscargs.t
 t/12_standard_text.t
+t/13_license.t
 t/testlib/_Auxiliary.pm
 t/testlib/IO/Capture.pm
 t/testlib/IO/Capture/ErrorMessages.pm

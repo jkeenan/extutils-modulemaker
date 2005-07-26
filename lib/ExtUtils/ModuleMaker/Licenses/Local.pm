@@ -7,62 +7,60 @@ BEGIN {
     use vars qw ( @ISA @EXPORT );
 #    $VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
     @ISA         = qw (Exporter);
-    @EXPORT      = qw (&Get_Local_License &Verify_Local_License);
+    @EXPORT      = qw (Get_Local_License Verify_Local_License);
 }
 
-my %licenses =
-            (
-             looselips        => { function => \&License_LooseLips,
-                                 fullname => 'Loose Lips License (1.0)'
-                               },
-            );
+my %licenses = (
+    looselips => { 
+	function => \&License_LooseLips,
+        fullname => 'Loose Lips License (1.0)',
+    },
+);
 
-sub Get_Local_License
-{
-    my ($choice) = @_;
+sub Get_Local_License {
+    my $choice = shift;
 
     $choice = lc ($choice);
     return ($licenses{$choice}{function}) if (exists $licenses{$choice});
-    return ();
+    return;
 }
 
-sub Verify_Local_License
-{
-    my ($choice) = @_;
+sub Verify_Local_License {
+    my $choice = shift;
     return (exists $licenses{lc ($choice)});
 }
 
-sub interact
-{
-    my ($class) = @_;
-    return (bless ({map { ($licenses{$_}{fullname})
-                            ? ($_ => $licenses{$_}{fullname})
-                            : ()
-                        } keys (%licenses)
-                   }, ref ($class) || $class));
+sub interact {
+    my $class = shift;
+    return (bless (
+        { map { ($licenses{$_}{fullname})
+                     ? ($_ => $licenses{$_}{fullname})
+                     : ()
+              } keys (%licenses)
+        }, ref ($class) || $class)
+    );
 }
 
-sub Display_License
-{
+sub Display_License {
     my ($self, $choice) = @_;
     my $p_license = Get_Local_License ($choice);
     return (join ("\n\n",
-                  "=====================================================================",
-                  "=====================================================================",
-                  $p_license->{LICENSETEXT},
-                  "=====================================================================",
-                  "=====================================================================",
-                  $p_license->{COPYRIGHT},
-                  "=====================================================================",
-                  "=====================================================================",
-                 ));
+        "=====================================================================",
+        "=====================================================================",
+        $p_license->{LICENSETEXT},
+        "=====================================================================",
+        "=====================================================================",
+        $p_license->{COPYRIGHT},
+        "=====================================================================",
+        "=====================================================================",
+    ));
 }
 
 sub License_LooseLips
 {
     my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is licensed under the...
 
 	Loose Lips License
@@ -125,8 +123,6 @@ Purpose   : Get the copyright pod text and LICENSE file text for this license
 =head1 BUGS
 
 None known at this time.
-
-=head1 SUPPORT
 
 =head1 AUTHOR/MAINTAINER
 

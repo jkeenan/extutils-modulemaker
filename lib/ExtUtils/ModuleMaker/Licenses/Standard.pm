@@ -3,47 +3,50 @@ use strict;
 local $^W = 1;
 
 BEGIN {
-	use Exporter ();
-	use vars qw ( @ISA @EXPORT );
-#	$VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
-	@ISA         = qw (Exporter);
-	@EXPORT      = qw (&Get_Standard_License &Verify_Standard_License);
+    use Exporter ();
+    use vars qw ( @ISA @EXPORT );
+#    $VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
+    @ISA         = qw (Exporter);
+    @EXPORT      = qw (&Get_Standard_License &Verify_Standard_License);
 }
 
-########################################### main pod documentation begin ##
-# Below is the stub of documentation for your module. You better edit it!
+#################### DOCUMENTATION ####################
 
 =head1 NAME
 
-ExtUtils::ModuleMaker::Licenses::Standard - Templates for the module's License/Copyright
+ExtUtils::ModuleMaker::Licenses::Local - Templates for the module's License/Copyright
 
 =head1 SYNOPSIS
 
-  use ExtUtils::ModuleMaker::Licenses::Standard;
+  use ExtUtils::ModuleMaker::Local::Licenses;
   blah blah blah
 
 =head1 DESCRIPTION
 
-This module holds the licence and copyright information for use by ExtUtils::ModuleMaker.
-If you want to add a local license it should not be done here but in the module
-ExtUtils::ModuleMaker::Licenses::Local.
-
-=head1 USAGE
+This package holds subroutines imported and used by
+ExtUtils::ModuleMaker to include license and copyright information in a
+standard Perl module distribution.
 
 =head1 BUGS
 
+None known at this time.
+
+=head1 AUTHOR/MAINTAINER
+
+ExtUtils::ModuleMaker was originally written in 2001-02 by R. Geoffrey Avery
+(modulemaker [at] PlatypiVentures [dot] com).  Since version 0.33 (July
+2005) it has been maintained by James E. Keenan (jkeenan [at] cpan [dot]
+org).
+
 =head1 SUPPORT
 
-=head1 AUTHOR
-
-	R. Geoffrey Avery
-	CPAN ID: RGEOFFREY
-	modulemaker@PlatypiVentures.com
-	http://www.PlatypiVentures.com/perl/modules/ModuleMaker.shtml
+Send email to jkeenan [at] cpan [dot] org.  Please include 'modulemaker'
+in the subject line.
 
 =head1 COPYRIGHT
 
-Copyright (c) 2002 R. Geoffrey Avery. All rights reserved.
+Copyright (c) 2001-2002 R. Geoffrey Avery.
+Revisions from v0.33 forward (c) 2005 James E. Keenan.  All rights reserved.
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
 
@@ -52,7 +55,9 @@ LICENSE file included with this module.
 
 =head1 SEE ALSO
 
-perl(1).
+F<ExtUtils::ModuleMaker>, F<modulemaker>, perl(1).
+
+=cut
 
 =head1 PUBLIC METHODS
 
@@ -61,209 +66,204 @@ These are how you should interact with this module.
 
 =cut
 
-############################################# main pod documentation end ##
+my %licenses = (
+    perl            => { function => \&License_Perl,
+                         fullname =>'Same terms as Perl itself',
+                       },
 
-my %licenses =
-			(
-			 perl			=> { function => \&License_Perl,
-								 fullname =>'Same terms as Perl itself',
-							   },
-
-			 apache			=> { function => \&License_Apache_1_1,
-								 fullname => ''
-							   },
-			 apache_1_1		=> { function => \&License_Apache_1_1,
-								 fullname => 'Apache Software License (1.1)'
-							   },
-			 artistic		=> { function => \&License_Artistic,
-								 fullname => 'Artistic License'
-							   },
-			 artisticA		=> { function => \&License_Artistic_w_Aggregation,
-								 fullname => 'Artistic License w/ Aggregation'
-							   },
-			 r_bsd			=> { function => \&License_r_BSD,
-								 fullname => 'BSD License(Raw)'
-							   },
-			 bsd			=> { function => \&License_BSD,
-								 fullname => 'BSD License'
-							   },
-			 gpl			=> { function => \&License_GPL_2,
-								 fullname => ''
-							   },
-			 gpl_2			=> { function => \&License_GPL_2,
-								 fullname => 'GPL - General Public License (2)'
-							   },
-			 ibm			=> { function => \&License_IBM_1_0,
-								 fullname => ''
-							   },
-			 ibm_1_0		=> { function => \&License_IBM_1_0,
-								 fullname => 'IBM Public License Version (1.0)'
-							   },
-			 intel			=> { function => \&License_Intel,
-								 fullname => 'Intel (BSD+)'
-							   },
-			 jabber			=> { function => \&License_Jabber_1_0,
-								 fullname => ''
-							   },
-			 jabber_1_0		=> { function => \&License_Jabber_1_0,
-								 fullname => 'Jabber (1.0)'
-							   },
-			 lgpl			=> { function => \&License_LGPL_2_1,
-								 fullname => ''
-							   },
-			 lgpl_2_1		=> { function => \&License_LGPL_2_1,
-								 fullname => 'LGPL - GNU Lesser General Public License (2.1)'
-							   },
-			 mit			=> { function => \&License_MIT,
-								 fullname => 'MIT License'
-							   },
-			 mitre			=> { function => \&License_MITRE,
-								 fullname => 'CVW - MITRE Collaborative Virtual Workspace'
-							   },#mitre includes gpl 2.0 and mozilla 1.0
-			 mozilla		=> { function => \&License_Mozilla_1_1,
-								 fullname => ''
-							   },
-			 mozilla_1_1	=> { function => \&License_Mozilla_1_1,
-								 fullname => 'Mozilla Public License (1.1)'
-							   },
-			 mozilla_1_0	=> { function => \&License_Mozilla_1_0,
-								 fullname => 'Mozilla Public License (1.0)'
-							   },
-			 mpl			=> { function => \&License_Mozilla_1_1,
-								 fullname => ''
-							   },
-			 mpl_1_1		=> { function => \&License_Mozilla_1_1,
-								 fullname => ''
-							   },
-			 mpl_1_0		=> { function => \&License_Mozilla_1_0,
-								 fullname => ''
-							   },
-			 nethack		=> { function => \&License_Nethack,
-								 fullname => 'Nethack General Public License'
-							   },
-			 nokia			=> { function => \&License_Nokia_1_0a,
-								 fullname => ''
-							   },
-			 nokos			=> { function => \&License_Nokia_1_0a,
-								 fullname => ''
-							   },
-			 nokia_1_0a		=> { function => \&License_Nokia_1_0a,
-								 fullname => 'Nokia Open Source License(1.0a)'
-							   },
-			 nokos_1_0a		=> { function => \&License_Nokia_1_0a,
-								 fullname => ''
-							   },
-			 python			=> { function => \&License_Python,
-								 fullname => 'Python License'
-							   },
-			 q				=> { function => \&License_Q_1_0,
-								 fullname => ''
-							   },
-			 q_1_0			=> { function => \&License_Q_1_0,
-								 fullname => 'Q Public License (1.0)'
-							   },
-			 ricoh			=> { function => \&License_Ricoh_1_0,
-								 fullname => ''
-							   },
-			 ricoh_1_0		=> { function => \&License_Ricoh_1_0,
-								 fullname => 'Ricoh Source Code Public License (1.0)'
-							   },
-			 sun			=> { function => \&License_Sun,
-								 fullname => ''
-							   },
-			 sissl			=> { function => \&License_Sun,
-								 fullname => 'Sun Internet Standards Source License'
-							   },
-			 sleepycat		=> { function => \&License_Sleepycat,
-								 fullname => 'The Sleepycat License'
-							   },
-			 vovida			=> { function => \&License_Vovida_1_0,
-								 fullname => ''
-							   },
-			 vovida_1_0		=> { function => \&License_Vovida_1_0,
-								 fullname => 'Vovida Software License (1.0)'
-							   },
-			 zlib			=> { function => \&License_ZLIB,
-								 fullname => 'zlib/libpng License'
-							   },
-			 libpng			=> { function => \&License_ZLIB,
-								 fullname => ''
-							   },
+    apache          => { function => \&License_Apache_1_1,
+                         fullname => ''
+                       },
+    apache_1_1      => { function => \&License_Apache_1_1,
+                         fullname => 'Apache Software License (1.1)'
+                       },
+    artistic        => { function => \&License_Artistic,
+                         fullname => 'Artistic License'
+                       },
+    artisticA       => { function => \&License_Artistic_w_Aggregation,
+                         fullname => 'Artistic License w/ Aggregation'
+                       },
+    r_bsd           => { function => \&License_r_BSD,
+                         fullname => 'BSD License(Raw)'
+                       },
+    bsd             => { function => \&License_BSD,
+                         fullname => 'BSD License'
+                       },
+    gpl             => { function => \&License_GPL_2,
+                         fullname => ''
+                       },
+    gpl_2           => { function => \&License_GPL_2,
+                         fullname => 'GPL - General Public License (2)'
+                       },
+    ibm             => { function => \&License_IBM_1_0,
+                         fullname => ''
+                       },
+    ibm_1_0         => { function => \&License_IBM_1_0,
+                         fullname => 'IBM Public License Version (1.0)'
+                       },
+    intel           => { function => \&License_Intel,
+                         fullname => 'Intel (BSD+)'
+                       },
+    jabber          => { function => \&License_Jabber_1_0,
+                         fullname => ''
+                       },
+    jabber_1_0      => { function => \&License_Jabber_1_0,
+                         fullname => 'Jabber (1.0)'
+                       },
+    lgpl            => { function => \&License_LGPL_2_1,
+                         fullname => ''
+                       },
+    lgpl_2_1        => { function => \&License_LGPL_2_1,
+                         fullname => 'LGPL - GNU Lesser General Public License (2.1)'
+                       },
+    mit             => { function => \&License_MIT,
+                         fullname => 'MIT License'
+                       },
+    mitre           => { function => \&License_MITRE,
+                         fullname => 'CVW - MITRE Collaborative Virtual Workspace'
+                       },#mitre includes gpl 2.0 and mozilla 1.0
+    mozilla         => { function => \&License_Mozilla_1_1,
+                         fullname => ''
+                       },
+    mozilla_1_1     => { function => \&License_Mozilla_1_1,
+                         fullname => 'Mozilla Public License (1.1)'
+                       },
+    mozilla_1_0     => { function => \&License_Mozilla_1_0,
+                         fullname => 'Mozilla Public License (1.0)'
+                       },
+    mpl             => { function => \&License_Mozilla_1_1,
+                         fullname => ''
+                       },
+    mpl_1_1         => { function => \&License_Mozilla_1_1,
+                         fullname => ''
+                       },
+    mpl_1_0         => { function => \&License_Mozilla_1_0,
+                         fullname => ''
+                       },
+    nethack         => { function => \&License_Nethack,
+                         fullname => 'Nethack General Public License'
+                       },
+    nokia           => { function => \&License_Nokia_1_0a,
+                         fullname => ''
+                       },
+    nokos           => { function => \&License_Nokia_1_0a,
+                         fullname => ''
+                       },
+    nokia_1_0a      => { function => \&License_Nokia_1_0a,
+                         fullname => 'Nokia Open Source License(1.0a)'
+                       },
+    nokos_1_0a      => { function => \&License_Nokia_1_0a,
+                         fullname => ''
+                       },
+    python          => { function => \&License_Python,
+                         fullname => 'Python License'
+                       },
+    q               => { function => \&License_Q_1_0,
+                         fullname => ''
+                       },
+    q_1_0           => { function => \&License_Q_1_0,
+                         fullname => 'Q Public License (1.0)'
+                       },
+    ricoh           => { function => \&License_Ricoh_1_0,
+                         fullname => ''
+                       },
+    ricoh_1_0       => { function => \&License_Ricoh_1_0,
+                         fullname => 'Ricoh Source Code Public License (1.0)'
+                       },
+    sun             => { function => \&License_Sun,
+                         fullname => ''
+                       },
+    sissl           => { function => \&License_Sun,
+                         fullname => 'Sun Internet Standards Source License'
+                       },
+    sleepycat       => { function => \&License_Sleepycat,
+                         fullname => 'The Sleepycat License'
+                       },
+    vovida          => { function => \&License_Vovida_1_0,
+                         fullname => ''
+                       },
+    vovida_1_0      => { function => \&License_Vovida_1_0,
+                         fullname => 'Vovida Software License (1.0)'
+                       },
+    zlib            => { function => \&License_ZLIB,
+                         fullname => 'zlib/libpng License'
+                       },
+    libpng          => { function => \&License_ZLIB,
+                         fullname => ''
+                       },
 #not yet installed
-#			 python_2_1_1	=> { function => undef,
-#								 fullname => ''
-#							   },
-#			 commonpublic	=> { function => undef,
-#								 fullname => ''
-#							   },
-#			 applepublic	=> { function => undef,
-#								 fullname => ''
-#							   },
-#			 xnet			=> { function => undef,
-#								 fullname => ''
-#							   },
-#			 sunpublic		=> { function => undef,
-#								 fullname => ''
-#							   },
-#			 eiffel			=> { function => undef,
-#								 fullname => ''
-#							   },
-#			 w3c			=> { function => undef,
-#								 fullname => ''
-#							   },
-#			 motosoto		=> { function => undef,
-#								 fullname => ''
-#							   },
-#			 opengroup		=> { function => undef,
-#								 fullname => ''
-#							   },
-#			 zopepublic		=> { function => undef,
-#								 fullname => ''
-#							   },
-#			 u_illinois_ncsa=> { function => undef,
-#								 fullname => ''
-#							   },
-			);
+#             python_2_1_1    => { function => undef,
+#                                 fullname => ''
+#                               },
+#             commonpublic    => { function => undef,
+#                                 fullname => ''
+#                               },
+#             applepublic    => { function => undef,
+#                                 fullname => ''
+#                               },
+#             xnet            => { function => undef,
+#                                 fullname => ''
+#                               },
+#             sunpublic        => { function => undef,
+#                                 fullname => ''
+#                               },
+#             eiffel            => { function => undef,
+#                                 fullname => ''
+#                               },
+#             w3c            => { function => undef,
+#                                 fullname => ''
+#                               },
+#             motosoto        => { function => undef,
+#                                 fullname => ''
+#                               },
+#             opengroup        => { function => undef,
+#                                 fullname => ''
+#                               },
+#             zopepublic        => { function => undef,
+#                                 fullname => ''
+#                               },
+#             u_illinois_ncsa=> { function => undef,
+#                                 fullname => ''
+#                               },
+            );
 
-sub Get_Standard_License
-{
-	my ($choice) = @_;
+sub Get_Standard_License {
+    my $choice = shift;
 
-	$choice = lc ($choice);
-	return ($licenses{$choice}{function}) if (exists $licenses{$choice});
-	return ();
+    $choice = lc ($choice);
+    return ($licenses{$choice}{function}) if (exists $licenses{$choice});
+    return;
 }
 
-sub Verify_Standard_License
-{
-	my ($choice) = @_;
-	return (exists $licenses{lc ($choice)});
+sub Verify_Standard_License {
+    my $choice = shift;
+    return (exists $licenses{lc ($choice)});
 }
 
-sub interact
-{
-	my ($class) = @_;
-	return (bless ({map { ($licenses{$_}{fullname})
-							? ($_ => $licenses{$_}{fullname})
-							: ()
-						} keys (%licenses)
-				   }, ref ($class) || $class));
+sub interact {
+    my $class = shift;
+    return (bless (
+        { map { ($licenses{$_}{fullname})
+                     ? ($_ => $licenses{$_}{fullname})
+                     : ()
+              } keys (%licenses)
+        }, ref ($class) || $class)
+    );
 }
 
-sub Display_License
-{
-	my ($self, $choice) = @_;
-	my $p_license = Get_Standard_License ($choice);
-	return (join ("\n\n",
-				  "=====================================================================",
-				  "=====================================================================",
-				  $p_license->{LICENSETEXT},
-				  "=====================================================================",
-				  "=====================================================================",
-				  $p_license->{COPYRIGHT},
-				  "=====================================================================",
-				  "=====================================================================",
-				 ));
+sub Display_License {
+    my ($self, $choice) = @_;
+    my $p_license = Get_Standard_License ($choice);
+    return (join ("\n\n",
+        "=====================================================================",
+        "=====================================================================",
+        $p_license->{LICENSETEXT},
+        "=====================================================================",
+        "=====================================================================",
+        $p_license->{COPYRIGHT},
+        "=====================================================================",
+        "=====================================================================",
+    ));
 }
 
 ################################################ subroutine header begin ##
@@ -276,11 +276,10 @@ sub Display_License
 
 ################################################## subroutine header end ##
 
-sub License_Apache_1_1
-{
-	my %license;
+sub License_Apache_1_1 {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	Apache Software License (Version 1.1)
@@ -289,7 +288,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 Apache Software License
 Version 1.1
 
@@ -347,7 +346,7 @@ at the National Center for Supercomputing Applications, University of Illinois,
 Urbana-Champaign.
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -360,11 +359,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_Artistic
-{
-	my %license;
+sub License_Artistic {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	The Artistic License
@@ -373,7 +371,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 The Artistic License
 
 Preamble
@@ -478,14 +476,13 @@ PURPOSE.
 The End
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
-sub License_Artistic_w_Aggregation
-{
-	my %license;
+sub License_Artistic_w_Aggregation {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	The Artistic License (with Aggregation clause)
@@ -494,7 +491,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 The Artistic License
 
 Preamble
@@ -605,7 +602,7 @@ PURPOSE.
 The End
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -618,11 +615,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_r_BSD
-{
-	my %license;
+sub License_r_BSD {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	The BSD License
@@ -631,7 +627,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 The BSD License
 
      The following is a BSD license template. To generate
@@ -688,7 +684,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 THE POSSIBILITY OF SUCH DAMAGE.
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -701,11 +697,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_BSD
-{
-	my %license;
+sub License_BSD {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	The BSD License
@@ -714,7 +709,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 The BSD License
 
 
@@ -748,7 +743,7 @@ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 THE POSSIBILITY OF SUCH DAMAGE.
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -761,11 +756,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_GPL_2
-{
-	my %license;
+sub License_GPL_2 {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	The General Public License (GPL)
@@ -775,7 +769,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 The General Public License (GPL)
 Version 2, June 1991
 
@@ -1038,7 +1032,7 @@ BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 END OF TERMS AND CONDITIONS
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -1051,11 +1045,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_IBM_1_0
-{
-	my %license;
+sub License_IBM_1_0 {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	IBM Public License Version (1.0)
@@ -1064,7 +1057,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 IBM Public License Version (1.0)
 
 THE ACCOMPANYING PROGRAM IS PROVIDED UNDER THE TERMS OF
@@ -1278,7 +1271,7 @@ after the cause of action arose. Each party waives its rights to a jury trial in
 resulting litigation.
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -1291,11 +1284,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_Intel
-{
-	my %license;
+sub License_Intel {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	The Intel Open Source License for CDSA/CSSM Implementation
@@ -1305,7 +1297,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 The Intel Open Source License for CDSA/CSSM Implementation
 (BSD License with Export Notice)
 
@@ -1347,7 +1339,7 @@ Korea, Iran, Syria, Sudan, Afghanistan and any other country to which the U.S.
 has embargoed goods and services.
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -1360,11 +1352,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_Jabber_1_0
-{
-	my %license;
+sub License_Jabber_1_0 {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	Jabber Open Source License (Version 1.0)
@@ -1373,7 +1364,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 Jabber Open Source License (Version 1.0)
 
 This Jabber Open Source License (the "License")
@@ -2057,7 +2048,7 @@ for their suggestions and support of Jabber.
 Modifications:
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -2070,11 +2061,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_LGPL_2_1
-{
-	my %license;
+sub License_LGPL_2_1 {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	The GNU Lesser General Public License (LGPL)
@@ -2084,7 +2074,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 The GNU Lesser General Public License (LGPL)
 Version 2.1, February 1999
 
@@ -2622,7 +2612,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
 END OF TERMS AND CONDITIONS
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -2635,11 +2625,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_MIT
-{
-	my %license;
+sub License_MIT {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	The MIT License
@@ -2648,7 +2637,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 The MIT License
 
 Copyright (c) <year> <copyright holders>
@@ -2679,7 +2668,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -2692,11 +2681,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_MITRE
-{
-	my %license;
+sub License_MITRE {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	MITRE Collaborative Virtual Workspace License (CVW License)
@@ -2705,7 +2693,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 MITRE Collaborative Virtual Workspace License (CVW License)
 
    Collaborative Virtual Workspace License (CVW)
@@ -3576,7 +3564,7 @@ Reserved.
 Contributor(s): ______________________________________.''
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -3589,11 +3577,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_Mozilla_1_0
-{
-	my %license;
+sub License_Mozilla_1_0 {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	Mozilla Public License (Version 1.0)
@@ -3602,7 +3589,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 Mozilla Public License (Version 1.0)
 
 1. Definitions. 
@@ -4054,7 +4041,7 @@ EXHIBIT A.
      ______________________________________." 
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -4067,11 +4054,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_Mozilla_1_1
-{
-	my %license;
+sub License_Mozilla_1_1 {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	Mozilla Public License 1.1 (MPL 1.1)
@@ -4080,7 +4066,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 Mozilla Public License 1.1 (MPL 1.1)
 
 1. Definitions. 
@@ -4664,7 +4650,7 @@ EXHIBIT A -Mozilla Public License.
      Code Source Code for Your Modifications.] 
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -4677,11 +4663,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_Nethack
-{
-	my %license;
+sub License_Nethack {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	Nethack General Public License
@@ -4690,7 +4675,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 Nethack General Public License
 
    Copyright (c) 1989 M. Stephenson 
@@ -4823,7 +4808,7 @@ share NetHack, but don't try to stop anyone else
 from sharing it farther.
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -4836,11 +4821,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_Nokia_1_0a
-{
-	my %license;
+sub License_Nokia_1_0a {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	Nokia Open Source License (NOKOS License) Version 1.0a
@@ -4849,7 +4833,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 Nokia Open Source License (NOKOS License) Version 1.0a
 
 1. DEFINITIONS. 
@@ -5323,7 +5307,7 @@ Contributor(s):
 ______________________________________. 
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -5336,11 +5320,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_Python
-{
-	my %license;
+sub License_Python {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	Python License
@@ -5349,7 +5332,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 Python License
 
      CNRI OPEN SOURCE LICENSE AGREEMENT
@@ -5436,7 +5419,7 @@ this License Agreement.
                   ACCEPT
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -5449,11 +5432,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_Q_1_0
-{
-	my %license;
+sub License_Q_1_0 {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	The Q Public License
@@ -5463,7 +5445,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 The Q Public License
 Version 1.0
 
@@ -5586,7 +5568,7 @@ This license is governed by the Laws of Norway. Disputes
 shall be settled by Oslo City Court.
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -5599,11 +5581,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_Ricoh_1_0
-{
-	my %license;
+sub License_Ricoh_1_0 {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	Ricoh Source Code Public License (Version 1.0)
@@ -5612,7 +5593,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 Ricoh Source Code Public License (Version 1.0)
 
 1. Definitions. 
@@ -6097,7 +6078,7 @@ Contributor(s):
 ______________________________________." 
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -6110,11 +6091,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_Sun
-{
-	my %license;
+sub License_Sun {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	Sun Internet Standards Source License (SISSL)
@@ -6123,7 +6103,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 Sun Internet Standards Source License (SISSL)
 
 1.0 DEFINITIONS 
@@ -6471,7 +6451,7 @@ located at
 http://api.openoffice.org
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -6484,11 +6464,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_Sleepycat
-{
-	my %license;
+sub License_Sleepycat {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	The Sleepycat License
@@ -6497,7 +6476,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 The Sleepycat License
 
 Copyright (c) 1990-1999 Sleepycat Software. All
@@ -6646,7 +6625,7 @@ ADVISED OF THE POSSIBILITY OF SUCH
 DAMAGE.
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -6659,11 +6638,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_Vovida_1_0
-{
-	my %license;
+sub License_Vovida_1_0 {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	Vovida Software License v. 1.0
@@ -6672,7 +6650,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 Vovida Software License v. 1.0
 
 This license applies to all software incorporated in the
@@ -6737,7 +6715,7 @@ All third party licenses and copyright notices and other
 required legends also need to be complied with as well.
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -6750,11 +6728,10 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_ZLIB
-{
-	my %license;
+sub License_ZLIB {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software licensed under the...
 
 	The zlib/libpng License
@@ -6763,7 +6740,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 The zlib/libpng License
 
 Copyright (c) <year> <copyright holders>
@@ -6791,7 +6768,7 @@ and redistribute it freely, subject to the following restrictions:
      from any source distribution.
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -6804,14 +6781,13 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub License_Perl
-{
-	my %license;
+sub License_Perl {
+    my %license;
 
-	my $gpl			= License_GPL_2 ();
-	my $artistic	= License_Artistic_w_Aggregation ();
+    my $gpl            = License_GPL_2 ();
+    my $artistic    = License_Artistic_w_Aggregation ();
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
 
@@ -6819,7 +6795,7 @@ The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-$license{LICENSETEXT} = <<EOFLICENSETEXT;
+    $license{LICENSETEXT} = <<EOFLICENSETEXT;
 Terms of Perl itself
 
 a) the GNU General Public License as published by the Free
@@ -6837,7 +6813,7 @@ $artistic->{LICENSETEXT}
 
 EOFLICENSETEXT
 
-	return (\%license);
+    return (\%license);
 }
 
 ################################################ subroutine header begin ##
@@ -6851,17 +6827,16 @@ EOFLICENSETEXT
 
 ################################################## subroutine header end ##
 
-sub Custom_Licenses
-{
-	my %license;
+sub Custom_Licenses {
+    my %license;
 
-$license{COPYRIGHT} = <<EOFCOPYRIGHT;
+    $license{COPYRIGHT} = <<EOFCOPYRIGHT;
 
 The full text of the license can be found in the
 LICENSE file included with this module.
 EOFCOPYRIGHT
 
-	return (\%license);
+    return (\%license);
 }
 
 

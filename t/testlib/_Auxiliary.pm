@@ -14,6 +14,7 @@ require Exporter;
     check_pm_file
     make_compact
     failsafe
+    licensetest
 ); 
 use File::Temp qw| tempdir |;
 use Cwd;
@@ -84,7 +85,6 @@ sub check_pm_file {
     my ($pmfile, $predictref) = @_;
     my %pred = %$predictref;
     my @pmlines;
-    print STDERR @pmlines;
     @pmlines = read_file_array($pmfile);
     ok( scalar(@pmlines), ".pm file has content");
     if (defined $pred{'pod_present'}) {
@@ -138,6 +138,24 @@ sub failsafe {
    like($@, qr/$pattern/, $message);
 
    ok(chdir $odir, 'changed back to original directory after testing');
+}
+
+sub licensetest {
+    my ($license, $pattern) = @_;
+    my $odir = cwd();
+    my ($tdir, $mod);
+    $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, "changed to temp directory for testing $license");
+    ok($mod = ExtUtils::ModuleMaker->new(
+        NAME      => "Alpha::$license",
+        LICENSE   => $license,
+        COMPACT   => 1,
+    ), "object for module Alpha::$license created");
+    ok( $mod->complete_build(), 'call complete_build()' );
+    ok(chdir "Alpha-$license", "changed to Alpha-$license directory");
+    my $licensetext = read_file_string('LICENSE');
+    like($licensetext, $pattern, "$license license has predicted content");
+    ok(chdir $odir, 'changed back to original directory after testing');
 }
 
 1;
