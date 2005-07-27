@@ -175,79 +175,51 @@ licensetest(
     qr/The zlib\/libpng License/s
 );
 
-#licensetest(
-#    'nokia',
-#    qr/Nokia Open Source License \(NOKOS License\) Version 1\.0a/s
-#);
+licensetest(
+    'nokia',
+    qr/Nokia Open Source License \(NOKOS License\) Version 1\.0a/s
+);
 
-#{
-#use File::Temp qw| tempdir |;
-#use Cwd;
-#*ok = *Test::More::ok;
-#*is = *Test::More::is;
-#*like = *Test::More::like;
-##    my ($license, $pattern) = @_;
-#    my ($license, $pattern) = ('nokia', qr/Nokia Open Source License \(NOKOS License\) Version 1\.0a/s);
-#    my $odir = cwd();
-#    my ($tdir, $mod);
-#    $tdir = tempdir( CLEANUP => 1);
-#    ok(chdir $tdir, "changed to temp directory for testing $license");
-#    ok($mod = ExtUtils::ModuleMaker->new(
-#        NAME      => "Alpha::$license",
-#        LICENSE   => $license,
-#        COMPACT   => 1,
-#    ), "object for module Alpha::$license created");
-##    ok( $mod->complete_build(), 'call complete_build()' );
-##    ok(chdir "Alpha-$license", "changed to Alpha-$license directory");
-##    my $licensetext = read_file_string('LICENSE');
-##    like($licensetext, $pattern, "$license license has predicted content");
-#    ok(chdir $odir, 'changed back to original directory after testing');
-#}
+licensetest(
+    'nokos',
+    qr/Nokia Open Source License \(NOKOS License\) Version 1\.0a/s
+);
+
+licensetest(
+    'nokia_1_0a',
+    qr/Nokia Open Source License \(NOKOS License\) Version 1\.0a/s
+);
+
+licensetest(
+    'nokos_1_0a',
+    qr/Nokia Open Source License \(NOKOS License\) Version 1\.0a/s
+);
+
+licensetest(
+    'ricoh',
+    qr/Ricoh Source Code Public License \(Version 1\.0\)/s
+);
+
+licensetest(
+    'ricoh_1_0',
+    qr/Ricoh Source Code Public License \(Version 1\.0\)/s
+);
+
+licensetest (
+    'vovida',
+    qr/Vovida Software License v\. 1\.0/s
+);
+
+licensetest(
+    'vovida_1_0',
+    qr//s
+);
+
 __END__
 
 # nokia/nokos throwing warning of uninitialized value at Standard line
 # 4836
-#licensetest(
-#    'nokia',
-#    qr/Nokia Open Source License \(NOKOS License\) Version 1\.0a/s
-#);
-#
-#licensetest(
-#    'nokos',
-#    qr/Nokia Open Source License \(NOKOS License\) Version 1\.0a/s
-#);
-#
-#licensetest(
-#    'nokia_1_0a',
-#    qr/Nokia Open Source License \(NOKOS License\) Version 1\.0a/s
-#);
-#
-#licensetest(
-#    'nokos_1_0a',
-#    qr/Nokia Open Source License \(NOKOS License\) Version 1\.0a/s
-#);
-
 # ricoh & ricoh_1_0 throwing warning:
 # Use of uninitialized value in concatenation (.) or string at blib\lib/ExtUtils/ModuleMaker/Licenses/Standard.pm line 5596.
-#licensetest(
-#    'ricoh',
-#    qr/Ricoh Source Code Public License \(Version 1\.0\)/s
-#);
-#
-#licensetest(
-#    'ricoh_1_0',
-#    qr/Ricoh Source Code Public License \(Version 1\.0\)/s
-#);
-
 # vovida & vovida_1_0 throwing warning:
 # Use of uninitialized value in concatenation (.) or string at blib\lib/ExtUtils/ModuleMaker/Licenses/Standard.pm line 6653.
-#licensetest (
-#    'vovida',
-#    qr/Vovida Software License v\. 1\.0/s
-#);
-
-#licensetest(
-#    'vovida_1_0',
-#    qr//s
-#);
-
