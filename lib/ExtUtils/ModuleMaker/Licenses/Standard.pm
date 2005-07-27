@@ -80,7 +80,8 @@ my %licenses = (
     artistic        => { function => \&License_Artistic,
                          fullname => 'Artistic License'
                        },
-    artisticA       => { function => \&License_Artistic_w_Aggregation,
+#    artisticA       => { function => \&License_Artistic_w_Aggregation,
+    artistic_agg    => { function => \&License_Artistic_w_Aggregation,
                          fullname => 'Artistic License w/ Aggregation'
                        },
     r_bsd           => { function => \&License_r_BSD,
@@ -478,6 +479,7 @@ EOFLICENSETEXT
 
     return (\%license);
 }
+#'
 
 sub License_Artistic_w_Aggregation {
     my %license;
@@ -6784,7 +6786,7 @@ EOFLICENSETEXT
 sub License_Perl {
     my %license;
 
-    my $gpl            = License_GPL_2 ();
+    my $gpl         = License_GPL_2 ();
     my $artistic    = License_Artistic_w_Aggregation ();
 
     $license{COPYRIGHT} = <<EOFCOPYRIGHT;
