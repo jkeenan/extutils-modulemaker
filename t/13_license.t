@@ -4,10 +4,16 @@ use Test::More qw(no_plan);;
 use strict;
 local $^W = 1;
 
-BEGIN { use_ok( 'ExtUtils::ModuleMaker' ); }
+BEGIN {
+    use_ok( 'ExtUtils::ModuleMaker' );
+    use_ok( 'ExtUtils::ModuleMaker::Licenses::Local' );
+    use_ok( 'File::Temp', qw| tempdir |);
+    use_ok( 'Cwd' );
+}
 use lib ("./t/testlib");
 use _Auxiliary qw(
     licensetest
+    read_file_string
 );
 
 licensetest(
@@ -215,11 +221,42 @@ licensetest(
     qr//s
 );
 
-__END__
+my $odir = cwd();
+my ($tdir, $mod, $testmod, $filetext);
 
-# nokia/nokos throwing warning of uninitialized value at Standard line
-# 4836
-# ricoh & ricoh_1_0 throwing warning:
-# Use of uninitialized value in concatenation (.) or string at blib\lib/ExtUtils/ModuleMaker/Licenses/Standard.pm line 5596.
-# vovida & vovida_1_0 throwing warning:
-# Use of uninitialized value in concatenation (.) or string at blib\lib/ExtUtils/ModuleMaker/Licenses/Standard.pm line 6653.
+{
+    $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
+    $testmod = 'Beta';
+
+    ok($mod = ExtUtils::ModuleMaker->new( 
+            NAME           => "Alpha::$testmod",
+            COMPACT        => 1,
+            LICENSE        => 'looselips',
+	    COPYRIGHT_YEAR => 1899,
+	    AUTHOR => {
+		    NAME => "J E Keenan", 
+		    ORGANIZATION => "The World Wide Webby",
+	    },
+    ), "object created for Alpha::$testmod");
+    ok($mod->complete_build(), "build files for Alpha::$testmod");
+
+    ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
+    ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
+    ok( -d, "directory $_ exists" ) for ( qw/lib scripts t/);
+    ok( -f, "file $_ exists" )
+        for ( qw/Changes LICENSE Makefile.PL MANIFEST README Todo/);
+    ok( -f, "file $_ exists" )
+        for ( "lib/Alpha/${testmod}.pm", "t/001_load.t" );
+    
+    ok($filetext = read_file_string('LICENSE'),
+        'Able to read LICENSE');
+    
+    like(
+        $filetext,
+        qr/Copyright \(c\) 1899 The World Wide Webby\. All rights reserved\./, 
+        "correct copyright year and organization"
+    );
+
+    ok(chdir $odir, 'changed back to original directory after testing');
+}
