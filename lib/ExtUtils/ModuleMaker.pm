@@ -4,8 +4,14 @@ local $^W = 1;
 use vars qw ($VERSION);
 $VERSION = 0.36_03;
 
-use ExtUtils::ModuleMaker::Licenses::Standard;
-use ExtUtils::ModuleMaker::Licenses::Local;
+use ExtUtils::ModuleMaker::Licenses::Standard qw(
+    Get_Standard_License
+    Verify_Standard_License
+);
+use ExtUtils::ModuleMaker::Licenses::Local qw(
+    Get_Local_License
+    Verify_Local_License
+);
 use ExtUtils::ModuleMaker::Defaults qw( default_values standard_text );
 use File::Path;
 use Carp;
@@ -49,10 +55,10 @@ sub new {
 #    if ($self->{INTERACTIVE}) { print STDERR "Get data interactively!\n"; }
     $self->set_author_data();
     $self->set_dates();
-    $self->initialize_license();
 
     $self->{MANIFEST} = ['MANIFEST'];
     $self->verify_values();
+    $self->initialize_license();
     $self->standard();
 
     return $self;
@@ -252,6 +258,20 @@ sub initialize_license {
           s/###organization###/$self->{AUTHOR}{ORGANIZATION}/ig;
     }
 
+}
+
+sub get_license {
+    my $self = shift;
+    return (join ("\n\n",
+        "=====================================================================",
+        "=====================================================================",
+        $self->{LicenseParts}{LICENSETEXT},
+        "=====================================================================",
+        "=====================================================================",
+        $self->{LicenseParts}{COPYRIGHT},
+        "=====================================================================",
+        "=====================================================================",
+    ));
 }
 
 #!#!#!#!#
@@ -751,7 +771,15 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
     $mod = ExtUtils::ModuleMaker->new(
         NAME => 'Sample::Module' 
     );
+
     $mod->complete_build();
+
+    $mod->partial_dump(qw|
+        ...  # key provided as argument to constructor
+        ...  # same
+    |);
+
+    $license = $mod->get_license();
 
 =head1 VERSION
 
@@ -797,8 +825,12 @@ F<modulemaker> bundled with this distribution.
 
 =head3 Public Methods
 
-In this version of ExtUtils::ModuleMaker there are only two publicly 
-callable functions.  These are how you should interact with this module.
+In this version of ExtUtils::ModuleMaker there are four publicly 
+callable methods.  Two of them, C<new> and C<complete_build> control the
+building of the file and directory structure for a new Perl
+distribution.  The other two, C<partial_dump> and C<get_license> are intended
+primarily as shortcuts for some diagnosing problems with an
+ExtUtils::ModuleMaker object.
 
 =head4 C<new>
 
@@ -974,6 +1006,44 @@ Creates all directories and files as configured by the key-value pairs
 passed to C<ExtUtils::ModuleMaker::new>.  Returns a
 true value if all specified files are created -- but this says nothing
 about whether those files have been created with the correct content.
+
+=head4 C<partial_dump>
+
+When troubleshooting problems with an ExtUtils::ModuleMaker object, it
+is often useful to use F<Data::Dumper> to dump the contents of the
+object.  However, since certain elements of that object are often quite
+lengthy (I<e.g,> the values of keys C<LicenseParts> and
+C<USAGE_MESSAGE>), it's handy to have a dumper function that dumps all
+keys I<except> certain designated keys.
+
+    @excluded_keys = qw| LicenseParts USAGE_MESSAGE |;
+    $mod->partial_dump(@excluded_keys);
+
+=head4 C<get_license>
+
+Returns a string which nicely formats a short version of the License 
+and Copyright information.
+
+    $license = $mod->get_license();
+    print $license;
+
+... will print something like this:
+
+    =====================================================================
+    =====================================================================
+    [License Information]
+    =====================================================================
+    =====================================================================
+    [Copyright Information]
+    =====================================================================
+    =====================================================================
+
+(Earlier versions of ExtUtils::ModuleMaker contained a
+C<Display_License> function in each of submodules
+F<ExtUtils::ModuleMaker::Licenses::Standard> and
+F<ExtUtils::ModuleMaker::Licenses::Local>.  These functions were never
+publicly documented or tested.  C<get_license()> is intended as a
+replacement for those two functions.)
 
 =head3 Private Methods
 

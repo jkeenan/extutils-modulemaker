@@ -4,10 +4,10 @@ local $^W = 1;
 
 BEGIN {
     use Exporter ();
-    use vars qw ( @ISA @EXPORT );
+    use vars qw ( @ISA @EXPORT_OK );
 #    $VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
-    @ISA         = qw (Exporter);
-    @EXPORT      = qw (Get_Local_License Verify_Local_License);
+    @ISA         = qw(Exporter);
+    @EXPORT_OK   = qw(Get_Local_License Verify_Local_License);
 }
 
 my %licenses = (
@@ -41,23 +41,7 @@ sub interact {
     );
 }
 
-sub Display_License {
-    my ($self, $choice) = @_;
-    my $p_license = Get_Local_License ($choice);
-    return (join ("\n\n",
-        "=====================================================================",
-        "=====================================================================",
-        $p_license->{LICENSETEXT},
-        "=====================================================================",
-        "=====================================================================",
-        $p_license->{COPYRIGHT},
-        "=====================================================================",
-        "=====================================================================",
-    ));
-}
-
-sub License_LooseLips
-{
+sub License_LooseLips {
     my %license;
 
     $license{COPYRIGHT} = <<EOFCOPYRIGHT;

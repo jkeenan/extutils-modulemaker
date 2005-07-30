@@ -4,10 +4,10 @@ local $^W = 1;
 
 BEGIN {
     use Exporter ();
-    use vars qw ( @ISA @EXPORT );
+    use vars qw ( @ISA @EXPORT_OK );
 #    $VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
-    @ISA         = qw (Exporter);
-    @EXPORT      = qw (&Get_Standard_License &Verify_Standard_License);
+    @ISA         = qw(Exporter);
+    @EXPORT_OK   = qw(Get_Standard_License Verify_Standard_License);
 }
 
 #################### DOCUMENTATION ####################
@@ -80,7 +80,6 @@ my %licenses = (
     artistic        => { function => \&License_Artistic,
                          fullname => 'Artistic License'
                        },
-#    artisticA       => { function => \&License_Artistic_w_Aggregation,
     artistic_agg    => { function => \&License_Artistic_w_Aggregation,
                          fullname => 'Artistic License w/ Aggregation'
                        },
@@ -250,21 +249,6 @@ sub interact {
               } keys (%licenses)
         }, ref ($class) || $class)
     );
-}
-
-sub Display_License {
-    my ($self, $choice) = @_;
-    my $p_license = Get_Standard_License ($choice);
-    return (join ("\n\n",
-        "=====================================================================",
-        "=====================================================================",
-        $p_license->{LICENSETEXT},
-        "=====================================================================",
-        "=====================================================================",
-        $p_license->{COPYRIGHT},
-        "=====================================================================",
-        "=====================================================================",
-    ));
 }
 
 ################################################ subroutine header begin ##

@@ -222,7 +222,7 @@ licensetest(
 );
 
 my $odir = cwd();
-my ($tdir, $mod, $testmod, $filetext);
+my ($tdir, $mod, $testmod, $filetext, $license);
 
 {
     $tdir = tempdir( CLEANUP => 1);
@@ -252,10 +252,14 @@ my ($tdir, $mod, $testmod, $filetext);
     ok($filetext = read_file_string('LICENSE'),
         'Able to read LICENSE');
     
-    like(
-        $filetext,
+    like($filetext,
         qr/Copyright \(c\) 1899 The World Wide Webby\. All rights reserved\./, 
         "correct copyright year and organization"
+    );
+    ok($license = $mod->get_license(), "license retrieved"); 
+    like($license,
+        qr/^={69}\s+={69}.*?={69}\s+={69}.*?={69}\s+={69}/s,
+        "formatting for license and copyright found as expected"
     );
 
     ok(chdir $odir, 'changed back to original directory after testing');
