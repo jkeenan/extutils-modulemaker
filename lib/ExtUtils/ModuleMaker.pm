@@ -2,7 +2,7 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 use vars qw ($VERSION);
-$VERSION = 0.36_03;
+$VERSION = 0.36_04;
 
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
     Get_Standard_License
@@ -783,7 +783,7 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
 =head1 VERSION
 
-This document references version 0.36_03 of ExtUtils::ModuleMaker, released
+This document references version 0.36_04 of ExtUtils::ModuleMaker, released
 to CPAN on July 18, 2005.
 
 =head1 DESCRIPTION

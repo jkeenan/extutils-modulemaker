@@ -12,7 +12,7 @@ use ExtUtils::ModuleMaker::Interactive qw| run_interactive |;
 
 use vars qw (%opts $VERSION);
 
-$VERSION = 0.36_03;
+$VERSION = 0.36_04;
 
 getopts( "bdhqCIPVcn:a:v:l:u:p:o:w:e:", \%opts );
 die Usage() if ( $opts{h} );
