@@ -5,7 +5,8 @@ local $^W = 1;
 use vars qw ( @ISA @EXPORT_OK );
 require Exporter;
 @ISA = ('Exporter');
-@EXPORT_OK = qw( default_values standard_text );
+# @EXPORT_OK = qw( default_values standard_text );
+@EXPORT_OK = qw( default_values );
 
 my $USAGE = <<ENDOFUSAGE;
 
@@ -153,8 +154,8 @@ EOFBLOCK
 #~,
 #);
 
-sub standard_text {
-    my %standard_text = (
+#sub standard_text {
+#    my %standard_text = (
 #        pod_wrapper => \%pod_wrapper,
 #	block_new_method => $block_new_method,
 #	block_module_header_description => $description,
@@ -162,9 +163,9 @@ sub standard_text {
 #	block_final_one => $block_final_one,
 #	Makefile_text => $Makefile_text,
 #	README_text => \%README_text,
-    );
-    return { %standard_text };
-}
+#    );
+#    return { %standard_text };
+#}
 
 1;
 

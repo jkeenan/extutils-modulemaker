@@ -14,7 +14,8 @@ use ExtUtils::ModuleMaker::Licenses::Local qw(
     Get_Local_License
     Verify_Local_License
 );
-use ExtUtils::ModuleMaker::Defaults qw( default_values standard_text );
+# use ExtUtils::ModuleMaker::Defaults qw( default_values standard_text );
+use ExtUtils::ModuleMaker::Defaults qw( default_values );
 use File::Path;
 use Carp;
 
@@ -62,7 +63,7 @@ sub new {
     $self->{MANIFEST} = ['MANIFEST'];
     $self->verify_values();
     $self->initialize_license();
-    $self->standard();
+#    $self->standard();
 
     return $self;
 }
@@ -751,10 +752,10 @@ sub partial_dump {
     return $d->Dump;
 }
 
-sub standard {
-    my $self = shift;
-    $self->{standard} = standard_text();
-}
+#sub standard {
+#    my $self = shift;
+#    $self->{standard} = standard_text();
+#}
 
 1;    #this line is important and will help the module return a true value
 
