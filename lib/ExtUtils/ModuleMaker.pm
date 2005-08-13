@@ -491,19 +491,19 @@ EOFBLOCK
 #    return $string;
 #}
 
-#!#!#!#!#
-##  35 ##
-# Usage     : $self->block_final_one ()
-# Purpose   : Make module return a true value
-# Returns   : Part of the file being built
-# Argument  : $module: pointer to the module being built, for the primary
-#                      module it is a pointer to $self
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
-sub block_final_one {
-    my $self = shift;
-    $self->{standard}{block_final_one};
-}
+##!#!#!#!#
+###  35 ##
+## Usage     : $self->block_final_one ()
+## Purpose   : Make module return a true value
+## Returns   : Part of the file being built
+## Argument  : $module: pointer to the module being built, for the primary
+##                      module it is a pointer to $self
+## Throws    : n/a
+## Comments  : This method is a likely candidate for alteration in a subclass
+#sub block_final_one {
+#    my $self = shift;
+#    $self->{standard}{block_final_one};
+#}
 
 ##!#!#!#!#
 ###  37 ##

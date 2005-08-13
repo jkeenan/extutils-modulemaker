@@ -101,12 +101,12 @@ See Also   :
 
 EOFBLOCK
 
-my $block_final_one = <<EOFBLOCK;
-
-1;
-# The preceding line will help the module return a true value
-
-EOFBLOCK
+#my $block_final_one = <<EOFBLOCK;
+#
+#1;
+## The preceding line will help the module return a true value
+#
+#EOFBLOCK
 
 #my $Makefile_text = q~
 #
@@ -159,7 +159,7 @@ sub standard_text {
 #	block_new_method => $block_new_method,
 #	block_module_header_description => $description,
 #	subroutine_header => $subroutine_header,
-	block_final_one => $block_final_one,
+#	block_final_one => $block_final_one,
 #	Makefile_text => $Makefile_text,
 #	README_text => \%README_text,
     );
