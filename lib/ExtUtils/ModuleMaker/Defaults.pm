@@ -158,7 +158,7 @@ sub standard_text {
 #        pod_wrapper => \%pod_wrapper,
 #	block_new_method => $block_new_method,
 #	block_module_header_description => $description,
-	subroutine_header => $subroutine_header,
+#	subroutine_header => $subroutine_header,
 	block_final_one => $block_final_one,
 #	Makefile_text => $Makefile_text,
 #	README_text => \%README_text,

@@ -477,19 +477,19 @@ EOFBLOCK
 
 #!#!#!#!#
 ##  33 ##
-# Usage     : $self->block_subroutine_header() within generate_pm_file()
-# Purpose   : Build part of a module pm file
-# Returns   : Part of the file being built
-# Argument  : $module: pointer to the module being built, for the primary
-#                      module it is a pointer to $self
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
-sub block_subroutine_header {
-    my ( $self, $module ) = @_;
-    my $string = $self->{standard}{subroutine_header};
-    $string =~ s/\n ====/\n=/g;
-    return $string;
-}
+## Usage     : $self->block_subroutine_header() within generate_pm_file()
+## Purpose   : Build part of a module pm file
+## Returns   : Part of the file being built
+## Argument  : $module: pointer to the module being built, for the primary
+##                      module it is a pointer to $self
+## Throws    : n/a
+## Comments  : This method is a likely candidate for alteration in a subclass
+#sub block_subroutine_header {
+#    my ( $self, $module ) = @_;
+#    my $string = $self->{standard}{subroutine_header};
+#    $string =~ s/\n ====/\n=/g;
+#    return $string;
+#}
 
 #!#!#!#!#
 ##  35 ##

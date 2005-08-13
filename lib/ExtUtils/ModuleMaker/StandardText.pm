@@ -251,3 +251,39 @@ EOF
     return $page;
 }
 
+my $subroutine_header = <<EOFBLOCK;
+
+#################### subroutine header begin ####################
+
+ ====head2 sample_function
+
+ Usage     : How to use this function/method
+ Purpose   : What it does
+ Returns   : What it returns
+ Argument  : What it wants to know
+ Throws    : Exceptions and other anomolies
+ Comments  : This is a sample subroutine header.
+           : It is polite to include more pod and fewer comments.
+
+See Also   : 
+
+ ====cut
+
+#################### subroutine header end ####################
+
+EOFBLOCK
+
+# Usage     : $self->block_subroutine_header() within generate_pm_file()
+# Purpose   : Build part of a module pm file
+# Returns   : Part of the file being built
+# Argument  : $module: pointer to the module being built, for the primary
+#                      module it is a pointer to $self
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
+sub block_subroutine_header {
+    my ( $self, $module ) = @_;
+    my $string = $subroutine_header;
+    $string =~ s/\n ====/\n=/g;
+    return $string;
+}
+
