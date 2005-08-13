@@ -1,5 +1,9 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.3604 July 31, 2005
+	- Adapted test suite so that it will run (albeit skipping most
+	  tests) on versions of Perl < 5.6.
+
 0.3603 July 23, 2005
         - Intermediate version not released to CPAN.  Starting to move
           standard copy to Defaults::standard_text(). Realized that
