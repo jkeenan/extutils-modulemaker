@@ -9,7 +9,7 @@ BEGIN { use_ok( 'Cwd' ); }
 
 SKIP: {
     eval { require 5.006_001 };
-    skip "tests require File::Temp, core with 5.6", 134 if $@;
+    skip "tests require File::Temp, core with 5.6", 139 if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use lib ("./t/testlib");

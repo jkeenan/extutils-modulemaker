@@ -121,7 +121,16 @@ sub pod_wrapper {
     return join( '', $head, $section, $tail );
 }
 
-my $block_new_method = <<'EOFBLOCK';
+# Usage     : $self->block_new_method() within generate_pm_file()
+# Purpose   : Build part of a module pm file
+# Returns   : Part of the file being built
+# Argument  : $module: pointer to the module being built, for the primary
+#                      module it is a pointer to $self
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
+sub block_new_method {
+    my $self = shift;
+    return <<'EOFBLOCK';
 
 sub new
 {
@@ -133,26 +142,7 @@ sub new
 }
 
 EOFBLOCK
-
-# Usage     : $self->block_new_method() within generate_pm_file()
-# Purpose   : Build part of a module pm file
-# Returns   : Part of the file being built
-# Argument  : $module: pointer to the module being built, for the primary
-#                      module it is a pointer to $self
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
-sub block_new_method {
-    my $self = shift;
-    $block_new_method;
 }
-
-my $block_module_header_description = <<EOFBLOCK;
-Stub documentation for this module was created by ExtUtils::ModuleMaker.
-It looks like the author of the extension was negligent enough
-to leave the stub unedited.
-
-Blah blah blah.
-EOFBLOCK
 
 # Usage     : $self->block_module_header ()
 # Purpose   : Build part of a module pm file
@@ -164,7 +154,14 @@ EOFBLOCK
 sub block_module_header {
     my ( $self, $module ) = @_;
 
-    my $description = $block_module_header_description;
+    my $description = <<EOFBLOCK;
+Stub documentation for this module was created by ExtUtils::ModuleMaker.
+It looks like the author of the extension was negligent enough
+to leave the stub unedited.
+
+Blah blah blah.
+EOFBLOCK
+
     my $string = join(
         '',
         $self->pod_section(
@@ -297,12 +294,12 @@ sub block_subroutine_header {
     return $string;
 }
 
-my $block_final_one = <<EOFBLOCK;
-
-1;
-# The preceding line will help the module return a true value
-
-EOFBLOCK
+#my $block_final_one = <<EOFBLOCK;
+#
+#1;
+## The preceding line will help the module return a true value
+#
+#EOFBLOCK
 
 # Usage     : $self->block_final_one ()
 # Purpose   : Make module return a true value
@@ -313,7 +310,13 @@ EOFBLOCK
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub block_final_one {
     my $self = shift;
-    $block_final_one;
+#    $block_final_one;
+    return <<EOFBLOCK;
+
+1;
+# The preceding line will help the module return a true value
+
+EOFBLOCK
 }
 
 #!#!#!#!#
