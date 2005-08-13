@@ -583,23 +583,23 @@ EOF
 
 #!#!#!#!#
 ##  43 ##
-# Usage     : $self->file_text_Makefile 
-# Purpose   : Build a supporting file
-# Returns   : Text of the file being built
-# Argument  : n/a
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
-sub file_text_Makefile {
-    my $self = shift;
-    my $page = sprintf $self->{standard}{Makefile_text},
-        map { my $s = $_; $s =~ s{'}{\\'}g; $s; }
-    $self->{NAME},
-    $self->{FILE},
-    $self->{AUTHOR}{NAME},
-    $self->{AUTHOR}{EMAIL},
-    $self->{ABSTRACT};
-    return $page;
-}
+## Usage     : $self->file_text_Makefile 
+## Purpose   : Build a supporting file
+## Returns   : Text of the file being built
+## Argument  : n/a
+## Throws    : n/a
+## Comments  : This method is a likely candidate for alteration in a subclass
+#sub file_text_Makefile {
+#    my $self = shift;
+#    my $page = sprintf $self->{standard}{Makefile_text},
+#        map { my $s = $_; $s =~ s{'}{\\'}g; $s; }
+#    $self->{NAME},
+#    $self->{FILE},
+#    $self->{AUTHOR}{NAME},
+#    $self->{AUTHOR}{EMAIL},
+#    $self->{ABSTRACT};
+#    return $page;
+#}
 
 #!#!#!#!#
 ##  45 ##

@@ -108,21 +108,21 @@ my $block_final_one = <<EOFBLOCK;
 
 EOFBLOCK
 
-my $Makefile_text = q~
-
-use ExtUtils::MakeMaker;
-# See lib/ExtUtils/MakeMaker.pm for details of how to influence
-# the contents of the Makefile that is written.
-WriteMakefile(
-    NAME         => '%s',
-    VERSION_FROM => '%s', # finds \$VERSION
-    AUTHOR       => '%s (%s)',
-    ABSTRACT     => '%s',
-    PREREQ_PM    => {
-                     'Test::Simple' => 0.44,
-                    },
-);
-~;
+#my $Makefile_text = q~
+#
+#use ExtUtils::MakeMaker;
+## See lib/ExtUtils/MakeMaker.pm for details of how to influence
+## the contents of the Makefile that is written.
+#WriteMakefile(
+#    NAME         => '%s',
+#    VERSION_FROM => '%s', # finds \$VERSION
+#    AUTHOR       => '%s (%s)',
+#    ABSTRACT     => '%s',
+#    PREREQ_PM    => {
+#                     'Test::Simple' => 0.44,
+#                    },
+#);
+#~;
 
 #my %README_text = (
 #    eumm_instructions => q~
@@ -160,7 +160,7 @@ sub standard_text {
 	block_module_header_description => $description,
 	subroutine_header => $subroutine_header,
 	block_final_one => $block_final_one,
-	Makefile_text => $Makefile_text,
+#	Makefile_text => $Makefile_text,
 #	README_text => \%README_text,
     );
     return { %standard_text };
