@@ -1,7 +1,7 @@
 # t/11_miscargs.t
 # tests of miscellaneous arguments passed to constructor
 
-use Test::More tests => 136;
+use Test::More tests => 141;
 use strict;
 
 BEGIN { use_ok('ExtUtils::ModuleMaker'); }
@@ -105,7 +105,36 @@ SKIP: {
         ok(chdir $odir, 'changed back to original directory after testing');
     }
 
-    {   # Set 3:  Test of new dump_keys_except() method.
+    ##### Sets 3 and 3a:  Tests of dump_keys() and dump_keys_except() methods.
+    {
+        $tdir = tempdir( CLEANUP => 1);
+        ok(chdir $tdir, 'changed to temp directory for testing');
+        $testmod = 'Tau';
+        
+        ok( $mod = ExtUtils::ModuleMaker->new( 
+                NAME           => "Alpha::$testmod",
+                COMPACT        => 0,
+                VERBOSE        => 1,
+                ABSTRACT       => "Tau's the time for Perl",
+            ),
+            "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
+        );
+        
+        my $dump;
+        ok( $dump = $mod->dump_keys(qw| NAME ABSTRACT |), 
+            'call dump_keys()' );
+        my @dumplines = split(/\n/, $dump);
+        my $keys_shown_flag = 0;
+        for my $m ( @dumplines ) {
+            $keys_shown_flag++ if $m =~ /^\s+'(NAME|ABSTRACT)/;
+        } #'
+        is($keys_shown_flag, 2, 
+            "keys intended to be shown were shown");
+        
+        ok(chdir $odir, 'changed back to original directory after testing');
+    }
+
+    {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
         $testmod = 'Rho';
