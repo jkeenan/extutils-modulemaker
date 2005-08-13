@@ -41,23 +41,23 @@ sub default_values {
 
 #######################################
 
-my %pod_wrapper = (
-    head => '
-
-#################### main pod documentation begin ###################
-## Below is the stub of documentation for your module. 
-## You better edit it!
-
-',
-    tail => '
-
- ====cut
-
-#################### main pod documentation end ###################
-
-',
-);
-
+#my %pod_wrapper = (
+#    head => '
+#
+##################### main pod documentation begin ###################
+### Below is the stub of documentation for your module. 
+### You better edit it!
+#
+#',
+#    tail => '
+#
+# ====cut
+#
+##################### main pod documentation end ###################
+#
+#',
+#);
+#
 my $block_new_method = <<'EOFBLOCK';
 
 sub new
@@ -155,7 +155,7 @@ EOFBLOCK
 
 sub standard_text {
     my %standard_text = (
-        pod_wrapper => \%pod_wrapper,
+#        pod_wrapper => \%pod_wrapper,
 	block_new_method => $block_new_method,
 	block_module_header_description => $description,
 	subroutine_header => $subroutine_header,

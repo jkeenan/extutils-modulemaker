@@ -84,3 +84,30 @@ sub file_text_Makefile {
     $self->{ABSTRACT};
     return $page;
 }
+
+my %pod_wrapper = (
+    head => '
+
+#################### main pod documentation begin ###################
+## Below is the stub of documentation for your module. 
+## You better edit it!
+
+',
+    tail => '
+
+ ====cut
+
+#################### main pod documentation end ###################
+
+',
+);
+
+sub pod_wrapper {
+    my ( $self, $section ) = @_;
+    my ($head, $tail);
+    $head = $pod_wrapper{head};
+    $tail = $pod_wrapper{tail};
+    $tail =~ s/\n ====/\n=/g;
+    return join( '', $head, $section, $tail );
+}
+

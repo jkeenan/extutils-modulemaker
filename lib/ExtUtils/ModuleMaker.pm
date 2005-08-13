@@ -369,14 +369,14 @@ ENDOFSTUFF
 
 #!#!#!#!#
 ##  23 ##
-sub pod_wrapper {
-    my ( $self, $section ) = @_;
-    my ($head, $tail);
-    $head = $self->{standard}{pod_wrapper}{head};
-    $tail = $self->{standard}{pod_wrapper}{tail};
-    $tail =~ s/\n ====/\n=/g;
-    return join( '', $head, $section, $tail );
-}
+#sub pod_wrapper {
+#    my ( $self, $section ) = @_;
+#    my ($head, $tail);
+#    $head = $self->{standard}{pod_wrapper}{head};
+#    $tail = $self->{standard}{pod_wrapper}{tail};
+#    $tail =~ s/\n ====/\n=/g;
+#    return join( '', $head, $section, $tail );
+#}
 
 #!#!#!#!#
 ##  25 ##
