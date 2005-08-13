@@ -412,19 +412,19 @@ EOFBLOCK
     return $string;
 }
 
-# #!#!#!#!#
-##  29 ##
-# Usage     : $self->block_new_method() within generate_pm_file()
-# Purpose   : Build part of a module pm file
-# Returns   : Part of the file being built
-# Argument  : $module: pointer to the module being built, for the primary
-#                      module it is a pointer to $self
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
-sub block_new_method {
-    my $self = shift;
-    $self->{standard}{block_new_method};
-}
+## #!#!#!#!#
+###  29 ##
+## Usage     : $self->block_new_method() within generate_pm_file()
+## Purpose   : Build part of a module pm file
+## Returns   : Part of the file being built
+## Argument  : $module: pointer to the module being built, for the primary
+##                      module it is a pointer to $self
+## Throws    : n/a
+## Comments  : This method is a likely candidate for alteration in a subclass
+#sub block_new_method {
+#    my $self = shift;
+#    $self->{standard}{block_new_method};
+#}
 
 #!#!#!#!#
 ##  31 ##

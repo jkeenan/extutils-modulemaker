@@ -111,3 +111,27 @@ sub pod_wrapper {
     return join( '', $head, $section, $tail );
 }
 
+my $block_new_method = <<'EOFBLOCK';
+
+sub new
+{
+    my ($class, %parameters) = @_;
+
+    my $self = bless ({}, ref ($class) || $class);
+
+    return $self;
+}
+
+EOFBLOCK
+
+# Usage     : $self->block_new_method() within generate_pm_file()
+# Purpose   : Build part of a module pm file
+# Returns   : Part of the file being built
+# Argument  : $module: pointer to the module being built, for the primary
+#                      module it is a pointer to $self
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
+sub block_new_method {
+    my $self = shift;
+    $block_new_method;
+}
