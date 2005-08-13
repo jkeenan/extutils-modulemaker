@@ -57,6 +57,7 @@ sub new {
 #    if ($self->{INTERACTIVE}) { print STDERR "Get data interactively!\n"; }
     $self->set_author_data();
     $self->set_dates();
+    $self->{eumm_version} = $VERSION;
 
     $self->{MANIFEST} = ['MANIFEST'];
     $self->verify_values();
@@ -544,7 +545,7 @@ sub file_text_Changes {
 Revision history for Perl module $self->{NAME}
 
 $self->{VERSION} $self->{timestamp}
-    - original version; created by ExtUtils::ModuleMaker $VERSION
+    - original version; created by ExtUtils::ModuleMaker $self->{eumm_version}
 
 
 EOF
@@ -552,7 +553,7 @@ EOF
     else {
         $page = <<EOF;
 $self->{VERSION} $self->{timestamp}
-    - original version; created by ExtUtils::ModuleMaker $VERSION
+    - original version; created by ExtUtils::ModuleMaker $self->{eumm_version}
 EOF
     }
 
