@@ -1,8 +1,10 @@
 package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
-use vars qw ($VERSION);
+use vars qw ($VERSION @ISA);
 $VERSION = 0.36_05;
+# @ISA = qw(ExtUtils::ModuleMaker::StandardText);
+use base qw(ExtUtils::ModuleMaker::StandardText);
 
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
     Get_Standard_License
@@ -502,26 +504,26 @@ sub block_final_one {
     $self->{standard}{block_final_one};
 }
 
-#!#!#!#!#
-##  37 ##
-# Usage     : $self->file_text_README within complete_build()
-# Purpose   : Build a supporting file
-# Returns   : Text of the file being built
-# Argument  : n/a
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
-sub file_text_README {
-    my $self = shift;
-
-    my $build_instructions =
-        ( $self->{BUILD_SYSTEM} eq 'ExtUtils::MakeMaker' )
-            ? $self->{standard}{README_text}{eumm_instructions}
-            : $self->{standard}{README_text}{mb_instructions};
-    return "pod2text $self->{NAME}.pm > README\n" . 
-        $self->{standard}{README_text}{readme_top} .
-	$build_instructions .
-        $self->{standard}{README_text}{readme_bottom};
-}
+##!#!#!#!#
+###  37 ##
+## Usage     : $self->file_text_README within complete_build()
+## Purpose   : Build a supporting file
+## Returns   : Text of the file being built
+## Argument  : n/a
+## Throws    : n/a
+## Comments  : This method is a likely candidate for alteration in a subclass
+#sub file_text_README {
+#    my $self = shift;
+#
+#    my $build_instructions =
+#        ( $self->{BUILD_SYSTEM} eq 'ExtUtils::MakeMaker' )
+#            ? $self->{standard}{README_text}{eumm_instructions}
+#            : $self->{standard}{README_text}{mb_instructions};
+#    return "pod2text $self->{NAME}.pm > README\n" . 
+#        $self->{standard}{README_text}{readme_top} .
+#	$build_instructions .
+#        $self->{standard}{README_text}{readme_bottom};
+#}
 
 #!#!#!#!#
 ##  39 ##
