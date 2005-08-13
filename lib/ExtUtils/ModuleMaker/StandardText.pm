@@ -1,6 +1,16 @@
 package ExtUtils::ModuleMaker::StandardText;
 use strict;
 local $^W = 1;
+use ExtUtils::ModuleMaker::Licenses::Standard qw(
+    Get_Standard_License
+    Verify_Standard_License
+);
+use ExtUtils::ModuleMaker::Licenses::Local qw(
+    Get_Local_License
+    Verify_Local_License
+);
+use File::Path;
+use Carp;
 
 my %README_text = (
     eumm_instructions => q~
@@ -497,5 +507,215 @@ EOF
     }
 
     return $page;
+}
+
+#!#!#!#!#
+##   6 ##
+# Usage     : $self->verify_values() within complete_build()
+# Purpose   : Verify module values are valid and complete.
+# Returns   : Error message if there is a problem
+# Argument  : n/a
+# Throws    : Will die with a death_message if errors and not interactive.
+# Comments  : 
+sub verify_values {
+    my $self = shift;
+    my @errors = ();
+
+    push( @errors, 'NAME is required' )
+      unless ( $self->{NAME} );
+    push( @errors, 'Module NAME contains illegal characters' )
+      unless ( $self->{NAME} and $self->{NAME} =~ m/^[\w:]+$/ );
+    push( @errors, 'ABSTRACTs are limited to 44 characters' )
+      if ( length( $self->{ABSTRACT} ) > 44 );
+    push( @errors, 'CPAN IDs are 3-9 characters' )
+      if ( $self->{AUTHOR}{CPANID} !~ m/^\w{3,9}$/ );
+    push( @errors, 'EMAIL addresses need to have an at sign' )
+      if ( $self->{AUTHOR}{EMAIL} !~ m/.*\@.*/ );
+    push( @errors, 'WEBSITEs should start with an "http:" or "https:"' )
+      if ( $self->{AUTHOR}{WEBSITE} !~ m/https?:\/\/.*/ );
+    push( @errors, 'LICENSE is not recognized' )
+      unless ( Verify_Local_License( $self->{LICENSE} )
+        || Verify_Standard_License( $self->{LICENSE} ) );
+
+    return unless @errors;
+    $self->death_message(\@errors);
+}
+
+#!#!#!#!#
+##   8 ##
+sub generate_pm_file {
+    my ( $self, $module ) = @_;
+
+    $self->create_pm_basics($module);
+
+    my $page = $self->build_page($module);
+
+    $self->print_file( $module->{FILE}, $page );
+}
+
+sub build_page {
+    my $self = shift;
+    my $module = shift;
+      
+    my $page = $self->block_begin($module);
+    $page .= (
+         ( $self->module_value( $module, 'NEED_POD' ) )
+         ? $self->block_module_header($module)
+         : ''
+    );
+
+    $page .= (
+         (
+            (
+                 ( $self->module_value( $module, 'NEED_POD' ) )
+              && ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
+            )
+            ? $self->block_subroutine_header($module)
+         : ''
+	 )
+    );
+
+    $page .= (
+        ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
+        ? $self->block_new_method()
+        : ''
+    );
+
+    $page .= $self->block_final_one();
+    return ($module, $page);
+}
+
+#!#!#!#!#
+##  10 ##
+sub set_dates {
+    my $self = shift;
+    $self->{year}      = (localtime)[5] + 1900;
+    $self->{timestamp} = scalar localtime;
+    $self->{COPYRIGHT_YEAR} ||= $self->{year};
+}
+
+#!#!#!#!#
+##  11 ##
+sub set_author_data {
+    my $self = shift;
+
+    $self->{AUTHOR}->{COMPOSITE} = (
+        "\t"
+         . join( "\n\t",
+            $self->{AUTHOR}->{NAME},
+            "CPAN ID: $self->{AUTHOR}->{CPANID}", # will need to be modified
+            $self->{AUTHOR}->{ORGANIZATION},  # if defaults no longer provided
+            $self->{AUTHOR}->{EMAIL}, 
+	    $self->{AUTHOR}->{WEBSITE}, ),
+    );
+}
+
+#!#!#!#!#
+##  13 ##
+# Usage     : 
+# Purpose   : Create the directory where all the files will be created.
+# Returns    $DIR = directory name where the files will live
+# Argument   $package_name = name of module separated by '::'
+# Throws    : 
+# Comments  : see also:  check_dir()
+sub create_base_directory {
+    my $self = shift;
+
+    $self->{Base_Dir} =
+      join( ( $self->{COMPACT} ) ? '-' : '/', split( /::/, $self->{NAME} ) );
+    $self->check_dir( $self->{Base_Dir} );
+}
+
+#!#!#!#!#
+##  14 ##
+sub create_pm_basics {
+    my ( $self, $module ) = @_;
+    my @layers = split( /::/, $module->{NAME} );
+    my $file   = pop(@layers);
+    my $dir    = join( '/', 'lib', @layers );
+
+    $self->check_dir("$self->{Base_Dir}/$dir");
+    $module->{FILE} = "$dir/$file.pm";
+}
+
+#!#!#!#!#
+##  15 ##
+sub initialize_license {
+    my $self = shift;
+
+    $self->{LICENSE} = lc( $self->{LICENSE} );
+
+    my $license_function = Get_Local_License( $self->{LICENSE} )
+      || Get_Standard_License( $self->{LICENSE} );
+
+    if ( ref($license_function) eq 'CODE' ) {
+        $self->{LicenseParts} = $license_function->();
+
+        $self->{LicenseParts}{LICENSETEXT} =~
+          s/###year###/$self->{COPYRIGHT_YEAR}/ig;
+        $self->{LicenseParts}{LICENSETEXT} =~
+          s/###owner###/$self->{AUTHOR}{NAME}/ig;
+        $self->{LicenseParts}{LICENSETEXT} =~
+          s/###organization###/$self->{AUTHOR}{ORGANIZATION}/ig;
+    }
+
+}
+
+sub print_file {
+    my ( $self, $filename, $page ) = @_;
+
+    push( @{ $self->{MANIFEST} }, $filename )
+      unless ( $filename eq 'MANIFEST' );
+    $self->log_message("writing file '$filename'");
+
+    local *FILE;
+    open( FILE, ">$self->{Base_Dir}/$filename" )
+      or $self->death_message( [ "Could not write '$filename', $!" ] );
+    print FILE ($page);
+    close FILE;
+}
+
+#!#!#!#!#
+##  19 ##
+# Usage     : check_dir ($dir, $MODE);
+# Purpose   : Creates a directory with the correct mode if needed.
+# Returns   : n/a
+# Argument  : $dir = directory name
+#             $MODE = mode of directory (e.g. 0777, 0755)
+# Throws    : 
+# Comments  : 
+sub check_dir {
+    my $self = shift;
+
+    return mkpath( \@_, $self->{VERBOSE}, $self->{PERMISSIONS} );
+    $self->death_message( [ "Can't create a directory: $!" ] );
+}
+
+#!#!#!#!#
+##  20 ##
+sub death_message {
+    my $self = shift;
+    my $errorref = shift;
+    my @errors = @{$errorref};
+
+    croak( join "\n", @errors, '', $self->{USAGE_MESSAGE} )
+      unless $self->{INTERACTIVE};
+    my %err = map {$_, 1} @errors;
+    delete $err{'NAME is required'} if $err{'NAME is required'};
+    @errors = keys %err;
+    if (@errors) {
+        print( join "\n", 
+            'Oops, there are the following errors:', @errors, '' );
+        return 1;
+    } else {
+        return;
+    }
+}
+
+#!#!#!#!#
+##  21 ##
+sub log_message {
+    my ( $self, $message ) = @_;
+    print "$message\n" if $self->{VERBOSE};
 }
 
