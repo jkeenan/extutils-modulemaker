@@ -58,26 +58,26 @@ sub default_values {
 #',
 #);
 
-my $block_new_method = <<'EOFBLOCK';
+#my $block_new_method = <<'EOFBLOCK';
+#
+#sub new
+#{
+#    my ($class, %parameters) = @_;
+#
+#    my $self = bless ({}, ref ($class) || $class);
+#
+#    return $self;
+#}
+#
+#EOFBLOCK
 
-sub new
-{
-    my ($class, %parameters) = @_;
-
-    my $self = bless ({}, ref ($class) || $class);
-
-    return $self;
-}
-
-EOFBLOCK
-
-my $description = <<EOFBLOCK;
-Stub documentation for this module was created by ExtUtils::ModuleMaker.
-It looks like the author of the extension was negligent enough
-to leave the stub unedited.
-
-Blah blah blah.
-EOFBLOCK
+#my $description = <<EOFBLOCK;
+#Stub documentation for this module was created by ExtUtils::ModuleMaker.
+#It looks like the author of the extension was negligent enough
+#to leave the stub unedited.
+#
+#Blah blah blah.
+#EOFBLOCK
 
 my $subroutine_header = <<EOFBLOCK;
 
@@ -157,7 +157,7 @@ sub standard_text {
     my %standard_text = (
 #        pod_wrapper => \%pod_wrapper,
 #	block_new_method => $block_new_method,
-	block_module_header_description => $description,
+#	block_module_header_description => $description,
 	subroutine_header => $subroutine_header,
 	block_final_one => $block_final_one,
 #	Makefile_text => $Makefile_text,
