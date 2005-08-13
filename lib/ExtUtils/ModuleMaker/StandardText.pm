@@ -60,7 +60,15 @@ sub file_text_README {
         $README_text{readme_bottom};
 }
 
-my $Makefile_text = q~
+# Usage     : $self->file_text_Makefile 
+# Purpose   : Build a supporting file
+# Returns   : Text of the file being built
+# Argument  : n/a
+# Throws    : n/a
+# Comments  : This method is a likely candidate for alteration in a subclass
+sub file_text_Makefile {
+    my $self = shift;
+    my $Makefile_text = q~
 
 use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
@@ -75,16 +83,6 @@ WriteMakefile(
                     },
 );
 ~;
-
-# Usage     : $self->file_text_Makefile 
-# Purpose   : Build a supporting file
-# Returns   : Text of the file being built
-# Argument  : n/a
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
-sub file_text_Makefile {
-    my $self = shift;
-#    my $page = sprintf $self->{standard}{Makefile_text},
     my $page = sprintf $Makefile_text,
         map { my $s = $_; $s =~ s{'}{\\'}g; $s; }
     $self->{NAME},
@@ -258,28 +256,6 @@ EOF
     return $page;
 }
 
-#my $subroutine_header = <<EOFBLOCK;
-#
-##################### subroutine header begin ####################
-#
-# ====head2 sample_function
-#
-# Usage     : How to use this function/method
-# Purpose   : What it does
-# Returns   : What it returns
-# Argument  : What it wants to know
-# Throws    : Exceptions and other anomolies
-# Comments  : This is a sample subroutine header.
-#           : It is polite to include more pod and fewer comments.
-#
-#See Also   : 
-#
-# ====cut
-#
-##################### subroutine header end ####################
-#
-#EOFBLOCK
-
 # Usage     : $self->block_subroutine_header() within generate_pm_file()
 # Purpose   : Build part of a module pm file
 # Returns   : Part of the file being built
@@ -289,7 +265,6 @@ EOF
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub block_subroutine_header {
     my ( $self, $module ) = @_;
-#    my $string = $subroutine_header;
     my $string = <<EOFBLOCK;
 
 #################### subroutine header begin ####################
@@ -334,8 +309,6 @@ sub block_final_one {
 EOFBLOCK
 }
 
-#!#!#!#!#
-##  25 ##
 # Usage     : $self->block_begin() within generate_pm_file()
 # Purpose   : Build part of a module pm file
 # Returns   : Part of the file being built
@@ -368,8 +341,6 @@ EOFBLOCK
     return $string;
 }
 
-#!#!#!#!#
-##  41 ##
 # Usage     : $self->file_text_ToDo() within complete_build()
 # Purpose   : Build a supporting file
 # Returns   : Text of the file being built
@@ -390,8 +361,6 @@ EOF
     return $page;
 }
 
-#!#!#!#!#
-##  45 ##
 # Usage     : $self->file_text_Buildfile within complete_build() 
 # Purpose   : Build a supporting file
 # Returns   : Text of the file being built
@@ -428,8 +397,6 @@ EOF
 
 }
 
-#!#!#!#!#
-##  47 ##
 # Usage     : $self->file_text_proxy_makefile within complete_build()
 # Purpose   : Build a supporting file
 # Returns   : Text of the file being built
@@ -473,8 +440,6 @@ EOF
     return $page;
 }
 
-#!#!#!#!#
-##  49 ##
 # Usage     : $self->file_text_test within complete_build()
 # Purpose   : Build a supporting file
 # Returns   : Text of the file being built
@@ -527,8 +492,6 @@ EOF
     return $page;
 }
 
-#!#!#!#!#
-##   6 ##
 # Usage     : $self->verify_values() within complete_build()
 # Purpose   : Verify module values are valid and complete.
 # Returns   : Error message if there is a problem
@@ -559,8 +522,6 @@ sub verify_values {
     $self->death_message(\@errors);
 }
 
-#!#!#!#!#
-##   8 ##
 sub generate_pm_file {
     my ( $self, $module ) = @_;
 
@@ -603,8 +564,6 @@ sub build_page {
     return ($module, $page);
 }
 
-#!#!#!#!#
-##  10 ##
 sub set_dates {
     my $self = shift;
     $self->{year}      = (localtime)[5] + 1900;
@@ -612,8 +571,6 @@ sub set_dates {
     $self->{COPYRIGHT_YEAR} ||= $self->{year};
 }
 
-#!#!#!#!#
-##  11 ##
 sub set_author_data {
     my $self = shift;
 
@@ -628,8 +585,6 @@ sub set_author_data {
     );
 }
 
-#!#!#!#!#
-##  13 ##
 # Usage     : 
 # Purpose   : Create the directory where all the files will be created.
 # Returns    $DIR = directory name where the files will live
@@ -644,8 +599,6 @@ sub create_base_directory {
     $self->check_dir( $self->{Base_Dir} );
 }
 
-#!#!#!#!#
-##  14 ##
 sub create_pm_basics {
     my ( $self, $module ) = @_;
     my @layers = split( /::/, $module->{NAME} );
@@ -656,8 +609,6 @@ sub create_pm_basics {
     $module->{FILE} = "$dir/$file.pm";
 }
 
-#!#!#!#!#
-##  15 ##
 sub initialize_license {
     my $self = shift;
 
@@ -693,8 +644,6 @@ sub print_file {
     close FILE;
 }
 
-#!#!#!#!#
-##  19 ##
 # Usage     : check_dir ($dir, $MODE);
 # Purpose   : Creates a directory with the correct mode if needed.
 # Returns   : n/a
@@ -709,8 +658,6 @@ sub check_dir {
     $self->death_message( [ "Can't create a directory: $!" ] );
 }
 
-#!#!#!#!#
-##  20 ##
 sub death_message {
     my $self = shift;
     my $errorref = shift;
@@ -730,10 +677,10 @@ sub death_message {
     }
 }
 
-#!#!#!#!#
-##  21 ##
 sub log_message {
     my ( $self, $message ) = @_;
     print "$message\n" if $self->{VERBOSE};
 }
+
+1;
 

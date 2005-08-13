@@ -1,7 +1,7 @@
 package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
-use vars qw ($VERSION @ISA);
+use vars qw ($VERSION);
 $VERSION = 0.36_05;
 use base qw(ExtUtils::ModuleMaker::StandardText);
 use ExtUtils::ModuleMaker::Defaults qw( default_values );
@@ -41,7 +41,6 @@ sub new {
         }
     }
 
-#    if ($self->{INTERACTIVE}) { print STDERR "Get data interactively!\n"; }
     $self->set_author_data();
     $self->set_dates();
     $self->{eumm_version} = $VERSION;
