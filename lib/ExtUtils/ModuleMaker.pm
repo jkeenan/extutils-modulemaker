@@ -19,8 +19,6 @@ use Carp;
 
 #################### PUBLICLY CALLABLE METHODS ####################
 
-#!#!#!#!#
-##   2 ##
 sub new {
     my ( $class, @arglist ) = @_;
     local $_;
@@ -65,8 +63,6 @@ sub new {
     return $self;
 }
 
-#!#!#!#!#
-##   7 ##
 sub complete_build {
     my $self = shift;
 
@@ -105,6 +101,32 @@ sub complete_build {
 
     $self->print_file( 'MANIFEST', join( "\n", @{ $self->{MANIFEST} } ) );
     return 1;
+}
+
+sub partial_dump {
+    my $self = shift;
+    my %keys_not_shown = map {$_, 1} @_;
+    require Data::Dumper;
+    my ($k, $v, %retry);
+    while ( ($k, $v) = each %{$self} ) {
+        $retry{$k} = $v unless $keys_not_shown{$k};
+    }
+    my $d = Data::Dumper->new( [\%retry] );
+    return $d->Dump;
+}
+
+sub get_license {
+    my $self = shift;
+    return (join ("\n\n",
+        "=====================================================================",
+        "=====================================================================",
+        $self->{LicenseParts}{LICENSETEXT},
+        "=====================================================================",
+        "=====================================================================",
+        $self->{LicenseParts}{COPYRIGHT},
+        "=====================================================================",
+        "=====================================================================",
+    ));
 }
 
 #################### INTERNAL SUBROUTINES ####################
@@ -261,20 +283,6 @@ sub initialize_license {
 
 }
 
-sub get_license {
-    my $self = shift;
-    return (join ("\n\n",
-        "=====================================================================",
-        "=====================================================================",
-        $self->{LicenseParts}{LICENSETEXT},
-        "=====================================================================",
-        "=====================================================================",
-        $self->{LicenseParts}{COPYRIGHT},
-        "=====================================================================",
-        "=====================================================================",
-    ));
-}
-
 sub print_file {
     my ( $self, $filename, $page ) = @_;
 
@@ -331,211 +339,6 @@ sub death_message {
 sub log_message {
     my ( $self, $message ) = @_;
     print "$message\n" if $self->{VERBOSE};
-}
-
-##!#!#!#!#
-###  25 ##
-## Usage     : $self->block_begin() within generate_pm_file()
-## Purpose   : Build part of a module pm file
-## Returns   : Part of the file being built
-## Argument  : $module: pointer to the module being built, for the primary
-##                      module it is a pointer to $self
-## Throws    : n/a
-## Comments  : This method is a likely candidate for alteration in a subclass
-#sub block_begin {
-#    my ( $self, $module ) = @_;
-#
-#    my $version = $self->module_value( $module, 'VERSION' );
-#
-#    my $string = <<EOFBLOCK;
-#package $module->{NAME};
-#use strict;
-#
-#BEGIN {
-#    use Exporter ();
-#    use vars qw (\$VERSION \@ISA \@EXPORT \@EXPORT_OK \%EXPORT_TAGS);
-#    \$VERSION     = $version;
-#    \@ISA         = qw (Exporter);
-#    #Give a hoot don't pollute, do not export more than needed by default
-#    \@EXPORT      = qw ();
-#    \@EXPORT_OK   = qw ();
-#    \%EXPORT_TAGS = ();
-#}
-#
-#EOFBLOCK
-#
-#    return $string;
-#}
-#
-##!#!#!#!#
-###  41 ##
-## Usage     : $self->file_text_ToDo() within complete_build()
-## Purpose   : Build a supporting file
-## Returns   : Text of the file being built
-## Argument  : n/a
-## Throws    : n/a
-## Comments  : This method is a likely candidate for alteration in a subclass
-#sub file_text_ToDo {
-#    my $self = shift;
-#
-#    my $page = <<EOF;
-#TODO list for Perl module $self->{NAME}
-#
-#- Nothing yet
-#
-#
-#EOF
-#
-#    return $page;
-#}
-#
-##!#!#!#!#
-###  45 ##
-## Usage     : $self->file_text_Buildfile within complete_build() 
-## Purpose   : Build a supporting file
-## Returns   : Text of the file being built
-## Argument  : n/a
-## Throws    : n/a
-## Comments  : This method is a likely candidate for alteration in a subclass
-#sub file_text_Buildfile {
-#    my $self = shift;
-#
-#    # As of 0.15, Module::Build only allows a few licenses
-#    my $license_line = 1 if $self->{LICENSE} =~ /^(?:perl|gpl|artistic)$/;
-#
-#    my $page = <<EOF;
-#use Module::Build;
-## See perldoc Module::Build for details of how this works
-#
-#Module::Build->new
-#    ( module_name     => '$self->{NAME}',
-#EOF
-#
-#    if ($license_line) {
-#
-#        $page .= <<EOF;
-#      license         => '$self->{LICENSE}',
-#EOF
-#
-#    }
-#
-#    $page .= <<EOF;
-#    )->create_build_script;
-#EOF
-#
-#    return $page;
-#
-#}
-#
-##!#!#!#!#
-###  47 ##
-## Usage     : $self->file_text_proxy_makefile within complete_build()
-## Purpose   : Build a supporting file
-## Returns   : Text of the file being built
-## Argument  : n/a
-## Throws    : n/a
-## Comments  : This method is a likely candidate for alteration in a subclass
-#sub file_text_proxy_makefile {
-#    my $self = shift;
-#
-#    # This comes directly from the docs for Module::Build::Compat
-#    my $page = <<'EOF';
-#unless (eval "use Module::Build::Compat 0.02; 1" ) {
-#  print "This module requires Module::Build to install itself.\n";
-#
-#  require ExtUtils::MakeMaker;
-#  my $yn = ExtUtils::MakeMaker::prompt
-#    ('  Install Module::Build from CPAN?', 'y');
-#
-#  if ($yn =~ /^y/i) {
-#    require Cwd;
-#    require File::Spec;
-#    require CPAN;
-#
-#    # Save this 'cause CPAN will chdir all over the place.
-#    my $cwd = Cwd::cwd();
-#    my $makefile = File::Spec->rel2abs($0);
-#
-#    CPAN::Shell->install('Module::Build::Compat');
-#
-#    chdir $cwd or die "Cannot chdir() back to $cwd: $!";
-#    exec $^X, $makefile, @ARGV;  # Redo now that we have Module::Build
-#  } else {
-#    warn " *** Cannot install without Module::Build.  Exiting ...\n";
-#    exit 1;
-#  }
-#}
-#Module::Build::Compat->run_build_pl(args => \@ARGV);
-#Module::Build::Compat->write_makefile();
-#EOF
-#
-#    return $page;
-#}
-#
-##!#!#!#!#
-###  49 ##
-## Usage     : $self->file_text_test within complete_build()
-## Purpose   : Build a supporting file
-## Returns   : Text of the file being built
-## Argument  : n/a
-## Throws    : n/a
-## Comments  : This method is a likely candidate for alteration in a subclass
-##             Will make a test with or without a checking for method new.
-#sub file_text_test {
-#    my ( $self, $testnum, $module ) = @_;
-#
-#    my $name    = $self->module_value( $module, 'NAME' );
-#    my $neednew = $self->module_value( $module, 'NEED_NEW_METHOD' );
-#
-#    my $page;
-#    if ($neednew) {
-#        my $name = $module->{NAME};
-#
-#        $page = <<EOF;
-## -*- perl -*-
-#
-## $testnum - check module loading and create testing directory
-#
-#use Test::More tests => 2;
-#
-#BEGIN { use_ok( '$name' ); }
-#
-#my \$object = ${name}->new ();
-#isa_ok (\$object, '$name');
-#
-#
-#EOF
-#
-#    }
-#    else {
-#
-#        $page = <<EOF;
-## -*- perl -*-
-#
-## $testnum - check module loading and create testing directory
-#
-#use Test::More tests => 1;
-#
-#BEGIN { use_ok( '$name' ); }
-#
-#
-#EOF
-#
-#    }
-#
-#    return $page;
-#}
-#
-sub partial_dump {
-    my $self = shift;
-    my %keys_not_shown = map {$_, 1} @_;
-    require Data::Dumper;
-    my ($k, $v, %retry);
-    while ( ($k, $v) = each %{$self} ) {
-        $retry{$k} = $v unless $keys_not_shown{$k};
-    }
-    my $d = Data::Dumper->new( [\%retry] );
-    return $d->Dump;
 }
 
 1;    #this line is important and will help the module return a true value
