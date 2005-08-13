@@ -105,7 +105,7 @@ SKIP: {
         ok(chdir $odir, 'changed back to original directory after testing');
     }
 
-    {   # Set 3:  Test of new partial_dump() method.
+    {   # Set 3:  Test of new dump_keys_except() method.
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
         $testmod = 'Rho';
@@ -119,8 +119,8 @@ SKIP: {
         );
         
         my $dump;
-        ok( $dump = $mod->partial_dump(qw| LicenseParts USAGE_MESSAGE |), 
-            'call partial_dump()' );
+        ok( $dump = $mod->dump_keys_except(qw| LicenseParts USAGE_MESSAGE |), 
+            'call dump_keys_except()' );
         my @dumplines = split(/\n/, $dump);
         my $excluded_keys_flag = 0;
         for my $m ( @dumplines ) {

@@ -93,7 +93,7 @@ sub complete_build {
     return 1;
 }
 
-sub partial_dump {
+sub dump_keys_except {
     my $self = shift;
     my %keys_not_shown = map {$_, 1} @_;
     require Data::Dumper;
@@ -349,7 +349,7 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
     $mod->complete_build();
 
-    $mod->partial_dump(qw|
+    $mod->dump_keys_except(qw|
         ...  # key provided as argument to constructor
         ...  # same
     |);
@@ -403,7 +403,7 @@ F<modulemaker> bundled with this distribution.
 In this version of ExtUtils::ModuleMaker there are four publicly 
 callable methods.  Two of them, C<new> and C<complete_build> control the
 building of the file and directory structure for a new Perl
-distribution.  The other two, C<partial_dump> and C<get_license> are intended
+distribution.  The other two, C<dump_keys_except> and C<get_license> are intended
 primarily as shortcuts for some diagnosing problems with an
 ExtUtils::ModuleMaker object.
 
@@ -582,7 +582,7 @@ passed to C<ExtUtils::ModuleMaker::new>.  Returns a
 true value if all specified files are created -- but this says nothing
 about whether those files have been created with the correct content.
 
-=head4 C<partial_dump>
+=head4 C<dump_keys_except>
 
 When troubleshooting problems with an ExtUtils::ModuleMaker object, it
 is often useful to use F<Data::Dumper> to dump the contents of the
@@ -592,7 +592,7 @@ C<USAGE_MESSAGE>), it's handy to have a dumper function that dumps all
 keys I<except> certain designated keys.
 
     @excluded_keys = qw| LicenseParts USAGE_MESSAGE |;
-    $mod->partial_dump(@excluded_keys);
+    $mod->dump_keys_except(@excluded_keys);
 
 =head4 C<get_license>
 
