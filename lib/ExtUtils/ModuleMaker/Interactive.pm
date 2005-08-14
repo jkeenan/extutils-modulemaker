@@ -248,7 +248,10 @@ sub Main_Menu {
         return ( $destinations{'Main Menu'}{$response} )
           if ( exists $destinations{'Main Menu'}{$response} );
     
-        if ( $response eq 'N' ) {
+        if ( $response eq 'Z' ) {
+            exit 0;
+        }
+        elsif ( $response eq 'N' ) {
             my $value =
               Question_User( "Please enter a new value for Primary Module Name",
                 'data' );
@@ -445,7 +448,8 @@ sub Question_User {
         }
     }
 
-    print "You entered '$answer'\n";
+    ($answer ne 'Z') ? print "You entered '$answer'\n" 
+                     : print "You entered '$answer'; exiting immediately\n";
     return ($answer);
 }
 

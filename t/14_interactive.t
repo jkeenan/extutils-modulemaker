@@ -22,7 +22,7 @@ SKIP: {
         $obj = new Expect::Simple {
             Cmd => qq{$^X -I"$cwd/blib/lib" "$cwd/blib/script/modulemaker" -cn XYZ::ABC -a \"This is very abstract.\"}, #"
             Prompt => [ -re => 'Please choose which feature you would like to edit:\s+' ], 
-            DisconnectCmd => 'q',
+            DisconnectCmd => 'quit',
             Verbose => 0,
             Debug => 0,
             Timeout => 100
@@ -42,7 +42,6 @@ SKIP: {
         like($lines[11], qr/^S - Abstract\s+'This is very abstract.'/,
 		"'Abstract' line is okay");
         
-#        $cmd = 'Q';
 #        $obj->send( $obj->{DisconnectCmd} );
 
         ok(chdir $cwd, 'changed back to original directory after testing');
