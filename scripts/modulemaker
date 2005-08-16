@@ -1,18 +1,24 @@
 #!/usr/local/bin/perl
-
 eval 'exec /usr/local/bin/perl  -S $0 ${1+"$@"}'
   if 0;    # not running under some shell
-
 use strict;
 local $^W = 1;
-
 use Getopt::Std;
 use ExtUtils::ModuleMaker 0.34;
 use ExtUtils::ModuleMaker::Interactive qw| run_interactive |;
-
 use vars qw (%opts $VERSION);
-
 $VERSION = 0.36_05;
+
+##### Index of Variables (Aug 15 2005) #####
+# %AUTHOR
+# $MOD
+
+##### Index of Subroutines (Aug 15 2005) #####
+# build_and_close()
+# USAGE()
+#
+
+##### START LIVE CODE #####
 
 getopts( "bdhqCIPVcn:a:v:l:u:p:o:w:e:", \%opts );
 die Usage() if ( $opts{h} );
@@ -40,8 +46,6 @@ my $MOD   = ExtUtils::ModuleMaker->new(
     AUTHOR => \%AUTHOR,
     USAGE_MESSAGE => Usage(),
 );
-
-# $MOD->partial_dump(qw| LicenseParts USAGE_MESSAGE |);
 
 if ( $MOD->{INTERACTIVE} ) {
     $MOD = run_interactive($MOD);

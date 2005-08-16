@@ -2,9 +2,6 @@ package ExtUtils::ModuleMaker::Interactive;
 use strict;
 local $^W = 1;
 use ExtUtils::ModuleMaker;
-# use ExtUtils::ModuleMaker::Licenses::Standard;
-# use ExtUtils::ModuleMaker::Licenses::Local;
-# use File::Path;
 use Carp;
 use Exporter;
 use vars qw ( @ISA @EXPORT_OK );
@@ -13,6 +10,28 @@ use vars qw ( @ISA @EXPORT_OK );
 
 # This package is designed solely to house subroutines used in
 # modulemaker's interactive mode.
+
+##### Index of Variables (Aug 15 2005) #####
+# %Author_Menu
+# %Directives_Menu
+# %Flagged
+# $License_Standard
+# $License_Local
+# @lic             
+# %Build_Menu
+# %destinations
+# %messages
+
+##### Index of Subroutines (Aug 15 2005) #####
+# run_interactive()
+# Main_Menu()
+# Author_Menu()
+# Directives_Menu()
+# License_Menu()
+# License_Display()
+# Build_Menu()
+# Copyright_Display()
+# Question_User()
 
 ########## BEGIN DECLARATIONS ##########
 

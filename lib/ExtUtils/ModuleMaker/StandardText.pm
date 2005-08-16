@@ -505,7 +505,7 @@ sub verify_values {
     push( @errors, 'NAME is required' )
       unless ( $self->{NAME} );
     push( @errors, 'Module NAME contains illegal characters' )
-      unless ( $self->{NAME} and $self->{NAME} =~ m/^[\w:]+$/ );
+      if ( $self->{NAME} and $self->{NAME} !~ m/^[\w:]+$/ );
     push( @errors, 'ABSTRACTs are limited to 44 characters' )
       if ( length( $self->{ABSTRACT} ) > 44 );
     push( @errors, 'CPAN IDs are 3-9 characters' )
