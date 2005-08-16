@@ -1,17 +1,21 @@
 package ExtUtils::ModuleMaker::Interactive;
 use strict;
 local $^W = 1;
+BEGIN {
+    use Exporter;
+    use vars qw ( @ISA @EXPORT_OK %author_defaults );
+    @ISA = qw( Exporter );
+    @EXPORT_OK = qw( run_interactive %author_defaults );
+}
 use ExtUtils::ModuleMaker;
+use ExtUtils::ModuleMaker::Defaults qw( default_values );
 use Carp;
-use Exporter;
-use vars qw ( @ISA @EXPORT_OK );
-@ISA = qw( Exporter );
-@EXPORT_OK  = qw( run_interactive );
 
-# This package is designed solely to house subroutines used in
+# This package is designed solely to house subroutines and variables used in
 # modulemaker's interactive mode.
 
-##### Index of Variables (Aug 15 2005) #####
+##### Index of Variables (Aug 16 2005) #####
+# %author_defaults (exportable)
 # %Author_Menu
 # %Directives_Menu
 # %Flagged
@@ -23,7 +27,7 @@ use vars qw ( @ISA @EXPORT_OK );
 # %messages
 
 ##### Index of Subroutines (Aug 15 2005) #####
-# run_interactive()
+# run_interactive() (exportable)
 # Main_Menu()
 # Author_Menu()
 # Directives_Menu()
@@ -35,13 +39,44 @@ use vars qw ( @ISA @EXPORT_OK );
 
 ########## BEGIN DECLARATIONS ##########
 
-my %Author_Menu = (
-    N => [ 'Name        ', 'NAME' ],
-    C => [ 'CPAN ID     ', 'CPANID' ],
-    O => [ 'Organization', 'ORGANIZATION' ],
-    W => [ 'Website     ', 'WEBSITE' ],
-    E => [ 'Email       ', 'EMAIL' ],
+my $defaults_ref = default_values();
+
+%author_defaults = (
+    NAME => {
+            default  => ${$defaults_ref}{AUTHOR}{NAME},
+            string   => 'Name        ',
+            opt      => 'u',
+            select   => 'N',
+        },
+    CPANID => {
+            default  => ${$defaults_ref}{AUTHOR}{CPANID},
+            string   => 'CPAN ID     ',
+            opt      => 'p',
+            select   => 'C',
+        },
+    ORGANIZATION => {
+            default  => ${$defaults_ref}{AUTHOR}{ORGANIZATION},
+            string   => 'Organization',
+            opt      => 'o',
+            select   => 'O',
+        },
+    WEBSITE => {
+            default  => ${$defaults_ref}{AUTHOR}{WEBSITE},
+            string   => 'Website     ',
+            opt      => 'w',
+            select   => 'W',
+        },
+    EMAIL => {
+            default  => ${$defaults_ref}{AUTHOR}{EMAIL},
+            string   => 'Email       ',
+            opt      => 'e',
+            select   => 'E',
+        },
 );
+
+my %Author_Menu = map 
+    { $author_defaults{$_}{select} => [ $author_defaults{$_}{string}, $_ ] } 
+        keys %author_defaults;
 
 my %Directives_Menu = (
     C => [ 'Compact        ', 'COMPACT' ],
@@ -52,8 +87,10 @@ my %Directives_Menu = (
     H => [ 'History in POD ', 'CHANGES_IN_POD' ],
 );
 
-my %Flagged =
-  ( ( map { $_ => 0 } qw (0 N F) ), ( map { $_ => 1 } qw (1 Y T) ), );
+my %Flagged = (
+    ( map { $_ => 0 } qw (0 N F) ),
+    ( map { $_ => 1 } qw (1 Y T) ),
+);
 
 my $License_Standard = ExtUtils::ModuleMaker::Licenses::Standard->interact();
 my $License_Local    = ExtUtils::ModuleMaker::Licenses::Local->interact();
@@ -517,4 +554,5 @@ LICENSE file included with this module.
 F<modulemaker>, F<ExtUtils::ModuleMaker>.
 
 =cut
+
 

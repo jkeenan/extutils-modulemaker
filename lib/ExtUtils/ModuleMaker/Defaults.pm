@@ -7,7 +7,8 @@ require Exporter;
 @ISA = ('Exporter');
 @EXPORT_OK = qw( default_values );
 
-my $USAGE = <<ENDOFUSAGE;
+
+my $usage = <<ENDOFUSAGE;
 
 There were problems with your data supplied to ExtUtils::ModuleMaker.
 Please fix the problems listed above and try again.
@@ -15,7 +16,7 @@ Please fix the problems listed above and try again.
 ENDOFUSAGE
 
 sub default_values {
-    return {
+    my %default_values = (
         LICENSE  => 'perl',
         VERSION  => 0.01,
         ABSTRACT => 'Module abstract (<= 44 characters) goes here',
@@ -35,8 +36,9 @@ sub default_values {
         CHANGES_IN_POD  => 0,
 
         PERMISSIONS => 0755,
-        USAGE_MESSAGE => $USAGE,
-     }
+        USAGE_MESSAGE => $usage,
+     );
+     return { %default_values };
 }
 
 1;

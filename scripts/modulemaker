@@ -5,11 +5,14 @@ use strict;
 local $^W = 1;
 use Getopt::Std;
 use ExtUtils::ModuleMaker 0.34;
-use ExtUtils::ModuleMaker::Interactive qw| run_interactive |;
-use vars qw (%opts $VERSION);
+use ExtUtils::ModuleMaker::Interactive qw| run_interactive %author_defaults |;
+use vars qw ( $VERSION );
+
 $VERSION = 0.36_05;
 
 ##### Index of Variables (Aug 15 2005) #####
+# %ExtUtils::ModuleMaker::Interactive::author_defaults
+# %opts
 # %AUTHOR
 # $MOD
 
@@ -20,16 +23,19 @@ $VERSION = 0.36_05;
 
 ##### START LIVE CODE #####
 
+my %opts;
 getopts( "bdhqCIPVcn:a:v:l:u:p:o:w:e:", \%opts );
 die Usage() if ( $opts{h} );
 
-my %AUTHOR = (
-    NAME         => ($opts{u} ? $opts{u} : 'A. U. Thor'),
-    CPANID       => ($opts{p} ? $opts{p} : 'AUTHOR'),
-    ORGANIZATION => ($opts{o} ? $opts{o} : 'XYZ Corp.'),
-    WEBSITE      => ($opts{w} ? $opts{w} : 'http://a.galaxy.far.far.away/modules'),
-    EMAIL        => ($opts{e} ? $opts{e} : 'a.u.thor@a.galaxy.far.far.away'),
-);
+my %AUTHOR = map { $_ => ($opts{$author_defaults{$_}{opt}} 
+                        ? $opts{$author_defaults{$_}{opt}} 
+                        :       $author_defaults{$_}{default})
+             } keys %author_defaults;
+ 
+# NOTE (8/16/05):  The fallback values here are in large part retyping
+# of the values found in
+# ExtUtils::ModuleMaker::Defaults::default_values().  This is repeated
+# code; see what can be refactored out.
 
 my $MOD   = ExtUtils::ModuleMaker->new(
     COMPACT          => ( ( $opts{c} ) ? 1 : 0 ),
@@ -226,4 +232,5 @@ LICENSE file included with this module.
 F<ExtUtils::ModuleMaker>, F<perlnewmod>, F<h2xs>, F<ExtUtils::MakeMaker>.
 
 =cut
+
 
