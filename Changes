@@ -1,5 +1,10 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.3606 August 16, 2005
+	- Fixing interactive mode.
+
+0.3605 August 13, 2005
+
 0.3604 July 31, 2005
 	- Adapted test suite so that it will run (albeit skipping most
 	  tests) on versions of Perl < 5.6.

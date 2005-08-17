@@ -1,4 +1,5 @@
 package ExtUtils::ModuleMaker::Defaults;
+# as of 08/16/2005
 use strict;
 local $^W = 1;
 

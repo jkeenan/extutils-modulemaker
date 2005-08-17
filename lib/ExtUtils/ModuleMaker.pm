@@ -2,7 +2,7 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 use vars qw ($VERSION);
-$VERSION = 0.36_05;
+$VERSION = 0.36_06;
 use base qw(ExtUtils::ModuleMaker::StandardText);
 use ExtUtils::ModuleMaker::Defaults qw( default_values );
 use Carp;
@@ -162,8 +162,8 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
 =head1 VERSION
 
-This document references version 0.36_05 of ExtUtils::ModuleMaker, released
-to CPAN on August 13, 2005.
+This document references version 0.36_06 of ExtUtils::ModuleMaker, released
+to CPAN on August 16, 2005.
 
 =head1 DESCRIPTION
 

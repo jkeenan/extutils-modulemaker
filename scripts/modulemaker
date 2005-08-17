@@ -8,7 +8,7 @@ use ExtUtils::ModuleMaker 0.34;
 use ExtUtils::ModuleMaker::Interactive qw| run_interactive %author_defaults |;
 use vars qw ( $VERSION );
 
-$VERSION = 0.36_05;
+$VERSION = 0.36_06;
 
 ##### Index of Variables (Aug 15 2005) #####
 # %ExtUtils::ModuleMaker::Interactive::author_defaults
@@ -109,8 +109,8 @@ modulemaker - interactive interface to ExtUtils::ModuleMaker
 
 =head1 VERSION
 
-This document references version 0.36_05 of modulemaker, released
-to CPAN on August 13, 2005.
+This document references version 0.36_06 of modulemaker, released
+to CPAN on August 16, 2005.
 
 =head1 USAGE
 
