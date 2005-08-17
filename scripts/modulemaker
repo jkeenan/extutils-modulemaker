@@ -19,7 +19,7 @@ $VERSION = 0.36_05;
 ##### Index of Subroutines (Aug 15 2005) #####
 # build_and_close()
 # USAGE()
-#
+
 
 ##### START LIVE CODE #####
 
@@ -32,11 +32,6 @@ my %AUTHOR = map { $_ => ($opts{$author_defaults{$_}{opt}}
                         :       $author_defaults{$_}{default})
              } keys %author_defaults;
  
-# NOTE (8/16/05):  The fallback values here are in large part retyping
-# of the values found in
-# ExtUtils::ModuleMaker::Defaults::default_values().  This is repeated
-# code; see what can be refactored out.
-
 my $MOD   = ExtUtils::ModuleMaker->new(
     COMPACT          => ( ( $opts{c} ) ? 1 : 0 ),
     VERBOSE          => ( ( $opts{V} ) ? 1 : 0 ),

@@ -119,26 +119,26 @@ my %destinations = (
         L => 'License Menu',
         D => 'Directives_Menu',
         B => 'Build Menu',
-        Q => 'done',
+	X => 'exit',
     },
     'Author Menu' => {
         R => 'Main Menu',
-        Q => 'done',
+	X => 'exit',
     },
     Directives_Menu => {
         R => 'Main Menu',
-        Q => 'done',
+	X => 'exit',
     },
     'License Menu' => {
         C => 'Copyright_Display',
         L => 'License_Display',
-        R => 'Main Menu',
-        Q => 'done',
         P => 'License Menu',
+        R => 'Main Menu',
+	X => 'exit',
     },
     'Build Menu' => {
         R => 'Main Menu',
-        Q => 'done',
+	X => 'exit',
     },
 );
 
@@ -156,9 +156,10 @@ A - Author information
 L - License              '##license##'
 D - Directives
 B - Build system         '##build##'
+
 G - Generate module
 
-Q - Quit program
+X - Exit immediately
 
 Please choose which feature you would like to edit: 
 EOF
@@ -171,6 +172,7 @@ modulemaker: Author Menu
 ##Data Here##
 
 R - Return to main menu
+X - Exit immediately
 
 Please choose which feature you would like to edit:
 EOF
@@ -184,6 +186,7 @@ modulemaker: Directives Menu
 ##Data Here##
 
 R - Return to main menu
+X - Exit immediately
 
 Please choose which feature you would like to edit:
 EOF
@@ -202,6 +205,7 @@ ModuleMaker provides many licenes to choose from, many of them approved by opens
 C - Display the Copyright
 L - Display the License
 R - Return to main menu
+X - Exit immediately
 
 Please choose which license you would like to use:
 EOF
@@ -217,6 +221,7 @@ C - Display the Copyright
 L - Display the License
 P - Pick a different license
 R - Return to main menu
+X - Exit immediately
 
 Please choose which license you would like to use:
 EOF
@@ -232,6 +237,7 @@ C - Display the Copyright
 L - Display the License
 P - Pick a different license
 R - Return to main menu
+X - Exit immediately
 
 Please choose which license you would like to use:
 EOF
@@ -247,6 +253,7 @@ E - ExtUtils::MakeMaker
 B - Module::Build
 P - Module::Build and proxy Makefile.PL
 R - Return to main menu
+X - Exit immediately
 
 Please choose which build system you would like to use:
 EOF
@@ -262,7 +269,10 @@ sub run_interactive {
     my $MOD = shift;
     my $where = 'Main Menu';
     while () {
-        if ( $where eq 'done' ) {
+        if ( $where eq 'exit' ) {
+            print "Exiting immediately!\n\n";
+	    exit 0;
+        } elsif ( $where eq 'done' ) {
             last;
         } elsif ( $where eq 'Module Name' ) {
         } elsif ( $where eq 'Abstract' ) {
@@ -304,10 +314,11 @@ sub Main_Menu {
         return ( $destinations{'Main Menu'}{$response} )
           if ( exists $destinations{'Main Menu'}{$response} );
     
-        if ( $response eq 'Z' ) {
-            exit 0;
-        }
-        elsif ( $response eq 'N' ) {
+#        if ( $response eq 'Z' ) {
+#            exit 0;
+#        }
+#        elsif ( $response eq 'N' ) {
+        if ( $response eq 'N' ) {
             my $value =
               Question_User( "Please enter a new value for Primary Module Name",
                 'data' );
@@ -319,19 +330,23 @@ sub Main_Menu {
                 'data' );
             $MOD->{ABSTRACT} = $value;
         }
-        # not documented or yet included in main menu
-    #    elsif ( $response eq 'V' ) {
-    #        $MOD->verify_values();
-    #        print "Module verification done\n";
-    #    }
         elsif ( $response eq 'G' ) {
             $MOD->set_author_data();
         # verify_values() returns an empty list if all values are
         # good; so if its return value is true, we need to repeat
         # the prompts; otherwise, we can proceed to complete_build()
-            if (! $MOD->verify_values()) {
-                print "Module files ready for generation.  Proceed to 'Q'.\n";
-                return ('Main Menu');
+	# Note (08/16/2005):  I'm not sure why a false value for module
+	# NAME was not picked up by verify_values; so I'm adding a
+	# kludge.
+	# Ideally, once I figure out how to test the interactive mode
+	# properly, I'll test various bad values for other keys to see
+	# if verify_values picks them up.
+	    if (! $MOD->{NAME}) {
+                print "ERROR:  Must enter module name!\n";
+		next LOOP;
+            } elsif (! $MOD->verify_values()) {
+                print "Module files are being generated.\n";
+                return ('done');
             } else {
                 next LOOP;
             }
@@ -504,8 +519,7 @@ sub Question_User {
         }
     }
 
-    ($answer ne 'Z') ? print "You entered '$answer'\n" 
-                     : print "You entered '$answer'; exiting immediately\n";
+    print "You entered '$answer'\n";
     return ($answer);
 }
 
