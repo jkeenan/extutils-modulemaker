@@ -1,83 +1,63 @@
 package ExtUtils::ModuleMaker::Interactive;
-# as of 08/16/2005
+# as of 08/18/2005
 use strict;
 local $^W = 1;
-BEGIN {
-    use Exporter;
-    use vars qw ( @ISA @EXPORT_OK %author_defaults );
-    @ISA = qw( Exporter );
-    @EXPORT_OK = qw( run_interactive %author_defaults );
-}
-use ExtUtils::ModuleMaker;
-use ExtUtils::ModuleMaker::Defaults qw( default_values );
+use vars qw( $VERSION );
+$VERSION = 0.36_06;
+use base qw( ExtUtils::ModuleMaker );
 use Carp;
 
-# This package is designed solely to house subroutines and variables used in
-# modulemaker's interactive mode.
+########## CONSTRUCTOR ##########
+#
+# Inherited from EU::MM
+#
+########## BEGIN DECLARATIONS ##########
 
-##### Index of Variables (Aug 16 2005) #####
-# %author_defaults (exportable)
-# %Author_Menu
+###### Index of Variables (08/18/2005):
+
+# %Build_Menu
+# %destinations
 # %Directives_Menu
 # %Flagged
 # $License_Standard
 # $License_Local
-# @lic             
-# %Build_Menu
-# %destinations
+# @lic
 # %messages
 
-##### Index of Subroutines (Aug 15 2005) #####
-# run_interactive() (exportable)
-# Main_Menu()
-# Author_Menu()
-# Directives_Menu()
-# License_Menu()
-# License_Display()
-# Build_Menu()
-# Copyright_Display()
-# Question_User()
-
-########## BEGIN DECLARATIONS ##########
-
-my $defaults_ref = default_values();
-
-%author_defaults = (
-    NAME => {
-            default  => ${$defaults_ref}{AUTHOR}{NAME},
-            string   => 'Name        ',
-            opt      => 'u',
-            select   => 'N',
-        },
-    CPANID => {
-            default  => ${$defaults_ref}{AUTHOR}{CPANID},
-            string   => 'CPAN ID     ',
-            opt      => 'p',
-            select   => 'C',
-        },
-    ORGANIZATION => {
-            default  => ${$defaults_ref}{AUTHOR}{ORGANIZATION},
-            string   => 'Organization',
-            opt      => 'o',
-            select   => 'O',
-        },
-    WEBSITE => {
-            default  => ${$defaults_ref}{AUTHOR}{WEBSITE},
-            string   => 'Website     ',
-            opt      => 'w',
-            select   => 'W',
-        },
-    EMAIL => {
-            default  => ${$defaults_ref}{AUTHOR}{EMAIL},
-            string   => 'Email       ',
-            opt      => 'e',
-            select   => 'E',
-        },
+my %Build_Menu = (
+    E => 'ExtUtils::MakeMaker',
+    B => 'Module::Build',
+    P => 'Module::Build and proxy Makefile.PL',
 );
 
-my %Author_Menu = map 
-    { $author_defaults{$_}{select} => [ $author_defaults{$_}{string}, $_ ] } 
-        keys %author_defaults;
+my %destinations = (
+    'Main Menu' => {
+        A => 'Author Menu',
+        L => 'License Menu',
+        D => 'Directives_Menu',
+        B => 'Build Menu',
+        X => 'exit',
+    },
+    'Author Menu' => {
+        R => 'Main Menu',
+        X => 'exit',
+    },
+    Directives_Menu => {
+        R => 'Main Menu',
+        X => 'exit',
+    },
+    'License Menu' => {
+        C => 'Copyright_Display',
+        L => 'License_Display',
+        P => 'License Menu',
+        R => 'Main Menu',
+        X => 'exit',
+    },
+    'Build Menu' => {
+        R => 'Main Menu',
+        X => 'exit',
+    },
+);
 
 my %Directives_Menu = (
     C => [ 'Compact        ', 'COMPACT' ],
@@ -108,43 +88,7 @@ my @lic              = (
     ),
 );
 
-my %Build_Menu = (
-    E => 'ExtUtils::MakeMaker',
-    B => 'Module::Build',
-    P => 'Module::Build and proxy Makefile.PL',
-);
-
-my %destinations = (
-    'Main Menu' => {
-        A => 'Author Menu',
-        L => 'License Menu',
-        D => 'Directives_Menu',
-        B => 'Build Menu',
-	X => 'exit',
-    },
-    'Author Menu' => {
-        R => 'Main Menu',
-	X => 'exit',
-    },
-    Directives_Menu => {
-        R => 'Main Menu',
-	X => 'exit',
-    },
-    'License Menu' => {
-        C => 'Copyright_Display',
-        L => 'License_Display',
-        P => 'License Menu',
-        R => 'Main Menu',
-	X => 'exit',
-    },
-    'Build Menu' => {
-        R => 'Main Menu',
-	X => 'exit',
-    },
-);
-
 my %messages = (
-
     #---------------------------------------------------------------------
 
     'Main Menu' => <<EOF,
@@ -264,7 +208,41 @@ EOF
 
 ########## END DECLARATIONS ##########
 
-########## BEGIN SUBROUTINES  ##########
+########## BEGIN PUBLIC METHODS ##########  
+
+##### Index of Methods (08/18/2005) #####
+
+##### Public #####
+
+# set_author_defaults
+# run_interactive
+# closing_message
+
+##### Private #####
+
+# _prepare_author_defaults
+# Main_Menu
+# Author_Menu
+# Directives_Menu
+# License_Menu
+# License_Display
+# Build_Menu
+# Copyright_Display
+# Question_User
+
+sub set_author_defaults {
+    my $MOD = shift;
+    my $optsref = shift;
+    my %opts = %{$optsref};
+    my %author_defaults = %{ $MOD->_prepare_author_defaults() };
+    $MOD->{AUTHOR} = { 
+        map { $_ => ($opts{$author_defaults{$_}{opt}} 
+                   ? $opts{$author_defaults{$_}{opt}} 
+                   :       $author_defaults{$_}{default})
+        } keys %author_defaults 
+    };
+    $MOD->set_author_data();  # to set COMPOSITE
+}
 
 sub run_interactive {
     my $MOD = shift;
@@ -272,7 +250,7 @@ sub run_interactive {
     while () {
         if ( $where eq 'exit' ) {
             print "Exiting immediately!\n\n";
-	    exit 0;
+        exit 0;
         } elsif ( $where eq 'done' ) {
             last;
         } elsif ( $where eq 'Module Name' ) {
@@ -298,6 +276,53 @@ sub run_interactive {
     return $MOD;
 }
 
+sub closing_message {
+    my $MOD = shift;
+    print "\n-------------------\n\nModule files generated.  Good bye.\n\n";
+}
+
+########## END PUBLIC METHODS ##########
+
+########## BEGIN PRIVATE METHODS ##########
+
+sub _prepare_author_defaults {
+    my $self = shift;
+    my $defaults_ref = $self->default_values();
+    my %author_defaults = (
+        NAME => {
+                default  => ${$defaults_ref}{AUTHOR}{NAME},
+                string   => 'Name        ',
+                opt      => 'u',
+                select   => 'N',
+            },
+        CPANID => {
+                default  => ${$defaults_ref}{AUTHOR}{CPANID},
+                string   => 'CPAN ID     ',
+                opt      => 'p',
+                select   => 'C',
+            },
+        ORGANIZATION => {
+                default  => ${$defaults_ref}{AUTHOR}{ORGANIZATION},
+                string   => 'Organization',
+                opt      => 'o',
+                select   => 'O',
+            },
+        WEBSITE => {
+                default  => ${$defaults_ref}{AUTHOR}{WEBSITE},
+                string   => 'Website     ',
+                opt      => 'w',
+                select   => 'W',
+            },
+        EMAIL => {
+                default  => ${$defaults_ref}{AUTHOR}{EMAIL},
+                string   => 'Email       ',
+                opt      => 'e',
+                select   => 'E',
+            },
+    );
+    return { %author_defaults };
+}
+
 sub Main_Menu {
     my $MOD = shift;
 
@@ -315,10 +340,6 @@ sub Main_Menu {
         return ( $destinations{'Main Menu'}{$response} )
           if ( exists $destinations{'Main Menu'}{$response} );
     
-#        if ( $response eq 'Z' ) {
-#            exit 0;
-#        }
-#        elsif ( $response eq 'N' ) {
         if ( $response eq 'N' ) {
             my $value =
               Question_User( "Please enter a new value for Primary Module Name",
@@ -336,15 +357,15 @@ sub Main_Menu {
         # verify_values() returns an empty list if all values are
         # good; so if its return value is true, we need to repeat
         # the prompts; otherwise, we can proceed to complete_build()
-	# Note (08/16/2005):  I'm not sure why a false value for module
-	# NAME was not picked up by verify_values; so I'm adding a
-	# kludge.
-	# Ideally, once I figure out how to test the interactive mode
-	# properly, I'll test various bad values for other keys to see
-	# if verify_values picks them up.
-	    if (! $MOD->{NAME}) {
+        # Note (08/16/2005):  I'm not sure why a false value for module
+        # NAME was not picked up by verify_values; so I'm adding a
+        # kludge.
+        # Ideally, once I figure out how to test the interactive mode
+        # properly, I'll test various bad values for other keys to see
+        # if verify_values picks them up.
+        if (! $MOD->{NAME}) {
                 print "ERROR:  Must enter module name!\n";
-		next LOOP;
+                next LOOP;
             } elsif (! $MOD->verify_values()) {
                 print "Module files are being generated.\n";
                 return ('done');
@@ -358,6 +379,12 @@ sub Main_Menu {
 
 sub Author_Menu {
     my $MOD = shift;
+
+    my $author_defaults_ref = $MOD->_prepare_author_defaults();
+    my %author_defaults = %{$author_defaults_ref};
+    my %Author_Menu = map 
+        { $author_defaults{$_}{select} => [ $author_defaults{$_}{string}, $_ ] }
+            keys %author_defaults;
 
     my $string = $messages{'Author Menu'};
     my $stuff  = join(
@@ -524,32 +551,58 @@ sub Question_User {
     return ($answer);
 }
 
+########## END PRIVATE METHODS ##########
+
+1;
+
 ################### DOCUMENTATION ################### 
 
 =head1 NAME
 
-ExtUtils::ModuleMaker::Interactive - Hold subroutines used in
-F<modulemaker>
+ExtUtils::ModuleMaker::Interactive - Hold methods used in F<modulemaker>
 
 =head1 SYNOPSIS
 
-    use ExtUtils::ModuleMaker::Interactive qw| run_interactive |;
-    ...
-    if ( $MOD->{INTERACTIVE} ) {
-        $MOD = run_interactive($MOD);
-	...
+    use ExtUtils::ModuleMaker::Interactive;
+
+    ...  # ExtUtils::ModuleMaker::new() called here
+    
+    $MOD->set_author_defaults(\%opts);
+
+    $MOD->run_interactive() if $MOD->{INTERACTIVE};
+
+    ...  # ExtUtils::ModuleMaker::complete_build() called here
+    
+    $MOD->closing_message();
 
 =head1 DESCRIPTION
 
 This package exists solely to hold declarations of variables and
-subroutines used in F<modulemaker>, the command-line utility which is
+methods used in F<modulemaker>, the command-line utility which is
 the easiest way of accessing the functionality of Perl extension
 ExtUtils::ModuleMaker.
 
-The package exports one subroutine on request:  C<run_interactive()>.
-This is called once inside F<modulemaker>.  It takes an
-ExtUtils::ModuleMaker as an object and returns that object.  It drives
-the various screen prompts contained within F<modulemaker>.
+=head1 METHODS
+
+=head2 C<set_author_defaults()>
+
+This method is a bit of a hack, created because, in F<modulemaker>'s current
+implementation, arguments for author information are not passed to
+C<ExtUtils::ModuleMaker::new()>.  It adds that information to the object and
+also sets the C<COMPOSITE> key used internally.
+
+=head2 C<run_interactive()>
+
+This method drives the menus which make up F<modulemaker>'s interactive mode.
+Once it has been run, F<modulemaker> calls
+C<ExtUtils::ModuleMaker::complete_build()> to build the directories and files
+requested.
+
+=head2 C<closing_message()>
+
+Prints a closing message after C<complete_build()> is run.  Can be commented
+out without problem.  Could be subclassed, and -- in a future version --
+probably will be with an optional printout of files created.
 
 =head1 AUTHOR
 
@@ -569,5 +622,7 @@ LICENSE file included with this module.
 F<modulemaker>, F<ExtUtils::ModuleMaker>.
 
 =cut
+
+
 
 

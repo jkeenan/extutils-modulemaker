@@ -6,7 +6,7 @@ use strict;
 local $^W = 1;
 use Getopt::Std;
 use ExtUtils::ModuleMaker 0.34;
-use ExtUtils::ModuleMaker::J;
+use ExtUtils::ModuleMaker::Interactive;
 use vars qw ( $VERSION );
 
 $VERSION = 0.36_06;
@@ -23,7 +23,7 @@ $VERSION = 0.36_06;
 # new
 # complete_build
 
-##### ExtUtils::ModuleMaker::J
+##### ExtUtils::ModuleMaker::Interactive
 # set_author_defaults()
 # run_interactive()
 # closing_message()
@@ -34,7 +34,7 @@ my %opts;
 getopts( "bdhqCIPVcn:a:v:l:u:p:o:w:e:", \%opts );
 die Usage() if ( $opts{h} );
 
-my $MOD = ExtUtils::ModuleMaker::J->new(
+my $MOD = ExtUtils::ModuleMaker::Interactive->new(
     COMPACT          => ( ( $opts{c} ) ? 1 : 0 ),
     VERBOSE          => ( ( $opts{V} ) ? 1 : 0 ),
     CHANGES_IN_POD   => ( ( $opts{C} ) ? 1 : 0 ),
@@ -50,7 +50,7 @@ my $MOD = ExtUtils::ModuleMaker::J->new(
 );
 
 # Because AUTHOR values were not set above, call this method from
-# ExtUtils::ModuleMaker::J
+# ExtUtils::ModuleMaker::Interactive
 $MOD->set_author_defaults(\%opts);
 
 $MOD->run_interactive() if $MOD->{INTERACTIVE};

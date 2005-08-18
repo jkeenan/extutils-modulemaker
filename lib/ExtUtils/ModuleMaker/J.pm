@@ -36,26 +36,26 @@ my %destinations = (
         L => 'License Menu',
         D => 'Directives_Menu',
         B => 'Build Menu',
-    X => 'exit',
+        X => 'exit',
     },
     'Author Menu' => {
         R => 'Main Menu',
-    X => 'exit',
+        X => 'exit',
     },
     Directives_Menu => {
         R => 'Main Menu',
-    X => 'exit',
+        X => 'exit',
     },
     'License Menu' => {
         C => 'Copyright_Display',
         L => 'License_Display',
         P => 'License Menu',
         R => 'Main Menu',
-    X => 'exit',
+        X => 'exit',
     },
     'Build Menu' => {
         R => 'Main Menu',
-    X => 'exit',
+        X => 'exit',
     },
 );
 
@@ -89,7 +89,6 @@ my @lic              = (
 );
 
 my %messages = (
-
     #---------------------------------------------------------------------
 
     'Main Menu' => <<EOF,
@@ -358,15 +357,15 @@ sub Main_Menu {
         # verify_values() returns an empty list if all values are
         # good; so if its return value is true, we need to repeat
         # the prompts; otherwise, we can proceed to complete_build()
-    # Note (08/16/2005):  I'm not sure why a false value for module
-    # NAME was not picked up by verify_values; so I'm adding a
-    # kludge.
-    # Ideally, once I figure out how to test the interactive mode
-    # properly, I'll test various bad values for other keys to see
-    # if verify_values picks them up.
+        # Note (08/16/2005):  I'm not sure why a false value for module
+        # NAME was not picked up by verify_values; so I'm adding a
+        # kludge.
+        # Ideally, once I figure out how to test the interactive mode
+        # properly, I'll test various bad values for other keys to see
+        # if verify_values picks them up.
         if (! $MOD->{NAME}) {
                 print "ERROR:  Must enter module name!\n";
-        next LOOP;
+                next LOOP;
             } elsif (! $MOD->verify_values()) {
                 print "Module files are being generated.\n";
                 return ('done');
@@ -560,28 +559,50 @@ sub Question_User {
 
 =head1 NAME
 
-ExtUtils::ModuleMaker::J - Hold subroutines used in
-F<modulemaker>
+ExtUtils::ModuleMaker::J - Hold methods used in F<modulemaker>
 
 =head1 SYNOPSIS
 
-    use ExtUtils::ModuleMaker::J qw| run_interactive |;
-    ...
-    if ( $MOD->{INTERACTIVE} ) {
-        $MOD = run_interactive($MOD);
-	...
+    use ExtUtils::ModuleMaker::J;
+
+    ...  # ExtUtils::ModuleMaker::new() called here
+    
+    $MOD->set_author_defaults(\%opts);
+
+    $MOD->run_interactive() if $MOD->{INTERACTIVE};
+
+    ...  # ExtUtils::ModuleMaker::complete_build() called here
+    
+    $MOD->closing_message();
 
 =head1 DESCRIPTION
 
 This package exists solely to hold declarations of variables and
-subroutines used in F<modulemaker>, the command-line utility which is
+methods used in F<modulemaker>, the command-line utility which is
 the easiest way of accessing the functionality of Perl extension
 ExtUtils::ModuleMaker.
 
-The package exports one subroutine on request:  C<run_interactive()>.
-This is called once inside F<modulemaker>.  It takes an
-ExtUtils::ModuleMaker as an object and returns that object.  It drives
-the various screen prompts contained within F<modulemaker>.
+=head1 METHODS
+
+=head2 C<set_author_defaults()>
+
+This method is a bit of a hack, created because, in F<modulemaker>'s current
+implementation, arguments for author information are not passed to
+C<ExtUtils::ModuleMaker::new()>.  It adds that information to the object and
+also sets the C<COMPOSITE> key used internally.
+
+=head2 C<run_interactive()>
+
+This method drives the menus which make up F<modulemaker>'s interactive mode.
+Once it has been run, F<modulemaker> calls
+C<ExtUtils::ModuleMaker::complete_build()> to build the directories and files
+requested.
+
+=head2 C<closing_message()>
+
+Prints a closing message after C<complete_build()> is run.  Can be commented
+out without problem.  Could be subclassed, and -- in a future version --
+probably will be with an optional printout of files created.
 
 =head1 AUTHOR
 
