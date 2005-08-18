@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::J;
-# as of 08/16/2005
+# as of 08/18/2005
 use strict;
 local $^W = 1;
 use vars qw( $VERSION );
@@ -13,87 +13,16 @@ use Carp;
 #
 ########## BEGIN DECLARATIONS ##########
 
-sub _prepare_author_defaults {
-    my $self = shift;
-    my $defaults_ref = $self->default_values();
-    my %author_defaults = (
-        NAME => {
-                default  => ${$defaults_ref}{AUTHOR}{NAME},
-                string   => 'Name        ',
-                opt      => 'u',
-                select   => 'N',
-            },
-        CPANID => {
-                default  => ${$defaults_ref}{AUTHOR}{CPANID},
-                string   => 'CPAN ID     ',
-                opt      => 'p',
-                select   => 'C',
-            },
-        ORGANIZATION => {
-                default  => ${$defaults_ref}{AUTHOR}{ORGANIZATION},
-                string   => 'Organization',
-                opt      => 'o',
-                select   => 'O',
-            },
-        WEBSITE => {
-                default  => ${$defaults_ref}{AUTHOR}{WEBSITE},
-                string   => 'Website     ',
-                opt      => 'w',
-                select   => 'W',
-            },
-        EMAIL => {
-                default  => ${$defaults_ref}{AUTHOR}{EMAIL},
-                string   => 'Email       ',
-                opt      => 'e',
-                select   => 'E',
-            },
-    );
-    return { %author_defaults };
-}
+###### Index of Variables (08/18/2005):
 
-sub set_author_defaults {
-    my $MOD = shift;
-    my $optsref = shift;
-    my %opts = %{$optsref};
-    my $author_defaults_ref = $MOD->_prepare_author_defaults();
-    my %author_defaults = %{$author_defaults_ref};
-    my %AUTHOR = map { $_ => ($opts{$author_defaults{$_}{opt}} 
-                            ? $opts{$author_defaults{$_}{opt}} 
-                            :       $author_defaults{$_}{default})
-                 } keys %author_defaults;
-    $MOD->{AUTHOR} = { %AUTHOR };
-    $MOD->set_author_data();  # to set COMPOSITE
-}
-
-
-my %Directives_Menu = (
-    C => [ 'Compact        ', 'COMPACT' ],
-    P => [ 'Permissions    ', 'PERMISSIONS' ],
-    V => [ 'Verbose        ', 'VERBOSE' ],
-    D => [ 'Include POD    ', 'NEED_POD' ],
-    N => [ 'Include new    ', 'NEED_NEW_METHOD' ],
-    H => [ 'History in POD ', 'CHANGES_IN_POD' ],
-);
-
-my %Flagged = (
-    ( map { $_ => 0 } qw (0 N F) ),
-    ( map { $_ => 1 } qw (1 Y T) ),
-);
-
-my $License_Standard = ExtUtils::ModuleMaker::Licenses::Standard->interact();
-my $License_Local    = ExtUtils::ModuleMaker::Licenses::Local->interact();
-my @lic              = (
-    (
-        map { [ $_, $License_Standard->{$_} ] }
-          sort { $License_Standard->{$a} cmp $License_Standard->{$b} }
-          keys( %{$License_Standard} )
-    ),
-    (
-        map { [ $_, $License_Local->{$_} ] }
-          sort { $License_Standard->{$a} cmp $License_Standard->{$b} }
-          keys( %{$License_Local} )
-    ),
-);
+# %Build_Menu
+# %destinations
+# %Directives_Menu
+# %Flagged
+# $License_Standard
+# $License_Local
+# @lic
+# %messages
 
 my %Build_Menu = (
     E => 'ExtUtils::MakeMaker',
@@ -128,6 +57,35 @@ my %destinations = (
         R => 'Main Menu',
     X => 'exit',
     },
+);
+
+my %Directives_Menu = (
+    C => [ 'Compact        ', 'COMPACT' ],
+    P => [ 'Permissions    ', 'PERMISSIONS' ],
+    V => [ 'Verbose        ', 'VERBOSE' ],
+    D => [ 'Include POD    ', 'NEED_POD' ],
+    N => [ 'Include new    ', 'NEED_NEW_METHOD' ],
+    H => [ 'History in POD ', 'CHANGES_IN_POD' ],
+);
+
+my %Flagged = (
+    ( map { $_ => 0 } qw (0 N F) ),
+    ( map { $_ => 1 } qw (1 Y T) ),
+);
+
+my $License_Standard = ExtUtils::ModuleMaker::Licenses::Standard->interact();
+my $License_Local    = ExtUtils::ModuleMaker::Licenses::Local->interact();
+my @lic              = (
+    (
+        map { [ $_, $License_Standard->{$_} ] }
+          sort { $License_Standard->{$a} cmp $License_Standard->{$b} }
+          keys( %{$License_Standard} )
+    ),
+    (
+        map { [ $_, $License_Local->{$_} ] }
+          sort { $License_Standard->{$a} cmp $License_Standard->{$b} }
+          keys( %{$License_Local} )
+    ),
 );
 
 my %messages = (
@@ -251,7 +209,41 @@ EOF
 
 ########## END DECLARATIONS ##########
 
-########## BEGIN SUBROUTINES  ##########
+########## BEGIN PUBLIC METHODS ##########  
+
+##### Index of Methods (08/18/2005) #####
+
+##### Public #####
+
+# set_author_defaults
+# run_interactive
+# build_and_close
+
+##### Private #####
+
+# _prepare_author_defaults
+# Main_Menu
+# Author_Menu
+# Directives_Menu
+# License_Menu
+# License_Display
+# Build_Menu
+# Copyright_Display
+# Question_User
+
+sub set_author_defaults {
+    my $MOD = shift;
+    my $optsref = shift;
+    my %opts = %{$optsref};
+    my %author_defaults = %{ $MOD->_prepare_author_defaults() };
+    $MOD->{AUTHOR} = { 
+        map { $_ => ($opts{$author_defaults{$_}{opt}} 
+                   ? $opts{$author_defaults{$_}{opt}} 
+                   :       $author_defaults{$_}{default})
+        } keys %author_defaults 
+    };
+    $MOD->set_author_data();  # to set COMPOSITE
+}
 
 sub run_interactive {
     my $MOD = shift;
@@ -285,6 +277,54 @@ sub run_interactive {
     return $MOD;
 }
 
+sub build_and_close {
+    my $MOD = shift;
+    $MOD->complete_build();
+    print "\n-------------------\n\nModule files generated.  Good bye.\n\n";
+}
+
+########## END PUBLIC METHODS ##########
+
+########## BEGIN PRIVATE METHODS ##########
+
+sub _prepare_author_defaults {
+    my $self = shift;
+    my $defaults_ref = $self->default_values();
+    my %author_defaults = (
+        NAME => {
+                default  => ${$defaults_ref}{AUTHOR}{NAME},
+                string   => 'Name        ',
+                opt      => 'u',
+                select   => 'N',
+            },
+        CPANID => {
+                default  => ${$defaults_ref}{AUTHOR}{CPANID},
+                string   => 'CPAN ID     ',
+                opt      => 'p',
+                select   => 'C',
+            },
+        ORGANIZATION => {
+                default  => ${$defaults_ref}{AUTHOR}{ORGANIZATION},
+                string   => 'Organization',
+                opt      => 'o',
+                select   => 'O',
+            },
+        WEBSITE => {
+                default  => ${$defaults_ref}{AUTHOR}{WEBSITE},
+                string   => 'Website     ',
+                opt      => 'w',
+                select   => 'W',
+            },
+        EMAIL => {
+                default  => ${$defaults_ref}{AUTHOR}{EMAIL},
+                string   => 'Email       ',
+                opt      => 'e',
+                select   => 'E',
+            },
+    );
+    return { %author_defaults };
+}
+
 sub Main_Menu {
     my $MOD = shift;
 
@@ -302,10 +342,6 @@ sub Main_Menu {
         return ( $destinations{'Main Menu'}{$response} )
           if ( exists $destinations{'Main Menu'}{$response} );
     
-#        if ( $response eq 'Z' ) {
-#            exit 0;
-#        }
-#        elsif ( $response eq 'N' ) {
         if ( $response eq 'N' ) {
             my $value =
               Question_User( "Please enter a new value for Primary Module Name",
@@ -517,22 +553,20 @@ sub Question_User {
     return ($answer);
 }
 
-sub build_and_close {
-    my $MOD = shift;
-    $MOD->complete_build();
-    print "\n-------------------\n\nModule files generated.  Good bye.\n\n";
-}
-	
+########## END PRIVATE METHODS ##########
+
+1;
+
 ################### DOCUMENTATION ################### 
 
 =head1 NAME
 
-ExtUtils::ModuleMaker::Interactive - Hold subroutines used in
+ExtUtils::ModuleMaker::J - Hold subroutines used in
 F<modulemaker>
 
 =head1 SYNOPSIS
 
-    use ExtUtils::ModuleMaker::Interactive qw| run_interactive |;
+    use ExtUtils::ModuleMaker::J qw| run_interactive |;
     ...
     if ( $MOD->{INTERACTIVE} ) {
         $MOD = run_interactive($MOD);

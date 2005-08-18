@@ -1,24 +1,21 @@
 #!/usr/local/bin/perl
+# modulemaker:  command-line utility implementing ExtUtils::ModuleMaker
 eval 'exec /usr/local/bin/perl  -S $0 ${1+"$@"}'
   if 0;    # not running under some shell
 use strict;
 local $^W = 1;
 use Getopt::Std;
 use ExtUtils::ModuleMaker 0.34;
-# use ExtUtils::ModuleMaker::Interactive qw| run_interactive %author_defaults |;
 use ExtUtils::ModuleMaker::J;
 use vars qw ( $VERSION );
 
 $VERSION = 0.36_06;
 
-##### Index of Variables (Aug 15 2005) #####
-# %ExtUtils::ModuleMaker::Interactive::author_defaults
+##### Index of Variables (Aug 18 2005) #####
 # %opts
-# %AUTHOR
 # $MOD
 
 ##### Index of Subroutines (Aug 15 2005) #####
-# build_and_close()
 # USAGE()
 
 
@@ -27,27 +24,6 @@ $VERSION = 0.36_06;
 my %opts;
 getopts( "bdhqCIPVcn:a:v:l:u:p:o:w:e:", \%opts );
 die Usage() if ( $opts{h} );
-
-#my %AUTHOR = map { $_ => ($opts{$author_defaults{$_}{opt}} 
-#                        ? $opts{$author_defaults{$_}{opt}} 
-#                        :       $author_defaults{$_}{default})
-#             } keys %author_defaults;
-# 
-#my $MOD   = ExtUtils::ModuleMaker->new(
-#    COMPACT          => ( ( $opts{c} ) ? 1 : 0 ),
-#    VERBOSE          => ( ( $opts{V} ) ? 1 : 0 ),
-#    CHANGES_IN_POD   => ( ( $opts{C} ) ? 1 : 0 ),
-#    NEED_POD         => ( ( $opts{P} ) ? 0 : 1 ),
-#    NEED_NEW_METHOD  => ( ( $opts{q} ) ? 0 : 1 ),
-#    INTERACTIVE      => ( ( $opts{I} ) ? 0 : 1 ),
-#    ( ( $opts{n} ) ? ( NAME         => $opts{n} ) : () ),
-#    ( ( $opts{a} ) ? ( ABSTRACT     => $opts{a} ) : () ),
-#    ( ( $opts{b} ) ? ( BUILD_SYSTEM => $opts{b} ) : () ),
-#    ( ( $opts{v} ) ? ( VERSION      => $opts{v} ) : () ),
-#    ( ( $opts{l} ) ? ( LICENSE      => $opts{l} ) : () ),
-#    AUTHOR => \%AUTHOR,
-#    USAGE_MESSAGE => Usage(),
-#);
 
 my $MOD = ExtUtils::ModuleMaker::J->new(
     COMPACT          => ( ( $opts{c} ) ? 1 : 0 ),
@@ -61,32 +37,21 @@ my $MOD = ExtUtils::ModuleMaker::J->new(
     ( ( $opts{b} ) ? ( BUILD_SYSTEM => $opts{b} ) : () ),
     ( ( $opts{v} ) ? ( VERSION      => $opts{v} ) : () ),
     ( ( $opts{l} ) ? ( LICENSE      => $opts{l} ) : () ),
-#    AUTHOR => \%AUTHOR,
     USAGE_MESSAGE => Usage(),
 );
 
+# Because AUTHOR values were not set above, call this method from
+# ExtUtils::ModuleMaker::J
 $MOD->set_author_defaults(\%opts);
 
-if ( $MOD->{INTERACTIVE} ) {
-#    $MOD = run_interactive($MOD);
-#    build_and_close($MOD);
-    $MOD->run_interactive();
-    $MOD->build_and_close();
-}
-else {
-    $MOD->build_and_close();
-}
+$MOD->run_interactive() if $MOD->{INTERACTIVE};
 
-########## END STATEMENTS ##########
+$MOD->build_and_close();
+
+########## END LIVE CODE ##########
 
 ########## BEGIN SUBROUTINES ##########
 
-#sub build_and_close {
-#    my $MOD = shift;
-#    $MOD->complete_build();
-#    print "\n-------------------\n\nModule files generated.  Good bye.\n\n";
-#}
-	
 sub Usage {
     my $message = <<ENDOFUSAGE;
 modulemaker [-CIPVch] [-v version] [-n module_name] [-a abstract]
@@ -120,8 +85,6 @@ ENDOFUSAGE
     return ($message);
 }
 
-#'
-
 ################### DOCUMENTATION ################### 
 
 =head1 NAME
@@ -133,7 +96,7 @@ modulemaker - interactive interface to ExtUtils::ModuleMaker
 This document references version 0.36_06 of modulemaker, released
 to CPAN on August 16, 2005.
 
-=head1 USAGE
+=head1 USAGE -- Simple
 
 =head2 Easy
 
@@ -152,7 +115,22 @@ At the command-prompt, call C<modulemaker> with as many options as you can type 
         [-w author_website] [-e author_e-mail]
         [-l license_name] [-b build_system]
 
-Currently Supported Features
+=head2 Mix and Match
+
+You can specify some of the arguments on the command-line and then -- assuming
+you don't include the C<-I> option -- F<modulemaker> will then switch to
+interactive mode so that you can finish entering arguments at the prompts.
+
+=head1 USAGE -- More
+
+=head2 Easy
+
+You will be presented with a series of menus looking something like this Main
+Menu:
+
+=head2 Not So Easy, But More Geeky
+
+B<Currently Supported Features:>
 
 =over 4
 
