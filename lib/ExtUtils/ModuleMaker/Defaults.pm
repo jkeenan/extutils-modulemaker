@@ -3,10 +3,10 @@ package ExtUtils::ModuleMaker::Defaults;
 use strict;
 local $^W = 1;
 
-use vars qw ( @ISA @EXPORT_OK );
-require Exporter;
-@ISA = ('Exporter');
-@EXPORT_OK = qw( default_values );
+#use vars qw ( @ISA @EXPORT_OK );
+#require Exporter;
+#@ISA = ('Exporter');
+#@EXPORT_OK = qw( default_values );
 
 
 my $usage = <<ENDOFUSAGE;
@@ -17,7 +17,9 @@ Please fix the problems listed above and try again.
 ENDOFUSAGE
 
 sub default_values {
-    my %default_values = (
+#    my %default_values = (
+    my $self = shift;
+    return {
         LICENSE  => 'perl',
         VERSION  => 0.01,
         ABSTRACT => 'Module abstract (<= 44 characters) goes here',
@@ -38,9 +40,11 @@ sub default_values {
 
         PERMISSIONS => 0755,
         USAGE_MESSAGE => $usage,
-     );
-     return { %default_values };
+#     );
+#     return { %default_values };
+    }
 }
 
 1;
+
 

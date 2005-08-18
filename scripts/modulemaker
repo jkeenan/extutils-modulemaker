@@ -5,7 +5,8 @@ use strict;
 local $^W = 1;
 use Getopt::Std;
 use ExtUtils::ModuleMaker 0.34;
-use ExtUtils::ModuleMaker::Interactive qw| run_interactive %author_defaults |;
+# use ExtUtils::ModuleMaker::Interactive qw| run_interactive %author_defaults |;
+use ExtUtils::ModuleMaker::J;
 use vars qw ( $VERSION );
 
 $VERSION = 0.36_06;
@@ -27,12 +28,28 @@ my %opts;
 getopts( "bdhqCIPVcn:a:v:l:u:p:o:w:e:", \%opts );
 die Usage() if ( $opts{h} );
 
-my %AUTHOR = map { $_ => ($opts{$author_defaults{$_}{opt}} 
-                        ? $opts{$author_defaults{$_}{opt}} 
-                        :       $author_defaults{$_}{default})
-             } keys %author_defaults;
- 
-my $MOD   = ExtUtils::ModuleMaker->new(
+#my %AUTHOR = map { $_ => ($opts{$author_defaults{$_}{opt}} 
+#                        ? $opts{$author_defaults{$_}{opt}} 
+#                        :       $author_defaults{$_}{default})
+#             } keys %author_defaults;
+# 
+#my $MOD   = ExtUtils::ModuleMaker->new(
+#    COMPACT          => ( ( $opts{c} ) ? 1 : 0 ),
+#    VERBOSE          => ( ( $opts{V} ) ? 1 : 0 ),
+#    CHANGES_IN_POD   => ( ( $opts{C} ) ? 1 : 0 ),
+#    NEED_POD         => ( ( $opts{P} ) ? 0 : 1 ),
+#    NEED_NEW_METHOD  => ( ( $opts{q} ) ? 0 : 1 ),
+#    INTERACTIVE      => ( ( $opts{I} ) ? 0 : 1 ),
+#    ( ( $opts{n} ) ? ( NAME         => $opts{n} ) : () ),
+#    ( ( $opts{a} ) ? ( ABSTRACT     => $opts{a} ) : () ),
+#    ( ( $opts{b} ) ? ( BUILD_SYSTEM => $opts{b} ) : () ),
+#    ( ( $opts{v} ) ? ( VERSION      => $opts{v} ) : () ),
+#    ( ( $opts{l} ) ? ( LICENSE      => $opts{l} ) : () ),
+#    AUTHOR => \%AUTHOR,
+#    USAGE_MESSAGE => Usage(),
+#);
+
+my $MOD = ExtUtils::ModuleMaker::J->new(
     COMPACT          => ( ( $opts{c} ) ? 1 : 0 ),
     VERBOSE          => ( ( $opts{V} ) ? 1 : 0 ),
     CHANGES_IN_POD   => ( ( $opts{C} ) ? 1 : 0 ),
@@ -44,27 +61,31 @@ my $MOD   = ExtUtils::ModuleMaker->new(
     ( ( $opts{b} ) ? ( BUILD_SYSTEM => $opts{b} ) : () ),
     ( ( $opts{v} ) ? ( VERSION      => $opts{v} ) : () ),
     ( ( $opts{l} ) ? ( LICENSE      => $opts{l} ) : () ),
-    AUTHOR => \%AUTHOR,
+#    AUTHOR => \%AUTHOR,
     USAGE_MESSAGE => Usage(),
 );
 
+$MOD->set_author_defaults(\%opts);
+
 if ( $MOD->{INTERACTIVE} ) {
-    $MOD = run_interactive($MOD);
-    build_and_close($MOD);
+#    $MOD = run_interactive($MOD);
+#    build_and_close($MOD);
+    $MOD->run_interactive();
+    $MOD->build_and_close();
 }
 else {
-    build_and_close($MOD);
+    $MOD->build_and_close();
 }
 
 ########## END STATEMENTS ##########
 
 ########## BEGIN SUBROUTINES ##########
 
-sub build_and_close {
-    my $MOD = shift;
-    $MOD->complete_build();
-    print "\n-------------------\n\nModule files generated.  Good bye.\n\n";
-}
+#sub build_and_close {
+#    my $MOD = shift;
+#    $MOD->complete_build();
+#    print "\n-------------------\n\nModule files generated.  Good bye.\n\n";
+#}
 	
 sub Usage {
     my $message = <<ENDOFUSAGE;
@@ -227,5 +248,6 @@ LICENSE file included with this module.
 F<ExtUtils::ModuleMaker>, F<perlnewmod>, F<h2xs>, F<ExtUtils::MakeMaker>.
 
 =cut
+
 
 

@@ -8,6 +8,7 @@ MANIFEST.SKIP
 lib/ExtUtils/ModuleMaker.pm
 lib/ExtUtils/ModuleMaker/Defaults.pm
 lib/ExtUtils/ModuleMaker/Interactive.pm
+lib/ExtUtils/ModuleMaker/J.pm
 lib/ExtUtils/ModuleMaker/StandardText.pm
 # lib/ExtUtils/ModuleMaker/SecondStyle.pm
 lib/ExtUtils/ModuleMaker/Licenses/Standard.pm

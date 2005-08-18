@@ -3,8 +3,8 @@ use strict;
 local $^W = 1;
 use vars qw ($VERSION);
 $VERSION = 0.36_06;
-use base qw(ExtUtils::ModuleMaker::StandardText);
-use ExtUtils::ModuleMaker::Defaults qw( default_values );
+use base qw( ExtUtils::ModuleMaker::Defaults ExtUtils::ModuleMaker::StandardText );
+# use ExtUtils::ModuleMaker::Defaults qw( default_values );
 use Carp;
 
 #################### PUBLICLY CALLABLE METHODS ####################
@@ -28,8 +28,27 @@ sub new {
     croak "@badkeys improper top-level key: $!"
         if (@badkeys);
 
-    my $self = ref($class) ? bless( default_values(), ref($class) )
-                           : bless( default_values(), $class );
+#    my $self = ref($class) ? bless( default_values(), ref($class) )
+#                           : bless( default_values(), $class );
+    my $self = ref($class) ? bless( {}, ref($class) )
+                           : bless( {}, $class );
+
+    # multi-stage initialization of EU::MM object
+    # 1.  Check for user-defined defaults:  NOT YET IMPLEMENTED 08/17/05
+    # 2.  Inherit usual defaults from EU::MM::Defaults.pm.
+    my $defaults_ref = $self->default_values();
+    foreach my $def ( keys %{$defaults_ref} ) {
+        if ( ref( ${$defaults_ref}{$def} ) eq 'HASH' ) {
+            foreach ( keys( %{ ${$defaults_ref}{$def} } ) ) {
+                $self->{$def}{$_} = ${$defaults_ref}{$def}{$_};
+            }
+        }
+        else {
+            $self->{$def} = ${$defaults_ref}{$def};
+        }
+    }
+    # 3.  Process key-value pairs supplied as arguments to new() either
+    # from user-written program or from modulemaker utility.
     foreach my $param ( keys %parameters ) {
         if ( ref( $parameters{$param} ) eq 'HASH' ) {
             foreach ( keys( %{ $parameters{$param} } ) ) {
@@ -41,12 +60,18 @@ sub new {
         }
     }
 
+    # 4.  Initialize keys set from information supplied above, system
+    # info or EU::MM itself.
     $self->set_author_data();
     $self->set_dates();
     $self->{eumm_version} = $VERSION;
-
     $self->{MANIFEST} = ['MANIFEST'];
+
+    # 5.  Validate values supplied so far to weed out most likely errors
     $self->verify_values();
+
+    # 6.  Initialize keys set from EU::MM::Licenses::Local or
+    # EU::MM::Licenses::Standard
     $self->initialize_license();
 
     return $self;
@@ -514,4 +539,5 @@ LICENSE file included with this module.
 F<modulemaker>, F<perlnewmod>, F<h2xs>, F<ExtUtils::MakeMaker>.
 
 =cut
+
 

@@ -198,7 +198,6 @@ EOFBLOCK
 
 sub pod_section {
     my ( $self, $heading, $content ) = @_;
-
     my $string = <<ENDOFSTUFF;
 
  ====head1 $heading
