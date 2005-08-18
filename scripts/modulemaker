@@ -15,9 +15,18 @@ $VERSION = 0.36_06;
 # %opts
 # $MOD
 
-##### Index of Subroutines (Aug 15 2005) #####
+##### Index of Subroutines (Aug 18 2005) #####
 # USAGE()
 
+##### Sources of Methods (Aug 18 2005) #####
+##### ExtUtils::ModuleMaker
+# new
+# complete_build
+
+##### ExtUtils::ModuleMaker::J
+# set_author_defaults()
+# run_interactive()
+# build_and_close()
 
 ##### START LIVE CODE #####
 
@@ -123,14 +132,132 @@ interactive mode so that you can finish entering arguments at the prompts.
 
 =head1 USAGE -- More
 
-=head2 Easy
+=head2 Menus
 
-You will be presented with a series of menus looking something like this Main
-Menu:
+You will be presented with a series of menus looking something like this:
 
-=head2 Not So Easy, But More Geeky
+=over 4
 
-B<Currently Supported Features:>
+=item * Main Menu
+
+  ------------------------
+
+  modulemaker: Main Menu
+
+      Feature              Current Value
+  N - Name of module       ''
+  S - Abstract             'Module abstract (<= 44 characters) goes here'
+  A - Author information
+  L - License              'perl'
+  D - Directives
+  B - Build system         'ExtUtils::MakeMaker'
+
+  G - Generate module
+
+  X - Exit immediately
+
+  Please choose which feature you would like to edit: 
+
+=item * Author Menu
+
+  ------------------------
+
+  modulemaker: Author Menu
+
+      Feature       Current Value
+  N - Name          'A. U. Thor'
+  C - CPAN ID       'AUTHOR'
+  O - Organization  'XYZ Corp.'
+  W - Website       'http://a.galaxy.far.far.away/modules'
+  E - Email         'a.u.thor@a.galaxy.far.far.away'
+
+  R - Return to main menu
+  X - Exit immediately
+
+  Please choose which feature you would like to edit:
+
+=item * License Menu
+
+  ------------------------
+
+  modulemaker: License Menu
+
+  ModuleMaker provides many licenes to choose from, many of them approved by
+  opensource.org.
+
+          License Name
+  1       Apache Software License (1.1)
+  2       Artistic License
+  3       Artistic License w/ Aggregation
+  4       BSD License
+  5       BSD License(Raw)
+  6       CVW - MITRE Collaborative Virtual Workspace
+  7       GPL - General Public License (2)
+  8       IBM Public License Version (1.0)
+  9       Intel (BSD+)
+  10      Jabber (1.0)
+  11      LGPL - GNU Lesser General Public License (2.1)
+  12      MIT License
+  13      Mozilla Public License (1.0)
+  14      Mozilla Public License (1.1)
+  15      Nethack General Public License
+  16      Nokia Open Source License(1.0a)
+  17      Python License
+  18      Q Public License (1.0)
+  19      Ricoh Source Code Public License (1.0)
+  20***   Same terms as Perl itself
+  21      Sun Internet Standards Source License
+  22      The Sleepycat License
+  23      Vovida Software License (1.0)
+  24      zlib/libpng License
+  25      Loose Lips License (1.0)
+
+  # - Enter the number of the license you want to use
+  C - Display the Copyright
+  L - Display the License
+  R - Return to main menu
+  X - Exit immediately
+
+  Please choose which license you would like to use:
+
+=item * Directives Menu
+
+  ------------------------
+ 
+  modulemaker: Directives Menu
+ 
+      Feature           Current Value
+  C - Compact          '0'
+  V - Verbose          '0'
+  D - Include POD      '1'
+  N - Include new      '1'
+  H - History in POD   '0'
+  P - Permissions      '0755 - 493'
+ 
+  R - Return to main menu
+  X - Exit immediately
+ 
+  Please choose which feature you would like to edit:
+ 
+=item * Build System Menu
+
+  ------------------------
+
+  Here is the current build system:
+
+  ExtUtils::MakeMaker
+
+  E - ExtUtils::MakeMaker
+  B - Module::Build
+  P - Module::Build and proxy Makefile.PL
+  R - Return to main menu
+  X - Exit immediately
+
+  Please choose which build system you would like to use:
+
+=back
+
+=head2 Features Currently Supported with Command-Line Options
 
 =over 4
 
