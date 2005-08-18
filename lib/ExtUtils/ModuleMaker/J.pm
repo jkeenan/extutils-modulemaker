@@ -217,7 +217,7 @@ EOF
 
 # set_author_defaults
 # run_interactive
-# build_and_close
+# closing_message
 
 ##### Private #####
 
@@ -277,9 +277,8 @@ sub run_interactive {
     return $MOD;
 }
 
-sub build_and_close {
+sub closing_message {
     my $MOD = shift;
-    $MOD->complete_build();
     print "\n-------------------\n\nModule files generated.  Good bye.\n\n";
 }
 

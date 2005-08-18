@@ -26,7 +26,7 @@ $VERSION = 0.36_06;
 ##### ExtUtils::ModuleMaker::J
 # set_author_defaults()
 # run_interactive()
-# build_and_close()
+# closing_message()
 
 ##### START LIVE CODE #####
 
@@ -55,7 +55,9 @@ $MOD->set_author_defaults(\%opts);
 
 $MOD->run_interactive() if $MOD->{INTERACTIVE};
 
-$MOD->build_and_close();
+$MOD->complete_build();
+
+$MOD->closing_message();
 
 ########## END LIVE CODE ##########
 
