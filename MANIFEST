@@ -32,3 +32,4 @@ t/testlib/IO/Capture/Stderr.pm
 t/testlib/IO/Capture/Stdout.pm
 t/testlib/IO/Capture/Tie_STDx.pm
 META.yml                                 Module meta-data (added by MakeMaker)
+
