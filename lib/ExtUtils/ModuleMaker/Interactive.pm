@@ -622,7 +622,3 @@ LICENSE file included with this module.
 F<modulemaker>, F<ExtUtils::ModuleMaker>.
 
 =cut
-
-
-
-

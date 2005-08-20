@@ -168,7 +168,7 @@ You will be presented with a series of menus looking something like this:
 
       Feature       Current Value
   N - Name          'A. U. Thor'
-  C - CPAN ID       'AUTHOR'
+  C - CPAN ID       'MODAUTHOR'
   O - Organization  'XYZ Corp.'
   W - Website       'http://a.galaxy.far.far.away/modules'
   E - Email         'a.u.thor@a.galaxy.far.far.away'
@@ -355,6 +355,4 @@ LICENSE file included with this module.
 F<ExtUtils::ModuleMaker>, F<perlnewmod>, F<h2xs>, F<ExtUtils::MakeMaker>.
 
 =cut
-
-
 

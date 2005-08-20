@@ -28,8 +28,6 @@ sub new {
     croak "@badkeys improper top-level key: $!"
         if (@badkeys);
 
-#    my $self = ref($class) ? bless( default_values(), ref($class) )
-#                           : bless( default_values(), $class );
     my $self = ref($class) ? bless( {}, ref($class) )
                            : bless( {}, $class );
 
@@ -539,5 +537,3 @@ LICENSE file included with this module.
 F<modulemaker>, F<perlnewmod>, F<h2xs>, F<ExtUtils::MakeMaker>.
 
 =cut
-
-

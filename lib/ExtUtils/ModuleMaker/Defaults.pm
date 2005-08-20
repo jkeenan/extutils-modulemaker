@@ -17,7 +17,6 @@ Please fix the problems listed above and try again.
 ENDOFUSAGE
 
 sub default_values {
-#    my %default_values = (
     my $self = shift;
     return {
         LICENSE  => 'perl',
@@ -25,7 +24,7 @@ sub default_values {
         ABSTRACT => 'Module abstract (<= 44 characters) goes here',
         AUTHOR   => {
             NAME         => 'A. U. Thor',
-            CPANID       => 'AUTHOR',
+            CPANID       => 'MODAUTHOR',
             ORGANIZATION => 'XYZ Corp.',
             WEBSITE      => 'http://a.galaxy.far.far.away/modules',
             EMAIL        => 'a.u.thor@a.galaxy.far.far.away',
@@ -40,11 +39,7 @@ sub default_values {
 
         PERMISSIONS => 0755,
         USAGE_MESSAGE => $usage,
-#     );
-#     return { %default_values };
     }
 }
 
 1;
-
-
