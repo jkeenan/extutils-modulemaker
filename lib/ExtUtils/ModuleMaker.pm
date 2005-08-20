@@ -14,18 +14,18 @@ sub new {
     croak "Must be hash or balanced list of key-value pairs: $!"
         if (@arglist % 2);
     my %parameters = @arglist;
-    my @badkeys;
-    my %keys_forbidden = map {$_, 1} qw|
-        WEBSITE
-        EMAIL
-    |;
+#    my @badkeys;
+#    my %keys_forbidden = map {$_, 1} qw|
 #        CPANID
 #        ORGANIZATION
-    for (keys %parameters) {
-        push(@badkeys, $_) if $keys_forbidden{$_};
-    }
-    croak "@badkeys improper top-level key: $!"
-        if (@badkeys);
+#        WEBSITE
+#        EMAIL
+#    |;
+#    for (keys %parameters) {
+#        push(@badkeys, $_) if $keys_forbidden{$_};
+#    }
+#    croak "@badkeys improper top-level key: $!"
+#        if (@badkeys);
 
     my $self = ref($class) ? bless( {}, ref($class) )
                            : bless( {}, $class );
@@ -239,7 +239,7 @@ ExtUtils::ModuleMaker object.
 Creates and returns an ExtUtils::ModuleMaker object.  Takes a list 
 containing key-value pairs with information specifying the
 structure and content of the new module(s).  With the exception of 
-keys AUTHOR and EXTRA_MODULES (see below), the values in these pairs 
+key EXTRA_MODULES (see below), the values in these pairs 
 are all strings.  Like most such lists of key-value pairs, this list 
 is probably best held in a hash.   Keys which may be specified are:
 
@@ -313,13 +313,6 @@ this synonym for the third option:
 
 =item * AUTHOR
 
-A hash containing information about the author to pass on to all the
-necessary places in the files.
-
-=over 4
-
-=item * NAME
-
 Name of the author.  If the author's name contains an apostrophe (C<'>), 
 then the corresponding value in the list passed to the constructor must 
 be double-quoted; otherwise F<Makefile.PL> gets messed up.
@@ -338,14 +331,13 @@ be added to the documentation.
 
 =item * WEBSITE
 
-The personal or organizational website of the author.
+The personal or organizational website of the author.  If this is 
+omitted, then the line will not be added to the documentation.
 
 =item * ORGANIZATION
 
 Company or group owning the module.  If this is omitted, then the line 
 will not be added to the documentation
-
-=back
 
 =item * EXTRA_MODULES
 

@@ -59,10 +59,11 @@ SKIP: {
 
     failsafe( [
         'NAME'     => 'ABC::DEF',
-        'AUTHOR'   => { 
-                        NAME   => 'James E Keenan',
+#        'AUTHOR'   => { 
+#                        NAME   => 'James E Keenan',
 #                        CPANID => 'ABCDEFGHIJ',
-           },
+#           },
+        'AUTHOR'   => 'James E Keenan',
         'CPANID'   => 'ABCDEFGHIJ',
     ], 
         "^CPAN IDs are 3-9 characters",
@@ -71,10 +72,11 @@ SKIP: {
 
     failsafe( [
         'NAME'     => 'ABC::XYZ',
-        'AUTHOR'   => { 
-                        NAME   => 'James E Keenan',
+#        'AUTHOR'   => { 
+#                        NAME   => 'James E Keenan',
 #                        CPANID => 'AB',
-           },
+#           },
+        'AUTHOR'   => 'James E Keenan',
         'CPANID'   => 'AB',
     ], 
         "^CPAN IDs are 3-9 characters",
@@ -91,10 +93,12 @@ SKIP: {
 
     failsafe( [
         'NAME'     => 'ABC::XYZ',
-        'AUTHOR'   => { 
-                        NAME   => 'James E Keenan',
-                        EMAIL  => 'jkeenancpan.org',
-           },
+#        'AUTHOR'   => { 
+#                        NAME   => 'James E Keenan',
+#                        EMAIL  => 'jkeenancpan.org',
+#           },
+        'AUTHOR'   => 'James E Keenan',
+        'EMAIL'    => 'jkeenancpan.org',
     ], 
         "^EMAIL addresses need to have an at sign",
         "Constructor correctly failed; e-mail must have '\@' sign"
@@ -102,10 +106,12 @@ SKIP: {
 
     failsafe( [
         'NAME'     => 'ABC::XYZ',
-        'AUTHOR'   => { 
-                        AUTHOR  => 'James E Keenan',
-                        WEBSITE => 'ftp://ftp.perl.org',
-           },
+#        'AUTHOR'   => { 
+#                        AUTHOR  => 'James E Keenan',
+#                        WEBSITE => 'ftp://ftp.perl.org',
+#           },
+        'AUTHOR'   => 'James E Keenan',
+        'WEBSITE'   => 'ftp://ftp.perl.org',
     ], 
         "^WEBSITEs should start with an \"http:\" or \"https:\"",
         "Constructor correctly failed; websites start 'http' or 'https'"

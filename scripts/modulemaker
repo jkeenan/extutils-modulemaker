@@ -46,14 +46,17 @@ my $MOD = ExtUtils::ModuleMaker::Interactive->new(
     ( ( $opts{b} ) ? ( BUILD_SYSTEM => $opts{b} ) : () ),
     ( ( $opts{v} ) ? ( VERSION      => $opts{v} ) : () ),
     ( ( $opts{l} ) ? ( LICENSE      => $opts{l} ) : () ),
+    ( ( $opts{u} ) ? ( AUTHOR       => $opts{u} ) : () ),
     ( ( $opts{p} ) ? ( CPANID       => $opts{p} ) : () ),
     ( ( $opts{o} ) ? ( ORGANIZATION => $opts{o} ) : () ),
+    ( ( $opts{w} ) ? ( WEBSITE      => $opts{w} ) : () ),
+    ( ( $opts{e} ) ? ( EMAIL        => $opts{e} ) : () ),
     USAGE_MESSAGE => Usage(),
 );
 
-# Because AUTHOR values were not set above, call this method from
-# ExtUtils::ModuleMaker::Interactive
-$MOD->set_author_defaults(\%opts);
+## Because AUTHOR values were not set above, call this method from
+## ExtUtils::ModuleMaker::Interactive
+#$MOD->set_author_defaults(\%opts);
 
 $MOD->run_interactive() if $MOD->{INTERACTIVE};
 
@@ -169,7 +172,7 @@ You will be presented with a series of menus looking something like this:
   modulemaker: Author Menu
 
       Feature       Current Value
-  N - Name          'A. U. Thor'
+  N - Author        'A. U. Thor'
   C - CPAN ID       'MODAUTHOR'
   O - Organization  'XYZ Corp.'
   W - Website       'http://a.galaxy.far.far.away/modules'

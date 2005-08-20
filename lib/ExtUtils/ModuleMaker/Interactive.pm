@@ -214,7 +214,6 @@ EOF
 
 ##### Public #####
 
-# set_author_defaults
 # run_interactive
 # closing_message
 
@@ -229,20 +228,6 @@ EOF
 # Build_Menu
 # Copyright_Display
 # Question_User
-
-sub set_author_defaults {
-    my $MOD = shift;
-    my $optsref = shift;
-    my %opts = %{$optsref};
-    my %author_defaults = %{ $MOD->_prepare_author_defaults() };
-    $MOD->{AUTHOR} = { 
-        map { $_ => ($opts{$author_defaults{$_}{opt}} 
-                   ? $opts{$author_defaults{$_}{opt}} 
-                   :       $author_defaults{$_}{default})
-        } keys %author_defaults 
-    };
-    $MOD->set_author_data();  # to set COMPOSITE
-}
 
 sub run_interactive {
     my $MOD = shift;
@@ -290,31 +275,31 @@ sub _prepare_author_defaults {
     my $defaults_ref = $self->default_values();
     my %author_defaults = (
         NAME => {
-                default  => ${$defaults_ref}{AUTHOR}{NAME},
-                string   => 'Name        ',
+                default  => ${$defaults_ref}{AUTHOR},
+                string   => 'Author      ',
                 opt      => 'u',
                 select   => 'N',
             },
-#        CPANID => {
-#                default  => ${$defaults_ref}{AUTHOR}{CPANID},
-#                string   => 'CPAN ID     ',
-#                opt      => 'p',
-#                select   => 'C',
-#            },
-#        ORGANIZATION => {
-#                default  => ${$defaults_ref}{AUTHOR}{ORGANIZATION},
-#                string   => 'Organization',
-#                opt      => 'o',
-#                select   => 'O',
-#            },
+        CPANID => {
+                default  => ${$defaults_ref}{CPANID},
+                string   => 'CPAN ID     ',
+                opt      => 'p',
+                select   => 'C',
+            },
+        ORGANIZATION => {
+                default  => ${$defaults_ref}{ORGANIZATION},
+                string   => 'Organization',
+                opt      => 'o',
+                select   => 'O',
+            },
         WEBSITE => {
-                default  => ${$defaults_ref}{AUTHOR}{WEBSITE},
+                default  => ${$defaults_ref}{WEBSITE},
                 string   => 'Website     ',
                 opt      => 'w',
                 select   => 'W',
             },
         EMAIL => {
-                default  => ${$defaults_ref}{AUTHOR}{EMAIL},
+                default  => ${$defaults_ref}{EMAIL},
                 string   => 'Email       ',
                 opt      => 'e',
                 select   => 'E',
@@ -391,7 +376,8 @@ sub Author_Menu {
         "\n",
         map {
             "$_ - $Author_Menu{$_}[0]  '"
-              . $MOD->{AUTHOR}{ $Author_Menu{$_}[1] } . "'"
+#              . $MOD->{AUTHOR}{ $Author_Menu{$_}[1] } . "'"
+              . $MOD->{ $Author_Menu{$_}[1] } . "'"
           } qw (N C O W E)
     );
     $string =~ s|##Data Here##|$stuff|;
@@ -404,7 +390,8 @@ sub Author_Menu {
     my $value =
       Question_User( "Please enter a new value for $Author_Menu{$response}[0]",
         'data' );
-    $MOD->{AUTHOR}{ $Author_Menu{$response}[1] } = $value;
+#    $MOD->{AUTHOR}{ $Author_Menu{$response}[1] } = $value;
+    $MOD->{ $Author_Menu{$response}[1] } = $value;
 
     return ('Author Menu');
 }
@@ -567,8 +554,6 @@ ExtUtils::ModuleMaker::Interactive - Hold methods used in F<modulemaker>
 
     ...  # ExtUtils::ModuleMaker::new() called here
     
-    $MOD->set_author_defaults(\%opts);
-
     $MOD->run_interactive() if $MOD->{INTERACTIVE};
 
     ...  # ExtUtils::ModuleMaker::complete_build() called here
@@ -583,13 +568,6 @@ the easiest way of accessing the functionality of Perl extension
 ExtUtils::ModuleMaker.
 
 =head1 METHODS
-
-=head2 C<set_author_defaults()>
-
-This method is a bit of a hack, created because, in F<modulemaker>'s current
-implementation, arguments for author information are not passed to
-C<ExtUtils::ModuleMaker::new()>.  It adds that information to the object and
-also sets the C<COMPOSITE> key used internally.
 
 =head2 C<run_interactive()>
 
@@ -622,3 +600,32 @@ LICENSE file included with this module.
 F<modulemaker>, F<ExtUtils::ModuleMaker>.
 
 =cut
+
+__END__
+
+# set_author_defaults
+
+sub set_author_defaults {
+    my $MOD = shift;
+    my $optsref = shift;
+    my %opts = %{$optsref};
+    my %author_defaults = %{ $MOD->_prepare_author_defaults() };
+    $MOD->{AUTHOR} = { 
+        map { $_ => ($opts{$author_defaults{$_}{opt}} 
+                   ? $opts{$author_defaults{$_}{opt}} 
+                   :       $author_defaults{$_}{default})
+        } keys %author_defaults 
+    };
+    $MOD->set_author_data();  # to set COMPOSITE
+}
+
+    $MOD->set_author_defaults(\%opts);
+
+=head2 C<set_author_defaults()>
+
+This method is a bit of a hack, created because, in F<modulemaker>'s current
+implementation, arguments for author information are not passed to
+C<ExtUtils::ModuleMaker::new()>.  It adds that information to the object and
+also sets the C<COMPOSITE> key used internally.
+
+

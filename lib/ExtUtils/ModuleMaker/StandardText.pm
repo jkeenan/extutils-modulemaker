@@ -57,7 +57,7 @@ sub file_text_README {
             : $README_text{mb_instructions};
     return "pod2text $self->{NAME}.pm > README\n" . 
         $README_text{readme_top} .
-	$build_instructions .
+    $build_instructions .
         $README_text{readme_bottom};
 }
 
@@ -88,8 +88,10 @@ WriteMakefile(
         map { my $s = $_; $s =~ s{'}{\\'}g; $s; }
     $self->{NAME},
     $self->{FILE},
-    $self->{AUTHOR}{NAME},
-    $self->{AUTHOR}{EMAIL},
+#    $self->{AUTHOR}{NAME},
+    $self->{AUTHOR},
+#    $self->{AUTHOR}{EMAIL},
+    $self->{EMAIL},
     $self->{ABSTRACT};
     return $page;
 }
@@ -184,7 +186,8 @@ EOFBLOCK
             : ()
         ),
         $self->pod_section(
-            AUTHOR => $self->module_value( $module, 'AUTHOR', 'COMPOSITE' )
+#            AUTHOR => $self->module_value( $module, 'AUTHOR', 'COMPOSITE' )
+            AUTHOR => $self->module_value( $module, 'COMPOSITE' )
         ),
         $self->pod_section(
             COPYRIGHT =>
@@ -512,9 +515,11 @@ sub verify_values {
 #      if ( $self->{AUTHOR}{CPANID} !~ m/^\w{3,9}$/ );
       if ( $self->{CPANID} !~ m/^\w{3,9}$/ );
     push( @errors, 'EMAIL addresses need to have an at sign' )
-      if ( $self->{AUTHOR}{EMAIL} !~ m/.*\@.*/ );
+#      if ( $self->{AUTHOR}{EMAIL} !~ m/.*\@.*/ );
+      if ( $self->{EMAIL} !~ m/.*\@.*/ );
     push( @errors, 'WEBSITEs should start with an "http:" or "https:"' )
-      if ( $self->{AUTHOR}{WEBSITE} !~ m/https?:\/\/.*/ );
+#      if ( $self->{AUTHOR}{WEBSITE} !~ m/https?:\/\/.*/ );
+      if ( $self->{WEBSITE} !~ m/https?:\/\/.*/ );
     push( @errors, 'LICENSE is not recognized' )
       unless ( Verify_Local_License( $self->{LICENSE} )
         || Verify_Standard_License( $self->{LICENSE} ) );
@@ -552,7 +557,7 @@ sub build_page {
             )
             ? $self->block_subroutine_header($module)
          : ''
-	 )
+     )
     );
 
     $page .= (
@@ -575,15 +580,21 @@ sub set_dates {
 sub set_author_data {
     my $self = shift;
 
-    $self->{AUTHOR}->{COMPOSITE} = (
+#    $self->{AUTHOR}->{COMPOSITE} = (
+    $self->{COMPOSITE} = (
         "\t"
          . join( "\n\t",
-            $self->{AUTHOR}->{NAME},
+#            $self->{AUTHOR}->{NAME},
+            $self->{AUTHOR},
+#            "CPAN ID: $self->{{AUTHOR}->CPANID}", # will need to be modified
             "CPAN ID: $self->{CPANID}", # will need to be modified
 #            $self->{AUTHOR}->{ORGANIZATION},  # if defaults no longer provided
             $self->{ORGANIZATION},  # if defaults no longer provided
-            $self->{AUTHOR}->{EMAIL}, 
-	    $self->{AUTHOR}->{WEBSITE}, ),
+#            $self->{AUTHOR}->{EMAIL}, 
+            $self->{EMAIL}, 
+#           $self->{AUTHOR}->{WEBSITE}, ),
+            $self->{WEBSITE}, 
+        ),
     );
 }
 
@@ -625,7 +636,8 @@ sub initialize_license {
         $self->{LicenseParts}{LICENSETEXT} =~
           s/###year###/$self->{COPYRIGHT_YEAR}/ig;
         $self->{LicenseParts}{LICENSETEXT} =~
-          s/###owner###/$self->{AUTHOR}{NAME}/ig;
+#          s/###owner###/$self->{AUTHOR}{NAME}/ig;
+          s/###owner###/$self->{AUTHOR}/ig;
         $self->{LicenseParts}{LICENSETEXT} =~
 #          s/###organization###/$self->{AUTHOR}{ORGANIZATION}/ig;
           s/###organization###/$self->{ORGANIZATION}/ig;
