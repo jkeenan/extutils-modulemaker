@@ -32,13 +32,6 @@ SKIP: {
             COMPACT        => 1,
             CHANGES_IN_POD => 1,
             BUILD_SYSTEM   => 'Module::Build',
-#            AUTHOR         => {
-#               'NAME'         => 'Phineas T. Bluster',
-#               'CPANID'       => 'PTBLUSTER',
-#               'ORGANIZATION' => 'Peanut Gallery',
-#               'EMAIL'        => 'phineas@anonymous.com',
-#               'WEBSITE'      => 'http://www.anonymous.com/~phineas',
-#            },
             AUTHOR         => 'Phineas T. Bluster',
             CPANID         => 'PTBLUSTER',
             ORGANIZATION   => 'Peanut Gallery',

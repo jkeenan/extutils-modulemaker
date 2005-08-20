@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::Defaults;
-# as of 08/16/2005
+# as of 08/19/2005
 use strict;
 local $^W = 1;
 
@@ -16,13 +16,6 @@ sub default_values {
         LICENSE  => 'perl',
         VERSION  => 0.01,
         ABSTRACT => 'Module abstract (<= 44 characters) goes here',
-#        AUTHOR   => {
-#            NAME         => 'A. U. Thor',
-#            CPANID       => 'MODAUTHOR',
-#            ORGANIZATION => 'XYZ Corp.',
-#            WEBSITE      => 'http://a.galaxy.far.far.away/modules',
-#            EMAIL        => 'a.u.thor@a.galaxy.far.far.away',
-#        },
         AUTHOR       => 'A. U. Thor',
         CPANID       => 'MODAUTHOR',
         ORGANIZATION => 'XYZ Corp.',

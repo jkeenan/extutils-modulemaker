@@ -1,5 +1,9 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.3607 August 19, 2005
+    - Much work, but particularly important was the elimination of %AUTHOR in
+      favor of 5 top-level keys.
+
 0.3606 August 16, 2005
 	- Fixing interactive mode.
 

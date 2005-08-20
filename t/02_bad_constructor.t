@@ -1,6 +1,5 @@
 # t/02_bad constructor.t
 
-# use Test::More tests => 37;
 use Test::More tests => 34;
 use strict;
 
@@ -59,10 +58,6 @@ SKIP: {
 
     failsafe( [
         'NAME'     => 'ABC::DEF',
-#        'AUTHOR'   => { 
-#                        NAME   => 'James E Keenan',
-#                        CPANID => 'ABCDEFGHIJ',
-#           },
         'AUTHOR'   => 'James E Keenan',
         'CPANID'   => 'ABCDEFGHIJ',
     ], 
@@ -72,10 +67,6 @@ SKIP: {
 
     failsafe( [
         'NAME'     => 'ABC::XYZ',
-#        'AUTHOR'   => { 
-#                        NAME   => 'James E Keenan',
-#                        CPANID => 'AB',
-#           },
         'AUTHOR'   => 'James E Keenan',
         'CPANID'   => 'AB',
     ], 
@@ -83,20 +74,8 @@ SKIP: {
         "Constructor correctly failed due to CPANID < 3 characters"
     );
 
-#    failsafe( [
-#        'NAME'     => 'ABC::XYZ',
-#        'CPANID'   => 'JKEENAN',
-#    ], 
-#        "^CPANID improper top-level key",
-#        "Constructor correctly failed; argument must be in 2nd-level hash"
-#    );
-
     failsafe( [
         'NAME'     => 'ABC::XYZ',
-#        'AUTHOR'   => { 
-#                        NAME   => 'James E Keenan',
-#                        EMAIL  => 'jkeenancpan.org',
-#           },
         'AUTHOR'   => 'James E Keenan',
         'EMAIL'    => 'jkeenancpan.org',
     ], 
@@ -106,10 +85,6 @@ SKIP: {
 
     failsafe( [
         'NAME'     => 'ABC::XYZ',
-#        'AUTHOR'   => { 
-#                        AUTHOR  => 'James E Keenan',
-#                        WEBSITE => 'ftp://ftp.perl.org',
-#           },
         'AUTHOR'   => 'James E Keenan',
         'WEBSITE'   => 'ftp://ftp.perl.org',
     ], 

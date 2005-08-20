@@ -1,9 +1,9 @@
 package ExtUtils::ModuleMaker::Interactive;
-# as of 08/18/2005
+# as of 08/19/2005
 use strict;
 local $^W = 1;
 use vars qw( $VERSION );
-$VERSION = 0.36_06;
+$VERSION = 0.36_07;
 use base qw( ExtUtils::ModuleMaker );
 use Carp;
 
@@ -376,7 +376,6 @@ sub Author_Menu {
         "\n",
         map {
             "$_ - $Author_Menu{$_}[0]  '"
-#              . $MOD->{AUTHOR}{ $Author_Menu{$_}[1] } . "'"
               . $MOD->{ $Author_Menu{$_}[1] } . "'"
           } qw (N C O W E)
     );
@@ -390,7 +389,6 @@ sub Author_Menu {
     my $value =
       Question_User( "Please enter a new value for $Author_Menu{$response}[0]",
         'data' );
-#    $MOD->{AUTHOR}{ $Author_Menu{$response}[1] } = $value;
     $MOD->{ $Author_Menu{$response}[1] } = $value;
 
     return ('Author Menu');
@@ -600,32 +598,3 @@ LICENSE file included with this module.
 F<modulemaker>, F<ExtUtils::ModuleMaker>.
 
 =cut
-
-__END__
-
-# set_author_defaults
-
-sub set_author_defaults {
-    my $MOD = shift;
-    my $optsref = shift;
-    my %opts = %{$optsref};
-    my %author_defaults = %{ $MOD->_prepare_author_defaults() };
-    $MOD->{AUTHOR} = { 
-        map { $_ => ($opts{$author_defaults{$_}{opt}} 
-                   ? $opts{$author_defaults{$_}{opt}} 
-                   :       $author_defaults{$_}{default})
-        } keys %author_defaults 
-    };
-    $MOD->set_author_data();  # to set COMPOSITE
-}
-
-    $MOD->set_author_defaults(\%opts);
-
-=head2 C<set_author_defaults()>
-
-This method is a bit of a hack, created because, in F<modulemaker>'s current
-implementation, arguments for author information are not passed to
-C<ExtUtils::ModuleMaker::new()>.  It adds that information to the object and
-also sets the C<COMPOSITE> key used internally.
-
-

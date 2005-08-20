@@ -2,7 +2,7 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 use vars qw ($VERSION);
-$VERSION = 0.36_06;
+$VERSION = 0.36_07;
 use base qw( ExtUtils::ModuleMaker::Defaults ExtUtils::ModuleMaker::StandardText );
 use Carp;
 
@@ -14,18 +14,6 @@ sub new {
     croak "Must be hash or balanced list of key-value pairs: $!"
         if (@arglist % 2);
     my %parameters = @arglist;
-#    my @badkeys;
-#    my %keys_forbidden = map {$_, 1} qw|
-#        CPANID
-#        ORGANIZATION
-#        WEBSITE
-#        EMAIL
-#    |;
-#    for (keys %parameters) {
-#        push(@badkeys, $_) if $keys_forbidden{$_};
-#    }
-#    croak "@badkeys improper top-level key: $!"
-#        if (@badkeys);
 
     my $self = ref($class) ? bless( {}, ref($class) )
                            : bless( {}, $class );
@@ -184,8 +172,8 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
 =head1 VERSION
 
-This document references version 0.36_06 of ExtUtils::ModuleMaker, released
-to CPAN on August 16, 2005.
+This document references version 0.36_07 of ExtUtils::ModuleMaker, released
+to CPAN on August 19, 2005.
 
 =head1 DESCRIPTION
 

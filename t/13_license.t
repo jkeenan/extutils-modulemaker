@@ -238,10 +238,6 @@ SKIP: {
                 COMPACT        => 1,
                 LICENSE        => 'looselips',
     	    COPYRIGHT_YEAR => 1899,
-#    	    AUTHOR => {
-#    		    NAME => "J E Keenan", 
-#    		    ORGANIZATION => "The World Wide Webby",
-#    	    },
     	    AUTHOR => "J E Keenan", 
     		ORGANIZATION => "The World Wide Webby",
         ), "object created for Alpha::$testmod");
