@@ -34,11 +34,12 @@ SKIP: {
             BUILD_SYSTEM   => 'Module::Build',
             AUTHOR         => {
                'NAME'         => 'Phineas T. Bluster',
-               'CPANID'       => 'PTBLUSTER',
+#               'CPANID'       => 'PTBLUSTER',
                'ORGANIZATION' => 'Peanut Gallery',
                'EMAIL'        => 'phineas@anonymous.com',
                'WEBSITE'      => 'http://www.anonymous.com/~phineas',
             },
+            CPANID         => 'PTBLUSTER',
         ),
         "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
     );

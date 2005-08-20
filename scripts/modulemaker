@@ -46,6 +46,7 @@ my $MOD = ExtUtils::ModuleMaker::Interactive->new(
     ( ( $opts{b} ) ? ( BUILD_SYSTEM => $opts{b} ) : () ),
     ( ( $opts{v} ) ? ( VERSION      => $opts{v} ) : () ),
     ( ( $opts{l} ) ? ( LICENSE      => $opts{l} ) : () ),
+    ( ( $opts{p} ) ? ( CPANID       => $opts{p} ) : () ),
     USAGE_MESSAGE => Usage(),
 );
 

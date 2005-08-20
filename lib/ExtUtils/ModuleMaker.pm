@@ -4,7 +4,6 @@ local $^W = 1;
 use vars qw ($VERSION);
 $VERSION = 0.36_06;
 use base qw( ExtUtils::ModuleMaker::Defaults ExtUtils::ModuleMaker::StandardText );
-# use ExtUtils::ModuleMaker::Defaults qw( default_values );
 use Carp;
 
 #################### PUBLICLY CALLABLE METHODS ####################
@@ -17,11 +16,11 @@ sub new {
     my %parameters = @arglist;
     my @badkeys;
     my %keys_forbidden = map {$_, 1} qw|
-        CPANID
         ORGANIZATION
         WEBSITE
         EMAIL
     |;
+#        CPANID
     for (keys %parameters) {
         push(@badkeys, $_) if $keys_forbidden{$_};
     }

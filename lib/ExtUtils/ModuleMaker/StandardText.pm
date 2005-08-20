@@ -509,7 +509,8 @@ sub verify_values {
     push( @errors, 'ABSTRACTs are limited to 44 characters' )
       if ( length( $self->{ABSTRACT} ) > 44 );
     push( @errors, 'CPAN IDs are 3-9 characters' )
-      if ( $self->{AUTHOR}{CPANID} !~ m/^\w{3,9}$/ );
+#      if ( $self->{AUTHOR}{CPANID} !~ m/^\w{3,9}$/ );
+      if ( $self->{CPANID} !~ m/^\w{3,9}$/ );
     push( @errors, 'EMAIL addresses need to have an at sign' )
       if ( $self->{AUTHOR}{EMAIL} !~ m/.*\@.*/ );
     push( @errors, 'WEBSITEs should start with an "http:" or "https:"' )
@@ -578,7 +579,7 @@ sub set_author_data {
         "\t"
          . join( "\n\t",
             $self->{AUTHOR}->{NAME},
-            "CPAN ID: $self->{AUTHOR}->{CPANID}", # will need to be modified
+            "CPAN ID: $self->{CPANID}", # will need to be modified
             $self->{AUTHOR}->{ORGANIZATION},  # if defaults no longer provided
             $self->{AUTHOR}->{EMAIL}, 
 	    $self->{AUTHOR}->{WEBSITE}, ),

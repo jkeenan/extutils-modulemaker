@@ -295,12 +295,12 @@ sub _prepare_author_defaults {
                 opt      => 'u',
                 select   => 'N',
             },
-        CPANID => {
-                default  => ${$defaults_ref}{AUTHOR}{CPANID},
-                string   => 'CPAN ID     ',
-                opt      => 'p',
-                select   => 'C',
-            },
+#        CPANID => {
+#                default  => ${$defaults_ref}{AUTHOR}{CPANID},
+#                string   => 'CPAN ID     ',
+#                opt      => 'p',
+#                select   => 'C',
+#            },
         ORGANIZATION => {
                 default  => ${$defaults_ref}{AUTHOR}{ORGANIZATION},
                 string   => 'Organization',

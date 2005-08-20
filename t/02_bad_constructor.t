@@ -1,6 +1,7 @@
 # t/02_bad constructor.t
 
-use Test::More tests => 37;
+# use Test::More tests => 37;
+use Test::More tests => 34;
 use strict;
 
 BEGIN { use_ok( 'ExtUtils::ModuleMaker' ); }
@@ -60,8 +61,9 @@ SKIP: {
         'NAME'     => 'ABC::DEF',
         'AUTHOR'   => { 
                         NAME   => 'James E Keenan',
-                        CPANID => 'ABCDEFGHIJ',
+#                        CPANID => 'ABCDEFGHIJ',
            },
+        'CPANID'   => 'ABCDEFGHIJ',
     ], 
         "^CPAN IDs are 3-9 characters",
         "Constructor correctly failed due to CPANID > 9 characters"
@@ -71,20 +73,21 @@ SKIP: {
         'NAME'     => 'ABC::XYZ',
         'AUTHOR'   => { 
                         NAME   => 'James E Keenan',
-                        CPANID => 'AB',
+#                        CPANID => 'AB',
            },
+        'CPANID'   => 'AB',
     ], 
         "^CPAN IDs are 3-9 characters",
         "Constructor correctly failed due to CPANID < 3 characters"
     );
 
-    failsafe( [
-        'NAME'     => 'ABC::XYZ',
-        'CPANID'   => 'JKEENAN',
-    ], 
-        "^CPANID improper top-level key",
-        "Constructor correctly failed; argument must be in 2nd-level hash"
-    );
+#    failsafe( [
+#        'NAME'     => 'ABC::XYZ',
+#        'CPANID'   => 'JKEENAN',
+#    ], 
+#        "^CPANID improper top-level key",
+#        "Constructor correctly failed; argument must be in 2nd-level hash"
+#    );
 
     failsafe( [
         'NAME'     => 'ABC::XYZ',

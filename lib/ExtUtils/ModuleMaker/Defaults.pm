@@ -24,11 +24,12 @@ sub default_values {
         ABSTRACT => 'Module abstract (<= 44 characters) goes here',
         AUTHOR   => {
             NAME         => 'A. U. Thor',
-            CPANID       => 'MODAUTHOR',
+#            CPANID       => 'MODAUTHOR',
             ORGANIZATION => 'XYZ Corp.',
             WEBSITE      => 'http://a.galaxy.far.far.away/modules',
             EMAIL        => 'a.u.thor@a.galaxy.far.far.away',
         },
+        CPANID       => 'MODAUTHOR',
         BUILD_SYSTEM    => 'ExtUtils::MakeMaker',
         COMPACT         => 0,
         VERBOSE         => 0,
