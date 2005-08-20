@@ -31,7 +31,7 @@ $VERSION = 0.36_08;
 
 my %opts;
 # getopts( "bdhqCIPVcn:a:v:l:u:p:o:w:e:", \%opts );
-getopts( "bdhqCIPVcn:a:v:l:u:p:o:w:e:", \%opts );
+getopts( "bhqCIPVcn:a:v:l:u:p:o:w:e:", \%opts );
 die Usage() if ( $opts{h} );
 
 my $mod = ExtUtils::ModuleMaker::Interactive->new(
