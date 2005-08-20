@@ -3,7 +3,10 @@ use strict;
 local $^W = 1;
 use vars qw ($VERSION);
 $VERSION = 0.36_08;
-use base qw( ExtUtils::ModuleMaker::Defaults ExtUtils::ModuleMaker::StandardText );
+use base qw( 
+    ExtUtils::ModuleMaker::Defaults 
+    ExtUtils::ModuleMaker::StandardText
+);
 use Carp;
 
 #################### PUBLICLY CALLABLE METHODS ####################
@@ -198,6 +201,11 @@ F<modulemaker> bundled with this distribution.
 
 =head2 Usage within a Perl script
 
+ExtUtils::ModuleMaker can be used within a Perl script to generate the
+directories and files needed to begin work on a CPAN-ready Perl distribution.
+You will need to call C<new()> and C<complete_build()>, both of which are
+described in the next section.
+
 =head3 Public Methods
 
 In this version of ExtUtils::ModuleMaker there are five publicly 
@@ -311,7 +319,12 @@ omitted, then the line will not be added to the documentation.
 =item * ORGANIZATION
 
 Company or group owning the module.  If this is omitted, then the line 
-will not be added to the documentation
+will not be added to the documentation.
+
+=item * PERSONAL_DEFAULTS
+
+Location of a file holding a Perl hash of key-value pairs which will override
+(or supplement) those pairs provided as defaults by ExtUtils::ModuleMaker.
 
 =item * EXTRA_MODULES
 
@@ -431,6 +444,21 @@ currently in the public interface.  They are available for you to hack
 on, but, as they are primarily used within C<new()> and
 C<complete_build()>, their implementation and interface may change in
 the future.  See the code for inline documentation.
+
+=head2 Advanced Usage:  Pre-defined Personal Defaults
+
+If you have used ExtUtils::ModuleMaker more than once, you have probably typed
+in a choice for C<AUTHOR>, C<EMAIL>, etc., more than once.  To save
+unnecessary typing and reduce typing errors, ExtUtils::ModuleMaker now offers
+you the possibility of establishing B<personal default values> which override
+the default values supplied with the distribution and found in
+F<lib/ExtUtils/ModuleMaker/Defaults.pm>.
+
+In a future version, you will be offered the option of saving the selections
+you enter at F<modulemaker>'s prompts as your personal default selections.
+For now, to use personal defaults, you have to supply the location of the file
+holding the personal defaults either as an argument to C<new()> or as the value
+to an option supplied to F<modulemaker>.
 
 =head1 CAVEATS
 
