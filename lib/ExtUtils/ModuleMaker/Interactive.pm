@@ -301,12 +301,12 @@ sub _prepare_author_defaults {
 #                opt      => 'p',
 #                select   => 'C',
 #            },
-        ORGANIZATION => {
-                default  => ${$defaults_ref}{AUTHOR}{ORGANIZATION},
-                string   => 'Organization',
-                opt      => 'o',
-                select   => 'O',
-            },
+#        ORGANIZATION => {
+#                default  => ${$defaults_ref}{AUTHOR}{ORGANIZATION},
+#                string   => 'Organization',
+#                opt      => 'o',
+#                select   => 'O',
+#            },
         WEBSITE => {
                 default  => ${$defaults_ref}{AUTHOR}{WEBSITE},
                 string   => 'Website     ',

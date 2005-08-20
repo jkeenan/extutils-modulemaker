@@ -37,11 +37,12 @@ SKIP: {
             AUTHOR         => {
                'NAME'         => 'Phineas T. Bluster',
 #               'CPANID'       => 'PTBLUSTER',
-               'ORGANIZATION' => 'Peanut Gallery',
+#               'ORGANIZATION' => 'Peanut Gallery',
                'EMAIL'        => 'phineas@anonymous.com',
                'WEBSITE'      => 'http://www.anonymous.com/~phineas',
             },
             CPANID         => 'PTBLUSTER',
+            ORGANIZATION   => 'Peanut Gallery',
         ),
         "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
     );
@@ -80,11 +81,12 @@ SKIP: {
             AUTHOR         => {
                'NAME'         => 'Phineas T. Bluster',
 #               'CPANID'       => 'PTBLUSTER',
-               'ORGANIZATION' => 'Peanut Gallery',
+#               'ORGANIZATION' => 'Peanut Gallery',
                'EMAIL'        => 'phineas@anonymous.com',
                'WEBSITE'      => 'http://www.anonymous.com/~phineas',
             },
             CPANID         => 'PTBLUSTER',
+            ORGANIZATION   => 'Peanut Gallery',
         ),
         "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
     );

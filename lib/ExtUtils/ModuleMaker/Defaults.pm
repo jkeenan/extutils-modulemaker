@@ -3,12 +3,6 @@ package ExtUtils::ModuleMaker::Defaults;
 use strict;
 local $^W = 1;
 
-#use vars qw ( @ISA @EXPORT_OK );
-#require Exporter;
-#@ISA = ('Exporter');
-#@EXPORT_OK = qw( default_values );
-
-
 my $usage = <<ENDOFUSAGE;
 
 There were problems with your data supplied to ExtUtils::ModuleMaker.
@@ -25,11 +19,12 @@ sub default_values {
         AUTHOR   => {
             NAME         => 'A. U. Thor',
 #            CPANID       => 'MODAUTHOR',
-            ORGANIZATION => 'XYZ Corp.',
+#            ORGANIZATION => 'XYZ Corp.',
             WEBSITE      => 'http://a.galaxy.far.far.away/modules',
             EMAIL        => 'a.u.thor@a.galaxy.far.far.away',
         },
         CPANID       => 'MODAUTHOR',
+        ORGANIZATION => 'XYZ Corp.',
         BUILD_SYSTEM    => 'ExtUtils::MakeMaker',
         COMPACT         => 0,
         VERBOSE         => 0,

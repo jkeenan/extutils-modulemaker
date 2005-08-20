@@ -580,7 +580,8 @@ sub set_author_data {
          . join( "\n\t",
             $self->{AUTHOR}->{NAME},
             "CPAN ID: $self->{CPANID}", # will need to be modified
-            $self->{AUTHOR}->{ORGANIZATION},  # if defaults no longer provided
+#            $self->{AUTHOR}->{ORGANIZATION},  # if defaults no longer provided
+            $self->{ORGANIZATION},  # if defaults no longer provided
             $self->{AUTHOR}->{EMAIL}, 
 	    $self->{AUTHOR}->{WEBSITE}, ),
     );
@@ -626,7 +627,8 @@ sub initialize_license {
         $self->{LicenseParts}{LICENSETEXT} =~
           s/###owner###/$self->{AUTHOR}{NAME}/ig;
         $self->{LicenseParts}{LICENSETEXT} =~
-          s/###organization###/$self->{AUTHOR}{ORGANIZATION}/ig;
+#          s/###organization###/$self->{AUTHOR}{ORGANIZATION}/ig;
+          s/###organization###/$self->{ORGANIZATION}/ig;
     }
 
 }

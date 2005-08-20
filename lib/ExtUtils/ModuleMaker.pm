@@ -16,11 +16,11 @@ sub new {
     my %parameters = @arglist;
     my @badkeys;
     my %keys_forbidden = map {$_, 1} qw|
-        ORGANIZATION
         WEBSITE
         EMAIL
     |;
 #        CPANID
+#        ORGANIZATION
     for (keys %parameters) {
         push(@badkeys, $_) if $keys_forbidden{$_};
     }

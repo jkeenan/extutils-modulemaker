@@ -240,8 +240,9 @@ SKIP: {
     	    COPYRIGHT_YEAR => 1899,
     	    AUTHOR => {
     		    NAME => "J E Keenan", 
-    		    ORGANIZATION => "The World Wide Webby",
+#    		    ORGANIZATION => "The World Wide Webby",
     	    },
+    		ORGANIZATION => "The World Wide Webby",
         ), "object created for Alpha::$testmod");
         ok($mod->complete_build(), "build files for Alpha::$testmod");
 
