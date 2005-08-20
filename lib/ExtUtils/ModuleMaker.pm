@@ -2,7 +2,7 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 use vars qw ($VERSION);
-$VERSION = 0.36_07;
+$VERSION = 0.36_08;
 use base qw( ExtUtils::ModuleMaker::Defaults ExtUtils::ModuleMaker::StandardText );
 use Carp;
 
@@ -23,26 +23,12 @@ sub new {
     # 2.  Inherit usual defaults from EU::MM::Defaults.pm.
     my $defaults_ref = $self->default_values();
     foreach my $def ( keys %{$defaults_ref} ) {
-        if ( ref( ${$defaults_ref}{$def} ) eq 'HASH' ) {
-            foreach ( keys( %{ ${$defaults_ref}{$def} } ) ) {
-                $self->{$def}{$_} = ${$defaults_ref}{$def}{$_};
-            }
-        }
-        else {
-            $self->{$def} = ${$defaults_ref}{$def};
-        }
+        $self->{$def} = ${$defaults_ref}{$def};
     }
     # 3.  Process key-value pairs supplied as arguments to new() either
     # from user-written program or from modulemaker utility.
     foreach my $param ( keys %parameters ) {
-        if ( ref( $parameters{$param} ) eq 'HASH' ) {
-            foreach ( keys( %{ $parameters{$param} } ) ) {
-                $self->{$param}{$_} = $parameters{$param}{$_};
-            }
-        }
-        else {
-            $self->{$param} = $parameters{$param};
-        }
+        $self->{$param} = $parameters{$param};
     }
 
     # 4.  Initialize keys set from information supplied above, system
@@ -172,8 +158,8 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
 =head1 VERSION
 
-This document references version 0.36_07 of ExtUtils::ModuleMaker, released
-to CPAN on August 19, 2005.
+This document references version 0.36_08 of ExtUtils::ModuleMaker, released
+to CPAN on August 20, 2005.
 
 =head1 DESCRIPTION
 
@@ -330,9 +316,9 @@ will not be added to the documentation
 =item * EXTRA_MODULES
 
 A reference to an array of hashes, each of which contains values for 
-additional modules in
-the distribution.  As with the primary module only NAME is required and
-primary module values will be used if no value is given here.
+additional modules in the distribution.  As with the primary module 
+only NAME is required and primary module values will be used if no 
+value is given here.
 
 Each extra module will be created in the correct relative place in the
 F<lib> directory.  A test file will also be created in the F<t>

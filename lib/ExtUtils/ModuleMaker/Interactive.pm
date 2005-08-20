@@ -1,9 +1,9 @@
 package ExtUtils::ModuleMaker::Interactive;
-# as of 08/19/2005
+# as of 08/20/2005
 use strict;
 local $^W = 1;
 use vars qw( $VERSION );
-$VERSION = 0.36_07;
+$VERSION = 0.36_08;
 use base qw( ExtUtils::ModuleMaker );
 use Carp;
 

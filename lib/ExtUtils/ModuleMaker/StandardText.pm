@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::StandardText;
-# as of 08/19/2005
+# as of 08/20/2005
 use strict;
 local $^W = 1;
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
