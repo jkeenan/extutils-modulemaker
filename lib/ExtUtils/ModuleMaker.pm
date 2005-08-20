@@ -1,7 +1,7 @@
 package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
-use vars qw ($VERSION);
+use vars qw ($VERSION %personal_defaults);
 $VERSION = 0.36_08;
 use base qw( 
     ExtUtils::ModuleMaker::Defaults 
@@ -12,39 +12,56 @@ use Carp;
 #################### PUBLICLY CALLABLE METHODS ####################
 
 sub new {
-    my ( $class, @arglist ) = @_;
-    local $_;
-    croak "Must be hash or balanced list of key-value pairs: $!"
-        if (@arglist % 2);
-    my %parameters = @arglist;
+    my $class = shift;
 
     my $self = ref($class) ? bless( {}, ref($class) )
                            : bless( {}, $class );
 
     # multi-stage initialization of EU::MM object
-    # 1.  Check for user-defined defaults:  NOT YET IMPLEMENTED 08/17/05
-    # 2.  Inherit usual defaults from EU::MM::Defaults.pm.
+    # 1.  Inherit usual defaults from EU::MM::Defaults.pm and populate object
+    # therewith.
     my $defaults_ref = $self->default_values();
     foreach my $def ( keys %{$defaults_ref} ) {
-        $self->{$def} = ${$defaults_ref}{$def};
+        $self->{$def} = $defaults_ref->{$def};
     }
-    # 3.  Process key-value pairs supplied as arguments to new() either
+
+    # 2.  Pull in arguments supplied to constructor.
+    my @arglist = @_;
+    croak "Must be hash or balanced list of key-value pairs: $!"
+        if (@arglist % 2);
+    my %parameters = @arglist;
+
+    # 3.  Determine whether a personal defaults file has been created, and, if
+    # so, pull in %personal_defaults therefrom and have its elements override
+    # elements heretofore defined.
+
+    if ($parameters{PERSONAL_DEFAULTS}) {
+        croak "No personal defaults file at $parameters{PERSONAL_DEFAULTS}: $!" 
+            unless -f $parameters{PERSONAL_DEFAULTS};
+        require $parameters{PERSONAL_DEFAULTS};
+        foreach my $def ( keys %personal_defaults ) {
+            $self->{$def} = $personal_defaults{$def};
+        }
+    }
+
+    # 4.  Process key-value pairs supplied as arguments to new() either
     # from user-written program or from modulemaker utility.
+    # These override default values (or may provide additional elements).
     foreach my $param ( keys %parameters ) {
         $self->{$param} = $parameters{$param};
     }
 
-    # 4.  Initialize keys set from information supplied above, system
+    # 5.  Initialize keys set from information supplied above, system
     # info or EU::MM itself.
     $self->set_author_data();
     $self->set_dates();
     $self->{eumm_version} = $VERSION;
     $self->{MANIFEST} = ['MANIFEST'];
 
-    # 5.  Validate values supplied so far to weed out most likely errors
+    # 6.  Validate values supplied so far to weed out most likely errors
     $self->verify_values();
 
-    # 6.  Initialize keys set from EU::MM::Licenses::Local or
+    # 7.  Initialize keys set from EU::MM::Licenses::Local or
     # EU::MM::Licenses::Standard
     $self->initialize_license();
 
@@ -453,6 +470,19 @@ unnecessary typing and reduce typing errors, ExtUtils::ModuleMaker now offers
 you the possibility of establishing B<personal default values> which override
 the default values supplied with the distribution and found in
 F<lib/ExtUtils/ModuleMaker/Defaults.pm>.
+
+One of the default values supplied with
+F<lib/ExtUtils/ModuleMaker/Defaults.pm>, however, can I<not> be overriden and
+must be supplied either as an argument to C<new()> or as an option supplied to
+F<modulemaker>:  that is the argument for C<ABSTRACT>.  The rationale for 
+this restriction is that every Perl module you create is presumably unique.  
+It must have a unique name and a summary description which describes it alone.
+ExtUtils::ModuleMaker has no default value for a module's name; it must
+I<always> be supplied by the user, either as an argument to C<new()>, an option
+supplied to F<modulemaker>, or as a response to a F<modulemaker> interactive
+mode prompt.  So, even if you use a personal defaults file, you must still
+supply a name for the module yourself.  And since each module you create has a
+unique purpose, you may not store a default value for the module's abstract.
 
 In a future version, you will be offered the option of saving the selections
 you enter at F<modulemaker>'s prompts as your personal default selections.
