@@ -1,28 +1,6 @@
 package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
-# use vars qw ($VERSION %personal_defaults);
-#use vars qw ( $VERSION ); 
-#$VERSION = 0.36_08;
-#use base qw( 
-#    ExtUtils::ModuleMaker::Defaults 
-#    ExtUtils::ModuleMaker::StandardText
-#);
-#BEGIN {
-##    use vars qw ( $VERSION @INC $personal_dir $personal_class ); 
-#    use vars qw ( $VERSION @INC $personal_dir ); 
-#    $VERSION = 0.36_08;
-#    $personal_dir = "~/.modulemaker"; 
-#    if (-d $personal_dir) { push @INC, $personal_dir; }
-#    else { warn "$personal_dir not located: $!" }
-#    push @INC, "~/.modulemaker";
-##    $personal_class = "ExtUtils::ModuleMaker::Personal::Defaults"; 
-#    if (-f "$personal_dir/ExtUtils/ModuleMaker/Personal/Defaults.pm") {
-#        use ExtUtils::ModuleMaker::Personal::Defaults;
-#    }
-#    use ExtUtils::ModuleMaker::Defaults;
-#    use ExtUtils::ModuleMaker::StandardText;
-#};
 BEGIN {
     use vars qw ( $VERSION $personal_dir @ISA ); 
     $VERSION = 0.36_08;
