@@ -1,7 +1,8 @@
 package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
-use vars qw ($VERSION %personal_defaults);
+# use vars qw ($VERSION %personal_defaults);
+use vars qw ( $VERSION ); 
 $VERSION = 0.36_08;
 use base qw( 
     ExtUtils::ModuleMaker::Defaults 
@@ -46,15 +47,15 @@ sub new {
     if ($parameters{PERSONAL_DEFAULTS}) {
         croak "No personal defaults file at $parameters{PERSONAL_DEFAULTS}: $!" 
             unless -f $parameters{PERSONAL_DEFAULTS};
-        require $parameters{PERSONAL_DEFAULTS};
-        foreach my $def ( keys %personal_defaults ) {
-            if ($def eq 'NAME' or $def eq 'ABSTRACT') {
-                warn "Module $def cannot be saved in personal default file;\n"
-                . "  Must be provided anew each time: $!";
-            } else {
-                $self->{$def} = $personal_defaults{$def};
-            }
-        }
+#        require $parameters{PERSONAL_DEFAULTS};
+#        foreach my $def ( keys %personal_defaults ) {
+#            if ($def eq 'NAME' or $def eq 'ABSTRACT') {
+#                warn "Module $def cannot be saved in personal default file;\n"
+#                . "  Must be provided anew each time: $!";
+#            } else {
+#                $self->{$def} = $personal_defaults{$def};
+#            }
+#        }
     }
 
     # 4.  Process key-value pairs supplied as arguments to new() either
