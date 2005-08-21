@@ -274,7 +274,8 @@ sub _prepare_author_defaults {
     my $self = shift;
     my $defaults_ref = $self->default_values();
     my %author_defaults = (
-        NAME => {
+#        NAME => {
+        AUTHOR  => {
                 default  => ${$defaults_ref}{AUTHOR},
                 string   => 'Author      ',
                 opt      => 'u',

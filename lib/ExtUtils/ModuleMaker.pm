@@ -2,12 +2,44 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 # use vars qw ($VERSION %personal_defaults);
-use vars qw ( $VERSION ); 
-$VERSION = 0.36_08;
-use base qw( 
-    ExtUtils::ModuleMaker::Defaults 
-    ExtUtils::ModuleMaker::StandardText
-);
+#use vars qw ( $VERSION ); 
+#$VERSION = 0.36_08;
+#use base qw( 
+#    ExtUtils::ModuleMaker::Defaults 
+#    ExtUtils::ModuleMaker::StandardText
+#);
+#BEGIN {
+##    use vars qw ( $VERSION @INC $personal_dir $personal_class ); 
+#    use vars qw ( $VERSION @INC $personal_dir ); 
+#    $VERSION = 0.36_08;
+#    $personal_dir = "~/.modulemaker"; 
+#    if (-d $personal_dir) { push @INC, $personal_dir; }
+#    else { warn "$personal_dir not located: $!" }
+#    push @INC, "~/.modulemaker";
+##    $personal_class = "ExtUtils::ModuleMaker::Personal::Defaults"; 
+#    if (-f "$personal_dir/ExtUtils/ModuleMaker/Personal/Defaults.pm") {
+#        use ExtUtils::ModuleMaker::Personal::Defaults;
+#    }
+#    use ExtUtils::ModuleMaker::Defaults;
+#    use ExtUtils::ModuleMaker::StandardText;
+#};
+BEGIN {
+    use vars qw ( $VERSION $personal_dir @ISA ); 
+    $VERSION = 0.36_08;
+    $personal_dir = "$ENV{HOME}/.modulemaker"; 
+    if (-d $personal_dir) { push @INC, $personal_dir; }
+    local $^W = 0;
+    if (-f "$personal_dir/ExtUtils/ModuleMaker/Personal/Defaults.pm") {
+        require ExtUtils::ModuleMaker::Personal::Defaults;
+        push @ISA, qw( ExtUtils::ModuleMaker::Personal::Defaults );
+    }
+    require ExtUtils::ModuleMaker::Defaults;
+    require ExtUtils::ModuleMaker::StandardText;
+    push @ISA, qw(
+        ExtUtils::ModuleMaker::Defaults
+        ExtUtils::ModuleMaker::StandardText
+    );
+};
 use Carp;
 
 #################### PUBLICLY CALLABLE METHODS ####################
@@ -44,9 +76,23 @@ sub new {
     # elements heretofore defined.  But, for reasons explained in POD, do not
     # permit NAME or ABSTRACT keys.
 
-    if ($parameters{PERSONAL_DEFAULTS}) {
-        croak "No personal defaults file at $parameters{PERSONAL_DEFAULTS}: $!" 
-            unless -f $parameters{PERSONAL_DEFAULTS};
+#    if ($parameters{PERSONAL_DEFAULTS}) {
+#        croak "No personal defaults file at $parameters{PERSONAL_DEFAULTS}: $!" 
+#            unless -f $parameters{PERSONAL_DEFAULTS};
+#    if ($parameters{PERSONAL_DEFAULTS_DIR}) {
+#        croak "No directory at $parameters{PERSONAL_DEFAULTS_DIR}: $!" 
+#            unless -d $parameters{PERSONAL_DEFAULTS_DIR};
+#        my $personal_class = "ExtUtils/ModuleMaker/Personal/Defaults"; 
+#        my $personal_file = $parameters{PERSONAL_DEFAULTS_DIR} 
+#            . "/${personal_class}.pm"; 
+#        croak "No personal defaults file at $personal_file: $!" 
+#            unless -f $personal_file;
+#        push @INC, $parameters{PERSONAL_DEFAULTS_DIR};
+#        print STDERR "\@INC:  @INC\n";
+##        require $personal_class;
+#        require $personal_file;
+#        unshift @ExtUtils::ModuleMaker::ISA, $personal_class;
+#        print STDERR "\@ISA:  @ExtUtils::ModuleMaker::ISA\n";
 #        require $parameters{PERSONAL_DEFAULTS};
 #        foreach my $def ( keys %personal_defaults ) {
 #            if ($def eq 'NAME' or $def eq 'ABSTRACT') {
@@ -56,7 +102,7 @@ sub new {
 #                $self->{$def} = $personal_defaults{$def};
 #            }
 #        }
-    }
+#    }
 
     # 4.  Process key-value pairs supplied as arguments to new() either
     # from user-written program or from modulemaker utility.
@@ -352,10 +398,11 @@ omitted, then the line will not be added to the documentation.
 Company or group owning the module.  If this is omitted, then the line 
 will not be added to the documentation.
 
-=item * PERSONAL_DEFAULTS
+=item * PERSONAL_DEFAULTS_DIR
 
-Location of a file holding a Perl hash of key-value pairs which will override
-(or supplement) those pairs provided as defaults by ExtUtils::ModuleMaker.
+Location of a directory holding ExtUtils::ModuleMaker::Personal::Defaults.pm.,
+whose elements will override those the defaults provided as defaults by 
+ExtUtils::ModuleMaker.
 
 =item * EXTRA_MODULES
 
