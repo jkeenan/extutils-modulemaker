@@ -27,10 +27,10 @@ sub new {
 #(defined $defaults_ref->{PERSONAL_DEFAULTS})
 #    ? print STDERR "Location:  $defaults_ref->{PERSONAL_DEFAULTS}\n"
 #    : print STDERR "Location not defined\n"; 
-    $self->_personal_defaults_checker(
-        \%personal_defaults, 
-        $defaults_ref->{PERSONAL_DEFAULTS}
-    );
+#    $self->_personal_defaults_checker(
+#        \%personal_defaults, 
+#        $defaults_ref->{PERSONAL_DEFAULTS}
+#    );
 
     # 2.  Pull in arguments supplied to constructor.
     my @arglist = @_;
@@ -56,10 +56,6 @@ sub new {
             }
         }
     }
-#    $self->_personal_defaults_checker(
-#        \%personal_defaults, 
-#        $parameters{PERSONAL_DEFAULTS}
-#    );
 
     # 4.  Process key-value pairs supplied as arguments to new() either
     # from user-written program or from modulemaker utility.
