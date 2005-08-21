@@ -24,6 +24,13 @@ sub new {
     foreach my $def ( keys %{$defaults_ref} ) {
         $self->{$def} = $defaults_ref->{$def};
     }
+#(defined $defaults_ref->{PERSONAL_DEFAULTS})
+#    ? print STDERR "Location:  $defaults_ref->{PERSONAL_DEFAULTS}\n"
+#    : print STDERR "Location not defined\n"; 
+    $self->_personal_defaults_checker(
+        \%personal_defaults, 
+        $defaults_ref->{PERSONAL_DEFAULTS}
+    );
 
     # 2.  Pull in arguments supplied to constructor.
     my @arglist = @_;
@@ -33,16 +40,26 @@ sub new {
 
     # 3.  Determine whether a personal defaults file has been created, and, if
     # so, pull in %personal_defaults therefrom and have its elements override
-    # elements heretofore defined.
+    # elements heretofore defined.  But, for reasons explained in POD, do not
+    # permit NAME or ABSTRACT keys.
 
     if ($parameters{PERSONAL_DEFAULTS}) {
         croak "No personal defaults file at $parameters{PERSONAL_DEFAULTS}: $!" 
             unless -f $parameters{PERSONAL_DEFAULTS};
         require $parameters{PERSONAL_DEFAULTS};
         foreach my $def ( keys %personal_defaults ) {
-            $self->{$def} = $personal_defaults{$def};
+            if ($def eq 'NAME' or $def eq 'ABSTRACT') {
+                warn "Module $def cannot be saved in personal default file;\n"
+                . "  Must be provided anew each time: $!";
+            } else {
+                $self->{$def} = $personal_defaults{$def};
+            }
         }
     }
+#    $self->_personal_defaults_checker(
+#        \%personal_defaults, 
+#        $parameters{PERSONAL_DEFAULTS}
+#    );
 
     # 4.  Process key-value pairs supplied as arguments to new() either
     # from user-written program or from modulemaker utility.
