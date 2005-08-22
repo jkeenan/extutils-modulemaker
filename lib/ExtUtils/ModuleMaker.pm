@@ -4,19 +4,19 @@ local $^W = 1;
 BEGIN {
     use vars qw ( $VERSION $personal_dir @ISA ); 
     $VERSION = 0.36_08;
-    $personal_dir = "$ENV{HOME}/.modulemaker"; 
-    if (-d $personal_dir) { push @INC, $personal_dir; }
-    local $^W = 0;
-    if (-f "$personal_dir/ExtUtils/ModuleMaker/Personal/Defaults.pm") {
-        require ExtUtils::ModuleMaker::Personal::Defaults;
-        push @ISA, qw( ExtUtils::ModuleMaker::Personal::Defaults );
-    }
+#    local $^W = 0;
     require ExtUtils::ModuleMaker::Defaults;
     require ExtUtils::ModuleMaker::StandardText;
     push @ISA, qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::StandardText
     );
+    $personal_dir = "$ENV{HOME}/.modulemaker"; 
+    if (-d $personal_dir) { push @INC, $personal_dir; }
+    if (-f "$personal_dir/ExtUtils/ModuleMaker/Personal/Defaults.pm") {
+        require ExtUtils::ModuleMaker::Personal::Defaults;
+        unshift @ISA, qw( ExtUtils::ModuleMaker::Personal::Defaults );
+    }
 };
 use Carp;
 
@@ -35,13 +35,6 @@ sub new {
     foreach my $def ( keys %{$defaults_ref} ) {
         $self->{$def} = $defaults_ref->{$def};
     }
-#(defined $defaults_ref->{PERSONAL_DEFAULTS})
-#    ? print STDERR "Location:  $defaults_ref->{PERSONAL_DEFAULTS}\n"
-#    : print STDERR "Location not defined\n"; 
-#    $self->_personal_defaults_checker(
-#        \%personal_defaults, 
-#        $defaults_ref->{PERSONAL_DEFAULTS}
-#    );
 
     # 2.  Pull in arguments supplied to constructor.
     my @arglist = @_;
@@ -53,34 +46,6 @@ sub new {
     # so, pull in %personal_defaults therefrom and have its elements override
     # elements heretofore defined.  But, for reasons explained in POD, do not
     # permit NAME or ABSTRACT keys.
-
-#    if ($parameters{PERSONAL_DEFAULTS}) {
-#        croak "No personal defaults file at $parameters{PERSONAL_DEFAULTS}: $!" 
-#            unless -f $parameters{PERSONAL_DEFAULTS};
-#    if ($parameters{PERSONAL_DEFAULTS_DIR}) {
-#        croak "No directory at $parameters{PERSONAL_DEFAULTS_DIR}: $!" 
-#            unless -d $parameters{PERSONAL_DEFAULTS_DIR};
-#        my $personal_class = "ExtUtils/ModuleMaker/Personal/Defaults"; 
-#        my $personal_file = $parameters{PERSONAL_DEFAULTS_DIR} 
-#            . "/${personal_class}.pm"; 
-#        croak "No personal defaults file at $personal_file: $!" 
-#            unless -f $personal_file;
-#        push @INC, $parameters{PERSONAL_DEFAULTS_DIR};
-#        print STDERR "\@INC:  @INC\n";
-##        require $personal_class;
-#        require $personal_file;
-#        unshift @ExtUtils::ModuleMaker::ISA, $personal_class;
-#        print STDERR "\@ISA:  @ExtUtils::ModuleMaker::ISA\n";
-#        require $parameters{PERSONAL_DEFAULTS};
-#        foreach my $def ( keys %personal_defaults ) {
-#            if ($def eq 'NAME' or $def eq 'ABSTRACT') {
-#                warn "Module $def cannot be saved in personal default file;\n"
-#                . "  Must be provided anew each time: $!";
-#            } else {
-#                $self->{$def} = $personal_defaults{$def};
-#            }
-#        }
-#    }
 
     # 4.  Process key-value pairs supplied as arguments to new() either
     # from user-written program or from modulemaker utility.

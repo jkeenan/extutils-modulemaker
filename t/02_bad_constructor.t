@@ -1,15 +1,25 @@
 # t/02_bad constructor.t
-
-use Test::More tests => 34;
+BEGIN {
+    use Test::More 
+    tests => 36;
+#    qw(no_plan);
+    $realhome = $ENV{HOME};
+    local $ENV{HOME} = "./t/testlib/pseudohome";
+    ok(-d $ENV{HOME}, "pseudohome directory exists");
+    like($ENV{HOME}, qr/pseudohome/, "pseudohome identified");
+    use_ok( 'ExtUtils::ModuleMaker' );
+}
+END {
+    $ENV{HOME} = $realhome;
+}
 use strict;
-
-BEGIN { use_ok( 'ExtUtils::ModuleMaker' ); }
+local $^W = 1;
 
 use lib ("./t/testlib");
 
 SKIP: {
     eval { require 5.006_001 };
-    skip "failsafe requires File::Temp, core with Perl 5.6", 36 if $@;
+    skip "failsafe requires File::Temp, core with Perl 5.6", 33 if $@;
     use warnings;
     use _Auxiliary qw(
         failsafe

@@ -1,15 +1,46 @@
 # t/07_proxy.t
+BEGIN {
+    use Test::More 
+    tests => 54;
+#    qw(no_plan);
+    $realhome = $ENV{HOME};
+    local $ENV{HOME} = "./t/testlib/pseudohome";
+    ok(-d $ENV{HOME}, "pseudohome directory exists");
+    like($ENV{HOME}, qr/pseudohome/, "pseudohome identified");
+    use_ok( 'File::Copy' );
+    $personal_dir = "$ENV{HOME}/.modulemaker"; 
+    $personal_defaults_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+    if (-f "$personal_dir/$personal_defaults_file") {
+        move("$personal_dir/$personal_defaults_file", 
+             "$personal_dir/$personal_defaults_file.bak"); 
+        ok(-f "$personal_dir/$personal_defaults_file.bak",
+            "personal defaults stored as .bak"); 
+    } else {
+        ok(1, "no personal defaults file found");
+    }
+    use_ok( 'ExtUtils::ModuleMaker' );
+    use_ok( 'Cwd');
+}
+END {
+    $ENV{HOME} = $realhome;
+    if (-f "$personal_dir/$personal_defaults_file.bak") {
+        move("$personal_dir/$personal_defaults_file.bak", 
+             "$personal_dir/$personal_defaults_file"); 
+        ok(-f "$personal_dir/$personal_defaults_file",
+            "personal defaults restored"); 
+    } else {
+        ok(1, "no personal defaults file found");
+    }
+}
 use strict;
-use Test::More tests => 49;
+local $^W = 1;
 
 my $odir = cwd();
 
-BEGIN { use_ok('ExtUtils::ModuleMaker'); }
-BEGIN { use_ok( 'Cwd' ); }
-
 SKIP: {
     eval { require 5.006_001 and require Module::Build };
-    skip "tests require File::Temp, core with 5.6, and require Module::Build", 46 if $@;
+    skip "tests require File::Temp, core with 5.6, and require Module::Build", 
+        50 if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use lib ("./t/testlib");
