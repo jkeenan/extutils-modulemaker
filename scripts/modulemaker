@@ -5,7 +5,7 @@ eval 'exec /usr/local/bin/perl  -S $0 ${1+"$@"}'
 use strict;
 local $^W = 1;
 use Getopt::Std;
-use ExtUtils::ModuleMaker 0.34;
+use ExtUtils::ModuleMaker;
 use ExtUtils::ModuleMaker::Interactive;
 use vars qw ( $VERSION );
 

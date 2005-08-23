@@ -15,12 +15,21 @@ require Exporter;
     make_compact
     failsafe
     licensetest
+    _starttest
+    _endtest
+    _get_realhome
+    _get_pseudodir
+    _get_personal_defaults
+    _restore_personal_defaults
 ); 
 use File::Temp qw| tempdir |;
 use Cwd;
+use File::Copy;
 *ok = *Test::More::ok;
 *is = *Test::More::is;
 *like = *Test::More::like;
+*copy = *File::Copy::copy;
+*move = *File::Copy::move;
 
 sub read_file_string {
     my $file = shift;
@@ -156,6 +165,69 @@ sub licensetest {
     my $licensetext = read_file_string('LICENSE');
     like($licensetext, $pattern, "$license license has predicted content");
     ok(chdir $odir, 'changed back to original directory after testing');
+}
+
+sub _starttest {
+    my $realhome = _get_realhome();
+    local $ENV{HOME} = _get_pseudodir("./t/testlib/pseudohome"); # 2 tests
+    my ( $personal_dir, $personal_defaults_file ) = 
+        _get_personal_defaults($ENV{HOME});  # 1 test
+    return ( $realhome, $personal_dir, $personal_defaults_file );
+}
+
+sub _endtest {
+    my ($realhome, $personal_dir, $personal_defaults_file) = @_;
+    $ENV{HOME} = $realhome;
+print STDERR "\nIn END block:  $ENV{HOME}\n";
+    ( $personal_dir, $personal_defaults_file ) = 
+        _restore_personal_defaults( 
+            $personal_dir, $personal_defaults_file 
+        ); # 1 test
+}
+
+sub _get_realhome {
+    my $realhome;
+    if ($^O eq 'MSWin32') {
+        require Win32;
+        import ('CSIDL_LOCAL_APPDATA');
+        $realhome =  Win32::GetFolderPath('CSIDL_LOCAL_APPDATA');
+    } else {
+        $realhome = $ENV{HOME};
+    }
+}
+sub _get_pseudodir {
+    my $pseudodir = shift;
+    ok(-d $pseudodir, "_starttest:  pseudohome directory exists");
+    like($pseudodir, qr/pseudohome/, "_starttest:  pseudohome identified");
+    return $pseudodir;
+}
+
+sub _get_personal_defaults {
+    my $home = shift;
+    my $personal_dir = "$home/.modulemaker"; 
+    my $personal_defaults_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+    if (-f "$personal_dir/$personal_defaults_file") {
+        move("$personal_dir/$personal_defaults_file", 
+             "$personal_dir/$personal_defaults_file.bak"); 
+        ok(-f "$personal_dir/$personal_defaults_file.bak",
+            "_starttest:  personal defaults stored as .bak"); 
+    } else {
+        ok(1, "_starttest:  no personal defaults file found");
+    }
+    return ( $personal_dir, $personal_defaults_file );
+}
+
+sub _restore_personal_defaults {
+    my ( $personal_dir,  $personal_defaults_file ) = @_;
+    if (-f "$personal_dir/$personal_defaults_file.bak") {
+        move("$personal_dir/$personal_defaults_file.bak", 
+             "$personal_dir/$personal_defaults_file"); 
+        ok(-f "$personal_dir/$personal_defaults_file",
+            "_endtest:  personal defaults restored"); 
+    } else {
+        ok(1, "_endtest: no personal defaults file found");
+    }
+    return ( $personal_dir,  $personal_defaults_file );
 }
 
 1;

@@ -1,4 +1,4 @@
-# t/03_quick.t
+# t/23_quick.t
 use strict;
 local $^W = 1;
 use Test::More 
@@ -21,7 +21,7 @@ my $odir = cwd();
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with Perl 5.6", 
-        (32 - 6) if $@;
+        26 if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     my $tdir = tempdir( CLEANUP => 1);
@@ -99,4 +99,4 @@ SKIP: {
 
 ok(chdir $odir, 'changed back to original directory after testing');
 
-print STDERR $ENV{HOME}, "\n";
+print STDERR "At end of test file:  $ENV{HOME}\n";

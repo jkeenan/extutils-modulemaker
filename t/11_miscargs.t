@@ -1,44 +1,26 @@
 # t/11_miscargs.t
 # tests of miscellaneous arguments passed to constructor
-BEGIN {
-    use Test::More 
-    tests => 146;
-#    qw(no_plan);
-    $realhome = $ENV{HOME};
-    local $ENV{HOME} = "./t/testlib/pseudohome";
-    ok(-d $ENV{HOME}, "pseudohome directory exists");
-    like($ENV{HOME}, qr/pseudohome/, "pseudohome identified");
-    use_ok( 'File::Copy' );
-    $personal_dir = "$ENV{HOME}/.modulemaker"; 
-    $personal_defaults_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
-    if (-f "$personal_dir/$personal_defaults_file") {
-        move("$personal_dir/$personal_defaults_file", 
-             "$personal_dir/$personal_defaults_file.bak"); 
-        ok(-f "$personal_dir/$personal_defaults_file.bak",
-            "personal defaults stored as .bak"); 
-    } else {
-        ok(1, "no personal defaults file found");
-    }
-    use_ok( 'ExtUtils::ModuleMaker' );
-    use_ok( 'Cwd');
-}
-END {
-    $ENV{HOME} = $realhome;
-    if (-f "$personal_dir/$personal_defaults_file.bak") {
-        move("$personal_dir/$personal_defaults_file.bak", 
-             "$personal_dir/$personal_defaults_file"); 
-        ok(-f "$personal_dir/$personal_defaults_file",
-            "personal defaults restored"); 
-    } else {
-        ok(1, "no personal defaults file found");
-    }
-}
 use strict;
 local $^W = 1;
+use Test::More 
+tests =>  145;
+# qw(no_plan);
+use_ok( 'ExtUtils::ModuleMaker' );
+use_ok( 'Cwd');
+use lib ("./t/testlib");
+use _Auxiliary qw(
+    _starttest
+    _endtest
+);
+
+my ($realhome, $personal_dir, $personal_defaults_file) = _starttest();
+
+END { _endtest($realhome, $personal_dir, $personal_defaults_file); }
 
 SKIP: {
     eval { require 5.006_001 };
-    skip "tests require File::Temp, core with 5.6", 142 if $@;
+    skip "tests require File::Temp, core with 5.6", 
+        (145 - 6) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use lib ("./t/testlib");

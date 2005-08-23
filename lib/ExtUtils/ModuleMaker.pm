@@ -2,7 +2,7 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 BEGIN {
-    use vars qw ( $VERSION $personal_dir @ISA ); 
+    use vars qw ( $VERSION $realhome $personal_dir @ISA ); 
     $VERSION = 0.36_08;
 #    local $^W = 0;
     require ExtUtils::ModuleMaker::Defaults;
@@ -11,6 +11,14 @@ BEGIN {
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::StandardText
     );
+#    if ($^O eq 'MSWin32') {
+#        require Win32;
+#        import ('CSIDL_LOCAL_APPDATA');
+#        $realhome =  Win32::GetFolderPath('CSIDL_LOCAL_APPDATA');
+#    } else {
+#        $realhome = $ENV{HOME};
+#    }
+#    $personal_dir = "$realhome/.modulemaker"; 
     $personal_dir = "$ENV{HOME}/.modulemaker"; 
     if (-d $personal_dir) { push @INC, $personal_dir; }
     if (-f "$personal_dir/ExtUtils/ModuleMaker/Personal/Defaults.pm") {
@@ -20,6 +28,7 @@ BEGIN {
 };
 use Carp;
 
+print STDERR "\nAs EU::MM is 'use'd:  $ENV{HOME}\n";
 #################### PUBLICLY CALLABLE METHODS ####################
 
 sub new {

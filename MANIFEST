@@ -1,3 +1,6 @@
+sim
+sim.pm
+simint.pm
 Changes
 LICENSE
 Makefile.PL
@@ -28,6 +31,7 @@ t/13_license.t
 #t/17_personal_defaults_bad.t
 #t/testlib/01.sample.modulemakerrc
 #t/testlib/02.sample.modulemakerrc
+t/20.t
 t/testlib/pseudohome/.modulemaker/ExtUtils/ModuleMaker/Personal/Defaults.pm
 t/testlib/_Auxiliary.pm
 t/testlib/IO/Capture.pm
