@@ -30,7 +30,7 @@ $VERSION = 0.36_08;
 ##### START LIVE CODE #####
 
 my %opts;
-getopts( "bhqCIPVcn:a:v:l:u:p:o:w:e:d:", \%opts );
+getopts( "bhqCIPVcn:a:v:l:u:p:o:w:e:t:", \%opts );
 die Usage() if ( $opts{h} );
 
 my $mod = ExtUtils::ModuleMaker::Interactive->new(
@@ -50,7 +50,8 @@ my $mod = ExtUtils::ModuleMaker::Interactive->new(
     ( ( $opts{o} ) ? ( ORGANIZATION          => $opts{o} ) : () ),
     ( ( $opts{w} ) ? ( WEBSITE               => $opts{w} ) : () ),
     ( ( $opts{e} ) ? ( EMAIL                 => $opts{e} ) : () ),
-    ( ( $opts{d} ) ? ( PERSONAL_DEFAULTS_DIR => $opts{d} ) : () ),
+#    ( ( $opts{d} ) ? ( PERSONAL_DEFAULTS_DIR => $opts{d} ) : () ),
+    ( ( $opts{t} ) ? ( TESTING_DEFAULTS_FILE => $opts{t} ) : () ),
     USAGE_MESSAGE => Usage(),
 );
 
