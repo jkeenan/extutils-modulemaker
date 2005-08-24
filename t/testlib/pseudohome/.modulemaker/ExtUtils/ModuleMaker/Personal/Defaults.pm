@@ -1,5 +1,5 @@
-package ExtUtils::ModuleMaker::Personal::Defaults;
-# as of 08/21/2005
+package ExtUtils::ModuleMaker::Testing::Defaults;
+# as of 08/24/2005
 use strict;
 local $^W = 1;
 use Carp;
@@ -12,6 +12,7 @@ Please fix the problems listed above and try again.
 ENDOFUSAGE
 
 my %default_values = (
+        NAME            => 'EU::MM::Testing::Defaults',
         LICENSE         => 'perl',
         VERSION         => 0.01,
         ABSTRACT        => 'Module abstract (<= 44 characters) goes here',

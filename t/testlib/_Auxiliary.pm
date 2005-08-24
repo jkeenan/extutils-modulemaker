@@ -1,6 +1,6 @@
 package _Auxiliary;
 # Contains test subroutines for distribution with ExtUtils::ModuleMaker
-# As of:  July 17, 2005
+# As of:  August 24, 2005
 use strict;
 use warnings;
 use vars qw| @ISA @EXPORT_OK |; 
@@ -178,7 +178,6 @@ sub _starttest {
 sub _endtest {
     my ($realhome, $personal_dir, $personal_defaults_file) = @_;
     $ENV{HOME} = $realhome;
-print STDERR "\nIn END block:  $ENV{HOME}\n";
     ( $personal_dir, $personal_defaults_file ) = 
         _restore_personal_defaults( 
             $personal_dir, $personal_defaults_file 
@@ -189,8 +188,8 @@ sub _get_realhome {
     my $realhome;
     if ($^O eq 'MSWin32') {
         require Win32;
-        import ('CSIDL_LOCAL_APPDATA');
-        $realhome =  Win32::GetFolderPath('CSIDL_LOCAL_APPDATA');
+        Win32->import( qw(CSIDL_LOCAL_APPDATA) );  # 0x001c 
+        $realhome =  Win32::GetFolderPath( CSIDL_LOCAL_APPDATA() );
     } else {
         $realhome = $ENV{HOME};
     }

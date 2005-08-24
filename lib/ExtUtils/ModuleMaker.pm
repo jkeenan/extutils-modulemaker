@@ -2,33 +2,17 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 BEGIN {
-    use vars qw ( $VERSION $realhome $personal_dir @ISA ); 
+    use vars qw ( $VERSION @ISA ); 
     $VERSION = 0.36_08;
-#    local $^W = 0;
     require ExtUtils::ModuleMaker::Defaults;
     require ExtUtils::ModuleMaker::StandardText;
     push @ISA, qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::StandardText
     );
-#    if ($^O eq 'MSWin32') {
-#        require Win32;
-#        import ('CSIDL_LOCAL_APPDATA');
-#        $realhome =  Win32::GetFolderPath('CSIDL_LOCAL_APPDATA');
-#    } else {
-#        $realhome = $ENV{HOME};
-#    }
-#    $personal_dir = "$realhome/.modulemaker"; 
-    $personal_dir = "$ENV{HOME}/.modulemaker"; 
-    if (-d $personal_dir) { push @INC, $personal_dir; }
-    if (-f "$personal_dir/ExtUtils/ModuleMaker/Personal/Defaults.pm") {
-        require ExtUtils::ModuleMaker::Personal::Defaults;
-        unshift @ISA, qw( ExtUtils::ModuleMaker::Personal::Defaults );
-    }
 };
 use Carp;
 
-print STDERR "\nAs EU::MM is 'use'd:  $ENV{HOME}\n";
 #################### PUBLICLY CALLABLE METHODS ####################
 
 sub new {
@@ -38,29 +22,74 @@ sub new {
                            : bless( {}, $class );
 
     # multi-stage initialization of EU::MM object
-    # 1.  Inherit usual defaults from EU::MM::Defaults.pm and populate object
-    # therewith.
-    my $defaults_ref = $self->default_values();
+    
+    # 1. Determine if user has stored an
+    # ExtUtils::ModuleMaker::Personal::Defaults file and, if so, unshift that
+    # on to @ISA so that its default_values() subroutine is run rather than that
+    # supplied by EU::MM itself.
+    my ($realhome, $personal_dir); 
+    if ($^O eq 'MSWin32') {
+        require Win32;
+        Win32->import( qw(CSIDL_LOCAL_APPDATA) );  # 0x001c 
+        $realhome =  Win32::GetFolderPath( CSIDL_LOCAL_APPDATA() );
+        if (-d "$realhome/.modulemaker") { 
+            $personal_dir = "$realhome/.modulemaker"; 
+            push @INC, $personal_dir;
+        } else {
+            $realhome =~ s|(.*?)\\Local Settings(.*)|$1$2|;
+            if (-d "$realhome/.modulemaker") { 
+                $personal_dir = "$realhome/.modulemaker"; 
+                push @INC, $personal_dir;
+            }
+        }
+    } else { # Unix-like systems
+        $realhome = $ENV{HOME};
+        $personal_dir = "$realhome/.modulemaker"; 
+        push @INC, $personal_dir;
+    }
+    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+    if (-f "$personal_dir/$pers_file") {
+        require ExtUtils::ModuleMaker::Personal::Defaults;
+        unshift @ISA, qw( ExtUtils::ModuleMaker::Personal::Defaults );
+    } # no 'else' clause:  simply use EU::MM::Defaults
+
+    # 2.  Populate object with default values.
+    my $defaults_ref;
+    $defaults_ref = $self->default_values();
     foreach my $def ( keys %{$defaults_ref} ) {
         $self->{$def} = $defaults_ref->{$def};
     }
 
-    # 2.  Pull in arguments supplied to constructor.
+    # 3.  Pull in arguments supplied to constructor.
     my @arglist = @_;
     croak "Must be hash or balanced list of key-value pairs: $!"
         if (@arglist % 2);
     my %parameters = @arglist;
 
-    # 3.  Determine whether a personal defaults file has been created, and, if
-    # so, pull in %personal_defaults therefrom and have its elements override
-    # elements heretofore defined.  But, for reasons explained in POD, do not
-    # permit NAME or ABSTRACT keys.
-
     # 4.  Process key-value pairs supplied as arguments to new() either
     # from user-written program or from modulemaker utility.
     # These override default values (or may provide additional elements).
-    foreach my $param ( keys %parameters ) {
-        $self->{$param} = $parameters{$param};
+    if ($parameters{TESTING_DEFAULTS_FILE}) {
+        my $fullpath = $parameters{TESTING_DEFAULTS_FILE};
+        croak "Testing defaults file $fullpath not found: $!"
+            unless (-f $fullpath);
+        if ($fullpath =~ m|^(.*)\/Defaults\.pm$|) {
+            my $defaults_dir = $1;
+            push @INC, $defaults_dir;
+            require Defaults;
+            unshift @ISA, qw( Defaults );
+        } else {
+            croak "Could not load testing defaults file $fullpath: $!";
+        }
+        $defaults_ref = $self->default_values();
+        foreach my $def ( keys %{$defaults_ref} ) {
+            $self->{$def} = $defaults_ref->{$def};
+        }
+    } else { 
+        foreach my $param ( keys %parameters ) {
+            $self->{$param} = $parameters{$param}
+                unless $parameters{$param} eq 'TESTING_DEFAULTS_FILE';
+        }
     }
 
     # 5.  Initialize keys set from information supplied above, system
@@ -573,3 +602,5 @@ LICENSE file included with this module.
 F<modulemaker>, F<perlnewmod>, F<h2xs>, F<ExtUtils::MakeMaker>.
 
 =cut
+
+
