@@ -12,6 +12,7 @@ BEGIN {
     );
 };
 use Carp;
+# use Data::Dumper;
 
 #################### PUBLICLY CALLABLE METHODS ####################
 
@@ -70,21 +71,25 @@ sub new {
     # from user-written program or from modulemaker utility.
     # These override default values (or may provide additional elements).
     if ($parameters{TESTING_DEFAULTS_FILE}) {
+# print STDERR "Value supplied for testing defaults file\n";        
         my $fullpath = $parameters{TESTING_DEFAULTS_FILE};
         croak "Testing defaults file $fullpath not found: $!"
             unless (-f $fullpath);
-        if ($fullpath =~ m|^(.*)\/Defaults\.pm$|) {
+# print STDERR "Testing defaults file found\n";        
+        if ($fullpath =~ m|^(.*)\/ExtUtils\/ModuleMaker\/Testing\/Defaults\.pm$|) {
             my $defaults_dir = $1;
             push @INC, $defaults_dir;
-            require Defaults;
-            unshift @ISA, qw( Defaults );
+            require ExtUtils::ModuleMaker::Testing::Defaults;
+            unshift @ISA, qw( ExtUtils::ModuleMaker::Testing::Defaults );
         } else {
             croak "Could not load testing defaults file $fullpath: $!";
         }
+# print STDERR "@ISA\n";        
         $defaults_ref = $self->default_values();
         foreach my $def ( keys %{$defaults_ref} ) {
             $self->{$def} = $defaults_ref->{$def};
         }
+# print STDERR Dumper \%{$self}, "\n";
     } else { 
         foreach my $param ( keys %parameters ) {
             $self->{$param} = $parameters{$param}

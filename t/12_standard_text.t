@@ -4,24 +4,15 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests =>   39;
+tests =>   35;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
-use lib ("./t/testlib");
-use _Auxiliary qw(
-    _starttest
-    _endtest
-);
-
-my ($realhome, $personal_dir, $personal_defaults_file) = _starttest();
-
-END { _endtest($realhome, $personal_dir, $personal_defaults_file); }
 
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (39 - 6) if $@;
+        (35 - 2) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use lib ("./t/testlib");

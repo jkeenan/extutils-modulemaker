@@ -32,7 +32,7 @@ t/13_license.t
 #t/testlib/01.sample.modulemakerrc
 #t/testlib/02.sample.modulemakerrc
 t/20.t
-t/testlib/pseudohome/.modulemaker/ExtUtils/ModuleMaker/Personal/Defaults.pm
+t/testlib/ExtUtils/ModuleMaker/Testing/Defaults.pm
 t/testlib/_Auxiliary.pm
 t/testlib/IO/Capture.pm
 t/testlib/IO/Capture/ErrorMessages.pm
