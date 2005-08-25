@@ -2,7 +2,6 @@ package ExtUtils::ModuleMaker::Testing::Defaults;
 # as of 08/24/2005
 use strict;
 local $^W = 1;
-use Carp;
 
 my $usage = <<ENDOFUSAGE;
 
@@ -38,3 +37,4 @@ sub default_values {
 }
 
 1;
+
