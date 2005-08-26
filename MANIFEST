@@ -7,11 +7,11 @@ Makefile.PL
 README
 MANIFEST
 MANIFEST.SKIP
-# .cvsignore
 lib/ExtUtils/ModuleMaker.pm
 lib/ExtUtils/ModuleMaker/Defaults.pm
 lib/ExtUtils/ModuleMaker/Interactive.pm
 lib/ExtUtils/ModuleMaker/StandardText.pm
+lib/ExtUtils/ModuleMaker/Utility.pm
 lib/ExtUtils/ModuleMaker/Licenses/Standard.pm
 lib/ExtUtils/ModuleMaker/Licenses/Local.pm
 scripts/modulemaker
@@ -26,11 +26,6 @@ t/09_mmkr.t
 t/11_miscargs.t
 t/12_standard_text.t
 t/13_license.t
-#t/15_personal_defaults.t
-#t/16_personal_defaults_mmkr.t
-#t/17_personal_defaults_bad.t
-#t/testlib/01.sample.modulemakerrc
-#t/testlib/02.sample.modulemakerrc
 t/20.t
 t/testlib/Defaults/Identify.pm
 t/testlib/ExtUtils/ModuleMaker/Testing/Defaults.pm

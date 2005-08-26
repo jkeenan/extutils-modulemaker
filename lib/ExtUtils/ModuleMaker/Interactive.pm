@@ -1,10 +1,10 @@
 package ExtUtils::ModuleMaker::Interactive;
-# as of 08/22/2005
+# as of 08/25/2005
 use strict;
 local $^W = 1;
 BEGIN {
     use vars qw ( $VERSION @ISA ); 
-    $VERSION = 0.36_08;
+    $VERSION = 0.36_09;
     require ExtUtils::ModuleMaker;
     push @ISA, qw( ExtUtils::ModuleMaker );
 }
@@ -603,14 +603,3 @@ F<modulemaker>, F<ExtUtils::ModuleMaker>.
 
 =cut
 
-__END__
-
-#    use vars qw ( $VERSION $personal_dir @ISA ); 
-#    require ExtUtils::ModuleMaker;
-#    push @ISA, qw(ExtUtils::ModuleMaker);
-#    $personal_dir = "$ENV{HOME}/.modulemaker"; 
-#    if (-d $personal_dir) { push @INC, $personal_dir; }
-#    if (-f "$personal_dir/ExtUtils/ModuleMaker/Personal/Defaults.pm") {
-#        require ExtUtils::ModuleMaker::Personal::Defaults;
-#        unshift @ISA, qw( ExtUtils::ModuleMaker::Personal::Defaults );
-#    }

@@ -3,7 +3,7 @@ use strict;
 local $^W = 1;
 BEGIN {
     use vars qw ( $VERSION @ISA ); 
-    $VERSION = 0.36_08;
+    $VERSION = 0.36_09;
     require ExtUtils::ModuleMaker::Defaults;
     require ExtUtils::ModuleMaker::StandardText;
     push @ISA, qw(
@@ -205,10 +205,12 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
     $license = $mod->get_license();
 
+    $mod->make_selections_defaults();
+
 =head1 VERSION
 
-This document references version 0.36_08 of ExtUtils::ModuleMaker, released
-to CPAN on August 20, 2005.
+This document references version 0.36_09 of ExtUtils::ModuleMaker, released
+to CPAN on August 25, 2005.
 
 =head1 DESCRIPTION
 
@@ -484,16 +486,13 @@ F<ExtUtils::ModuleMaker::Licenses::Local>.  These functions were never
 publicly documented or tested.  C<get_license()> is intended as a
 replacement for those two functions.)
 
-=head3 Private Methods
+=head4 C<make_selections_defaults()>
 
-There are a variety of other ExtUtil::ModuleMaker methods which are not
-currently in the public interface.  They are available for you to hack
-on, but, as they are primarily used within C<new()> and
-C<complete_build()>, their implementation and interface may change in
-the future.  See the code for inline documentation.
+Save the values you entered as arguments passed to C<new()> in a personal
+defaults file so that they supersede the defaults provided by
+ExtUtils::ModuleMaker itself.
 
-=head2 Advanced Usage:  Pre-defined Personal Defaults
-
+This is an advanced usage of ExtUtils::ModuleMaker.
 If you have used ExtUtils::ModuleMaker more than once, you have probably typed
 in a choice for C<AUTHOR>, C<EMAIL>, etc., more than once.  To save
 unnecessary typing and reduce typing errors, ExtUtils::ModuleMaker now offers
@@ -501,24 +500,67 @@ you the possibility of establishing B<personal default values> which override
 the default values supplied with the distribution and found in
 F<lib/ExtUtils/ModuleMaker/Defaults.pm>.
 
-One of the default values supplied with
-F<lib/ExtUtils/ModuleMaker/Defaults.pm>, however, can I<not> be overriden and
-must be supplied either as an argument to C<new()> or as an option supplied to
-F<modulemaker>:  that is the argument for C<ABSTRACT>.  The rationale for 
-this restriction is that every Perl module you create is presumably unique.  
-It must have a unique name and a summary description which describes it alone.
-ExtUtils::ModuleMaker has no default value for a module's name; it must
-I<always> be supplied by the user, either as an argument to C<new()>, an option
-supplied to F<modulemaker>, or as a response to a F<modulemaker> interactive
-mode prompt.  So, even if you use a personal defaults file, you must still
-supply a name for the module yourself.  And since each module you create has a
-unique purpose, you may not store a default value for the module's abstract.
+Suppose that you have called C<ExtUtils::ModuleMaker::new()> as follows:
 
-In a future version, you will be offered the option of saving the selections
-you enter at F<modulemaker>'s prompts as your personal default selections.
-For now, to use personal defaults, you have to supply the location of the file
-holding the personal defaults either as an argument to C<new()> or as the value
-to an option supplied to F<modulemaker>.
+    $mod = ExtUtils::ModuleMaker->new(
+        NAME => 'Sample::Module',
+        ABSTRACT => 'Now is the time to join the party',
+        AUTHOR          => 'Hilton Stallone',
+        CPANID          => 'RAMBO',
+        ORGANIZATION    => 'Parliamentary Pictures',
+        WEBSITE         => 'http://parliamentarypictures.com',
+        EMAIL           => 'hiltons@parliamentarypictures.com',
+    );
+
+Assuming that C<$mod> has not gone out of scope or been destroyed, the values
+you supplied as arguments to C<new()> -- B<with two important exceptions> 
+-- will be saved in a
+F<Personal/Defaults.pm> file stored in your home directory.  The next time you
+invoke ExtUtils::ModuleMaker, the new values will appear in the appropriate
+locations in the files created by C<complete_build()>.
+
+=head5 Two Important Exceptions
+
+=over 4
+
+=item * C<NAME>
+
+You cannot enter a default value for C<NAME>:  the name of the module
+you are creating.  ExtUtil::ModuleMaker's own defaults file omits a value for
+C<NAME> to prevent you from overwriting an already existing module.  (More
+precisely, the default value is an empty string.  ExtUtil::ModuleMaker will
+throw an error if you attempt to create a module whose name is empty.)  This
+precaution applies to your personal defaults file as well.
+
+=item * C<ABSTRACT>
+
+Since every module you create presumably has its own unique purpose, every
+module must have a unique C<ABSTRACT> to summarize that purpose.
+ExtUtil::ModuleMaker supplies the following string as the default value for
+the C<ABSTRACT> key:
+
+    Module abstract (<= 44 characters) goes here
+
+... a string which, not coincidentally, happens to be exactly 44 characters
+long -- so you can just overstrike it.  This will be the default value for
+C<ABSTRACT> in any F<Personal/Defaults.pm> file you create as well.
+
+=back
+
+=head3 Private Methods
+
+There are a variety of other ExtUtil::ModuleMaker methods which are not
+currently in the public interface.  As they are primarily used within 
+C<new()> and
+C<complete_build()>, their implementation and interface may change in
+the future.  See the code for inline documentation.
+
+Most of these private methods supply the 'boilerplate' text found in the files
+created by C<complete_build()>.  They are found in
+F<lib/ExtUtils/ModuleMaker/StandardText.pm> and are available for you 
+to hack on.  In an upcoming version you will be able to store your own
+selections for standard text just as you now can do for your personal
+defaults. 
 
 =head1 CAVEATS
 
