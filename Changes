@@ -1,5 +1,9 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.3608 August 25, 2005
+    - Test suite can now detect presence of Personal::Defaults file in
+      appropriate place on system and work around it during testing.
+
 0.3607 August 19, 2005
     - Much work, but particularly important was the elimination of %AUTHOR in
       favor of 5 top-level keys.
