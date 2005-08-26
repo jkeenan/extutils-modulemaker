@@ -21,10 +21,13 @@ require Exporter;
     _get_pseudodir
     _get_personal_defaults
     _restore_personal_defaults
+    _process_personal_defaults_file 
+    _reprocess_personal_defaults_file 
 ); 
 use File::Temp qw| tempdir |;
 use Cwd;
 use File::Copy;
+use Carp;
 *ok = *Test::More::ok;
 *is = *Test::More::is;
 *like = *Test::More::like;
@@ -227,6 +230,51 @@ sub _restore_personal_defaults {
         ok(1, "_endtest: no personal defaults file found");
     }
     return ( $personal_dir,  $personal_defaults_file );
+}
+
+sub _process_personal_defaults_file {
+    my ($personal_dir, $pers_file) = @_;
+    my $pers_file_hidden = "$pers_file" . '.hidden';
+    my %pers;
+    $pers{full} = "$personal_dir/$pers_file";
+    $pers{hidden} = "$personal_dir/$pers_file_hidden";
+    if (-f $pers{full}) {
+        $pers{atime}   = (stat($pers{full}))[8];
+        $pers{modtime} = (stat($pers{full}))[9];
+        rename $pers{full},
+               $pers{hidden}
+            or croak "Unable to rename $pers{full}: $!";
+        ok(! -f $pers{full}, 
+            "personal defaults file temporarily suppressed");
+        ok(-f $pers{hidden}, 
+            "personal defaults file now hidden");
+    } else {
+        ok(! -f $pers{full}, 
+            "personal defaults file not found");
+        ok(1, "personal defaults file not found");
+    }
+    return { %pers };
+}
+
+sub _reprocess_personal_defaults_file {
+    my $pers_def_ref = shift;;
+    if(-f $pers_def_ref->{hidden} ) {
+        rename $pers_def_ref->{hidden},
+               $pers_def_ref->{full},
+            or croak "Unable to rename $pers_def_ref->{hidden}: $!";
+        ok(-f $pers_def_ref->{full}, 
+            "personal defaults file re-established");
+        ok(! -f $pers_def_ref->{hidden}, 
+            "hidden personal defaults now gone");
+        ok( (utime $pers_def_ref->{atime}, 
+                   $pers_def_ref->{modtime}, 
+                  ($pers_def_ref->{full})
+            ), "atime and modtime of personal defaults file restored");
+    } else {
+        ok(1, "test not relevant");
+        ok(1, "test not relevant");
+        ok(1, "test not relevant");
+    }
 }
 
 1;

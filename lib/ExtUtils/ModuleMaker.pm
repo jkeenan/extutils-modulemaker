@@ -11,6 +11,7 @@ BEGIN {
         ExtUtils::ModuleMaker::StandardText
     );
 };
+use ExtUtils::ModuleMaker::Utility qw( _get_personal_defaults_directory );
 use Carp;
 # use Data::Dumper;
 
@@ -28,26 +29,8 @@ sub new {
     # ExtUtils::ModuleMaker::Personal::Defaults file and, if so, unshift that
     # on to @ISA so that its default_values() subroutine is run rather than that
     # supplied by EU::MM itself.
-    my ($realhome, $personal_dir); 
-    if ($^O eq 'MSWin32') {
-        require Win32;
-        Win32->import( qw(CSIDL_LOCAL_APPDATA) );  # 0x001c 
-        $realhome =  Win32::GetFolderPath( CSIDL_LOCAL_APPDATA() );
-        if (-d "$realhome/.modulemaker") { 
-            $personal_dir = "$realhome/.modulemaker"; 
-            push @INC, $personal_dir;
-        } else {
-            $realhome =~ s|(.*?)\\Local Settings(.*)|$1$2|;
-            if (-d "$realhome/.modulemaker") { 
-                $personal_dir = "$realhome/.modulemaker"; 
-                push @INC, $personal_dir;
-            }
-        }
-    } else { # Unix-like systems
-        $realhome = $ENV{HOME};
-        $personal_dir = "$realhome/.modulemaker"; 
-        push @INC, $personal_dir;
-    }
+    my $personal_dir = _get_personal_defaults_directory(); 
+    push @INC, $personal_dir;
     my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
     if (-f "$personal_dir/$pers_file") {
         require ExtUtils::ModuleMaker::Personal::Defaults;
