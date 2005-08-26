@@ -11,7 +11,7 @@ use_ok( 'ExtUtils::ModuleMaker::Utility', qw(
     )
 );
 use lib ("./t/testlib");
-use_ok( '_Auxiliary', qw(
+use_ok( 'Auxiliary', qw(
         _process_personal_defaults_file 
         _reprocess_personal_defaults_file 
     )
@@ -24,7 +24,7 @@ SKIP: {
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use lib ("./t/testlib");
-    use _Auxiliary qw(
+    use Auxiliary qw(
         check_MakefilePL 
         check_pm_file
         make_compact

@@ -7,7 +7,7 @@ tests => 35;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
 use lib ("./t/testlib");
-use _Auxiliary qw(
+use Auxiliary qw(
     failsafe
 );
 

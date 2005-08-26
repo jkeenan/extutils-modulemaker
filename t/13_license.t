@@ -16,7 +16,7 @@ SKIP: {
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use lib ("./t/testlib");
-    use _Auxiliary qw(
+    use Auxiliary qw(
         licensetest
         read_file_string
     );

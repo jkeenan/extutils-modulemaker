@@ -1,4 +1,4 @@
-package _Auxiliary;
+package Auxiliary;
 # Contains test subroutines for distribution with ExtUtils::ModuleMaker
 # As of:  August 24, 2005
 use strict;
