@@ -2,8 +2,8 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests => 130;
-# qw(no_plan);
+# tests => 130;
+qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
 use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
@@ -77,10 +77,10 @@ SKIP: {
         my $pers_def_ref = 
             _process_personal_defaults_file( $personal_dir, $pers_file );
 
-        ok(! system(qq{$^X -I"$cwd/blib/lib" "$cwd/blib/script/modulemaker" -In My::Testing::Module }), 
+        ok(! system(qq{$^X -I"$cwd/blib/lib" "$cwd/blib/script/modulemaker" -In My::Research::Module }), 
             "able to call modulemaker utility");
 
-        $topdir = "My/Testing/Module"; 
+        $topdir = "My/Research/Module"; 
         ok(-d $topdir, "by default, non-compact top directory created");
         ok(-f "$topdir/$_", "$_ file created")
             for qw| Changes LICENSE MANIFEST Makefile.PL README Todo |;
@@ -88,8 +88,8 @@ SKIP: {
             for qw| lib t |;
         
         @pred = (
-            "My::Testing::Module",
-            "lib\/My\/Testing\/Module\.pm",
+            "My::Research::Module",
+            "lib\/My\/Research\/Module\.pm",
             "A\.\\sU\.\\sThor",
             "a\.u\.thor\@a\.galaxy\.far\.far\.away",
             "Module\\sabstract\\s\\(<=\\s44\\scharacters\\)\\sgoes\\shere",

@@ -30,7 +30,7 @@ $VERSION = 0.36_09;
 ##### START LIVE CODE #####
 
 my %opts;
-getopts( "bhqCIPVcn:a:v:l:u:p:o:w:e:t:", \%opts );
+getopts( "bhqsCIPVcn:a:v:l:u:p:o:w:e:t:", \%opts );
 die Usage() if ( $opts{h} );
 
 my $mod = ExtUtils::ModuleMaker::Interactive->new(
@@ -40,6 +40,7 @@ my $mod = ExtUtils::ModuleMaker::Interactive->new(
     NEED_POD         => ( ( $opts{P} ) ? 0 : 1 ),
     NEED_NEW_METHOD  => ( ( $opts{q} ) ? 0 : 1 ),
     INTERACTIVE      => ( ( $opts{I} ) ? 0 : 1 ),
+    SAVE_AS_DEFAULTS => ( ( $opts{s} ) ? 1 : 0 ),
     ( ( $opts{n} ) ? ( NAME                  => $opts{n} ) : () ),
     ( ( $opts{a} ) ? ( ABSTRACT              => $opts{a} ) : () ),
     ( ( $opts{b} ) ? ( BUILD_SYSTEM          => $opts{b} ) : () ),
@@ -58,6 +59,11 @@ my $mod = ExtUtils::ModuleMaker::Interactive->new(
 $mod->run_interactive() if $mod->{INTERACTIVE};
 
 $mod->complete_build();
+
+if ($mod->SAVE_AS_DEFAULTS) {
+    $mod->make_selections_defaults();
+    print "Values selected have been saved as new defaults.\n";
+}
 
 $mod->closing_message();
 
