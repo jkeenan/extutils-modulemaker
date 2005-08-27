@@ -571,7 +571,7 @@ sub set_dates {
     $self->{COPYRIGHT_YEAR} ||= $self->{year};
 }
 
-sub set_author_data {
+sub set_author_composite {
     my $self = shift;
 
     $self->{COMPOSITE} = (

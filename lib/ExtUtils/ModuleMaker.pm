@@ -80,7 +80,7 @@ sub new {
 
     # 5.  Initialize keys set from information supplied above, system
     # info or EU::MM itself.
-    $self->set_author_data();
+    $self->set_author_composite();
     $self->set_dates();
     $self->{eumm_version} = $VERSION;
     $self->{MANIFEST} = ['MANIFEST'];

@@ -277,7 +277,6 @@ sub _prepare_author_defaults {
     my $self = shift;
     my $defaults_ref = $self->default_values();
     my %author_defaults = (
-#        NAME => {
         AUTHOR  => {
                 default  => ${$defaults_ref}{AUTHOR},
                 string   => 'Author      ',
@@ -342,7 +341,7 @@ sub Main_Menu {
             $MOD->{ABSTRACT} = $value;
         }
         elsif ( $response eq 'G' ) {
-            $MOD->set_author_data();
+            $MOD->set_author_composite();
         # verify_values() returns an empty list if all values are
         # good; so if its return value is true, we need to repeat
         # the prompts; otherwise, we can proceed to complete_build()
