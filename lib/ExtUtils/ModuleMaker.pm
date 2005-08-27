@@ -3,7 +3,7 @@ use strict;
 local $^W = 1;
 BEGIN {
     use vars qw ( $VERSION @ISA ); 
-    $VERSION = 0.36_09;
+    $VERSION = 0.36_10;
     require ExtUtils::ModuleMaker::Defaults;
     require ExtUtils::ModuleMaker::StandardText;
     push @ISA, qw(
@@ -263,8 +263,8 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
 =head1 VERSION
 
-This document references version 0.36_09 of ExtUtils::ModuleMaker, released
-to CPAN on August 25, 2005.
+This document references version 0.36_10 of ExtUtils::ModuleMaker, released
+to CPAN on August 27, 2005.
 
 =head1 DESCRIPTION
 

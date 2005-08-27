@@ -1,5 +1,9 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.3609 August 27, 2005
+    - Created make_selections_defaults() method.  It works so far in scripts
+      and in modulemaker non-interactive mode.
+
 0.3608 August 25, 2005
     - Test suite can now detect presence of Personal::Defaults file in
       appropriate place on system and work around it during testing.

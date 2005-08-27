@@ -4,7 +4,7 @@ use strict;
 local $^W = 1;
 BEGIN {
     use vars qw ( $VERSION @ISA ); 
-    $VERSION = 0.36_09;
+    $VERSION = 0.36_10;
     require ExtUtils::ModuleMaker;
     push @ISA, qw( ExtUtils::ModuleMaker );
 }
