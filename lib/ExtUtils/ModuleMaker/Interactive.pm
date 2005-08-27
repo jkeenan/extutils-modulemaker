@@ -351,7 +351,7 @@ sub Main_Menu {
         # Ideally, once I figure out how to test the interactive mode
         # properly, I'll test various bad values for other keys to see
         # if verify_values picks them up.
-        if (! $MOD->{NAME}) {
+            if (! $MOD->{NAME}) {
                 print "ERROR:  Must enter module name!\n";
                 next LOOP;
             } elsif (! $MOD->verify_values()) {

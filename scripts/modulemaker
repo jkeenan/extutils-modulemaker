@@ -7,6 +7,7 @@ local $^W = 1;
 use Getopt::Std;
 use ExtUtils::ModuleMaker;
 use ExtUtils::ModuleMaker::Interactive;
+use Carp;
 use vars qw ( $VERSION );
 
 $VERSION = 0.36_09;
@@ -31,9 +32,9 @@ $VERSION = 0.36_09;
 
 my %opts;
 getopts( "bhqsCIPVcn:a:v:l:u:p:o:w:e:t:", \%opts );
-die Usage() if ( $opts{h} );
+croak Usage() if ( $opts{h} );
 
-my $mod = ExtUtils::ModuleMaker::Interactive->new(
+my %standard_options = (
     COMPACT          => ( ( $opts{c} ) ? 1 : 0 ),
     VERBOSE          => ( ( $opts{V} ) ? 1 : 0 ),
     CHANGES_IN_POD   => ( ( $opts{C} ) ? 1 : 0 ),
@@ -51,19 +52,22 @@ my $mod = ExtUtils::ModuleMaker::Interactive->new(
     ( ( $opts{o} ) ? ( ORGANIZATION          => $opts{o} ) : () ),
     ( ( $opts{w} ) ? ( WEBSITE               => $opts{w} ) : () ),
     ( ( $opts{e} ) ? ( EMAIL                 => $opts{e} ) : () ),
-#    ( ( $opts{d} ) ? ( PERSONAL_DEFAULTS_DIR => $opts{d} ) : () ),
-    ( ( $opts{t} ) ? ( TESTING_DEFAULTS_FILE => $opts{t} ) : () ),
+#    ( ( $opts{t} ) ? ( TESTING_DEFAULTS_FILE => $opts{t} ) : () ),
     USAGE_MESSAGE => Usage(),
+);
+
+my $mod = ExtUtils::ModuleMaker::Interactive->new(
+    %standard_options
 );
 
 $mod->run_interactive() if $mod->{INTERACTIVE};
 
 $mod->complete_build();
 
-if ($mod->SAVE_AS_DEFAULTS) {
-    $mod->make_selections_defaults();
-    print "Values selected have been saved as new defaults.\n";
-}
+#if ($mod->SAVE_AS_DEFAULTS) {
+#    $mod->make_selections_defaults();
+#    print "Values selected have been saved as new defaults.\n";
+#}
 
 $mod->closing_message();
 

@@ -55,27 +55,8 @@ sub new {
     # 4.  Process key-value pairs supplied as arguments to new() either
     # from user-written program or from modulemaker utility.
     # These override default values (or may provide additional elements).
-    if ($parameters{TESTING_DEFAULTS_FILE}) {
-        my $fullpath = $parameters{TESTING_DEFAULTS_FILE};
-        croak "Testing defaults file $fullpath not found: $!"
-            unless (-f $fullpath);
-        if ($fullpath =~ m|^(.*)\/ExtUtils\/ModuleMaker\/Testing\/Defaults\.pm$|) {
-            my $defaults_dir = $1;
-            push @INC, $defaults_dir;
-            require ExtUtils::ModuleMaker::Testing::Defaults;
-            unshift @ISA, qw( ExtUtils::ModuleMaker::Testing::Defaults );
-        } else {
-            croak "Could not load testing defaults file $fullpath: $!";
-        }
-        $defaults_ref = $self->default_values();
-        foreach my $def ( keys %{$defaults_ref} ) {
-            $self->{$def} = $defaults_ref->{$def};
-        }
-    } else { 
-        foreach my $param ( keys %parameters ) {
-            $self->{$param} = $parameters{$param}
-                unless $parameters{$param} eq 'TESTING_DEFAULTS_FILE';
-        }
+    foreach my $param ( keys %parameters ) {
+        $self->{$param} = $parameters{$param};
     }
 
     # 5.  Initialize keys set from information supplied above, system
@@ -132,6 +113,7 @@ sub complete_build {
     }
 
     $self->print_file( 'MANIFEST', join( "\n", @{ $self->{MANIFEST} } ) );
+    $self->make_selections_defaults() if $self->{SAVE_AS_DEFAULTS};
     return 1;
 }
 

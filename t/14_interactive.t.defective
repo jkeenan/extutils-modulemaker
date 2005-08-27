@@ -1,0 +1,72 @@
+# t/14_interactive.t
+use strict;
+# use Test::More tests => 85;
+use Test::More qw(no_plan);
+
+BEGIN { use_ok('ExtUtils::ModuleMaker'); }
+BEGIN { use_ok('Cwd'); }
+
+SKIP: {
+    eval { require 5.006_001 and require Expect::Simple };
+    skip "tests require File::Temp, core with 5.6, and also Expect::Simple", 83 if $@;
+    use warnings;
+    use_ok( 'File::Temp', qw| tempdir |);
+    use lib ("./t/testlib");
+    use _Auxiliary qw(
+        check_MakefilePL 
+        check_pm_file
+        make_compact
+    );
+
+    # Simple tests of modulemaker utility in interactive mode
+
+    my $cwd = cwd();
+    my ($tdir, $topdir, @pred, $module_name, $pmfile, %pred);
+
+    {
+        # provide name and call for compact top-level directory
+        # add in abstract
+        $tdir = tempdir( CLEANUP => 1);
+        ok(chdir $tdir, 'changed to temp directory for testing');
+
+#        ok(! system(qq{$^X -I"$cwd/blib/lib" "$cwd/blib/script/modulemaker" -Icn XYZ::ABC -a \"This is very abstract.\"}),  #"
+#            "able to call modulemaker utility with abstract");
+
+        my ($obj, $cmd, $res, @lines);
+        $obj = new Expect::Simple {
+#            Cmd => "modulemaker -cn XYZ::ABC -a \"This is very abstract.\"",
+            Cmd => "modulemaker -cn XYZ::ABC",
+#            Cmd => system(qq{$^X -I"$cwd/blib/lib" "$cwd/blib/script/modulemaker" -cn XYZ::ABC -a \"This is very abstract.\"}),  #"
+#            Cmd => qq{$^X -I"$cwd/blib/lib" "$cwd/blib/script/modulemaker" -cn XYZ::ABC -a \"This is very abstract.\"},  #"
+            Prompt => [ -re => 'Please choose which feature you would like to edit:\s+' ], 
+            DisconnectCmd => 'q',
+            Verbose => 0,
+            Debug => 0,
+            Timeout => 100
+        };
+        isa_ok($obj, 'Expect::Simple');
+print STDERR $obj->{Cmd}, "\n";
+        $cmd = 'G';
+        $obj->send( $cmd );
+#        ok($obj->send( $cmd ), "'send' command");
+        ($res = $obj->before) =~ tr/\r//d;
+        @lines = split( "\n", $res );
+        
+        $topdir = "XYZ-ABC"; 
+        ok(-d $topdir, "compact top directory created");
+        ok(-f "$topdir/$_", "$_ file created")
+            for qw| Changes LICENSE MANIFEST Makefile.PL README Todo |;
+        ok(-d "$topdir/$_", "$_ directory created")
+            for qw| lib t |;
+        
+        @pred = (
+            "XYZ::ABC",
+            "lib\/XYZ\/ABC\.pm",
+            "A\.\\sU\.\\sThor",
+            "a\.u\.thor\@a\.galaxy\.far\.far\.away",
+            "This\\sis\\svery\\sabstract\.",
+        );
+        check_MakefilePL($topdir, \@pred);
+        ok(chdir $cwd, 'changed back to original directory after testing');
+    }
+} # end SKIP block
