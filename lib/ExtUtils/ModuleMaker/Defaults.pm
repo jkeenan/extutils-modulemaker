@@ -1,8 +1,6 @@
 package ExtUtils::ModuleMaker::Defaults;
 # as of 08/20/2005
 use strict;
-local $^W = 1;
-use Carp;
 
 my $usage = <<ENDOFUSAGE;
 

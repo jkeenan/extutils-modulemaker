@@ -26,6 +26,7 @@ t/09_mmkr.t
 t/11_miscargs.t
 t/12_standard_text.t
 t/13_license.t
+t/18_make_selections_defaults.t
 t/20.t
 t/testlib/Defaults/Identify.pm
 t/testlib/ExtUtils/ModuleMaker/Testing/Defaults.pm

@@ -11,7 +11,9 @@ BEGIN {
         ExtUtils::ModuleMaker::StandardText
     );
 };
-use ExtUtils::ModuleMaker::Utility qw( _get_personal_defaults_directory );
+use ExtUtils::ModuleMaker::Utility qw( 
+    _get_personal_defaults_directory
+);
 use Carp;
 # use Data::Dumper;
 
@@ -54,11 +56,9 @@ sub new {
     # from user-written program or from modulemaker utility.
     # These override default values (or may provide additional elements).
     if ($parameters{TESTING_DEFAULTS_FILE}) {
-# print STDERR "Value supplied for testing defaults file\n";        
         my $fullpath = $parameters{TESTING_DEFAULTS_FILE};
         croak "Testing defaults file $fullpath not found: $!"
             unless (-f $fullpath);
-# print STDERR "Testing defaults file found\n";        
         if ($fullpath =~ m|^(.*)\/ExtUtils\/ModuleMaker\/Testing\/Defaults\.pm$|) {
             my $defaults_dir = $1;
             push @INC, $defaults_dir;
@@ -67,12 +67,10 @@ sub new {
         } else {
             croak "Could not load testing defaults file $fullpath: $!";
         }
-# print STDERR "@ISA\n";        
         $defaults_ref = $self->default_values();
         foreach my $def ( keys %{$defaults_ref} ) {
             $self->{$def} = $defaults_ref->{$def};
         }
-# print STDERR Dumper \%{$self}, "\n";
     } else { 
         foreach my $param ( keys %parameters ) {
             $self->{$param} = $parameters{$param}
@@ -173,6 +171,80 @@ sub get_license {
         "=====================================================================",
         "=====================================================================",
     ));
+}
+
+sub make_selections_defaults {
+    my $self = shift;
+    my %selections = %{$self};
+    my $topfile = <<'END_TOPFILE';
+package ExtUtils::ModuleMaker::Personal::Defaults;
+use strict;
+
+my %default_values = (
+END_TOPFILE
+    
+my @keys_needed = qw(
+    LICENSE
+    VERSION
+    AUTHOR
+    CPANID
+    ORGANIZATION
+    WEBSITE
+    EMAIL
+    BUILD_SYSTEM
+    COMPACT
+    VERBOSE
+    INTERACTIVE
+    NEED_POD
+    NEED_NEW_METHOD
+    CHANGES_IN_POD
+    PERMISSIONS
+    USAGE_MESSAGE
+);
+
+my $kvpairs;
+foreach my $k (@keys_needed) {
+    $kvpairs .=
+        (' ' x 8) . (sprintf '%-16s', $k) . '=> q{' . $selections{$k} .  "},\n";
+}
+$kvpairs .= (' ' x 8) . (sprintf '%-16s', 'ABSTRACT') . 
+    '=> q{Module abstract (<= 44 characters) goes here}' . "\n";
+
+    my $bottomfile = <<'END_BOTTOMFILE';
+);
+
+sub default_values {
+    my $self = shift;
+    return { %default_values };
+}
+
+1;
+
+END_BOTTOMFILE
+
+    my $output =  $topfile . $kvpairs . $bottomfile;
+
+    my $personal_dir = _get_personal_defaults_directory(); 
+    croak "Unable to locate suitable top directory for placement of personal defaults file: $!"
+        unless (-d $personal_dir);
+    my $pers_path = "ExtUtils/ModuleMaker/Personal";
+    my $full_dir = "$personal_dir/$pers_path";
+    if (! -d $full_dir) {
+        mkdir $full_dir
+         or croak "Unable to make directory $full_dir for placement of personal defaults file: $!";
+    }
+    my $pers_file = "Defaults.pm";
+    my $pers_full = "$full_dir/$pers_file";
+    if (-f $pers_full ) {
+        my $modtime = (stat($pers_full))[9];
+        rename $pers_full,
+               "$pers_full.$modtime"
+            or croak "Unable to rename $pers_full: $!";
+    }
+    open my $fh, '>', $pers_full 
+        or croak "Unable to open $pers_full for writing: $!";
+    print $fh $output;
+    close $fh or croak "Unable to close $pers_full after writing: $!";
 }
 
 1;
@@ -488,7 +560,7 @@ replacement for those two functions.)
 
 =head4 C<make_selections_defaults()>
 
-Save the values you entered as arguments passed to C<new()> in a personal
+Saves the values you entered as arguments passed to C<new()> in a personal
 defaults file so that they supersede the defaults provided by
 ExtUtils::ModuleMaker itself.
 
@@ -503,8 +575,8 @@ F<lib/ExtUtils/ModuleMaker/Defaults.pm>.
 Suppose that you have called C<ExtUtils::ModuleMaker::new()> as follows:
 
     $mod = ExtUtils::ModuleMaker->new(
-        NAME => 'Sample::Module',
-        ABSTRACT => 'Now is the time to join the party',
+        NAME            => 'Sample::Module',
+        ABSTRACT        => 'Now is the time to join the party',
         AUTHOR          => 'Hilton Stallone',
         CPANID          => 'RAMBO',
         ORGANIZATION    => 'Parliamentary Pictures',
@@ -514,12 +586,12 @@ Suppose that you have called C<ExtUtils::ModuleMaker::new()> as follows:
 
 Assuming that C<$mod> has not gone out of scope or been destroyed, the values
 you supplied as arguments to C<new()> -- B<with two important exceptions> 
--- will be saved in a
-F<Personal/Defaults.pm> file stored in your home directory.  The next time you
-invoke ExtUtils::ModuleMaker, the new values will appear in the appropriate
-locations in the files created by C<complete_build()>.
+-- will be saved in a F<Personal/Defaults.pm> file stored in your home 
+directory.  The next time you invoke ExtUtils::ModuleMaker, the new 
+values will appear in the appropriate locations in the files created 
+by C<complete_build()>.
 
-=head5 Two Important Exceptions
+What are those two important exceptions?
 
 =over 4
 
