@@ -61,11 +61,6 @@ $mod->run_interactive() if $mod->{INTERACTIVE};
 
 $mod->complete_build();
 
-#if ($mod->SAVE_AS_DEFAULTS) {
-#    $mod->make_selections_defaults();
-#    print "Values selected have been saved as new defaults.\n";
-#}
-
 $mod->closing_message();
 
 ########## END LIVE CODE ##########
@@ -77,7 +72,7 @@ sub Usage {
 modulemaker [-CIPVch] [-v version] [-n module_name] [-a abstract]
         [-u author_name] [-p author_CPAN_ID] [-o organization]
         [-w author_website] [-e author_e-mail]
-        [-l license_name] [-b build_system]
+        [-l license_name] [-b build_system] [-s save_selections_as_defaults ]
 
 Currently Supported Features
     -a   Specify (in quotes) an abstract for this extension
@@ -93,6 +88,7 @@ Currently Supported Features
     -p   Specify author's CPAN ID
     -P   Omit the stub POD section
     -q   Flag to omit a constructor from module
+    -s   Flag to save selections as new personal default values
     -u   Specify (in quotes) author's name
     -v   Specify a version number for this extension
     -V   Flag for verbose messages during module creation
@@ -155,15 +151,17 @@ You will be presented with a series of menus looking something like this:
 
   modulemaker: Main Menu
 
-      Feature              Current Value
-  N - Name of module       ''
-  S - Abstract             'Module abstract (<= 44 characters) goes here'
+      Feature                     Current Value
+  N - Name of module              ''
+  S - Abstract                    'Module abstract (<= 44 characters) goes here'
   A - Author information
-  L - License              'perl'
+  L - License                     'perl'
   D - Directives
-  B - Build system         'ExtUtils::MakeMaker'
+  B - Build system                'ExtUtils::MakeMaker'
 
   G - Generate module
+  H - Generate module;
+      save selections as defaults
 
   X - Exit immediately
 
@@ -323,6 +321,13 @@ Omit the stub POD section
 =item * -q
 
 Do not include a constructor (C<new()>) in the F<*.pm> file.
+
+=item * -s
+
+Save the selections entered (either as command-line options or as responses to
+F<modulemaker>'s prompts) as your new personal defaults.  These will be the
+values provided by ExtUtils::ModuleMaker or F<modulemaker> the next time you
+invoke either one of them.
 
 =item * -u
 
