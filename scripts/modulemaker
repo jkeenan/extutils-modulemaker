@@ -52,13 +52,10 @@ my %standard_options = (
     ( ( $opts{o} ) ? ( ORGANIZATION          => $opts{o} ) : () ),
     ( ( $opts{w} ) ? ( WEBSITE               => $opts{w} ) : () ),
     ( ( $opts{e} ) ? ( EMAIL                 => $opts{e} ) : () ),
-#    ( ( $opts{t} ) ? ( TESTING_DEFAULTS_FILE => $opts{t} ) : () ),
     USAGE_MESSAGE => Usage(),
 );
 
-my $mod = ExtUtils::ModuleMaker::Interactive->new(
-    %standard_options
-);
+my $mod = ExtUtils::ModuleMaker::Interactive->new( %standard_options);
 
 $mod->run_interactive() if $mod->{INTERACTIVE};
 

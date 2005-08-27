@@ -97,15 +97,17 @@ my %messages = (
     'Main Menu' => <<EOF,
 modulemaker: Main Menu
 
-    Feature              Current Value
-N - Name of module       '##name##'
-S - Abstract             '##abstract##'
+    Feature                     Current Value
+N - Name of module              '##name##'
+S - Abstract                    '##abstract##'
 A - Author information
-L - License              '##license##'
+L - License                     '##license##'
 D - Directives
-B - Build system         '##build##'
+B - Build system                '##build##'
 
 G - Generate module
+H - Generate module;
+    save selections as defaults
 
 X - Exit immediately
 
@@ -356,6 +358,20 @@ sub Main_Menu {
                 next LOOP;
             } elsif (! $MOD->verify_values()) {
                 print "Module files are being generated.\n";
+                return ('done');
+            } else {
+                next LOOP;
+            }
+        }
+        elsif ( $response eq 'H' ) {
+            $MOD->set_author_composite();
+            if (! $MOD->{NAME}) {
+                print "ERROR:  Must enter module name!\n";
+                next LOOP;
+            } elsif (! $MOD->verify_values()) {
+                $MOD->make_selections_defaults();
+                print "Module files are being generated;\n";
+                print "  selections are being saved as defaults.\n";
                 return ('done');
             } else {
                 next LOOP;
