@@ -4,6 +4,7 @@ Makefile.PL
 README
 MANIFEST
 MANIFEST.SKIP
+Todo
 lib/ExtUtils/ModuleMaker.pm
 lib/ExtUtils/ModuleMaker/Defaults.pm
 lib/ExtUtils/ModuleMaker/Interactive.pm
