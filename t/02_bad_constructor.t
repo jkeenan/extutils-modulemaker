@@ -2,7 +2,7 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests => 35;
+tests => 90;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
@@ -14,7 +14,7 @@ use Auxiliary qw(
 SKIP: {
     eval { require 5.006_001 };
     skip "failsafe requires File::Temp, core with Perl 5.6", 
-        (35 - 4) if $@;
+        (90 - 4) if $@;
     use warnings;
 
     ###########################################################################

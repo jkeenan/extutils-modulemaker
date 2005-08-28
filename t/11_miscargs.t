@@ -3,16 +3,26 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests =>  141;
+tests =>  183;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
+use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
+        _get_personal_defaults_directory
+    )
+);
+use lib ("./t/testlib");
+use_ok( 'Auxiliary', qw(
+        _process_personal_defaults_file 
+        _reprocess_personal_defaults_file 
+    )
+);
 
 
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (141 - 2) if $@;
+        (183 - 4) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use lib ("./t/testlib");
@@ -33,6 +43,12 @@ SKIP: {
     {   # Set 1
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
+
+        my $personal_dir = _get_personal_defaults_directory();
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        my $pers_def_ref = 
+            _process_personal_defaults_file( $personal_dir, $pers_file );
+
         $testmod = 'Beta';
         
         ok( $mod = ExtUtils::ModuleMaker->new( 
@@ -66,12 +82,20 @@ SKIP: {
         ok($filetext = read_file_string('Makefile.PL'),
             'Able to read Makefile.PL');
         
+        _reprocess_personal_defaults_file($pers_def_ref);
+
         ok(chdir $odir, 'changed back to original directory after testing');
     }
      
     {   # Set 2
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
+
+        my $personal_dir = _get_personal_defaults_directory();
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        my $pers_def_ref = 
+            _process_personal_defaults_file( $personal_dir, $pers_file );
+
         $testmod = 'Gamma';
         
         ok( $mod = ExtUtils::ModuleMaker->new( 
@@ -105,12 +129,20 @@ SKIP: {
         ok($filetext = read_file_string('Makefile.PL'),
             'Able to read Makefile.PL');
         
+        _reprocess_personal_defaults_file($pers_def_ref);
+
         ok(chdir $odir, 'changed back to original directory after testing');
     }
 
     ##### Sets 3 and 3a:  Tests of dump_keys() and dump_keys_except() methods.
     {
         $tdir = tempdir( CLEANUP => 1);
+
+        my $personal_dir = _get_personal_defaults_directory();
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        my $pers_def_ref = 
+            _process_personal_defaults_file( $personal_dir, $pers_file );
+
         ok(chdir $tdir, 'changed to temp directory for testing');
         $testmod = 'Tau';
         
@@ -134,12 +166,20 @@ SKIP: {
         is($keys_shown_flag, 2, 
             "keys intended to be shown were shown");
         
+        _reprocess_personal_defaults_file($pers_def_ref);
+
         ok(chdir $odir, 'changed back to original directory after testing');
     }
 
     {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
+
+        my $personal_dir = _get_personal_defaults_directory();
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        my $pers_def_ref = 
+            _process_personal_defaults_file( $personal_dir, $pers_file );
+
         $testmod = 'Rho';
         
         ok( $mod = ExtUtils::ModuleMaker->new( 
@@ -161,6 +201,8 @@ SKIP: {
         is($excluded_keys_flag, 0, 
             "keys intended to be excluded were excluded");
         
+        _reprocess_personal_defaults_file($pers_def_ref);
+
         ok(chdir $odir, 'changed back to original directory after testing');
     }
 
@@ -169,6 +211,12 @@ SKIP: {
     {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
+
+        my $personal_dir = _get_personal_defaults_directory();
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        my $pers_def_ref = 
+            _process_personal_defaults_file( $personal_dir, $pers_file );
+
         $testmod = 'Phi';
         
         ok( $mod = ExtUtils::ModuleMaker->new( 
@@ -196,12 +244,20 @@ SKIP: {
         is( (grep {/^=(head|cut)/} @filelines), 0, 
             "no POD correctly detected in module");
 
+        _reprocess_personal_defaults_file($pers_def_ref);
+
         ok(chdir $odir, 'changed back to original directory after testing');
     }
         
     {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
+
+        my $personal_dir = _get_personal_defaults_directory();
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        my $pers_def_ref = 
+            _process_personal_defaults_file( $personal_dir, $pers_file );
+
         $testmod = 'Chi';
         
         ok( $mod = ExtUtils::ModuleMaker->new( 
@@ -229,12 +285,20 @@ SKIP: {
         is( (grep {/^sub new/} @filelines), 0, 
             "no sub new() correctly detected in module");
 
+        _reprocess_personal_defaults_file($pers_def_ref);
+
         ok(chdir $odir, 'changed back to original directory after testing');
     }
         
     {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
+
+        my $personal_dir = _get_personal_defaults_directory();
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        my $pers_def_ref = 
+            _process_personal_defaults_file( $personal_dir, $pers_file );
+
         $testmod = 'Xi';
         
         ok( $mod = ExtUtils::ModuleMaker->new( 
@@ -263,6 +327,8 @@ SKIP: {
         is( (grep {/^(sub new|=(head|cut))/} @filelines), 0, 
             "no sub new() correctly detected in module");
 
+        _reprocess_personal_defaults_file($pers_def_ref);
+
         ok(chdir $odir, 'changed back to original directory after testing');
     }
         
@@ -271,6 +337,12 @@ SKIP: {
     {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
+
+        my $personal_dir = _get_personal_defaults_directory();
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        my $pers_def_ref = 
+            _process_personal_defaults_file( $personal_dir, $pers_file );
+
         $testmod = 'Sigma';
         
         ok( $mod = ExtUtils::ModuleMaker->new( 
@@ -309,6 +381,8 @@ SKIP: {
                 't/004_load.t',
             );
         
+        _reprocess_personal_defaults_file($pers_def_ref);
+
         ok(chdir $odir, 'changed back to original directory after testing');
     }
 

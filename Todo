@@ -13,3 +13,7 @@ file.  So, other than my own idiosyncratic testing, the interactive mode is
 untested.
 
 2.  Ways to easily subclass StandardText.
+
+OUCH!  Now that I have *my* own personal defaults file installed, I'm getting
+failing test results in t/03 ('cause I prefer COMPACT => 1).  So I have to fix
+all tests to temporarily suppress any existing personal defaults file.

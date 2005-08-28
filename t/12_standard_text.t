@@ -4,15 +4,25 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests =>   35;
+tests =>   42;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
+use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
+        _get_personal_defaults_directory
+    )
+);
+use lib ("./t/testlib");
+use_ok( 'Auxiliary', qw(
+        _process_personal_defaults_file 
+        _reprocess_personal_defaults_file 
+    )
+);
 
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (35 - 2) if $@;
+        (42 - 2) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use lib ("./t/testlib");
@@ -30,6 +40,12 @@ SKIP: {
     {   
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
+
+        my $personal_dir = _get_personal_defaults_directory();
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        my $pers_def_ref = 
+            _process_personal_defaults_file( $personal_dir, $pers_file );
+
         $testmod = 'Beta';
         
         ok( $mod = ExtUtils::ModuleMaker->new( 
@@ -100,6 +116,8 @@ SKIP: {
         is( (grep {/^If you are on a windows box/} @readmelines),
             1,
             "README has correct bottom part");
+
+        _reprocess_personal_defaults_file($pers_def_ref);
 
         ok(chdir $odir, 'changed back to original directory after testing');
     }

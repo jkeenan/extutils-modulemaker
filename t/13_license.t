@@ -2,7 +2,7 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests =>  271;
+tests =>  476;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Licenses::Local' );
@@ -12,7 +12,7 @@ use_ok( 'Cwd');
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (271 - 3) if $@;
+        (476 - 3) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use lib ("./t/testlib");

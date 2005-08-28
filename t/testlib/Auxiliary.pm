@@ -33,6 +33,7 @@ use Carp;
 *like = *Test::More::like;
 *copy = *File::Copy::copy;
 *move = *File::Copy::move;
+use ExtUtils::ModuleMaker::Utility qw( _get_personal_defaults_directory);
 
 sub read_file_string {
     my $file = shift;
@@ -140,16 +141,20 @@ sub constructor_present {
 }
 
 sub failsafe {
-   my ($argslistref, $pattern, $message) = @_;
-   my $odir = cwd();
-   my ($tdir, $mod);
-   $tdir = tempdir( CLEANUP => 1);
-   ok(chdir $tdir, 'changed to temp directory for testing');
-   local $@ = undef;
-   eval { $mod  = ExtUtils::ModuleMaker->new (@$argslistref); };
-   like($@, qr/$pattern/, $message);
-
-   ok(chdir $odir, 'changed back to original directory after testing');
+    my ($argslistref, $pattern, $message) = @_;
+    my $odir = cwd();
+    my ($tdir, $mod);
+    $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
+    my $personal_dir = _get_personal_defaults_directory();
+    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+    my $pers_def_ref = 
+        _process_personal_defaults_file( $personal_dir, $pers_file );
+    local $@ = undef;
+    eval { $mod  = ExtUtils::ModuleMaker->new (@$argslistref); };
+    like($@, qr/$pattern/, $message);
+    _reprocess_personal_defaults_file($pers_def_ref);
+    ok(chdir $odir, 'changed back to original directory after testing');
 }
 
 sub licensetest {
@@ -158,6 +163,10 @@ sub licensetest {
     my ($tdir, $mod);
     $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, "changed to temp directory for testing $license");
+    my $personal_dir = _get_personal_defaults_directory();
+    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+    my $pers_def_ref = 
+        _process_personal_defaults_file( $personal_dir, $pers_file );
     ok($mod = ExtUtils::ModuleMaker->new(
         NAME      => "Alpha::$license",
         LICENSE   => $license,
@@ -167,6 +176,7 @@ sub licensetest {
     ok(chdir "Alpha-$license", "changed to Alpha-$license directory");
     my $licensetext = read_file_string('LICENSE');
     like($licensetext, $pattern, "$license license has predicted content");
+    _reprocess_personal_defaults_file($pers_def_ref);
     ok(chdir $odir, 'changed back to original directory after testing');
 }
 

@@ -2,23 +2,38 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests => 28;
+tests => 35;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
+use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
+        _get_personal_defaults_directory
+    )
+);
+use lib ("./t/testlib");
+use_ok( 'Auxiliary', qw(
+        _process_personal_defaults_file 
+        _reprocess_personal_defaults_file 
+    )
+);
 
 my $odir = cwd();
 
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with Perl 5.6", 
-        (28 - 2) if $@;
+        (35 - 4) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     my $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
 
     ###########################################################################
+
+    my $personal_dir = _get_personal_defaults_directory();
+    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+    my $pers_def_ref = 
+        _process_personal_defaults_file( $personal_dir, $pers_file );
 
     my $mod;
 
@@ -85,6 +100,8 @@ SKIP: {
     is($modgrandchild->{NAME}, 'Gamma::Delta', "NAME is correct");
     is($modgrandchild->{ABSTRACT}, 'The quick brown vixen', 
         "explicitly coded ABSTRACT is correct");
+
+    _reprocess_personal_defaults_file($pers_def_ref);
 
 } # end SKIP block
 

@@ -2,17 +2,27 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests =>  15;
+tests =>  22;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
+use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
+        _get_personal_defaults_directory
+    )
+);
+use lib ("./t/testlib");
+use_ok( 'Auxiliary', qw(
+        _process_personal_defaults_file 
+        _reprocess_personal_defaults_file 
+    )
+);
 
 my $odir = cwd();
 
 SKIP: {
     eval { require 5.006_001 and require Module::Build };
     skip "tests require File::Temp, core with 5.6, and require Module::Build", 
-        (15 - 2) if $@;
+        (22 - 4) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use lib ("./t/testlib");
@@ -24,6 +34,11 @@ SKIP: {
     ok(chdir $tdir, 'changed to temp directory for testing');
 
     ########################################################################
+
+    my $personal_dir = _get_personal_defaults_directory();
+    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+    my $pers_def_ref = 
+        _process_personal_defaults_file( $personal_dir, $pers_file );
 
     my $mod;
     my $testmod = 'Gamma';
@@ -53,6 +68,8 @@ SKIP: {
         'Able to read Build.PL');
 
     six_file_tests(7, $testmod); # first arg is # entries in MANIFEST
+
+    _reprocess_personal_defaults_file($pers_def_ref);
 
 } # end SKIP block
 

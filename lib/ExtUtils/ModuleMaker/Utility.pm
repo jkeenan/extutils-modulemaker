@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::Utility;
-# as of 08/25/2005
+# as of 08/27/2005
 use strict;
 local $^W = 1;
 use Carp;
@@ -10,27 +10,44 @@ BEGIN {
 #    $VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
     @ISA         = qw(Exporter);
     @EXPORT_OK   = qw(
+        _get_home_directory
         _get_personal_defaults_directory
     );
+}
+
+sub _get_home_directory {
+    my $realhome;
+    if ($^O eq 'MSWin32') {
+        require Win32;
+        Win32->import( qw(CSIDL_LOCAL_APPDATA) );  # 0x001c 
+        $realhome =  Win32::GetFolderPath( CSIDL_LOCAL_APPDATA() );
+        return $realhome if (-d $realhome);
+        $realhome =~ s|(.*?)\\Local Settings(.*)|$1$2|;
+        return $realhome if (-d $realhome);
+        croak "Unable to establish directory equivalent to 'HOME' on Win32: $!";
+    } else { # Unix-like systems
+        $realhome = $ENV{HOME};
+        return $realhome if (-d $realhome);
+        croak "Unable to establish 'HOME' directory: $!";
+    }
 }
 
 sub _get_personal_defaults_directory {
     my ($realhome, $personal_dir); 
     if ($^O eq 'MSWin32') {
-        require Win32;
-        Win32->import( qw(CSIDL_LOCAL_APPDATA) );  # 0x001c 
-        $realhome =  Win32::GetFolderPath( CSIDL_LOCAL_APPDATA() );
-        if (-d "$realhome/.modulemaker") { 
-            $personal_dir = "$realhome/.modulemaker"; 
-        } else {
-            $realhome =~ s|(.*?)\\Local Settings(.*)|$1$2|;
-            if (-d "$realhome/.modulemaker") { 
-                $personal_dir = "$realhome/.modulemaker"; 
-            }
+        $realhome = _get_home_directory();
+        $personal_dir = "$realhome/.modulemaker"; 
+        if (! -d $personal_dir) {
+            mkdir $personal_dir
+                or croak "Unable to make directory $personal_dir for placement of personal defaults file on Win32: $!";
         }
     } else { # Unix-like systems
-        $realhome = $ENV{HOME};
+        $realhome = _get_home_directory();
         $personal_dir = "$realhome/.modulemaker"; 
+        if (! -d $personal_dir) {
+            mkdir $personal_dir
+                or croak "Unable to make directory $personal_dir for placement of personal defaults file underneath 'HOME': $!";
+        }
     }
     return $personal_dir;
 }
@@ -47,6 +64,7 @@ ExtUtils::ModuleMaker::Utility - Utility subroutines for EU::MM
 
   use ExtUtils::ModuleMaker::Utility qw( _get_personal_defaults_directory );
   ...
+  $home_dir     = _get_home_directory();
   $personal_dir = _get_personal_defaults_directory();
 
 =head1 DESCRIPTION
@@ -58,9 +76,11 @@ ExtUtils::ModuleMaker and/or its test suite.
 
 =over 4
 
-=item * C<_get_personal_defaults_directory()>
+=item * C<_get_home_directory()>
 
-Analyzes environmental information to determine a directory appropriate for
+Analyzes environmental information to determine whether there exists on the
+system a 'HOME' or 'home-equivalent' directory capable of holding directories
+which, in turn, will be appropriate for
 holding an ExtUtils::ModuleMaker::Personal::Defaults package.  On Win32, this
 directory is that returned by the following function from the F<Win32>module:
 
@@ -77,6 +97,16 @@ C<$realhome> through a regex to eliminate that.
 On Unix-like systems, things are much simpler.  We simply check the value of
 C<$ENV{HOME}>.  We cannot do that on Win32 (at least not on ActivePerl),
 because C<$ENV{HOME}> is not defined there.
+
+=item * C<_get_personal_defaults_directory()>
+
+Once we have established that there exists an appropriate 'HOME' or home-like
+directory, we create a directory F<.modulemaker> underneath it.  This in turn
+will hold  ExtUtils::ModuleMaker::Personal::Defaults.
+
+C<_get_personal_defaults_directory()> calls C<_get_home_directory()>
+internally, so if you are using C<_get_personal_defaults_directory()> you do
+not need to call C<_get_home_directory()> first.
 
 =back
 

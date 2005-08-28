@@ -83,6 +83,13 @@ was done.
 
         check_MakefilePL($topdir, \@pred);
 
+=pod BetaTesterProblem:
+    The following method call failed for Alex on Debian.  Mysteriously, it
+failed at a call within it to _get_personal_defaults_directory (EU::MM line
+209) -- which has been called many times within the test suite!
+
+=cut
+
         $obj1->make_selections_defaults();
         ok(-f "$personal_dir/$pers_file", "new Personal::Defaults installed");
 
