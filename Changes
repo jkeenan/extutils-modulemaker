@@ -11,8 +11,9 @@ the beginning of the SKIP block.  I moved this test back inside the SKIP block
 in these files -- as well as in t/03, t/04, t/05.
     - Marc Prewitt reported the same problem with t/18 that Alex did, though
       he was running Perl 5.6 on Linux and Solaris.  Problem has to do with
-the ability to create a directory for Personal::Defaults.  Still working on
-this.
+the ability to create a directory for Personal::Defaults.  After taking a
+crash course in File::Path and File::Spec, I think I have corrected the
+problem with make_selections_defaults().
 
 0.3611 August 27, 2005
     - Alex Gill reported problems while testing t/06, t/07 and t/18.  I
