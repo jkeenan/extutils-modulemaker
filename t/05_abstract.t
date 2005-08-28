@@ -85,7 +85,7 @@ SKIP: {
 
     _reprocess_personal_defaults_file($pers_def_ref);
 
-} # end SKIP block
+    ok(chdir $odir, 'changed back to original directory after testing');
 
-ok(chdir $odir, 'changed back to original directory after testing');
+} # end SKIP block
 

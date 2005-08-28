@@ -1,5 +1,35 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.3612 August 28, 2005
+    - Alex Gill continued to report problems with t/06, t/07 and t/18.  He
+      sent me the output for all three.  I realized that the problem with t/06
+and t/07 was that, not having Module::Build installed on his system, the SKIP
+block was being activated -- but I had left one test (for changing back to the
+original directory)  outside the SKIP block at the end of these files.  So the
+harness was reporting a number of tests run different from that calculated at
+the beginning of the SKIP block.  I moved this test back inside the SKIP block
+in these files -- as well as in t/03, t/04, t/05.
+    - Marc Prewitt reported the same problem with t/18 that Alex did, though
+      he was running Perl 5.6 on Linux and Solaris.  Problem has to do with
+the ability to create a directory for Personal::Defaults.  Still working on
+this.
+
+0.3611 August 27, 2005
+    - Alex Gill reported problems while testing t/06, t/07 and t/18.  I
+      couldn't reproduce the problems with t/06 and t/07 (at first) and asked
+Alex to re-run those tests with 'prove'.  With t/18, I realized that I had not
+tested for the possibility that a user would not already have a
+$HOME/.modulemaker directory installed on his/her system.  So I refactored
+code in ExtUtils::ModuleMaker::Utility into two distinct subroutines, with
+_get_home_directory() establishing a .modulemaker directory and
+_get_personal_defaults_directory establishing the directory that will hold
+Personal::Defaults.  Sent this version back to same 7 people for further
+testing.
+
+0.3610 August 27, 2005
+    - Completed work to get modulemaker to work in interactive mode.  Sent
+      this version to 7 people for beta testing.
+
 0.3609 August 27, 2005
     - Created make_selections_defaults() method.  It works so far in scripts
       and in modulemaker non-interactive mode.

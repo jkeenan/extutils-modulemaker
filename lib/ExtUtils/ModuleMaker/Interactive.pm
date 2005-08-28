@@ -1,10 +1,10 @@
 package ExtUtils::ModuleMaker::Interactive;
-# as of 08/27/2005
+# as of 08/28/2005
 use strict;
 local $^W = 1;
 BEGIN {
     use vars qw ( $VERSION @ISA ); 
-    $VERSION = 0.36_11;
+    $VERSION = 0.36_12;
     require ExtUtils::ModuleMaker;
     push @ISA, qw( ExtUtils::ModuleMaker );
 }
