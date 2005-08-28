@@ -15,6 +15,8 @@ use ExtUtils::ModuleMaker::Utility qw(
     _get_personal_defaults_directory
 );
 use Carp;
+use File::Path;
+use File::Spec;
 # use Data::Dumper;
 
 #################### PUBLICLY CALLABLE METHODS ####################
@@ -210,10 +212,11 @@ END_BOTTOMFILE
     croak "Unable to locate suitable top directory for placement of personal defaults file: $!"
         unless (-d $personal_dir);
     my $pers_path = "ExtUtils/ModuleMaker/Personal";
-    my $full_dir = "$personal_dir/$pers_path";
+    my $full_dir = File::Spec->catdir($personal_dir, $pers_path);
     if (! -d $full_dir) {
-        mkdir $full_dir
-         or croak "Unable to make directory $full_dir for placement of personal defaults file: $!";
+        mkpath( $full_dir );
+        if ($@) {
+            croak "Unable to make directory for placement of personal defaults file: $!"; };
     }
     my $pers_file = "Defaults.pm";
     my $pers_full = "$full_dir/$pers_file";
