@@ -3,6 +3,7 @@ package ExtUtils::ModuleMaker::Utility;
 use strict;
 local $^W = 1;
 use Carp;
+use File::Path;
 
 BEGIN {
     use Exporter ();
@@ -12,6 +13,7 @@ BEGIN {
     @EXPORT_OK   = qw(
         _get_home_directory
         _get_personal_defaults_directory
+        _restore_personal_dir_status
     );
 }
 
@@ -24,20 +26,21 @@ sub _get_home_directory {
         return $realhome if (-d $realhome);
         $realhome =~ s|(.*?)\\Local Settings(.*)|$1$2|;
         return $realhome if (-d $realhome);
-        croak "Unable to establish directory equivalent to 'HOME' on Win32: $!";
+        croak "Unable to identify directory equivalent to 'HOME' on Win32: $!";
     } else { # Unix-like systems
         $realhome = $ENV{HOME};
         return $realhome if (-d $realhome);
-        croak "Unable to establish 'HOME' directory: $!";
+        croak "Unable to identify 'HOME' directory: $!";
     }
 }
 
 sub _get_personal_defaults_directory {
-    my ($realhome, $personal_dir); 
+    my ($realhome, $personal_dir, $no_personal_dir_flag); 
     if ($^O eq 'MSWin32') {
         $realhome = _get_home_directory();
         $personal_dir = "$realhome/.modulemaker"; 
         if (! -d $personal_dir) {
+            $no_personal_dir_flag++; 
             mkdir $personal_dir
                 or croak "Unable to make directory $personal_dir for placement of personal defaults file on Win32: $!";
         }
@@ -45,11 +48,29 @@ sub _get_personal_defaults_directory {
         $realhome = _get_home_directory();
         $personal_dir = "$realhome/.modulemaker"; 
         if (! -d $personal_dir) {
+            $no_personal_dir_flag++; 
             mkdir $personal_dir
                 or croak "Unable to make directory $personal_dir for placement of personal defaults file underneath 'HOME': $!";
         }
     }
-    return $personal_dir;
+    return ($personal_dir, $no_personal_dir_flag);
+}
+
+sub _restore_personal_dir_status {
+    my $personal_dir = shift;
+    my $no_personal_dir_flag = shift;
+    # 1 means there was NO .modulemaker directory at start of test file
+    # 0 means there was such a directory
+    if ($no_personal_dir_flag) {
+        rmtree($personal_dir, 0, 1);
+        if(! -d $personal_dir) {
+            return 1;
+        } else {
+            croak "Unable to restore .modulemaker directory created during test: $!";
+        }
+    } else {
+        return 1;
+    }
 }
 
 1;

@@ -2,12 +2,13 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests =>  100;
+tests =>  106;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
 use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
         _get_personal_defaults_directory
+        _restore_personal_dir_status
     )
 );
 use lib ("./t/testlib");
@@ -20,7 +21,7 @@ use_ok( 'Auxiliary', qw(
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (100 - 4) if $@;
+        (106 - 4) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use lib ("./t/testlib");
@@ -52,7 +53,10 @@ was done.
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my $personal_dir = _get_personal_defaults_directory();
+        my ($personal_dir, $no_personal_dir_flag) = 
+            _get_personal_defaults_directory();
+        ok( $personal_dir, "personal defaults directory now present on system");
+
         my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
         my $pers_def_ref = 
             _process_personal_defaults_file( $personal_dir, $pers_file );
@@ -136,6 +140,10 @@ error message at ModuleMaker line 216.
         _reprocess_personal_defaults_file( $pers_def_ref );
 
         ok(chdir $cwd, 'changed back to original directory after testing');
+
+        ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+            "original presence/absence of .modulemaker directory restored");
+
     }
 
     {
@@ -143,7 +151,10 @@ error message at ModuleMaker line 216.
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my $personal_dir = _get_personal_defaults_directory();
+        my ($personal_dir, $no_personal_dir_flag) = 
+            _get_personal_defaults_directory();
+        ok( $personal_dir, "personal defaults directory now present on system");
+
         my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
         my $pers_def_ref = 
             _process_personal_defaults_file( $personal_dir, $pers_file );
@@ -209,6 +220,10 @@ error message at ModuleMaker line 216.
         _reprocess_personal_defaults_file( $pers_def_ref );
 
         ok(chdir $cwd, 'changed back to original directory after testing');
+
+        ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+            "original presence/absence of .modulemaker directory restored");
+
     }
 
     {
@@ -229,7 +244,10 @@ error message at ModuleMaker line 216.
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my $personal_dir = _get_personal_defaults_directory();
+        my ($personal_dir, $no_personal_dir_flag) = 
+            _get_personal_defaults_directory();
+        ok( $personal_dir, "personal defaults directory now present on system");
+
         my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
         my $pers_def_ref = 
             _process_personal_defaults_file( $personal_dir, $pers_file );
@@ -286,6 +304,10 @@ error message at ModuleMaker line 216.
         _reprocess_personal_defaults_file( $pers_def_ref );
 
         ok(chdir $cwd, 'changed back to original directory after testing');
+
+        ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+            "original presence/absence of .modulemaker directory restored");
+
     }
 
 } # end SKIP block

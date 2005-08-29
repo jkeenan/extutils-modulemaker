@@ -33,7 +33,10 @@ use Carp;
 *like = *Test::More::like;
 *copy = *File::Copy::copy;
 *move = *File::Copy::move;
-use ExtUtils::ModuleMaker::Utility qw( _get_personal_defaults_directory);
+use ExtUtils::ModuleMaker::Utility qw(
+    _get_personal_defaults_directory
+    _restore_personal_dir_status
+);
 
 sub read_file_string {
     my $file = shift;
@@ -146,7 +149,9 @@ sub failsafe {
     my ($tdir, $mod);
     $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
-    my $personal_dir = _get_personal_defaults_directory();
+    my ($personal_dir, $no_personal_dir_flag) = 
+        _get_personal_defaults_directory();
+    ok( $personal_dir, "personal defaults directory now present on system");
     my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
     my $pers_def_ref = 
         _process_personal_defaults_file( $personal_dir, $pers_file );
@@ -155,6 +160,8 @@ sub failsafe {
     like($@, qr/$pattern/, $message);
     _reprocess_personal_defaults_file($pers_def_ref);
     ok(chdir $odir, 'changed back to original directory after testing');
+    ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+        "original presence/absence of .modulemaker directory restored");
 }
 
 sub licensetest {
@@ -163,7 +170,10 @@ sub licensetest {
     my ($tdir, $mod);
     $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, "changed to temp directory for testing $license");
-    my $personal_dir = _get_personal_defaults_directory();
+    my ($personal_dir, $no_personal_dir_flag) = 
+        _get_personal_defaults_directory();
+    ok( $personal_dir, "personal defaults directory now present on system");
+
     my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
     my $pers_def_ref = 
         _process_personal_defaults_file( $personal_dir, $pers_file );
@@ -178,6 +188,8 @@ sub licensetest {
     like($licensetext, $pattern, "$license license has predicted content");
     _reprocess_personal_defaults_file($pers_def_ref);
     ok(chdir $odir, 'changed back to original directory after testing');
+    ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+        "original presence/absence of .modulemaker directory restored");
 }
 
 sub _starttest {

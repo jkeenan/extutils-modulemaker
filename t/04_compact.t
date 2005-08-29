@@ -2,12 +2,13 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests =>  24;
+tests =>  26;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
 use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
         _get_personal_defaults_directory
+        _restore_personal_dir_status
     )
 );
 use lib ("./t/testlib");
@@ -22,7 +23,7 @@ my $odir = cwd();
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with Perl 5.6", 
-        (24 - 4) if $@;
+        (26 - 4) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     my $tdir = tempdir( CLEANUP => 1);
@@ -30,7 +31,10 @@ SKIP: {
 
     #######################################################################
 
-    my $personal_dir = _get_personal_defaults_directory();
+    my ($personal_dir, $no_personal_dir_flag) = 
+        _get_personal_defaults_directory();
+    ok( $personal_dir, "personal defaults directory now present on system");
+
     my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
     my $pers_def_ref = 
         _process_personal_defaults_file( $personal_dir, $pers_file );
@@ -75,6 +79,9 @@ SKIP: {
     _reprocess_personal_defaults_file($pers_def_ref);
 
     ok(chdir $odir, 'changed back to original directory after testing');
+
+    ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+        "original presence/absence of .modulemaker directory restored");
 
     ########################################################################
 

@@ -1,5 +1,18 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.3613 August 28, 2005
+    - To preclude the problems experienced by Alex and Marc in the future, I
+      modified one sub in ExtUtils::ModuleMaker::Utility and created another. 
+     _get_personal_defaults_directory() was modified to return a flag which,
+if true, indicates that no $HOME/.modulemaker was found on the system at the
+beginning of a given block of tests.  _restore_personal_dir_status() was then
+created to take note of this flag at the end of a given block of tests and, if
+such a directory had been created during the testing process, removing it so
+that the user's system status is ultimately unchanged.  This required
+modification of every test file and (for t/02 and t/13) two subroutines in
+t/testlib/Auxiliary.pm, as well as to calls to
+_get_personal_defaults_directory in ModuleMaker.pm.
+
 0.3612 August 28, 2005
     - Alex Gill continued to report problems with t/06, t/07 and t/18.  He
       sent me the output for all three.  I realized that the problem with t/06

@@ -2,17 +2,22 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests =>  476;
+tests =>  561;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Licenses::Local' );
 use_ok( 'Cwd');
+use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
+        _get_personal_defaults_directory
+        _restore_personal_dir_status
+    )
+);
 
 
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (476 - 3) if $@;
+        (561 - 3) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use lib ("./t/testlib");
@@ -232,6 +237,11 @@ SKIP: {
     {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
+
+        my ($personal_dir, $no_personal_dir_flag) = 
+            _get_personal_defaults_directory();
+        ok( $personal_dir, "personal defaults directory now present on system");
+
         $testmod = 'Beta';
 
         ok($mod = ExtUtils::ModuleMaker->new( 
@@ -266,6 +276,10 @@ SKIP: {
         );
 
         ok(chdir $odir, 'changed back to original directory after testing');
+
+        ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+            "original presence/absence of .modulemaker directory restored");
+
     }
 
 } # end SKIP block

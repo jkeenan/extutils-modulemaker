@@ -3,7 +3,7 @@ use strict;
 local $^W = 1;
 BEGIN {
     use vars qw ( $VERSION @ISA ); 
-    $VERSION = 0.36_12;
+    $VERSION = 0.36_13;
     require ExtUtils::ModuleMaker::Defaults;
     require ExtUtils::ModuleMaker::StandardText;
     push @ISA, qw(
@@ -33,7 +33,8 @@ sub new {
     # ExtUtils::ModuleMaker::Personal::Defaults file and, if so, unshift that
     # on to @ISA so that its default_values() subroutine is run rather than that
     # supplied by EU::MM itself.
-    my $personal_dir = _get_personal_defaults_directory(); 
+    my ($personal_dir, $no_personal_dir_flag)  = 
+        _get_personal_defaults_directory();
     push @INC, $personal_dir;
     my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
     if (-f "$personal_dir/$pers_file") {
@@ -208,7 +209,8 @@ END_BOTTOMFILE
 
     my $output =  $topfile . $kvpairs . $bottomfile;
 
-    my $personal_dir = _get_personal_defaults_directory(); 
+    my ($personal_dir, $no_personal_dir_flag) = 
+        _get_personal_defaults_directory();
     croak "Unable to locate suitable top directory for placement of personal defaults file: $!"
         unless (-d $personal_dir);
     my $pers_path = "ExtUtils/ModuleMaker/Personal";
@@ -266,7 +268,7 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
 =head1 VERSION
 
-This document references version 0.36_12 of ExtUtils::ModuleMaker, released
+This document references version 0.36_13 of ExtUtils::ModuleMaker, released
 to CPAN on August 28, 2005.
 
 =head1 DESCRIPTION

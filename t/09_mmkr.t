@@ -2,12 +2,13 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests => 130;
+tests => 144;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
 use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
         _get_personal_defaults_directory
+        _restore_personal_dir_status
     )
 );
 use lib ("./t/testlib");
@@ -20,7 +21,7 @@ use_ok( 'Auxiliary', qw(
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (130 - 4) if $@;
+        (144 - 4) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use lib ("./t/testlib");
@@ -40,6 +41,10 @@ SKIP: {
 
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
+
+        my ($personal_dir, $no_personal_dir_flag) = 
+            _get_personal_defaults_directory();
+        ok( $personal_dir, "personal defaults directory now present on system");
 
         ok(! system(qq{$^X -I"$cwd/blib/lib" "$cwd/blib/script/modulemaker" -In EU::MM::Testing::Defaults -a "Module abstract (<= 44 characters) goes here" -u "Hilton Stallone" -p RAMBO -o "Parliamentary Pictures" -w http://parliamentarypictures.com -e hiltons\@parliamentarypictures.com }), 
             "able to call modulemaker utility");
@@ -61,6 +66,10 @@ SKIP: {
 
         check_MakefilePL($topdir, \@pred);
         ok(chdir $cwd, 'changed back to original directory after testing');
+
+        ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+            "original presence/absence of .modulemaker directory restored");
+
     }
 
     {
@@ -72,7 +81,10 @@ SKIP: {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my $personal_dir = _get_personal_defaults_directory();
+        my ($personal_dir, $no_personal_dir_flag) = 
+            _get_personal_defaults_directory();
+        ok( $personal_dir, "personal defaults directory now present on system");
+
         my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
         my $pers_def_ref = 
             _process_personal_defaults_file( $personal_dir, $pers_file );
@@ -100,6 +112,10 @@ SKIP: {
         _reprocess_personal_defaults_file($pers_def_ref);
 
         ok(chdir $cwd, 'changed back to original directory after testing');
+
+        ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+            "original presence/absence of .modulemaker directory restored");
+
     }
 
 
@@ -109,7 +125,10 @@ SKIP: {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my $personal_dir = _get_personal_defaults_directory();
+        my ($personal_dir, $no_personal_dir_flag) = 
+            _get_personal_defaults_directory();
+        ok( $personal_dir, "personal defaults directory now present on system");
+
         my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
         my $pers_def_ref = 
             _process_personal_defaults_file( $personal_dir, $pers_file );
@@ -136,6 +155,10 @@ SKIP: {
         _reprocess_personal_defaults_file($pers_def_ref);
 
         ok(chdir $cwd, 'changed back to original directory after testing');
+
+        ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+            "original presence/absence of .modulemaker directory restored");
+
     }
 
     {
@@ -144,7 +167,10 @@ SKIP: {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my $personal_dir = _get_personal_defaults_directory();
+        my ($personal_dir, $no_personal_dir_flag) = 
+            _get_personal_defaults_directory();
+        ok( $personal_dir, "personal defaults directory now present on system");
+
         my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
         my $pers_def_ref = 
             _process_personal_defaults_file( $personal_dir, $pers_file );
@@ -171,6 +197,10 @@ SKIP: {
         _reprocess_personal_defaults_file($pers_def_ref);
 
         ok(chdir $cwd, 'changed back to original directory after testing');
+
+        ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+            "original presence/absence of .modulemaker directory restored");
+
     }
 
     {
@@ -179,7 +209,10 @@ SKIP: {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my $personal_dir = _get_personal_defaults_directory();
+        my ($personal_dir, $no_personal_dir_flag) = 
+            _get_personal_defaults_directory();
+        ok( $personal_dir, "personal defaults directory now present on system");
+
         my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
         my $pers_def_ref = 
             _process_personal_defaults_file( $personal_dir, $pers_file );
@@ -206,6 +239,10 @@ SKIP: {
         _reprocess_personal_defaults_file($pers_def_ref);
 
         ok(chdir $cwd, 'changed back to original directory after testing');
+
+        ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+            "original presence/absence of .modulemaker directory restored");
+
     }
 
     {
@@ -214,7 +251,10 @@ SKIP: {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my $personal_dir = _get_personal_defaults_directory();
+        my ($personal_dir, $no_personal_dir_flag) = 
+            _get_personal_defaults_directory();
+        ok( $personal_dir, "personal defaults directory now present on system");
+
         my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
         my $pers_def_ref = 
             _process_personal_defaults_file( $personal_dir, $pers_file );
@@ -239,6 +279,10 @@ SKIP: {
         _reprocess_personal_defaults_file($pers_def_ref);
 
         ok(chdir $cwd, 'changed back to original directory after testing');
+
+        ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+            "original presence/absence of .modulemaker directory restored");
+
     }
 
     {
@@ -247,7 +291,10 @@ SKIP: {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my $personal_dir = _get_personal_defaults_directory();
+        my ($personal_dir, $no_personal_dir_flag) = 
+            _get_personal_defaults_directory();
+        ok( $personal_dir, "personal defaults directory now present on system");
+
         my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
         my $pers_def_ref = 
             _process_personal_defaults_file( $personal_dir, $pers_file );
@@ -272,6 +319,10 @@ SKIP: {
         _reprocess_personal_defaults_file($pers_def_ref);
 
         ok(chdir $cwd, 'changed back to original directory after testing');
+
+        ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+            "original presence/absence of .modulemaker directory restored");
+
     }
 
 } # end SKIP block

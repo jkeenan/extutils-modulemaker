@@ -2,24 +2,25 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests => 10;
+tests => 11;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Utility', qw|
     _get_home_directory
     _get_personal_defaults_directory
+    _restore_personal_dir_status
 | );
 use_ok( 'File::Copy' );
 use_ok( 'File::Spec' );
 use_ok( 'Carp' );
 
-my ($realhome, $personal_dir);
+my ($realhome, $personal_dir, $no_personal_dir_flag);
 
 ok( $realhome = _get_home_directory(), 
     "HOME or home-equivalent directory found on system");
 
-ok( $personal_dir = _get_personal_defaults_directory(), 
-    "personal defaults directory found on system");
+($personal_dir, $no_personal_dir_flag)  = _get_personal_defaults_directory();
+ok( $personal_dir, "personal defaults directory found on system");
 
 =pod Nonexistent_.modulemaker_Directory
     The previous test created a .modulemaker directory underneath the HOME
@@ -40,4 +41,7 @@ my $mod = ExtUtils::ModuleMaker->new( NAME => 'Alpha::Beta' );
 isa_ok($mod, 'ExtUtils::ModuleMaker');
 ok( move ($tempdir, $personal_dir), 
     "personal defaults directory restored");
+
+ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+    "original presence/absence of .modulemaker directory restored");
 
