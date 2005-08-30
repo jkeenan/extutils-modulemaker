@@ -230,7 +230,7 @@ sub print_file {
 
 =head3 C<generate_pm_file>
 
-  Usage     : $self->generate_pm_file() within complete_build()
+  Usage     : $self->generate_pm_file($module) within complete_build()
   Purpose   : Create a pm file out of assembled components
   Returns   : n/a
   Argument  : $module: pointer to the module being built
@@ -254,7 +254,7 @@ sub generate_pm_file {
 
 =head3 C<file_text_README()>
 
-  Usage     : $self->file_text_README within complete_build()
+  Usage     : $self->file_text_README() within complete_build()
   Purpose   : Build README
   Returns   : String holding text of README
   Argument  : n/a
@@ -334,7 +334,7 @@ EOF
 
 =head3 C<file_text_Changes()>
 
-  Usage     : $self->file_text_Changes within complete_build; 
+  Usage     : $self->file_text_Changes($only_in_pod) within complete_build; 
               block_module_header()
   Purpose   : Composes text for Changes file
   Returns   : String holding text for Changes file
@@ -373,7 +373,7 @@ EOF
 
 =head3 C<file_text_test()>
 
-  Usage     : $self->file_text_test within complete_build()
+  Usage     : $self->file_text_test within complete_build($testnum, $module)
   Purpose   : Composes text for a test for each pm file being requested in
               call to EU::MM
   Returns   : String holding complete text for a test file.
@@ -431,7 +431,7 @@ EOF
 
 =head3 C<file_text_Makefile()>
 
-  Usage     : $self->file_text_Makefile within complete_build()
+  Usage     : $self->file_text_Makefile() within complete_build()
   Purpose   : Build Makefile
   Returns   : String holding text of Makefile
   Argument  : n/a
@@ -469,7 +469,7 @@ WriteMakefile(
 
 =head3 C<file_text_Buildfile()>
 
-  Usage     : $self->file_text_Buildfile within complete_build() 
+  Usage     : $self->file_text_Buildfile() within complete_build() 
   Purpose   : Composes text for a Buildfile for Module::Build
   Returns   : String holding text for Buildfile
   Argument  : n/a
@@ -512,7 +512,7 @@ EOF
 
 =head3 C<file_text_proxy_makefile()>
 
-  Usage     : $self->file_text_proxy_makefile within complete_build()
+  Usage     : $self->file_text_proxy_makefile() within complete_build()
   Purpose   : Composes text for proxy makefile
   Returns   : String holding text for proxy makefile
   Argument  : n/a
@@ -634,7 +634,7 @@ sub compose_pm_file {
 
 =head3 C<block_begin()>
 
-  Usage     : $self->block_begin() within compose_pm_file()
+  Usage     : $self->block_begin($module) within compose_pm_file()
   Purpose   : Composes the standard code for top of a Perl pm file
   Returns   : String holding code for top of pm file
   Argument  : $module: pointer to the module being built
@@ -675,7 +675,8 @@ EOFBLOCK
 
 =head3 C<module_value()>
 
-  Usage     : $self->module_value() within block_begin(), file_text_test(),
+  Usage     : $self->module_value($module, @keys) 
+              within block_begin(), file_text_test(),
               compose_pm_file(),  block_module_header()
   Purpose   : When writing POD sections, you have to 'escape' 
               the POD markers to prevent the compiler from treating 
@@ -705,7 +706,7 @@ sub module_value {
 
 =head3 C<block_module_header()>
 
-  Usage     : $self->block_module_header() inside compose_pm_file()
+  Usage     : $self->block_module_header($module) inside compose_pm_file()
   Purpose   : Compose the main POD section within a pm file
   Returns   : String holding main POD section
   Argument  : $module: pointer to the module being built
@@ -778,7 +779,7 @@ EOFBLOCK
 
 =head3 C<block_subroutine_header()>
 
-  Usage     : $self->block_subroutine_header() within compose_pm_file()
+  Usage     : $self->block_subroutine_header($module) within compose_pm_file()
   Purpose   : Composes an inline comment for pm file (much like this inline
               comment) which documents purpose of a subroutine
   Returns   : String containing text for inline comment
@@ -853,7 +854,7 @@ EOFBLOCK
 
 =head3 C<block_final_one()>
 
-  Usage     : $self->block_final_one () within compose_pm_file()
+  Usage     : $self->block_final_one() within compose_pm_file()
   Purpose   : Compose code and comment that conclude a pm file and guarantee
               that the module returns a true value
   Returns   : String containing code and comment concluding a pm file
@@ -880,8 +881,8 @@ EOFBLOCK
 
 =head3 C<death_message()>
 
-  Usage     : $self->death_message( \@errors) in validate_values; 
-              check_dir; print_file
+  Usage     : $self->death_message( [ I<list of error messages> ] ) 
+              in validate_values; check_dir; print_file
   Purpose   : Croaks with error message composed from elements in the list
               passed by reference as argument
   Returns   : [ To come. ]
@@ -915,8 +916,7 @@ sub death_message {
   Purpose   : Prints log_message (currently, to STDOUT) if $self->{VERBOSE}
   Returns   : n/a
   Argument  : Scalar holding message to be logged
-  Comment   : [At present, it's only called in one place -- and even there
-              it's very short.  Perhaps it could be eliminated? ]
+  Comment   : 
 
 =cut
 
@@ -927,7 +927,8 @@ sub log_message {
 
 =head3 C<pod_section()>
 
-  Usage     : $self->pod_section() within block_module_header()
+  Usage     : $self->pod_section($heading, $content) within 
+              block_module_header()
   Purpose   : When writing POD sections, you have to 'escape' 
               the POD markers to prevent the compiler from treating 
               them as real POD.  This method 'unescapes' them and puts header
@@ -951,7 +952,7 @@ ENDOFSTUFF
 
 =head3 C<pod_wrapper()>
 
-  Usage     : $self->pod_wrapper() within block_module_header()
+  Usage     : $self->pod_wrapper($string) within block_module_header()
   Purpose   : When writing POD sections, you have to 'escape' 
               the POD markers to prevent the compiler from treating 
               them as real POD.  This method 'unescapes' them and puts header
@@ -980,12 +981,12 @@ my %pod_wrapper = (
 );
 
 sub pod_wrapper {
-    my ( $self, $section ) = @_;
+    my ( $self, $string ) = @_;
     my ($head, $tail);
     $head = $pod_wrapper{head};
     $tail = $pod_wrapper{tail};
     $tail =~ s/\n ====/\n=/g;
-    return join( '', $head, $section, $tail );
+    return join( '', $head, $string, $tail );
 }
 
 1;

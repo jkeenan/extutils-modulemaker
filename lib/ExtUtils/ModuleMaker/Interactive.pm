@@ -316,7 +316,7 @@ sub _prepare_author_defaults {
 sub Main_Menu {
     my $MOD = shift;
 
-    LOOP:  {
+    MAIN_LOOP:  {
         my $string = $messages{'Main Menu'};
         defined $MOD->{NAME} 
             ? $string =~ s|##name##|$MOD->{NAME}|
@@ -344,40 +344,31 @@ sub Main_Menu {
         }
         elsif ( $response eq 'G' ) {
             $MOD->set_author_composite();
-        # validate_values() returns an empty list if all values are
-        # good; so if its return value is true, we need to repeat
-        # the prompts; otherwise, we can proceed to complete_build()
-        # Note (08/16/2005):  I'm not sure why a false value for module
-        # NAME was not picked up by validate_values; so I'm adding a
-        # kludge.
-        # Ideally, once I figure out how to test the interactive mode
-        # properly, I'll test various bad values for other keys to see
-        # if validate_values picks them up.
             if (! $MOD->{NAME}) {
                 print "ERROR:  Must enter module name!\n";
-                next LOOP;
+                next MAIN_LOOP;
             } elsif ($MOD->validate_values()) {
                 print "Module files are being generated.\n";
                 return ('done');
             } else {
-                next LOOP;
+                next MAIN_LOOP;
             }
         }
         elsif ( $response eq 'H' ) {
             $MOD->set_author_composite();
             if (! $MOD->{NAME}) {
                 print "ERROR:  Must enter module name!\n";
-                next LOOP;
+                next MAIN_LOOP;
             } elsif ($MOD->validate_values()) {
                 $MOD->make_selections_defaults();
                 print "Module files are being generated;\n";
                 print "  selections are being saved as defaults.\n";
                 return ('done');
             } else {
-                next LOOP;
+                next MAIN_LOOP;
             }
         }
-    } # END LOOP
+    } # END MAIN_LOOP
     return ('Main Menu');
 }
 
