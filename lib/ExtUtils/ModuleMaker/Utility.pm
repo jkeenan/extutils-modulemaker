@@ -86,7 +86,9 @@ ExtUtils::ModuleMaker::Utility - Utility subroutines for EU::MM
   use ExtUtils::ModuleMaker::Utility qw( _get_personal_defaults_directory );
   ...
   $home_dir     = _get_home_directory();
-  $personal_dir = _get_personal_defaults_directory();
+  ($personal_dir, $no_personal_dir_flag) 
+                = _get_personal_defaults_directory();
+  _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
 
 =head1 DESCRIPTION
 
@@ -122,12 +124,22 @@ because C<$ENV{HOME}> is not defined there.
 =item * C<_get_personal_defaults_directory()>
 
 Once we have established that there exists an appropriate 'HOME' or home-like
-directory, we create a directory F<.modulemaker> underneath it.  This in turn
-will hold  ExtUtils::ModuleMaker::Personal::Defaults.
+directory, we see if there is a F<.modulemaker> directory underneath it.  If
+so, we return it; if not, we create it and return it.  If the directory was
+I<not> there originally, we set the C<$no_personal_dir_flag> to a true
+value and return it; otherwise that variable returns as C<undef>.  The 
+F<.modulemaker> directory will hold ExtUtils::ModuleMaker::Personal::Defaults.
 
 C<_get_personal_defaults_directory()> calls C<_get_home_directory()>
 internally, so if you are using C<_get_personal_defaults_directory()> you do
 not need to call C<_get_home_directory()> first.
+
+=item * C<_restore_personal_dir_status()>
+
+Undoes C<_get_personal_defaults_directory()>, I<i.e.,> if there was no
+F<.modulemaker> directory on the user's system before testing, any such
+directory created during testing is removed.  On the other hand, if there
+I<was> such a directory present before testing, it is left unchanged.
 
 =back
 

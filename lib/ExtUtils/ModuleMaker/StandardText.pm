@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::StandardText;
-# as of 08/20/2005
+# as of 08/29/2005
 use strict;
 local $^W = 1;
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
@@ -43,10 +43,11 @@ If you are on a windows box you should use 'nmake' rather than 'make'.
 );
 
 # Usage     : $self->file_text_README within complete_build()
-# Purpose   : Build a supporting file
-# Returns   : Text of the file being built
+# Purpose   : Build README
+# Returns   : String holding text of README
 # Argument  : n/a
 # Throws    : n/a
+# Comments  : Some text held in associated variable $README_text
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub file_text_README {
     my $self = shift;
@@ -57,13 +58,13 @@ sub file_text_README {
             : $README_text{mb_instructions};
     return "pod2text $self->{NAME}.pm > README\n" . 
         $README_text{readme_top} .
-    $build_instructions .
+        $build_instructions .
         $README_text{readme_bottom};
 }
 
 # Usage     : $self->file_text_Makefile 
-# Purpose   : Build a supporting file
-# Returns   : Text of the file being built
+# Purpose   : Build Makefile
+# Returns   : String holding text of Makefile
 # Argument  : n/a
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
@@ -94,39 +95,16 @@ WriteMakefile(
     return $page;
 }
 
-my %pod_wrapper = (
-    head => '
-
-#################### main pod documentation begin ###################
-## Below is the stub of documentation for your module. 
-## You better edit it!
-
-',
-    tail => '
-
- ====cut
-
-#################### main pod documentation end ###################
-
-',
-);
-
-sub pod_wrapper {
-    my ( $self, $section ) = @_;
-    my ($head, $tail);
-    $head = $pod_wrapper{head};
-    $tail = $pod_wrapper{tail};
-    $tail =~ s/\n ====/\n=/g;
-    return join( '', $head, $section, $tail );
-}
-
-# Usage     : $self->block_new_method() within generate_pm_file()
-# Purpose   : Build part of a module pm file
-# Returns   : Part of the file being built
-# Argument  : $module: pointer to the module being built, for the primary
-#                      module it is a pointer to $self
+# Usage     : $self->block_new_method() within build_page()
+# Purpose   : Build 'new()' method as part of a pm file
+# Returns   : String holding sub new.
+# Argument  : $module: pointer to the module being built
+#             (as there can be more than one module built by EU::MM);
+#             for the primary module it is a pointer to $self
 # Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
+# Comments  : This method is a likely candidate for alteration in a subclass,
+#             e.g., pass a single hash-ref to new() instead of a list of
+#             parameters.
 sub block_new_method {
     my $self = shift;
     return <<'EOFBLOCK';
@@ -143,13 +121,28 @@ sub new
 EOFBLOCK
 }
 
-# Usage     : $self->block_module_header ()
-# Purpose   : Build part of a module pm file
-# Returns   : Part of the file being built
-# Argument  : $module: pointer to the module being built, for the primary
-#                      module it is a pointer to $self
+# Usage     : $self->block_module_header() inside build_page()
+# Purpose   : Compose the main POD section within a pm file
+# Returns   : String holding main POD section
+# Argument  : $module: pointer to the module being built
+#             (as there can be more than one module built by EU::MM);
+#             for the primary module it is a pointer to $self
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
+# Comments  : In StandardText formulation, contains the following components:
+#             warning about stub documentation needing editing
+#             pod wrapper top
+#             NAME - ABSTRACT
+#             SYNOPSIS
+#             DESCRIPTION
+#             USAGE
+#             BUGS
+#             SUPPORT
+#             HISTORY (as requested)
+#             AUTHOR
+#             COPYRIGHT
+#             SEE ALSO
+#             pod wrapper bottom
 sub block_module_header {
     my ( $self, $module ) = @_;
 
@@ -196,6 +189,46 @@ EOFBLOCK
     return $self->pod_wrapper($string);
 }
 
+my %pod_wrapper = (
+    head => '
+
+#################### main pod documentation begin ###################
+## Below is the stub of documentation for your module. 
+## You better edit it!
+
+',
+    tail => '
+
+ ====cut
+
+#################### main pod documentation end ###################
+
+',
+);
+
+# Usage     : $self->pod_wrapper() within block_module_header()
+# Purpose   : When writing POD sections, you have to 'escape' 
+#             the POD markers to prevent the compiler from treating 
+#             them as real POD.  This method 'unescapes' them and puts header
+#             and closer around main POD block in pm file, along with warning
+#             about stub documentation.
+# Argument  : String built up within block_module_header().
+# Comments  : Some text held in associated variable %pod_wrapper.
+sub pod_wrapper {
+    my ( $self, $section ) = @_;
+    my ($head, $tail);
+    $head = $pod_wrapper{head};
+    $tail = $pod_wrapper{tail};
+    $tail =~ s/\n ====/\n=/g;
+    return join( '', $head, $section, $tail );
+}
+
+# Usage     : $self->pod_section() within block_module_header()
+# Purpose   : When writing POD sections, you have to 'escape' 
+#             the POD markers to prevent the compiler from treating 
+#             them as real POD.  This method 'unescapes' them and puts header
+#             and closer around individual POD headings within pm file.
+# Arguments : Variables holding POD section name and text of POD section.
 sub pod_section {
     my ( $self, $heading, $content ) = @_;
     my $string = <<ENDOFSTUFF;
@@ -209,6 +242,13 @@ ENDOFSTUFF
     return $string;
 }
 
+# Usage     : $self->module_value() within block_begin(), file_text_test(),
+#             build_page(),  block_module_header()
+# Purpose   : When writing POD sections, you have to 'escape' 
+#             the POD markers to prevent the compiler from treating 
+#             them as real POD.  This method 'unescapes' them and puts header
+#             and closer around individual POD headings within pm file.
+# Arguments : 
 sub module_value {
     my ( $self, $module, @keys ) = @_;
 
@@ -259,8 +299,9 @@ EOF
 # Usage     : $self->block_subroutine_header() within generate_pm_file()
 # Purpose   : Build part of a module pm file
 # Returns   : Part of the file being built
-# Argument  : $module: pointer to the module being built, for the primary
-#                      module it is a pointer to $self
+# Argument  : $module: pointer to the module being built
+#             (as there can be more than one module built by EU::MM);
+#             for the primary module it is a pointer to $self
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub block_subroutine_header {
@@ -294,8 +335,9 @@ EOFBLOCK
 # Usage     : $self->block_final_one ()
 # Purpose   : Make module return a true value
 # Returns   : Part of the file being built
-# Argument  : $module: pointer to the module being built, for the primary
-#                      module it is a pointer to $self
+# Argument  : $module: pointer to the module being built
+#             (as there can be more than one module built by EU::MM);
+#             for the primary module it is a pointer to $self
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
 sub block_final_one {
@@ -309,13 +351,16 @@ sub block_final_one {
 EOFBLOCK
 }
 
-# Usage     : $self->block_begin() within generate_pm_file()
-# Purpose   : Build part of a module pm file
-# Returns   : Part of the file being built
-# Argument  : $module: pointer to the module being built, for the primary
-#                      module it is a pointer to $self
+# Usage     : $self->block_begin() within build_page()
+# Purpose   : Composes the standard code for top of a Perl pm file
+# Returns   : String holding code for top of pm file
+# Argument  : $module: pointer to the module being built
+#             (as there can be more than one module built by EU::MM);
+#             for the primary module it is a pointer to $self
 # Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
+# Comments  : This method is a likely candidate for alteration in a subclass,
+#             e.g., you don't need Exporter-related code if you're building 
+#             an OO-module.
 sub block_begin {
     my ( $self, $module ) = @_;
 
