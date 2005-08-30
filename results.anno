@@ -1,12 +1,12 @@
-block_begin                    652 build_page
-block_final_one                870 build_page
-block_module_header            734 build_page
-block_new_method               839 build_page
-block_subroutine_header        796 build_page
-build_page                     601 generate_pm_file
+block_begin                    652 compose_pm_file
+block_final_one                870 compose_pm_file
+block_module_header            734 compose_pm_file
+block_new_method               839 compose_pm_file
+block_subroutine_header        796 compose_pm_file
+compose_pm_file                601 generate_pm_file
 check_dir                      199 create_base_directory; create_pm_basics; complete_build
 create_base_directory          179 complete_build
-create_pm_basics               245 complete build; generate_pm_file
+create_pm_basics               245 generate_pm_file
 death_message                  894 print_file; check_dir; validate_values
 file_text_Buildfile            507 complete_build: argument to print_file
 file_text_Changes              373 complete_build: argument to print_file; block_module_header
@@ -18,7 +18,7 @@ file_text_test                 411 complete_build: argument to print_file
 generate_pm_file               267 complete_build
 initialize_license             146 new; Interactive::License_Menu
 log_message                    924 print_file
-module_value                   692 build_page; block_begin; file_text_test; block_module_header
+module_value                   692 compose_pm_file; block_begin; file_text_test; block_module_header
 pod_section                    940 block_module_header
 pod_wrapper                    983 block_module_header
 print_file                     218 complete_build; generate_pm_file

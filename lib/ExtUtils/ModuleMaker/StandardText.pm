@@ -55,7 +55,7 @@ Happy subclassing!
               CPANID, ORGANIZATION, EMAIL and WEBSITE
   Returns   : n/a
   Argument  : n/a
-  Comments  : 
+  Comment   : 
 
 =cut
 
@@ -80,7 +80,7 @@ sub set_author_composite {
   Purpose   : Sets 3 keys in $self:  year, timestamp and COPYRIGHT_YEAR
   Returns   : n/a
   Argument  : n/a
-  Comments  : 
+  Comment   : 
 
 =cut
 
@@ -99,7 +99,7 @@ sub set_dates {
   Returns   : Error message if there is a problem
   Argument  : n/a
   Throws    : Will die with a death_message if errors and not interactive.
-  Comments  : References many $self keys
+  Comment   : References many $self keys
 
 =cut
 
@@ -136,7 +136,7 @@ sub validate_values {
               ORGANIZATION; sets $self keys LICENSE and LicenseParts
   Returns   : n/a
   Argument  : n/a 
-  Comments  :
+  Comment   :
 
 =cut 
 
@@ -169,7 +169,7 @@ sub initialize_license {
   Purpose   : Create the directory where all the files will be created.
   Returns   : $DIR = directory name where the files will live
   Argument  : n/a
-  Comments  : $self keys Base_Dir, COMPACT, NAME.  Calls method check_dir.
+  Comment   : $self keys Base_Dir, COMPACT, NAME.  Calls method check_dir.
 
 =cut
 
@@ -183,13 +183,15 @@ sub create_base_directory {
 
 =head3 C<check_dir()>
 
-  Usage     : check_dir ($dir, $MODE); in complete_build; create_base_directory;
-              create_pm_basics 
-  Purpose   : Creates a directory with the correct mode if needed.
+  Usage     : check_dir( [ I<list of directories to be built> ] )
+              in complete_build; create_base_directory; create_pm_basics 
+  Purpose   : Creates directory(ies) requested.
   Returns   : n/a
-  Argument  : $dir = directory name
-              $MODE = mode of directory (e.g. 0777, 0755)
-  Comments  : Adds to death message in event of failure
+  Argument  : Reference to an array holding list of directories to be created.
+  Comment   : Essentially a wrapper around File::Path::mkpath.  Will use
+              values in $self keys VERBOSE and PERMISSIONS to provide 
+              2nd and 3rd arguments to mkpath if requested.
+  Comment   : Adds to death message in event of failure.
 
 =cut
 
@@ -202,18 +204,18 @@ sub check_dir {
 
 =head3 C<print_file()>
 
-  Usage     : $self->print_file() within generate_pm_file()
+  Usage     : $self->print_file($filename, $filetext) within generate_pm_file()
   Purpose   : Adds the file being created to MANIFEST, then prints text to new
               file.  Logs file creation under verbose.  Adds info for
               death_message in event of failure. 
   Returns   : n/a
   Argument  : 2 arguments: filename and text to be printed
-  Comments  : 
+  Comment   : 
 
 =cut
 
 sub print_file {
-    my ( $self, $filename, $page ) = @_;
+    my ( $self, $filename, $filetext ) = @_;
 
     push( @{ $self->{MANIFEST} }, $filename )
       unless ( $filename eq 'MANIFEST' );
@@ -222,31 +224,8 @@ sub print_file {
     local *FILE;
     open( FILE, ">$self->{Base_Dir}/$filename" )
       or $self->death_message( [ "Could not write '$filename', $!" ] );
-    print FILE $page;
+    print FILE $filetext;
     close FILE;
-}
-
-=head3 C<create_pm_basics>
-
-  Usage     : $self->create_pm_basics() within complete_build()
-  Purpose   : Conducts check on directory 
-  Returns   : For a given pm file, sets the FILE key: directory/file 
-  Argument  : $module: pointer to the module being built
-              (as there can be more than one module built by EU::MM);
-              for the primary module it is a pointer to $self
-  Comments  : References $self keys NAME, Base_Dir, and FILE.  
-              Calls method check_dir.
-
-=cut
-
-sub create_pm_basics {
-    my ( $self, $module ) = @_;
-    my @layers = split( /::/, $module->{NAME} );
-    my $file   = pop(@layers);
-    my $dir    = join( '/', 'lib', @layers );
-
-    $self->check_dir("$self->{Base_Dir}/$dir");
-    $module->{FILE} = "$dir/$file.pm";
 }
 
 =head3 C<generate_pm_file>
@@ -257,7 +236,7 @@ sub create_pm_basics {
   Argument  : $module: pointer to the module being built
               (as there can be more than one module built by EU::MM);
               for the primary module it is a pointer to $self
-  Comments  : 3 components:  create_pm_basics; build_page; print_file
+  Comment   : 3 components:  create_pm_basics; compose_pm_file; print_file
 
 =cut
 
@@ -266,7 +245,7 @@ sub generate_pm_file {
 
     $self->create_pm_basics($module);
 
-    my $page = $self->build_page($module);
+    my $page = $self->compose_pm_file($module);
 
     $self->print_file( $module->{FILE}, $page );
 }
@@ -280,8 +259,8 @@ sub generate_pm_file {
   Returns   : String holding text of README
   Argument  : n/a
   Throws    : n/a
-  Comments  : Some text held in associated variable $README_text
-  Comments  : This method is a likely candidate for alteration in a subclass
+  Comment   : Some text held in associated variable $README_text
+  Comment   : This method is a likely candidate for alteration in a subclass
 
 =cut
 
@@ -334,8 +313,8 @@ sub file_text_README {
   Returns   : String with text of ToDo file
   Argument  : n/a
   Throws    : n/a
-  Comments  : This method is a likely candidate for alteration in a subclass
-  Comments  : References $self key NAME
+  Comment   : This method is a likely candidate for alteration in a subclass
+  Comment   : References $self key NAME
 
 =cut
 
@@ -362,8 +341,8 @@ EOF
   Argument  : $only_in_pod:  True value to get only a HISTORY section for POD
                              False value to get whole Changes file
   Throws    : n/a
-  Comments  : This method is a likely candidate for alteration in a subclass
-  Comments  : Accesses $self keys NAME, VERSION, timestamp, eumm_version
+  Comment   : This method is a likely candidate for alteration in a subclass
+  Comment   : Accesses $self keys NAME, VERSION, timestamp, eumm_version
 
 =cut
 
@@ -400,7 +379,7 @@ EOF
   Returns   : String holding complete text for a test file.
   Argument  : Two arguments: $testnum and $module
   Throws    : n/a
-  Comments  : This method is a likely candidate for alteration in a subclass
+  Comment   : This method is a likely candidate for alteration in a subclass
               Will make a test with or without a checking for method new.
 
 =cut
@@ -457,7 +436,7 @@ EOF
   Returns   : String holding text of Makefile
   Argument  : n/a
   Throws    : n/a
-  Comments  : This method is a likely candidate for alteration in a subclass
+  Comment   : This method is a likely candidate for alteration in a subclass
 
 =cut
 
@@ -495,9 +474,9 @@ WriteMakefile(
   Returns   : String holding text for Buildfile
   Argument  : n/a
   Throws    : n/a
-  Comments  : This method is a likely candidate for alteration in a subclass,
+  Comment   : This method is a likely candidate for alteration in a subclass,
               e.g., respond to improvements in Module::Build
-  Comments  : References $self keys NAME and LICENSE
+  Comment   : References $self keys NAME and LICENSE
 
 =cut
 
@@ -538,7 +517,7 @@ EOF
   Returns   : String holding text for proxy makefile
   Argument  : n/a
   Throws    : n/a
-  Comments  : This method is a likely candidate for alteration in a subclass
+  Comment   : This method is a likely candidate for alteration in a subclass
 
 =cut
 
@@ -582,20 +561,43 @@ EOF
 
 =head2 Methods Called within C<generate_pm_file()>
 
-=head3 C<build_page()>
+=head3 C<create_pm_basics>
 
-  Usage     : $self->build_page() within generate_pm_file()
+  Usage     : $self->create_pm_basics($module) within generate_pm_file()
+  Purpose   : Conducts check on directory 
+  Returns   : For a given pm file, sets the FILE key: directory/file 
+  Argument  : $module: pointer to the module being built
+              (as there can be more than one module built by EU::MM);
+              for the primary module it is a pointer to $self
+  Comment   : References $self keys NAME, Base_Dir, and FILE.  
+              Calls method check_dir.
+
+=cut
+
+sub create_pm_basics {
+    my ( $self, $module ) = @_;
+    my @layers = split( /::/, $module->{NAME} );
+    my $file   = pop(@layers);
+    my $dir    = join( '/', 'lib', @layers );
+
+    $self->check_dir("$self->{Base_Dir}/$dir");
+    $module->{FILE} = "$dir/$file.pm";
+}
+
+=head3 C<compose_pm_file()>
+
+  Usage     : $self->compose_pm_file($module) within generate_pm_file()
   Purpose   : Composes a string holding all elements for a pm file
   Returns   : String holding text for a pm file
   Argument  : $module: pointer to the module being built
               (as there can be more than one module built by EU::MM);
               for the primary module it is a pointer to $self
-  Comments  : [Method name is inaccurate; it's not building a 'page' but
+  Comment   : [Method name is inaccurate; it's not building a 'page' but
               rather the text for a pm file.
 
 =cut
 
-sub build_page {
+sub compose_pm_file {
     my $self = shift;
     my $module = shift;
       
@@ -628,21 +630,21 @@ sub build_page {
 }
 
 
-=head2 Methods Called within C<build_page()>
+=head2 Methods Called within C<compose_pm_file()>
 
 =head3 C<block_begin()>
 
-  Usage     : $self->block_begin() within build_page()
+  Usage     : $self->block_begin() within compose_pm_file()
   Purpose   : Composes the standard code for top of a Perl pm file
   Returns   : String holding code for top of pm file
   Argument  : $module: pointer to the module being built
               (as there can be more than one module built by EU::MM);
               for the primary module it is a pointer to $self
   Throws    : n/a
-  Comments  : This method is a likely candidate for alteration in a subclass,
+  Comment   : This method is a likely candidate for alteration in a subclass,
               e.g., you don't need Exporter-related code if you're building 
               an OO-module.
-  Comments  : References $self keys NAME and (indirectly) VERSION
+  Comment   : References $self keys NAME and (indirectly) VERSION
 
 =cut
 
@@ -674,7 +676,7 @@ EOFBLOCK
 =head3 C<module_value()>
 
   Usage     : $self->module_value() within block_begin(), file_text_test(),
-              build_page(),  block_module_header()
+              compose_pm_file(),  block_module_header()
   Purpose   : When writing POD sections, you have to 'escape' 
               the POD markers to prevent the compiler from treating 
               them as real POD.  This method 'unescapes' them and puts header
@@ -703,15 +705,15 @@ sub module_value {
 
 =head3 C<block_module_header()>
 
-  Usage     : $self->block_module_header() inside build_page()
+  Usage     : $self->block_module_header() inside compose_pm_file()
   Purpose   : Compose the main POD section within a pm file
   Returns   : String holding main POD section
   Argument  : $module: pointer to the module being built
               (as there can be more than one module built by EU::MM);
               for the primary module it is a pointer to $self
   Throws    : n/a
-  Comments  : This method is a likely candidate for alteration in a subclass
-  Comments  : In StandardText formulation, contains the following components:
+  Comment   : This method is a likely candidate for alteration in a subclass
+  Comment   : In StandardText formulation, contains the following components:
               warning about stub documentation needing editing
               pod wrapper top
               NAME - ABSTRACT
@@ -776,7 +778,7 @@ EOFBLOCK
 
 =head3 C<block_subroutine_header()>
 
-  Usage     : $self->block_subroutine_header() within build_page()
+  Usage     : $self->block_subroutine_header() within compose_pm_file()
   Purpose   : Composes an inline comment for pm file (much like this inline
               comment) which documents purpose of a subroutine
   Returns   : String containing text for inline comment
@@ -784,7 +786,7 @@ EOFBLOCK
               (as there can be more than one module built by EU::MM);
               for the primary module it is a pointer to $self
   Throws    : n/a
-  Comments  : This method is a likely candidate for alteration in a subclass
+  Comment   : This method is a likely candidate for alteration in a subclass
               E.g., some may prefer this info to appear in POD rather than
               inline comments.
 
@@ -803,7 +805,7 @@ sub block_subroutine_header {
  Returns   : What it returns
  Argument  : What it wants to know
  Throws    : Exceptions and other anomolies
- Comments  : This is a sample subroutine header.
+ Comment   : This is a sample subroutine header.
            : It is polite to include more pod and fewer comments.
 
 See Also   : 
@@ -820,14 +822,14 @@ EOFBLOCK
 
 =head3 C<block_new_method()>
 
-  Usage     : $self->block_new_method() within build_page()
+  Usage     : $self->block_new_method() within compose_pm_file()
   Purpose   : Build 'new()' method as part of a pm file
   Returns   : String holding sub new.
   Argument  : $module: pointer to the module being built
               (as there can be more than one module built by EU::MM);
               for the primary module it is a pointer to $self
   Throws    : n/a
-  Comments  : This method is a likely candidate for alteration in a subclass,
+  Comment   : This method is a likely candidate for alteration in a subclass,
               e.g., pass a single hash-ref to new() instead of a list of
               parameters.
 
@@ -851,7 +853,7 @@ EOFBLOCK
 
 =head3 C<block_final_one()>
 
-  Usage     : $self->block_final_one () within build_page()
+  Usage     : $self->block_final_one () within compose_pm_file()
   Purpose   : Compose code and comment that conclude a pm file and guarantee
               that the module returns a true value
   Returns   : String containing code and comment concluding a pm file
@@ -859,7 +861,7 @@ EOFBLOCK
               (as there can be more than one module built by EU::MM);
               for the primary module it is a pointer to $self
   Throws    : n/a
-  Comments  : This method is a likely candidate for alteration in a subclass,
+  Comment   : This method is a likely candidate for alteration in a subclass,
               e.g., some may not want the comment line included.
 
 =cut
@@ -884,7 +886,7 @@ EOFBLOCK
               passed by reference as argument
   Returns   : [ To come. ]
   Argument  : Reference to an array holding list of error messages accumulated
-  Comments  : Different functioning in modulemaker interactive mode
+  Comment   : Different functioning in modulemaker interactive mode
 
 =cut
 
@@ -913,7 +915,7 @@ sub death_message {
   Purpose   : Prints log_message (currently, to STDOUT) if $self->{VERBOSE}
   Returns   : n/a
   Argument  : Scalar holding message to be logged
-  Comments  : [At present, it's only called in one place -- and even there
+  Comment   : [At present, it's only called in one place -- and even there
               it's very short.  Perhaps it could be eliminated? ]
 
 =cut
@@ -956,7 +958,7 @@ ENDOFSTUFF
               and closer around main POD block in pm file, along with warning
               about stub documentation.
   Argument  : String built up within block_module_header().
-  Comments  : Some text held in associated variable %pod_wrapper.
+  Comment   : Some text held in associated variable %pod_wrapper.
 
 =cut
 
