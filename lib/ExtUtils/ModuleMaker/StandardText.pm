@@ -248,7 +248,10 @@ ENDOFSTUFF
 #             the POD markers to prevent the compiler from treating 
 #             them as real POD.  This method 'unescapes' them and puts header
 #             and closer around individual POD headings within pm file.
-# Arguments : 
+# Arguments : First is pointer to module being formed.  Second is an array
+#             whose members are the section(s) of the POD being written. 
+# Comment   : [The method's name is very opaque and not self-documenting.
+#             Function of the code is not easily evident.  Rename?  Refactor?]
 sub module_value {
     my ( $self, $module, @keys ) = @_;
 
@@ -265,12 +268,13 @@ sub module_value {
 }
 
 # Usage     : $self->file_text_Changes within block_module_header()
-# Purpose   : Build a supporting file
-# Returns   : Text of the file being built
+# Purpose   : Composes text for Changes file
+# Returns   : String holding text for Changes file
 # Argument  : $only_in_pod:  True value to get only a HISTORY section for POD
 #                            False value to get whole Changes file
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
+# Comments  : Accesses $self keys NAME, VERSION, timestamp, eumm_version
 sub file_text_Changes {
     my ( $self, $only_in_pod ) = @_;
 
@@ -296,14 +300,17 @@ EOF
     return $page;
 }
 
-# Usage     : $self->block_subroutine_header() within generate_pm_file()
-# Purpose   : Build part of a module pm file
-# Returns   : Part of the file being built
+# Usage     : $self->block_subroutine_header() within build_page()
+# Purpose   : Composes an inline comment for pm file (much like this inline
+#             comment) which documents purpose of a subroutine
+# Returns   : String containing text for inline comment
 # Argument  : $module: pointer to the module being built
 #             (as there can be more than one module built by EU::MM);
 #             for the primary module it is a pointer to $self
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
+#             E.g., some may prefer this info to appear in POD rather than
+#             inline comments.
 sub block_subroutine_header {
     my ( $self, $module ) = @_;
     my $string = <<EOFBLOCK;
@@ -332,17 +339,18 @@ EOFBLOCK
     return $string;
 }
 
-# Usage     : $self->block_final_one ()
-# Purpose   : Make module return a true value
-# Returns   : Part of the file being built
+# Usage     : $self->block_final_one () within build_page()
+# Purpose   : Compose code and comment that conclude a pm file and guarantee
+#             that the module returns a true value
+# Returns   : String containing code and comment concluding a pm file
 # Argument  : $module: pointer to the module being built
 #             (as there can be more than one module built by EU::MM);
 #             for the primary module it is a pointer to $self
 # Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
+# Comments  : This method is a likely candidate for alteration in a subclass,
+#             e.g., some may not want the comment line included.
 sub block_final_one {
     my $self = shift;
-#    $block_final_one;
     return <<EOFBLOCK;
 
 1;
@@ -361,6 +369,7 @@ EOFBLOCK
 # Comments  : This method is a likely candidate for alteration in a subclass,
 #             e.g., you don't need Exporter-related code if you're building 
 #             an OO-module.
+# Comments  : References $self keys NAME and (indirectly) VERSION
 sub block_begin {
     my ( $self, $module ) = @_;
 
@@ -387,11 +396,12 @@ EOFBLOCK
 }
 
 # Usage     : $self->file_text_ToDo() within complete_build()
-# Purpose   : Build a supporting file
-# Returns   : Text of the file being built
+# Purpose   : Composes text for ToDo file
+# Returns   : String with text of ToDo file
 # Argument  : n/a
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
+# Comments  : References $self key NAME
 sub file_text_ToDo {
     my $self = shift;
 
@@ -407,11 +417,13 @@ EOF
 }
 
 # Usage     : $self->file_text_Buildfile within complete_build() 
-# Purpose   : Build a supporting file
-# Returns   : Text of the file being built
+# Purpose   : Composes text for a Buildfile for Module::Build
+# Returns   : String holding text for Buildfile
 # Argument  : n/a
 # Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
+# Comments  : This method is a likely candidate for alteration in a subclass,
+#             e.g., respond to improvements in Module::Build
+# Comments  : References $self keys NAME and LICENSE
 sub file_text_Buildfile {
     my $self = shift;
 
@@ -443,8 +455,8 @@ EOF
 }
 
 # Usage     : $self->file_text_proxy_makefile within complete_build()
-# Purpose   : Build a supporting file
-# Returns   : Text of the file being built
+# Purpose   : Composes text for proxy makefile
+# Returns   : String holding text for proxy makefile
 # Argument  : n/a
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
@@ -486,9 +498,10 @@ EOF
 }
 
 # Usage     : $self->file_text_test within complete_build()
-# Purpose   : Build a supporting file
-# Returns   : Text of the file being built
-# Argument  : n/a
+# Purpose   : Composes text for a test for each pm file being requested in
+#             call to EU::MM
+# Returns   : String holding complete text for a test file.
+# Argument  : Two arguments: $testnum and $module
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
 #             Will make a test with or without a checking for method new.
@@ -542,7 +555,11 @@ EOF
 # Returns   : Error message if there is a problem
 # Argument  : n/a
 # Throws    : Will die with a death_message if errors and not interactive.
-# Comments  : 
+# Comments  : References many $self keys
+# Comments  : [Name is inaccurate; it performs validation, not verification.
+#             Also: currently, successful validation of values causes method
+#             to return an undef, rather than a true value.  This is
+#             counterintuitive.]
 sub verify_values {
     my $self = shift;
     my @errors = ();
@@ -567,6 +584,13 @@ sub verify_values {
     $self->death_message(\@errors);
 }
 
+# Usage     : $self->generate_pm_file() within complete_build()
+# Purpose   : Create a pm file out of assembled components
+# Returns   : n/a
+# Argument  : $module: pointer to the module being built
+#             (as there can be more than one module built by EU::MM);
+#             for the primary module it is a pointer to $self
+# Comments  : 3 components:  create_pm_basics; build_page; print_file
 sub generate_pm_file {
     my ( $self, $module ) = @_;
 
@@ -577,6 +601,14 @@ sub generate_pm_file {
     $self->print_file( $module->{FILE}, $page );
 }
 
+# Usage     : $self->build_page() within generate_pm_file()
+# Purpose   : Composes a string holding all elements for a pm file
+# Returns   : String holding text for a pm file
+# Argument  : $module: pointer to the module being built
+#             (as there can be more than one module built by EU::MM);
+#             for the primary module it is a pointer to $self
+# Comments  : [Method name is inaccurate; it's not building a 'page' but
+#             rather the text for a pm file.
 sub build_page {
     my $self = shift;
     my $module = shift;
@@ -609,6 +641,11 @@ sub build_page {
     return ($module, $page);
 }
 
+# Usage     : $self->set_dates() within new()
+# Purpose   : Sets 3 keys in $self:  year, timestamp and COPYRIGHT_YEAR
+# Returns   : n/a
+# Argument  : n/a
+# Comments  : 
 sub set_dates {
     my $self = shift;
     $self->{year}      = (localtime)[5] + 1900;
@@ -616,6 +653,14 @@ sub set_dates {
     $self->{COPYRIGHT_YEAR} ||= $self->{year};
 }
 
+# Usage     : $self->set_author_composite() within new() and
+#             Interactive::Main_Menu()
+# Purpose   : Sets $self key COMPOSITE by composing it from $self keys AUTHOR,
+#             CPANID, ORGANIZATION, EMAIL and WEBSITE
+# 
+# Returns   : n/a
+# Argument  : n/a
+# Comments  : 
 sub set_author_composite {
     my $self = shift;
 
@@ -631,12 +676,11 @@ sub set_author_composite {
     );
 }
 
-# Usage     : 
+# Usage     : $self->create_base_directory within complete_build()
 # Purpose   : Create the directory where all the files will be created.
-# Returns    $DIR = directory name where the files will live
-# Argument   $package_name = name of module separated by '::'
-# Throws    : 
-# Comments  : see also:  check_dir()
+# Returns   : $DIR = directory name where the files will live
+# Argument  : n/a
+# Comments  : $self keys Base_Dir, COMPACT, NAME.  Calls method check_dir.
 sub create_base_directory {
     my $self = shift;
 
@@ -645,6 +689,14 @@ sub create_base_directory {
     $self->check_dir( $self->{Base_Dir} );
 }
 
+# Usage     : $self->create_pm_basics() within complete_build()
+# Purpose   : Conducts check on directory 
+# Returns   : For a given pm file, sets the FILE key: directory/file 
+# Argument  : $module: pointer to the module being built
+#             (as there can be more than one module built by EU::MM);
+#             for the primary module it is a pointer to $self
+# Comments  : References $self keys NAME, Base_Dir, and FILE.  
+#             Calls method check_dir.
 sub create_pm_basics {
     my ( $self, $module ) = @_;
     my @layers = split( /::/, $module->{NAME} );
@@ -655,6 +707,14 @@ sub create_pm_basics {
     $module->{FILE} = "$dir/$file.pm";
 }
 
+# Usage     : $self->initialize_license() within new() and
+#             Interactive::License_Menu
+# Purpose   : Gets appropriate license and, where necessary, fills in 'blanks'
+#             with information such as COPYRIGHT_YEAR, AUTHOR and
+#             ORGANIZATION; sets $self keys LICENSE and LicenseParts
+# Returns   : n/a
+# Argument  : n/a 
+# Comments  :
 sub initialize_license {
     my $self = shift;
 
@@ -676,6 +736,13 @@ sub initialize_license {
 
 }
 
+# Usage     : $self->print_file() within generate_pm_file()
+# Purpose   : Adds the file being created to MANIFEST, then prints text to new
+#             file.  Logs file creation under verbose.  Adds info for
+#             death_message in event of failure. 
+# Returns   : n/a
+# Argument  : 2 arguments: filename and text to be printed
+# Comments  : 
 sub print_file {
     my ( $self, $filename, $page ) = @_;
 
@@ -686,17 +753,17 @@ sub print_file {
     local *FILE;
     open( FILE, ">$self->{Base_Dir}/$filename" )
       or $self->death_message( [ "Could not write '$filename', $!" ] );
-    print FILE ($page);
+    print FILE $page;
     close FILE;
 }
 
-# Usage     : check_dir ($dir, $MODE);
+# Usage     : check_dir ($dir, $MODE); in create_base_directory;
+#             create_pm_basics; complete_build
 # Purpose   : Creates a directory with the correct mode if needed.
 # Returns   : n/a
 # Argument  : $dir = directory name
 #             $MODE = mode of directory (e.g. 0777, 0755)
-# Throws    : 
-# Comments  : 
+# Comments  : Adds to death message in event of failure
 sub check_dir {
     my $self = shift;
 
@@ -704,6 +771,13 @@ sub check_dir {
     $self->death_message( [ "Can't create a directory: $!" ] );
 }
 
+# Usage     : $self->death_message( \@errors) in verify_values; 
+#             check_dir; print_file
+# Purpose   : Croaks with error message composed from elements in the list
+#             passed by reference as argument
+# Returns   : [ To come. ]
+# Argument  : Reference to an array holding list of error messages accumulated
+# Comments  : Different functioning in modulemaker interactive mode
 sub death_message {
     my $self = shift;
     my $errorref = shift;
@@ -723,6 +797,12 @@ sub death_message {
     }
 }
 
+# Usage     : $self->log_message( $message ) in print_file; 
+# Purpose   : Prints log_message (currently, to STDOUT) if $self->{VERBOSE}
+# Returns   : n/a
+# Argument  : Scalar holding message to be logged
+# Comments  : [At present, it's only called in one place -- and even there
+#             it's very short.  Perhaps it could be eliminated? ]
 sub log_message {
     my ( $self, $message ) = @_;
     print "$message\n" if $self->{VERBOSE};

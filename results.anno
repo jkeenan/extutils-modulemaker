@@ -1,0 +1,27 @@
+block_begin                    319 build_page
+block_final_one                301 build_page
+block_module_header            153 build_page
+block_new_method               130 build_page 
+block_subroutine_header        266 build_page
+build_page                     535 generate_pm_file
+check_dir                      655 create_base_directory; create_pm_basics; complete_build
+create_base_directory          595 complete_build
+create_pm_basics               603 complete build
+death_message                  662 print_file; check_dir; verify_values
+file_text_Buildfile            370 complete_build: argument to print_file()
+file_text_Changes              234 block_module_header
+file_text_Makefile              70 complete_build: argument to print_file()
+file_text_README                51 complete_build: argument to print_file()
+file_text_ToDo                 350 complete_build: argument to print_file()
+file_text_proxy_makefile       406 complete_build: argument to print_file()
+file_text_test                 450 complete_build: argument to print_file()
+generate_pm_file               525 complete_build
+initialize_license             613 new; Interactive::License_Menu
+log_message                    681 print_file
+module_value                   212 block_begin; file_text_test; build_page; block_module_header
+pod_section                    199 block_module_header
+pod_wrapper                    114 block_module_header
+print_file                     634 generate_pm_file
+set_author_composite           574 new; Interactive::Main_Menu
+set_dates                      567 new
+verify_values                  501 new; Interactive::Main_Menu
