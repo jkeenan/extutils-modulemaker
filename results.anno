@@ -7,7 +7,7 @@ build_page                     601 generate_pm_file
 check_dir                      199 create_base_directory; create_pm_basics; complete_build
 create_base_directory          179 complete_build
 create_pm_basics               245 complete build; generate_pm_file
-death_message                  894 print_file; check_dir; verify_values
+death_message                  894 print_file; check_dir; validate_values
 file_text_Buildfile            507 complete_build: argument to print_file
 file_text_Changes              373 complete_build: argument to print_file; block_module_header
 file_text_Makefile             467 complete_build: argument to print_file
@@ -24,4 +24,4 @@ pod_wrapper                    983 block_module_header
 print_file                     218 complete_build; generate_pm_file
 set_author_composite            62 new; Interactive::Main_Menu
 set_dates                       87 new
-verify_values                  109 new; Interactive::Main_Menu
+validate_values                109 new; Interactive::Main_Menu

@@ -70,7 +70,7 @@ sub new {
     $self->{MANIFEST} = ['MANIFEST'];
 
     # 6.  Validate values supplied so far to weed out most likely errors
-    $self->verify_values();
+    $self->validate_values();
 
     # 7.  Initialize keys set from EU::MM::Licenses::Local or
     # EU::MM::Licenses::Standard

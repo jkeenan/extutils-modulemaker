@@ -91,23 +91,19 @@ sub set_dates {
     $self->{COPYRIGHT_YEAR} ||= $self->{year};
 }
 
-=head3 C<verify_values()>
+=head3 C<validate_values()>
 
-  Usage     : $self->verify_values() within complete_build() and 
+  Usage     : $self->validate_values() within complete_build() and 
               Interactive::Main_Menu()
   Purpose   : Verify module values are valid and complete.
   Returns   : Error message if there is a problem
   Argument  : n/a
   Throws    : Will die with a death_message if errors and not interactive.
   Comments  : References many $self keys
-  Comments  : [Name is inaccurate; it performs validation, not verification.
-              Also: currently, successful validation of values causes method
-              to return an undef, rather than a true value.  This is
-              counterintuitive.]
 
 =cut
 
-sub verify_values {
+sub validate_values {
     my $self = shift;
     my @errors = ();
 
@@ -127,7 +123,6 @@ sub verify_values {
       unless ( Verify_Local_License( $self->{LICENSE} )
         || Verify_Standard_License( $self->{LICENSE} ) );
 
-#    return unless @errors;
     return 1 unless @errors;
     $self->death_message(\@errors);
 }
@@ -883,7 +878,7 @@ EOFBLOCK
 
 =head3 C<death_message()>
 
-  Usage     : $self->death_message( \@errors) in verify_values; 
+  Usage     : $self->death_message( \@errors) in validate_values; 
               check_dir; print_file
   Purpose   : Croaks with error message composed from elements in the list
               passed by reference as argument

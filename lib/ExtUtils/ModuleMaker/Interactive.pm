@@ -344,19 +344,19 @@ sub Main_Menu {
         }
         elsif ( $response eq 'G' ) {
             $MOD->set_author_composite();
-        # verify_values() returns an empty list if all values are
+        # validate_values() returns an empty list if all values are
         # good; so if its return value is true, we need to repeat
         # the prompts; otherwise, we can proceed to complete_build()
         # Note (08/16/2005):  I'm not sure why a false value for module
-        # NAME was not picked up by verify_values; so I'm adding a
+        # NAME was not picked up by validate_values; so I'm adding a
         # kludge.
         # Ideally, once I figure out how to test the interactive mode
         # properly, I'll test various bad values for other keys to see
-        # if verify_values picks them up.
+        # if validate_values picks them up.
             if (! $MOD->{NAME}) {
                 print "ERROR:  Must enter module name!\n";
                 next LOOP;
-            } elsif ($MOD->verify_values()) {
+            } elsif ($MOD->validate_values()) {
                 print "Module files are being generated.\n";
                 return ('done');
             } else {
@@ -368,7 +368,7 @@ sub Main_Menu {
             if (! $MOD->{NAME}) {
                 print "ERROR:  Must enter module name!\n";
                 next LOOP;
-            } elsif ($MOD->verify_values()) {
+            } elsif ($MOD->validate_values()) {
                 $MOD->make_selections_defaults();
                 print "Module files are being generated;\n";
                 print "  selections are being saved as defaults.\n";
