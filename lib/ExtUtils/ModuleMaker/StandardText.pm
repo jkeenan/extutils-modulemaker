@@ -13,6 +13,281 @@ use ExtUtils::ModuleMaker::Licenses::Local qw(
 use File::Path;
 use Carp;
 
+=head1 NAME
+
+ExtUtils::ModuleMaker::StandardText - Methods used within
+ExtUtils::ModuleMaker
+
+=head1 DESCRIPTION
+
+The methods described below are 'quasi-private' methods which are called by
+the publicly available methods of ExtUtils::ModuleMaker and
+ExtUtils::ModuleMaker::Interactive.  They are 'quasi-private' in the sense
+that they are not intended to be called by the everyday user of
+ExtUtils::ModuleMaker.  But nothing prevents a user from calling these
+methods.  Nevertheless, they are documented here primarily so that users
+writing plug-ins for ExtUtils::ModuleMaker's standard text know what methods
+need to be subclassed.
+
+The descriptions below are presented in hierarchical order rather than
+alphabetically.  The order is that of ''how close to the surface can a
+particular method called?'', where 'surface' means being called within
+C<ExtUtils::ModuleMaker::new()> or C<ExtUtils::ModuleMaker::complete_build()>.
+So methods called within one of those two public methods are described before
+methods which are only called within other quasi-private methods.  Some of the
+methods described are also called within ExtUtils::ModuleMaker::Interactive
+methods.  And some quasi-private methods are called within both public and
+other quasi-private methods.  Within each heading, methods are presented more
+or less as they are first called within the public or higher-order
+quasi-private methods.
+
+Happy subclassing!
+
+=head1 METHODS
+
+=head2 Methods Called within C<new()>
+
+=head3 C<set_author_composite>
+
+  Usage     : $self->set_author_composite() within new() and
+              Interactive::Main_Menu()
+  Purpose   : Sets $self key COMPOSITE by composing it from $self keys AUTHOR,
+              CPANID, ORGANIZATION, EMAIL and WEBSITE
+  Returns   : n/a
+  Argument  : n/a
+  Comments  : 
+
+=cut
+
+sub set_author_composite {
+    my $self = shift;
+
+    $self->{COMPOSITE} = (
+        "\t"
+         . join( "\n\t",
+            $self->{AUTHOR},
+            "CPAN ID: $self->{CPANID}", # will need to be modified
+            $self->{ORGANIZATION},  # if defaults no longer provided
+            $self->{EMAIL}, 
+            $self->{WEBSITE}, 
+        ),
+    );
+}
+
+=head3 C<set_dates()>
+
+  Usage     : $self->set_dates() within new()
+  Purpose   : Sets 3 keys in $self:  year, timestamp and COPYRIGHT_YEAR
+  Returns   : n/a
+  Argument  : n/a
+  Comments  : 
+
+=cut
+
+sub set_dates {
+    my $self = shift;
+    $self->{year}      = (localtime)[5] + 1900;
+    $self->{timestamp} = scalar localtime;
+    $self->{COPYRIGHT_YEAR} ||= $self->{year};
+}
+
+=head3 C<verify_values()>
+
+  Usage     : $self->verify_values() within complete_build()
+  Purpose   : Verify module values are valid and complete.
+  Returns   : Error message if there is a problem
+  Argument  : n/a
+  Throws    : Will die with a death_message if errors and not interactive.
+  Comments  : References many $self keys
+  Comments  : [Name is inaccurate; it performs validation, not verification.
+              Also: currently, successful validation of values causes method
+              to return an undef, rather than a true value.  This is
+              counterintuitive.]
+
+=cut
+
+sub verify_values {
+    my $self = shift;
+    my @errors = ();
+
+    push( @errors, 'NAME is required' )
+      unless ( $self->{NAME} );
+    push( @errors, 'Module NAME contains illegal characters' )
+      if ( $self->{NAME} and $self->{NAME} !~ m/^[\w:]+$/ );
+    push( @errors, 'ABSTRACTs are limited to 44 characters' )
+      if ( length( $self->{ABSTRACT} ) > 44 );
+    push( @errors, 'CPAN IDs are 3-9 characters' )
+      if ( $self->{CPANID} !~ m/^\w{3,9}$/ );
+    push( @errors, 'EMAIL addresses need to have an at sign' )
+      if ( $self->{EMAIL} !~ m/.*\@.*/ );
+    push( @errors, 'WEBSITEs should start with an "http:" or "https:"' )
+      if ( $self->{WEBSITE} !~ m/https?:\/\/.*/ );
+    push( @errors, 'LICENSE is not recognized' )
+      unless ( Verify_Local_License( $self->{LICENSE} )
+        || Verify_Standard_License( $self->{LICENSE} ) );
+
+    return unless @errors;
+    $self->death_message(\@errors);
+}
+
+=head3 C<initialize_license>
+
+  Usage     : $self->initialize_license() within new() and
+              Interactive::License_Menu
+  Purpose   : Gets appropriate license and, where necessary, fills in 'blanks'
+              with information such as COPYRIGHT_YEAR, AUTHOR and
+              ORGANIZATION; sets $self keys LICENSE and LicenseParts
+  Returns   : n/a
+  Argument  : n/a 
+  Comments  :
+
+=cut 
+
+sub initialize_license {
+    my $self = shift;
+
+    $self->{LICENSE} = lc( $self->{LICENSE} );
+
+    my $license_function = Get_Local_License( $self->{LICENSE} )
+      || Get_Standard_License( $self->{LICENSE} );
+
+    if ( ref($license_function) eq 'CODE' ) {
+        $self->{LicenseParts} = $license_function->();
+
+        $self->{LicenseParts}{LICENSETEXT} =~
+          s/###year###/$self->{COPYRIGHT_YEAR}/ig;
+        $self->{LicenseParts}{LICENSETEXT} =~
+          s/###owner###/$self->{AUTHOR}/ig;
+        $self->{LicenseParts}{LICENSETEXT} =~
+          s/###organization###/$self->{ORGANIZATION}/ig;
+    }
+
+}
+
+=head2 Methods Called within C<complete_build()>
+
+=head3 C<create_base_directory>
+
+  Usage     : $self->create_base_directory within complete_build()
+  Purpose   : Create the directory where all the files will be created.
+  Returns   : $DIR = directory name where the files will live
+  Argument  : n/a
+  Comments  : $self keys Base_Dir, COMPACT, NAME.  Calls method check_dir.
+
+=cut
+
+sub create_base_directory {
+    my $self = shift;
+
+    $self->{Base_Dir} =
+      join( ( $self->{COMPACT} ) ? '-' : '/', split( /::/, $self->{NAME} ) );
+    $self->check_dir( $self->{Base_Dir} );
+}
+
+=head3 C<check_dir()>
+
+  Usage     : check_dir ($dir, $MODE); in complete_build; create_base_directory;
+              create_pm_basics 
+  Purpose   : Creates a directory with the correct mode if needed.
+  Returns   : n/a
+  Argument  : $dir = directory name
+              $MODE = mode of directory (e.g. 0777, 0755)
+  Comments  : Adds to death message in event of failure
+
+=cut
+
+sub check_dir {
+    my $self = shift;
+
+    return mkpath( \@_, $self->{VERBOSE}, $self->{PERMISSIONS} );
+    $self->death_message( [ "Can't create a directory: $!" ] );
+}
+
+=head3 C<print_file()>
+
+  Usage     : $self->print_file() within generate_pm_file()
+  Purpose   : Adds the file being created to MANIFEST, then prints text to new
+              file.  Logs file creation under verbose.  Adds info for
+              death_message in event of failure. 
+  Returns   : n/a
+  Argument  : 2 arguments: filename and text to be printed
+  Comments  : 
+
+=cut
+
+sub print_file {
+    my ( $self, $filename, $page ) = @_;
+
+    push( @{ $self->{MANIFEST} }, $filename )
+      unless ( $filename eq 'MANIFEST' );
+    $self->log_message("writing file '$filename'");
+
+    local *FILE;
+    open( FILE, ">$self->{Base_Dir}/$filename" )
+      or $self->death_message( [ "Could not write '$filename', $!" ] );
+    print FILE $page;
+    close FILE;
+}
+
+=head3 C<create_pm_basics>
+
+  Usage     : $self->create_pm_basics() within complete_build()
+  Purpose   : Conducts check on directory 
+  Returns   : For a given pm file, sets the FILE key: directory/file 
+  Argument  : $module: pointer to the module being built
+              (as there can be more than one module built by EU::MM);
+              for the primary module it is a pointer to $self
+  Comments  : References $self keys NAME, Base_Dir, and FILE.  
+              Calls method check_dir.
+
+=cut
+
+sub create_pm_basics {
+    my ( $self, $module ) = @_;
+    my @layers = split( /::/, $module->{NAME} );
+    my $file   = pop(@layers);
+    my $dir    = join( '/', 'lib', @layers );
+
+    $self->check_dir("$self->{Base_Dir}/$dir");
+    $module->{FILE} = "$dir/$file.pm";
+}
+
+=head3 C<generate_pm_file>
+
+  Usage     : $self->generate_pm_file() within complete_build()
+  Purpose   : Create a pm file out of assembled components
+  Returns   : n/a
+  Argument  : $module: pointer to the module being built
+              (as there can be more than one module built by EU::MM);
+              for the primary module it is a pointer to $self
+  Comments  : 3 components:  create_pm_basics; build_page; print_file
+
+=cut
+
+sub generate_pm_file {
+    my ( $self, $module ) = @_;
+
+    $self->create_pm_basics($module);
+
+    my $page = $self->build_page($module);
+
+    $self->print_file( $module->{FILE}, $page );
+}
+
+=head2 Methods Called within C<complete_build()> as an Argument to C<print_fiile()>
+
+=head3 C<file_text_README()>
+
+  Usage     : $self->file_text_README within complete_build()
+  Purpose   : Build README
+  Returns   : String holding text of README
+  Argument  : n/a
+  Throws    : n/a
+  Comments  : Some text held in associated variable $README_text
+  Comments  : This method is a likely candidate for alteration in a subclass
+
+=cut
+
 my %README_text = (
     eumm_instructions => q~
 perl Makefile.PL
@@ -42,13 +317,6 @@ If you are on a windows box you should use 'nmake' rather than 'make'.
 ~,
 );
 
-# Usage     : $self->file_text_README within complete_build()
-# Purpose   : Build README
-# Returns   : String holding text of README
-# Argument  : n/a
-# Throws    : n/a
-# Comments  : Some text held in associated variable $README_text
-# Comments  : This method is a likely candidate for alteration in a subclass
 sub file_text_README {
     my $self = shift;
 
@@ -62,12 +330,140 @@ sub file_text_README {
         $README_text{readme_bottom};
 }
 
-# Usage     : $self->file_text_Makefile 
+=head3 C<file_text_ToDo()>
+
+  Usage     : $self->file_text_ToDo() within complete_build()
+  Purpose   : Composes text for ToDo file
+  Returns   : String with text of ToDo file
+  Argument  : n/a
+  Throws    : n/a
+  Comments  : This method is a likely candidate for alteration in a subclass
+  Comments  : References $self key NAME
+
+=cut
+
+sub file_text_ToDo {
+    my $self = shift;
+
+    my $page = <<EOF;
+TODO list for Perl module $self->{NAME}
+
+- Nothing yet
+
+
+EOF
+
+    return $page;
+}
+
+=head3 C<file_text_Changes()>
+
+  Usage     : $self->file_text_Changes within complete_build; 
+              block_module_header()
+  Purpose   : Composes text for Changes file
+  Returns   : String holding text for Changes file
+  Argument  : $only_in_pod:  True value to get only a HISTORY section for POD
+                             False value to get whole Changes file
+  Throws    : n/a
+  Comments  : This method is a likely candidate for alteration in a subclass
+  Comments  : Accesses $self keys NAME, VERSION, timestamp, eumm_version
+
+=cut
+
+sub file_text_Changes {
+    my ( $self, $only_in_pod ) = @_;
+
+    my $page;
+
+    unless ($only_in_pod) {
+        $page = <<EOF;
+Revision history for Perl module $self->{NAME}
+
+$self->{VERSION} $self->{timestamp}
+    - original version; created by ExtUtils::ModuleMaker $self->{eumm_version}
+
+
+EOF
+    }
+    else {
+        $page = <<EOF;
+$self->{VERSION} $self->{timestamp}
+    - original version; created by ExtUtils::ModuleMaker $self->{eumm_version}
+EOF
+    }
+
+    return $page;
+}
+
+=head3 C<file_text_test()>
+
+  Usage     : $self->file_text_test within complete_build()
+  Purpose   : Composes text for a test for each pm file being requested in
+              call to EU::MM
+  Returns   : String holding complete text for a test file.
+  Argument  : Two arguments: $testnum and $module
+  Throws    : n/a
+  Comments  : This method is a likely candidate for alteration in a subclass
+              Will make a test with or without a checking for method new.
+
+=cut
+
+sub file_text_test {
+    my ( $self, $testnum, $module ) = @_;
+
+    my $name    = $self->module_value( $module, 'NAME' );
+    my $neednew = $self->module_value( $module, 'NEED_NEW_METHOD' );
+
+    my $page;
+    if ($neednew) {
+        my $name = $module->{NAME};
+
+        $page = <<EOF;
+# -*- perl -*-
+
+# $testnum - check module loading and create testing directory
+
+use Test::More tests => 2;
+
+BEGIN { use_ok( '$name' ); }
+
+my \$object = ${name}->new ();
+isa_ok (\$object, '$name');
+
+
+EOF
+
+    }
+    else {
+
+        $page = <<EOF;
+# -*- perl -*-
+
+# $testnum - check module loading and create testing directory
+
+use Test::More tests => 1;
+
+BEGIN { use_ok( '$name' ); }
+
+
+EOF
+
+    }
+
+    return $page;
+}
+
+=head3 C<file_text_Makefile()>
+
+# Usage     : $self->file_text_Makefile within complete_build()
 # Purpose   : Build Makefile
 # Returns   : String holding text of Makefile
 # Argument  : n/a
 # Throws    : n/a
 # Comments  : This method is a likely candidate for alteration in a subclass
+
+=cut
+
 sub file_text_Makefile {
     my $self = shift;
     my $Makefile_text = q~
@@ -95,54 +491,246 @@ WriteMakefile(
     return $page;
 }
 
-# Usage     : $self->block_new_method() within build_page()
-# Purpose   : Build 'new()' method as part of a pm file
-# Returns   : String holding sub new.
-# Argument  : $module: pointer to the module being built
-#             (as there can be more than one module built by EU::MM);
-#             for the primary module it is a pointer to $self
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass,
-#             e.g., pass a single hash-ref to new() instead of a list of
-#             parameters.
-sub block_new_method {
+=head3 C<file_text_Buildfile()>
+
+  Usage     : $self->file_text_Buildfile within complete_build() 
+  Purpose   : Composes text for a Buildfile for Module::Build
+  Returns   : String holding text for Buildfile
+  Argument  : n/a
+  Throws    : n/a
+  Comments  : This method is a likely candidate for alteration in a subclass,
+              e.g., respond to improvements in Module::Build
+  Comments  : References $self keys NAME and LICENSE
+
+=cut
+
+sub file_text_Buildfile {
     my $self = shift;
-    return <<'EOFBLOCK';
 
-sub new
-{
-    my ($class, %parameters) = @_;
+    # As of 0.15, Module::Build only allows a few licenses
+    my $license_line = 1 if $self->{LICENSE} =~ /^(?:perl|gpl|artistic)$/;
 
-    my $self = bless ({}, ref ($class) || $class);
+    my $page = <<EOF;
+use Module::Build;
+# See perldoc Module::Build for details of how this works
 
-    return $self;
+Module::Build->new
+    ( module_name     => '$self->{NAME}',
+EOF
+
+    if ($license_line) {
+
+        $page .= <<EOF;
+      license         => '$self->{LICENSE}',
+EOF
+
+    }
+
+    $page .= <<EOF;
+    )->create_build_script;
+EOF
+
+    return $page;
+
+}
+
+=head3 C<file_text_proxy_makefile()>
+
+  Usage     : $self->file_text_proxy_makefile within complete_build()
+  Purpose   : Composes text for proxy makefile
+  Returns   : String holding text for proxy makefile
+  Argument  : n/a
+  Throws    : n/a
+  Comments  : This method is a likely candidate for alteration in a subclass
+
+=cut
+
+sub file_text_proxy_makefile {
+    my $self = shift;
+
+    # This comes directly from the docs for Module::Build::Compat
+    my $page = <<'EOF';
+unless (eval "use Module::Build::Compat 0.02; 1" ) {
+  print "This module requires Module::Build to install itself.\n";
+
+  require ExtUtils::MakeMaker;
+  my $yn = ExtUtils::MakeMaker::prompt
+    ('  Install Module::Build from CPAN?', 'y');
+
+  if ($yn =~ /^y/i) {
+    require Cwd;
+    require File::Spec;
+    require CPAN;
+
+    # Save this 'cause CPAN will chdir all over the place.
+    my $cwd = Cwd::cwd();
+    my $makefile = File::Spec->rel2abs($0);
+
+    CPAN::Shell->install('Module::Build::Compat');
+
+    chdir $cwd or die "Cannot chdir() back to $cwd: $!";
+    exec $^X, $makefile, @ARGV;  # Redo now that we have Module::Build
+  } else {
+    warn " *** Cannot install without Module::Build.  Exiting ...\n";
+    exit 1;
+  }
+}
+Module::Build::Compat->run_build_pl(args => \@ARGV);
+Module::Build::Compat->write_makefile();
+EOF
+
+    return $page;
+}
+
+
+=head2 Methods Called within C<generate_pm_file()>
+
+=head3 C<build_page()>
+
+  Usage     : $self->build_page() within generate_pm_file()
+  Purpose   : Composes a string holding all elements for a pm file
+  Returns   : String holding text for a pm file
+  Argument  : $module: pointer to the module being built
+              (as there can be more than one module built by EU::MM);
+              for the primary module it is a pointer to $self
+  Comments  : [Method name is inaccurate; it's not building a 'page' but
+              rather the text for a pm file.
+
+=cut
+
+sub build_page {
+    my $self = shift;
+    my $module = shift;
+      
+    my $page = $self->block_begin($module);
+    $page .= (
+         ( $self->module_value( $module, 'NEED_POD' ) )
+         ? $self->block_module_header($module)
+         : ''
+    );
+
+    $page .= (
+         (
+            (
+                 ( $self->module_value( $module, 'NEED_POD' ) )
+              && ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
+            )
+            ? $self->block_subroutine_header($module)
+         : ''
+     )
+    );
+
+    $page .= (
+        ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
+        ? $self->block_new_method()
+        : ''
+    );
+
+    $page .= $self->block_final_one();
+    return ($module, $page);
+}
+
+
+=head2 Methods Called within C<build_page()>
+
+=head3 C<block_begin()>
+
+  Usage     : $self->block_begin() within build_page()
+  Purpose   : Composes the standard code for top of a Perl pm file
+  Returns   : String holding code for top of pm file
+  Argument  : $module: pointer to the module being built
+              (as there can be more than one module built by EU::MM);
+              for the primary module it is a pointer to $self
+  Throws    : n/a
+  Comments  : This method is a likely candidate for alteration in a subclass,
+              e.g., you don't need Exporter-related code if you're building 
+              an OO-module.
+  Comments  : References $self keys NAME and (indirectly) VERSION
+
+=cut
+
+sub block_begin {
+    my ( $self, $module ) = @_;
+
+    my $version = $self->module_value( $module, 'VERSION' );
+
+    my $string = <<EOFBLOCK;
+package $module->{NAME};
+use strict;
+
+BEGIN {
+    use Exporter ();
+    use vars qw (\$VERSION \@ISA \@EXPORT \@EXPORT_OK \%EXPORT_TAGS);
+    \$VERSION     = $version;
+    \@ISA         = qw (Exporter);
+    #Give a hoot don't pollute, do not export more than needed by default
+    \@EXPORT      = qw ();
+    \@EXPORT_OK   = qw ();
+    \%EXPORT_TAGS = ();
 }
 
 EOFBLOCK
+
+    return $string;
 }
 
-# Usage     : $self->block_module_header() inside build_page()
-# Purpose   : Compose the main POD section within a pm file
-# Returns   : String holding main POD section
-# Argument  : $module: pointer to the module being built
-#             (as there can be more than one module built by EU::MM);
-#             for the primary module it is a pointer to $self
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
-# Comments  : In StandardText formulation, contains the following components:
-#             warning about stub documentation needing editing
-#             pod wrapper top
-#             NAME - ABSTRACT
-#             SYNOPSIS
-#             DESCRIPTION
-#             USAGE
-#             BUGS
-#             SUPPORT
-#             HISTORY (as requested)
-#             AUTHOR
-#             COPYRIGHT
-#             SEE ALSO
-#             pod wrapper bottom
+=head3 C<module_value()>
+
+  Usage     : $self->module_value() within block_begin(), file_text_test(),
+              build_page(),  block_module_header()
+  Purpose   : When writing POD sections, you have to 'escape' 
+              the POD markers to prevent the compiler from treating 
+              them as real POD.  This method 'unescapes' them and puts header
+              and closer around individual POD headings within pm file.
+  Arguments : First is pointer to module being formed.  Second is an array
+              whose members are the section(s) of the POD being written. 
+  Comment   : [The method's name is very opaque and not self-documenting.
+              Function of the code is not easily evident.  Rename?  Refactor?]
+
+=cut
+
+sub module_value {
+    my ( $self, $module, @keys ) = @_;
+
+    if ( scalar(@keys) == 1 ) {
+        return ( $module->{ $keys[0] } )
+          if ( exists( ( $module->{ $keys[0] } ) ) );
+        return ( $self->{ $keys[0] } );
+    }
+    else { # only alternative currently possible is @keys == 2
+        return ( $module->{ $keys[0] }{ $keys[1] } )
+          if ( exists( ( $module->{ $keys[0] }{ $keys[1] } ) ) );
+        return ( $self->{ $keys[0] }{ $keys[1] } );
+    }
+}
+
+=head3 C<block_module_header()>
+
+  Usage     : $self->block_module_header() inside build_page()
+  Purpose   : Compose the main POD section within a pm file
+  Returns   : String holding main POD section
+  Argument  : $module: pointer to the module being built
+              (as there can be more than one module built by EU::MM);
+              for the primary module it is a pointer to $self
+  Throws    : n/a
+  Comments  : This method is a likely candidate for alteration in a subclass
+  Comments  : In StandardText formulation, contains the following components:
+              warning about stub documentation needing editing
+              pod wrapper top
+              NAME - ABSTRACT
+              SYNOPSIS
+              DESCRIPTION
+              USAGE
+              BUGS
+              SUPPORT
+              HISTORY (as requested)
+              AUTHOR
+              COPYRIGHT
+              SEE ALSO
+              pod wrapper bottom
+
+=cut
+
 sub block_module_header {
     my ( $self, $module ) = @_;
 
@@ -189,128 +777,22 @@ EOFBLOCK
     return $self->pod_wrapper($string);
 }
 
-my %pod_wrapper = (
-    head => '
+=head3 C<block_subroutine_header()>
 
-#################### main pod documentation begin ###################
-## Below is the stub of documentation for your module. 
-## You better edit it!
+  Usage     : $self->block_subroutine_header() within build_page()
+  Purpose   : Composes an inline comment for pm file (much like this inline
+              comment) which documents purpose of a subroutine
+  Returns   : String containing text for inline comment
+  Argument  : $module: pointer to the module being built
+              (as there can be more than one module built by EU::MM);
+              for the primary module it is a pointer to $self
+  Throws    : n/a
+  Comments  : This method is a likely candidate for alteration in a subclass
+              E.g., some may prefer this info to appear in POD rather than
+              inline comments.
 
-',
-    tail => '
+=cut
 
- ====cut
-
-#################### main pod documentation end ###################
-
-',
-);
-
-# Usage     : $self->pod_wrapper() within block_module_header()
-# Purpose   : When writing POD sections, you have to 'escape' 
-#             the POD markers to prevent the compiler from treating 
-#             them as real POD.  This method 'unescapes' them and puts header
-#             and closer around main POD block in pm file, along with warning
-#             about stub documentation.
-# Argument  : String built up within block_module_header().
-# Comments  : Some text held in associated variable %pod_wrapper.
-sub pod_wrapper {
-    my ( $self, $section ) = @_;
-    my ($head, $tail);
-    $head = $pod_wrapper{head};
-    $tail = $pod_wrapper{tail};
-    $tail =~ s/\n ====/\n=/g;
-    return join( '', $head, $section, $tail );
-}
-
-# Usage     : $self->pod_section() within block_module_header()
-# Purpose   : When writing POD sections, you have to 'escape' 
-#             the POD markers to prevent the compiler from treating 
-#             them as real POD.  This method 'unescapes' them and puts header
-#             and closer around individual POD headings within pm file.
-# Arguments : Variables holding POD section name and text of POD section.
-sub pod_section {
-    my ( $self, $heading, $content ) = @_;
-    my $string = <<ENDOFSTUFF;
-
- ====head1 $heading
-
-$content
-ENDOFSTUFF
-
-    $string =~ s/\n ====/\n=/g;
-    return $string;
-}
-
-# Usage     : $self->module_value() within block_begin(), file_text_test(),
-#             build_page(),  block_module_header()
-# Purpose   : When writing POD sections, you have to 'escape' 
-#             the POD markers to prevent the compiler from treating 
-#             them as real POD.  This method 'unescapes' them and puts header
-#             and closer around individual POD headings within pm file.
-# Arguments : First is pointer to module being formed.  Second is an array
-#             whose members are the section(s) of the POD being written. 
-# Comment   : [The method's name is very opaque and not self-documenting.
-#             Function of the code is not easily evident.  Rename?  Refactor?]
-sub module_value {
-    my ( $self, $module, @keys ) = @_;
-
-    if ( scalar(@keys) == 1 ) {
-        return ( $module->{ $keys[0] } )
-          if ( exists( ( $module->{ $keys[0] } ) ) );
-        return ( $self->{ $keys[0] } );
-    }
-    else { # only alternative currently possible is @keys == 2
-        return ( $module->{ $keys[0] }{ $keys[1] } )
-          if ( exists( ( $module->{ $keys[0] }{ $keys[1] } ) ) );
-        return ( $self->{ $keys[0] }{ $keys[1] } );
-    }
-}
-
-# Usage     : $self->file_text_Changes within block_module_header()
-# Purpose   : Composes text for Changes file
-# Returns   : String holding text for Changes file
-# Argument  : $only_in_pod:  True value to get only a HISTORY section for POD
-#                            False value to get whole Changes file
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
-# Comments  : Accesses $self keys NAME, VERSION, timestamp, eumm_version
-sub file_text_Changes {
-    my ( $self, $only_in_pod ) = @_;
-
-    my $page;
-
-    unless ($only_in_pod) {
-        $page = <<EOF;
-Revision history for Perl module $self->{NAME}
-
-$self->{VERSION} $self->{timestamp}
-    - original version; created by ExtUtils::ModuleMaker $self->{eumm_version}
-
-
-EOF
-    }
-    else {
-        $page = <<EOF;
-$self->{VERSION} $self->{timestamp}
-    - original version; created by ExtUtils::ModuleMaker $self->{eumm_version}
-EOF
-    }
-
-    return $page;
-}
-
-# Usage     : $self->block_subroutine_header() within build_page()
-# Purpose   : Composes an inline comment for pm file (much like this inline
-#             comment) which documents purpose of a subroutine
-# Returns   : String containing text for inline comment
-# Argument  : $module: pointer to the module being built
-#             (as there can be more than one module built by EU::MM);
-#             for the primary module it is a pointer to $self
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
-#             E.g., some may prefer this info to appear in POD rather than
-#             inline comments.
 sub block_subroutine_header {
     my ( $self, $module ) = @_;
     my $string = <<EOFBLOCK;
@@ -339,16 +821,52 @@ EOFBLOCK
     return $string;
 }
 
-# Usage     : $self->block_final_one () within build_page()
-# Purpose   : Compose code and comment that conclude a pm file and guarantee
-#             that the module returns a true value
-# Returns   : String containing code and comment concluding a pm file
-# Argument  : $module: pointer to the module being built
-#             (as there can be more than one module built by EU::MM);
-#             for the primary module it is a pointer to $self
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass,
-#             e.g., some may not want the comment line included.
+=head3 C<block_new_method()>
+
+  Usage     : $self->block_new_method() within build_page()
+  Purpose   : Build 'new()' method as part of a pm file
+  Returns   : String holding sub new.
+  Argument  : $module: pointer to the module being built
+              (as there can be more than one module built by EU::MM);
+              for the primary module it is a pointer to $self
+  Throws    : n/a
+  Comments  : This method is a likely candidate for alteration in a subclass,
+              e.g., pass a single hash-ref to new() instead of a list of
+              parameters.
+
+=cut
+
+sub block_new_method {
+    my $self = shift;
+    return <<'EOFBLOCK';
+
+sub new
+{
+    my ($class, %parameters) = @_;
+
+    my $self = bless ({}, ref ($class) || $class);
+
+    return $self;
+}
+
+EOFBLOCK
+}
+
+=head3 C<block_final_one()>
+
+  Usage     : $self->block_final_one () within build_page()
+  Purpose   : Compose code and comment that conclude a pm file and guarantee
+              that the module returns a true value
+  Returns   : String containing code and comment concluding a pm file
+  Argument  : $module: pointer to the module being built
+              (as there can be more than one module built by EU::MM);
+              for the primary module it is a pointer to $self
+  Throws    : n/a
+  Comments  : This method is a likely candidate for alteration in a subclass,
+              e.g., some may not want the comment line included.
+
+=cut
+
 sub block_final_one {
     my $self = shift;
     return <<EOFBLOCK;
@@ -359,425 +877,20 @@ sub block_final_one {
 EOFBLOCK
 }
 
-# Usage     : $self->block_begin() within build_page()
-# Purpose   : Composes the standard code for top of a Perl pm file
-# Returns   : String holding code for top of pm file
-# Argument  : $module: pointer to the module being built
-#             (as there can be more than one module built by EU::MM);
-#             for the primary module it is a pointer to $self
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass,
-#             e.g., you don't need Exporter-related code if you're building 
-#             an OO-module.
-# Comments  : References $self keys NAME and (indirectly) VERSION
-sub block_begin {
-    my ( $self, $module ) = @_;
+=head2 All Other Methods
 
-    my $version = $self->module_value( $module, 'VERSION' );
+=head3 C<death_message()>
 
-    my $string = <<EOFBLOCK;
-package $module->{NAME};
-use strict;
+  Usage     : $self->death_message( \@errors) in verify_values; 
+              check_dir; print_file
+  Purpose   : Croaks with error message composed from elements in the list
+              passed by reference as argument
+  Returns   : [ To come. ]
+  Argument  : Reference to an array holding list of error messages accumulated
+  Comments  : Different functioning in modulemaker interactive mode
 
-BEGIN {
-    use Exporter ();
-    use vars qw (\$VERSION \@ISA \@EXPORT \@EXPORT_OK \%EXPORT_TAGS);
-    \$VERSION     = $version;
-    \@ISA         = qw (Exporter);
-    #Give a hoot don't pollute, do not export more than needed by default
-    \@EXPORT      = qw ();
-    \@EXPORT_OK   = qw ();
-    \%EXPORT_TAGS = ();
-}
+=cut
 
-EOFBLOCK
-
-    return $string;
-}
-
-# Usage     : $self->file_text_ToDo() within complete_build()
-# Purpose   : Composes text for ToDo file
-# Returns   : String with text of ToDo file
-# Argument  : n/a
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
-# Comments  : References $self key NAME
-sub file_text_ToDo {
-    my $self = shift;
-
-    my $page = <<EOF;
-TODO list for Perl module $self->{NAME}
-
-- Nothing yet
-
-
-EOF
-
-    return $page;
-}
-
-# Usage     : $self->file_text_Buildfile within complete_build() 
-# Purpose   : Composes text for a Buildfile for Module::Build
-# Returns   : String holding text for Buildfile
-# Argument  : n/a
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass,
-#             e.g., respond to improvements in Module::Build
-# Comments  : References $self keys NAME and LICENSE
-sub file_text_Buildfile {
-    my $self = shift;
-
-    # As of 0.15, Module::Build only allows a few licenses
-    my $license_line = 1 if $self->{LICENSE} =~ /^(?:perl|gpl|artistic)$/;
-
-    my $page = <<EOF;
-use Module::Build;
-# See perldoc Module::Build for details of how this works
-
-Module::Build->new
-    ( module_name     => '$self->{NAME}',
-EOF
-
-    if ($license_line) {
-
-        $page .= <<EOF;
-      license         => '$self->{LICENSE}',
-EOF
-
-    }
-
-    $page .= <<EOF;
-    )->create_build_script;
-EOF
-
-    return $page;
-
-}
-
-# Usage     : $self->file_text_proxy_makefile within complete_build()
-# Purpose   : Composes text for proxy makefile
-# Returns   : String holding text for proxy makefile
-# Argument  : n/a
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
-sub file_text_proxy_makefile {
-    my $self = shift;
-
-    # This comes directly from the docs for Module::Build::Compat
-    my $page = <<'EOF';
-unless (eval "use Module::Build::Compat 0.02; 1" ) {
-  print "This module requires Module::Build to install itself.\n";
-
-  require ExtUtils::MakeMaker;
-  my $yn = ExtUtils::MakeMaker::prompt
-    ('  Install Module::Build from CPAN?', 'y');
-
-  if ($yn =~ /^y/i) {
-    require Cwd;
-    require File::Spec;
-    require CPAN;
-
-    # Save this 'cause CPAN will chdir all over the place.
-    my $cwd = Cwd::cwd();
-    my $makefile = File::Spec->rel2abs($0);
-
-    CPAN::Shell->install('Module::Build::Compat');
-
-    chdir $cwd or die "Cannot chdir() back to $cwd: $!";
-    exec $^X, $makefile, @ARGV;  # Redo now that we have Module::Build
-  } else {
-    warn " *** Cannot install without Module::Build.  Exiting ...\n";
-    exit 1;
-  }
-}
-Module::Build::Compat->run_build_pl(args => \@ARGV);
-Module::Build::Compat->write_makefile();
-EOF
-
-    return $page;
-}
-
-# Usage     : $self->file_text_test within complete_build()
-# Purpose   : Composes text for a test for each pm file being requested in
-#             call to EU::MM
-# Returns   : String holding complete text for a test file.
-# Argument  : Two arguments: $testnum and $module
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
-#             Will make a test with or without a checking for method new.
-sub file_text_test {
-    my ( $self, $testnum, $module ) = @_;
-
-    my $name    = $self->module_value( $module, 'NAME' );
-    my $neednew = $self->module_value( $module, 'NEED_NEW_METHOD' );
-
-    my $page;
-    if ($neednew) {
-        my $name = $module->{NAME};
-
-        $page = <<EOF;
-# -*- perl -*-
-
-# $testnum - check module loading and create testing directory
-
-use Test::More tests => 2;
-
-BEGIN { use_ok( '$name' ); }
-
-my \$object = ${name}->new ();
-isa_ok (\$object, '$name');
-
-
-EOF
-
-    }
-    else {
-
-        $page = <<EOF;
-# -*- perl -*-
-
-# $testnum - check module loading and create testing directory
-
-use Test::More tests => 1;
-
-BEGIN { use_ok( '$name' ); }
-
-
-EOF
-
-    }
-
-    return $page;
-}
-
-# Usage     : $self->verify_values() within complete_build()
-# Purpose   : Verify module values are valid and complete.
-# Returns   : Error message if there is a problem
-# Argument  : n/a
-# Throws    : Will die with a death_message if errors and not interactive.
-# Comments  : References many $self keys
-# Comments  : [Name is inaccurate; it performs validation, not verification.
-#             Also: currently, successful validation of values causes method
-#             to return an undef, rather than a true value.  This is
-#             counterintuitive.]
-sub verify_values {
-    my $self = shift;
-    my @errors = ();
-
-    push( @errors, 'NAME is required' )
-      unless ( $self->{NAME} );
-    push( @errors, 'Module NAME contains illegal characters' )
-      if ( $self->{NAME} and $self->{NAME} !~ m/^[\w:]+$/ );
-    push( @errors, 'ABSTRACTs are limited to 44 characters' )
-      if ( length( $self->{ABSTRACT} ) > 44 );
-    push( @errors, 'CPAN IDs are 3-9 characters' )
-      if ( $self->{CPANID} !~ m/^\w{3,9}$/ );
-    push( @errors, 'EMAIL addresses need to have an at sign' )
-      if ( $self->{EMAIL} !~ m/.*\@.*/ );
-    push( @errors, 'WEBSITEs should start with an "http:" or "https:"' )
-      if ( $self->{WEBSITE} !~ m/https?:\/\/.*/ );
-    push( @errors, 'LICENSE is not recognized' )
-      unless ( Verify_Local_License( $self->{LICENSE} )
-        || Verify_Standard_License( $self->{LICENSE} ) );
-
-    return unless @errors;
-    $self->death_message(\@errors);
-}
-
-# Usage     : $self->generate_pm_file() within complete_build()
-# Purpose   : Create a pm file out of assembled components
-# Returns   : n/a
-# Argument  : $module: pointer to the module being built
-#             (as there can be more than one module built by EU::MM);
-#             for the primary module it is a pointer to $self
-# Comments  : 3 components:  create_pm_basics; build_page; print_file
-sub generate_pm_file {
-    my ( $self, $module ) = @_;
-
-    $self->create_pm_basics($module);
-
-    my $page = $self->build_page($module);
-
-    $self->print_file( $module->{FILE}, $page );
-}
-
-# Usage     : $self->build_page() within generate_pm_file()
-# Purpose   : Composes a string holding all elements for a pm file
-# Returns   : String holding text for a pm file
-# Argument  : $module: pointer to the module being built
-#             (as there can be more than one module built by EU::MM);
-#             for the primary module it is a pointer to $self
-# Comments  : [Method name is inaccurate; it's not building a 'page' but
-#             rather the text for a pm file.
-sub build_page {
-    my $self = shift;
-    my $module = shift;
-      
-    my $page = $self->block_begin($module);
-    $page .= (
-         ( $self->module_value( $module, 'NEED_POD' ) )
-         ? $self->block_module_header($module)
-         : ''
-    );
-
-    $page .= (
-         (
-            (
-                 ( $self->module_value( $module, 'NEED_POD' ) )
-              && ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
-            )
-            ? $self->block_subroutine_header($module)
-         : ''
-     )
-    );
-
-    $page .= (
-        ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
-        ? $self->block_new_method()
-        : ''
-    );
-
-    $page .= $self->block_final_one();
-    return ($module, $page);
-}
-
-# Usage     : $self->set_dates() within new()
-# Purpose   : Sets 3 keys in $self:  year, timestamp and COPYRIGHT_YEAR
-# Returns   : n/a
-# Argument  : n/a
-# Comments  : 
-sub set_dates {
-    my $self = shift;
-    $self->{year}      = (localtime)[5] + 1900;
-    $self->{timestamp} = scalar localtime;
-    $self->{COPYRIGHT_YEAR} ||= $self->{year};
-}
-
-# Usage     : $self->set_author_composite() within new() and
-#             Interactive::Main_Menu()
-# Purpose   : Sets $self key COMPOSITE by composing it from $self keys AUTHOR,
-#             CPANID, ORGANIZATION, EMAIL and WEBSITE
-# 
-# Returns   : n/a
-# Argument  : n/a
-# Comments  : 
-sub set_author_composite {
-    my $self = shift;
-
-    $self->{COMPOSITE} = (
-        "\t"
-         . join( "\n\t",
-            $self->{AUTHOR},
-            "CPAN ID: $self->{CPANID}", # will need to be modified
-            $self->{ORGANIZATION},  # if defaults no longer provided
-            $self->{EMAIL}, 
-            $self->{WEBSITE}, 
-        ),
-    );
-}
-
-# Usage     : $self->create_base_directory within complete_build()
-# Purpose   : Create the directory where all the files will be created.
-# Returns   : $DIR = directory name where the files will live
-# Argument  : n/a
-# Comments  : $self keys Base_Dir, COMPACT, NAME.  Calls method check_dir.
-sub create_base_directory {
-    my $self = shift;
-
-    $self->{Base_Dir} =
-      join( ( $self->{COMPACT} ) ? '-' : '/', split( /::/, $self->{NAME} ) );
-    $self->check_dir( $self->{Base_Dir} );
-}
-
-# Usage     : $self->create_pm_basics() within complete_build()
-# Purpose   : Conducts check on directory 
-# Returns   : For a given pm file, sets the FILE key: directory/file 
-# Argument  : $module: pointer to the module being built
-#             (as there can be more than one module built by EU::MM);
-#             for the primary module it is a pointer to $self
-# Comments  : References $self keys NAME, Base_Dir, and FILE.  
-#             Calls method check_dir.
-sub create_pm_basics {
-    my ( $self, $module ) = @_;
-    my @layers = split( /::/, $module->{NAME} );
-    my $file   = pop(@layers);
-    my $dir    = join( '/', 'lib', @layers );
-
-    $self->check_dir("$self->{Base_Dir}/$dir");
-    $module->{FILE} = "$dir/$file.pm";
-}
-
-# Usage     : $self->initialize_license() within new() and
-#             Interactive::License_Menu
-# Purpose   : Gets appropriate license and, where necessary, fills in 'blanks'
-#             with information such as COPYRIGHT_YEAR, AUTHOR and
-#             ORGANIZATION; sets $self keys LICENSE and LicenseParts
-# Returns   : n/a
-# Argument  : n/a 
-# Comments  :
-sub initialize_license {
-    my $self = shift;
-
-    $self->{LICENSE} = lc( $self->{LICENSE} );
-
-    my $license_function = Get_Local_License( $self->{LICENSE} )
-      || Get_Standard_License( $self->{LICENSE} );
-
-    if ( ref($license_function) eq 'CODE' ) {
-        $self->{LicenseParts} = $license_function->();
-
-        $self->{LicenseParts}{LICENSETEXT} =~
-          s/###year###/$self->{COPYRIGHT_YEAR}/ig;
-        $self->{LicenseParts}{LICENSETEXT} =~
-          s/###owner###/$self->{AUTHOR}/ig;
-        $self->{LicenseParts}{LICENSETEXT} =~
-          s/###organization###/$self->{ORGANIZATION}/ig;
-    }
-
-}
-
-# Usage     : $self->print_file() within generate_pm_file()
-# Purpose   : Adds the file being created to MANIFEST, then prints text to new
-#             file.  Logs file creation under verbose.  Adds info for
-#             death_message in event of failure. 
-# Returns   : n/a
-# Argument  : 2 arguments: filename and text to be printed
-# Comments  : 
-sub print_file {
-    my ( $self, $filename, $page ) = @_;
-
-    push( @{ $self->{MANIFEST} }, $filename )
-      unless ( $filename eq 'MANIFEST' );
-    $self->log_message("writing file '$filename'");
-
-    local *FILE;
-    open( FILE, ">$self->{Base_Dir}/$filename" )
-      or $self->death_message( [ "Could not write '$filename', $!" ] );
-    print FILE $page;
-    close FILE;
-}
-
-# Usage     : check_dir ($dir, $MODE); in create_base_directory;
-#             create_pm_basics; complete_build
-# Purpose   : Creates a directory with the correct mode if needed.
-# Returns   : n/a
-# Argument  : $dir = directory name
-#             $MODE = mode of directory (e.g. 0777, 0755)
-# Comments  : Adds to death message in event of failure
-sub check_dir {
-    my $self = shift;
-
-    return mkpath( \@_, $self->{VERBOSE}, $self->{PERMISSIONS} );
-    $self->death_message( [ "Can't create a directory: $!" ] );
-}
-
-# Usage     : $self->death_message( \@errors) in verify_values; 
-#             check_dir; print_file
-# Purpose   : Croaks with error message composed from elements in the list
-#             passed by reference as argument
-# Returns   : [ To come. ]
-# Argument  : Reference to an array holding list of error messages accumulated
-# Comments  : Different functioning in modulemaker interactive mode
 sub death_message {
     my $self = shift;
     my $errorref = shift;
@@ -797,15 +910,83 @@ sub death_message {
     }
 }
 
-# Usage     : $self->log_message( $message ) in print_file; 
-# Purpose   : Prints log_message (currently, to STDOUT) if $self->{VERBOSE}
-# Returns   : n/a
-# Argument  : Scalar holding message to be logged
-# Comments  : [At present, it's only called in one place -- and even there
-#             it's very short.  Perhaps it could be eliminated? ]
+=head3 C<log_message()>
+
+  Usage     : $self->log_message( $message ) in print_file; 
+  Purpose   : Prints log_message (currently, to STDOUT) if $self->{VERBOSE}
+  Returns   : n/a
+  Argument  : Scalar holding message to be logged
+  Comments  : [At present, it's only called in one place -- and even there
+              it's very short.  Perhaps it could be eliminated? ]
+
+=cut
+
 sub log_message {
     my ( $self, $message ) = @_;
     print "$message\n" if $self->{VERBOSE};
+}
+
+=head3 C<pod_section()>
+
+  Usage     : $self->pod_section() within block_module_header()
+  Purpose   : When writing POD sections, you have to 'escape' 
+              the POD markers to prevent the compiler from treating 
+              them as real POD.  This method 'unescapes' them and puts header
+              and closer around individual POD headings within pm file.
+  Arguments : Variables holding POD section name and text of POD section.
+
+=cut
+
+sub pod_section {
+    my ( $self, $heading, $content ) = @_;
+    my $string = <<ENDOFSTUFF;
+
+ ====head1 $heading
+
+$content
+ENDOFSTUFF
+
+    $string =~ s/\n ====/\n=/g;
+    return $string;
+}
+
+=head3 C<pod_wrapper()>
+
+  Usage     : $self->pod_wrapper() within block_module_header()
+  Purpose   : When writing POD sections, you have to 'escape' 
+              the POD markers to prevent the compiler from treating 
+              them as real POD.  This method 'unescapes' them and puts header
+              and closer around main POD block in pm file, along with warning
+              about stub documentation.
+  Argument  : String built up within block_module_header().
+  Comments  : Some text held in associated variable %pod_wrapper.
+
+=cut
+
+my %pod_wrapper = (
+    head => '
+
+#################### main pod documentation begin ###################
+## Below is the stub of documentation for your module. 
+## You better edit it!
+
+',
+    tail => '
+
+ ====cut
+
+#################### main pod documentation end ###################
+
+',
+);
+
+sub pod_wrapper {
+    my ( $self, $section ) = @_;
+    my ($head, $tail);
+    $head = $pod_wrapper{head};
+    $tail = $pod_wrapper{tail};
+    $tail =~ s/\n ====/\n=/g;
+    return join( '', $head, $section, $tail );
 }
 
 1;
