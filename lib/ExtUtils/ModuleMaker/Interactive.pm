@@ -356,7 +356,7 @@ sub Main_Menu {
             if (! $MOD->{NAME}) {
                 print "ERROR:  Must enter module name!\n";
                 next LOOP;
-            } elsif (! $MOD->verify_values()) {
+            } elsif ($MOD->verify_values()) {
                 print "Module files are being generated.\n";
                 return ('done');
             } else {
@@ -368,7 +368,7 @@ sub Main_Menu {
             if (! $MOD->{NAME}) {
                 print "ERROR:  Must enter module name!\n";
                 next LOOP;
-            } elsif (! $MOD->verify_values()) {
+            } elsif ($MOD->verify_values()) {
                 $MOD->make_selections_defaults();
                 print "Module files are being generated;\n";
                 print "  selections are being saved as defaults.\n";

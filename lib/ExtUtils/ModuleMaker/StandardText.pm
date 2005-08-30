@@ -93,7 +93,8 @@ sub set_dates {
 
 =head3 C<verify_values()>
 
-  Usage     : $self->verify_values() within complete_build()
+  Usage     : $self->verify_values() within complete_build() and 
+              Interactive::Main_Menu()
   Purpose   : Verify module values are valid and complete.
   Returns   : Error message if there is a problem
   Argument  : n/a
@@ -126,7 +127,8 @@ sub verify_values {
       unless ( Verify_Local_License( $self->{LICENSE} )
         || Verify_Standard_License( $self->{LICENSE} ) );
 
-    return unless @errors;
+#    return unless @errors;
+    return 1 unless @errors;
     $self->death_message(\@errors);
 }
 
@@ -455,12 +457,12 @@ EOF
 
 =head3 C<file_text_Makefile()>
 
-# Usage     : $self->file_text_Makefile within complete_build()
-# Purpose   : Build Makefile
-# Returns   : String holding text of Makefile
-# Argument  : n/a
-# Throws    : n/a
-# Comments  : This method is a likely candidate for alteration in a subclass
+  Usage     : $self->file_text_Makefile within complete_build()
+  Purpose   : Build Makefile
+  Returns   : String holding text of Makefile
+  Argument  : n/a
+  Throws    : n/a
+  Comments  : This method is a likely candidate for alteration in a subclass
 
 =cut
 

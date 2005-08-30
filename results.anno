@@ -1,27 +1,27 @@
-block_begin                     373 build_page
-block_final_one                 352 build_page
-block_module_header             146 build_page
-block_new_method                108 build_page
-block_subroutine_header         314 build_page
-build_page                      612 generate_pm_file
-check_dir                       767 create_base_directory; create_pm_basics; complete_build
-create_base_directory           684 complete_build
-create_pm_basics                700 complete build; generate_pm_file
-death_message                   781 print_file; check_dir; verify_values
-file_text_Buildfile             427 complete_build: argument to print_file
-file_text_Changes               278 complete_build: argument to print_file; block_module_header
-file_text_Makefile               71 complete_build: argument to print_file
-file_text_README                 52 complete_build: argument to print_file
-file_text_ToDo                  405 complete_build: argument to print_file
-file_text_proxy_makefile        463 complete_build: argument to print_file
-file_text_test                  508 complete_build: argument to print_file
-generate_pm_file                594 complete_build
-initialize_license              718 new; Interactive::License_Menu
-log_message                     806 print_file
-module_value                    255 build_page; block_begin; file_text_test; block_module_header
-pod_section                     232 block_module_header
-pod_wrapper                     217 block_module_header
-print_file                      746 complete_build; generate_pm_file
-set_author_composite            664 new; Interactive::Main_Menu
-set_dates                       649 new
-verify_values                   563 new; Interactive::Main_Menu
+block_begin                    652 build_page
+block_final_one                870 build_page
+block_module_header            734 build_page
+block_new_method               839 build_page
+block_subroutine_header        796 build_page
+build_page                     601 generate_pm_file
+check_dir                      199 create_base_directory; create_pm_basics; complete_build
+create_base_directory          179 complete_build
+create_pm_basics               245 complete build; generate_pm_file
+death_message                  894 print_file; check_dir; verify_values
+file_text_Buildfile            507 complete_build: argument to print_file
+file_text_Changes              373 complete_build: argument to print_file; block_module_header
+file_text_Makefile             467 complete_build: argument to print_file
+file_text_README               320 complete_build: argument to print_file
+file_text_ToDo                 345 complete_build: argument to print_file
+file_text_proxy_makefile       548 complete_build: argument to print_file
+file_text_test                 411 complete_build: argument to print_file
+generate_pm_file               267 complete_build
+initialize_license             146 new; Interactive::License_Menu
+log_message                    924 print_file
+module_value                   692 build_page; block_begin; file_text_test; block_module_header
+pod_section                    940 block_module_header
+pod_wrapper                    983 block_module_header
+print_file                     218 complete_build; generate_pm_file
+set_author_composite            62 new; Interactive::Main_Menu
+set_dates                       87 new
+verify_values                  109 new; Interactive::Main_Menu
