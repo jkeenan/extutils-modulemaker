@@ -601,11 +601,6 @@ sub compose_pm_file {
     my $module = shift;
       
     my $text_of_pm_file = $self->block_begin($module);
-    $text_of_pm_file .= (
-         ( $self->module_value( $module, 'NEED_POD' ) )
-         ? $self->block_module_header($module)
-         : ''
-    );
 
     $text_of_pm_file .= (
          (
@@ -622,6 +617,12 @@ sub compose_pm_file {
         ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
         ? $self->block_new_method()
         : ''
+    );
+
+    $text_of_pm_file .= (
+         ( $self->module_value( $module, 'NEED_POD' ) )
+         ? $self->block_module_header($module)
+         : ''
     );
 
     $text_of_pm_file .= $self->block_final_one();
@@ -657,12 +658,12 @@ sub block_begin {
 
 BEGIN {
     use Exporter ();
-    use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK \%EXPORT_TAGS);
+    use vars qw($VERSION @ISA @EXPORT @EXPORT_OK \%EXPORT_TAGS);
     $VERSION     = $version;
-    @ISA         = qw (Exporter);
+    @ISA         = qw(Exporter);
     #Give a hoot don't pollute, do not export more than needed by default
-    @EXPORT      = qw ();
-    @EXPORT_OK   = qw ();
+    @EXPORT      = qw();
+    @EXPORT_OK   = qw();
     %EXPORT_TAGS = ();
 }
 
