@@ -609,20 +609,20 @@ sub compose_pm_file {
               && ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
             )
             ? $self->block_subroutine_header($module)
-         : ''
+         : q{}
      )
     );
 
     $text_of_pm_file .= (
         ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
         ? $self->block_new_method()
-        : ''
+        : q{}
     );
 
     $text_of_pm_file .= (
          ( $self->module_value( $module, 'NEED_POD' ) )
          ? $self->block_pod($module)
-         : ''
+         : q{}
     );
 
     $text_of_pm_file .= $self->block_final_one();
@@ -737,29 +737,33 @@ sub module_value {
 sub block_pod {
     my ( $self, $module ) = @_;
 
-    my $description = <<EOFBLOCK;
+    my $name             = $self->module_value( $module, 'NAME' );
+    my $abstract         = $self->module_value( $module, 'ABSTRACT' );
+    my $description      = <<END_OF_DESC;
 Stub documentation for this module was created by ExtUtils::ModuleMaker.
 It looks like the author of the extension was negligent enough
 to leave the stub unedited.
 
 Blah blah blah.
-EOFBLOCK
+END_OF_DESC
+    my $author_composite = $self->module_value( $module, 'COMPOSITE' );
+    my $copyright        = $self->module_value( $module, 'LicenseParts', 'COPYRIGHT');
+    my $see_also         = q{perl(1).};
 
-    my $string = join(
-        '',
+    my $text_of_pod = join(
+        q{},
         $self->pod_section(
-            NAME => $self->module_value( $module, 'NAME' ) . ' - '
-              . $self->module_value( $module, 'ABSTRACT' )
+            NAME => $name . ' - ' . $abstract
         ),
         $self->pod_section(
                 SYNOPSIS => '  use '
-              . $self->module_value( $module, 'NAME' )
-              . "\n  blah blah blah\n"
+              . $name
+              . ";\n  blah blah blah\n"
         ),
         $self->pod_section( DESCRIPTION => $description ),
-        $self->pod_section( USAGE       => '' ),
-        $self->pod_section( BUGS        => '' ),
-        $self->pod_section( SUPPORT     => '' ),
+        $self->pod_section( USAGE       => q{} ),
+        $self->pod_section( BUGS        => q{} ),
+        $self->pod_section( SUPPORT     => q{} ),
         (
             ( $self->{CHANGES_IN_POD} )
             ? $self->pod_section(
@@ -767,17 +771,12 @@ EOFBLOCK
               )
             : ()
         ),
-        $self->pod_section(
-            AUTHOR => $self->module_value( $module, 'COMPOSITE' )
-        ),
-        $self->pod_section(
-            COPYRIGHT =>
-              $self->module_value( $module, 'LicenseParts', 'COPYRIGHT' )
-        ),
-        $self->pod_section( 'SEE ALSO' => 'perl(1).' ),
+        $self->pod_section( AUTHOR     => $author_composite),
+        $self->pod_section( COPYRIGHT  => $copyright),
+        $self->pod_section( 'SEE ALSO' => $see_also),
     );
 
-    return $self->pod_wrapper($string);
+    return $self->pod_wrapper($text_of_pod);
 }
 
 =head3 C<block_subroutine_header()>
@@ -899,14 +898,14 @@ sub death_message {
     my $errorref = shift;
     my @errors = @{$errorref};
 
-    croak( join "\n", @errors, '', $self->{USAGE_MESSAGE} )
+    croak( join "\n", @errors, q{}, $self->{USAGE_MESSAGE} )
       unless $self->{INTERACTIVE};
     my %err = map {$_, 1} @errors;
     delete $err{'NAME is required'} if $err{'NAME is required'};
     @errors = keys %err;
     if (@errors) {
         print( join "\n", 
-            'Oops, there are the following errors:', @errors, '' );
+            'Oops, there are the following errors:', @errors, q{} );
         return 1;
     } else {
         return;
@@ -985,7 +984,7 @@ END_OF_CUT
 END_OF_TAIL
 
     $cutline =~ s/\n ====/\n=/g;
-    return join( '', 
+    return join( q{}, 
         $head,     # optional
         $podtext,  # required 
         $cutline,  # required 
