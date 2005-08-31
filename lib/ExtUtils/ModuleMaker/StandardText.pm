@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::StandardText;
-# as of 08/29/2005
+# as of 08/31/2005
 use strict;
 local $^W = 1;
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
@@ -259,25 +259,26 @@ sub generate_pm_file {
   Returns   : String holding text of README
   Argument  : n/a
   Throws    : n/a
-  Comment   : Some text held in associated variable $README_text
   Comment   : This method is a likely candidate for alteration in a subclass
 
 =cut
 
-my %README_text = (
-    eumm_instructions => q~
+sub file_text_README {
+    my $self = shift;
+    my %README_text = (
+        eumm_instructions => <<'END_OF_MAKE',
 perl Makefile.PL
 make
 make test
 make install
-~,
-    mb_instructions => q~
+END_OF_MAKE
+        mb_instructions => <<'END_OF_BUILD',
 perl Build.PL
 ./Build
 ./Build test
 ./Build install
-~,
-    readme_top => q~
+END_OF_BUILD
+        readme_top => <<'END_OF_TOP',
 
 If this is still here it means the programmer was too lazy to create the readme file.
 
@@ -286,21 +287,19 @@ You can create it now by using the command shown above from this directory.
 At the very least you should be able to use this set of instructions
 to install the module...
 
-~,
-    readme_bottom => q~
+END_OF_TOP
+        readme_bottom => <<'END_OF_BOTTOM',
 
 If you are on a windows box you should use 'nmake' rather than 'make'.
-~,
-);
+END_OF_BOTTOM
+    );
 
-sub file_text_README {
-    my $self = shift;
-
+    my $pod2textline = "pod2text $self->{NAME}.pm > README\n";
     my $build_instructions =
         ( $self->{BUILD_SYSTEM} eq 'ExtUtils::MakeMaker' )
             ? $README_text{eumm_instructions}
             : $README_text{mb_instructions};
-    return "pod2text $self->{NAME}.pm > README\n" . 
+    return $pod2textline . 
         $README_text{readme_top} .
         $build_instructions .
         $README_text{readme_bottom};
@@ -321,7 +320,7 @@ sub file_text_README {
 sub file_text_ToDo {
     my $self = shift;
 
-    my $page = <<EOF;
+    my $text = <<EOF;
 TODO list for Perl module $self->{NAME}
 
 - Nothing yet
@@ -329,7 +328,7 @@ TODO list for Perl module $self->{NAME}
 
 EOF
 
-    return $page;
+    return $text;
 }
 
 =head3 C<file_text_Changes()>
@@ -601,14 +600,14 @@ sub compose_pm_file {
     my $self = shift;
     my $module = shift;
       
-    my $page = $self->block_begin($module);
-    $page .= (
+    my $text_of_pm_file = $self->block_begin($module);
+    $text_of_pm_file .= (
          ( $self->module_value( $module, 'NEED_POD' ) )
          ? $self->block_module_header($module)
          : ''
     );
 
-    $page .= (
+    $text_of_pm_file .= (
          (
             (
                  ( $self->module_value( $module, 'NEED_POD' ) )
@@ -619,14 +618,14 @@ sub compose_pm_file {
      )
     );
 
-    $page .= (
+    $text_of_pm_file .= (
         ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
         ? $self->block_new_method()
         : ''
     );
 
-    $page .= $self->block_final_one();
-    return ($module, $page);
+    $text_of_pm_file .= $self->block_final_one();
+    return ($module, $text_of_pm_file);
 }
 
 
@@ -650,27 +649,30 @@ sub compose_pm_file {
 
 sub block_begin {
     my ( $self, $module ) = @_;
-
     my $version = $self->module_value( $module, 'VERSION' );
-
-    my $string = <<EOFBLOCK;
-package $module->{NAME};
-use strict;
+    my $package_line  = "package $module->{NAME};\n";
+    my $strict_line   = "use strict;\n";
+    my $warnings_line = "use warnings;\n";  # not included in standard version
+    my $begin_block   = <<'END_OF_BEGIN';
 
 BEGIN {
     use Exporter ();
-    use vars qw (\$VERSION \@ISA \@EXPORT \@EXPORT_OK \%EXPORT_TAGS);
-    \$VERSION     = $version;
-    \@ISA         = qw (Exporter);
+    use vars qw ($VERSION @ISA @EXPORT @EXPORT_OK \%EXPORT_TAGS);
+    $VERSION     = $version;
+    @ISA         = qw (Exporter);
     #Give a hoot don't pollute, do not export more than needed by default
-    \@EXPORT      = qw ();
-    \@EXPORT_OK   = qw ();
-    \%EXPORT_TAGS = ();
+    @EXPORT      = qw ();
+    @EXPORT_OK   = qw ();
+    %EXPORT_TAGS = ();
 }
 
-EOFBLOCK
-
-    return $string;
+END_OF_BEGIN
+    my $text = 
+        $package_line . 
+        $strict_line . 
+        # $warnings_line . 
+        $begin_block;
+    return $text;
 }
 
 =head3 C<module_value()>
@@ -939,15 +941,15 @@ sub log_message {
 
 sub pod_section {
     my ( $self, $heading, $content ) = @_;
-    my $string = <<ENDOFSTUFF;
+    my $text_of_pod_section = <<END_OF_STUFF;
 
  ====head1 $heading
 
 $content
-ENDOFSTUFF
+END_OF_STUFF
 
-    $string =~ s/\n ====/\n=/g;
-    return $string;
+    $text_of_pod_section =~ s/\n ====/\n=/g;
+    return $text_of_pod_section;
 }
 
 =head3 C<pod_wrapper()>
@@ -959,34 +961,35 @@ ENDOFSTUFF
               and closer around main POD block in pm file, along with warning
               about stub documentation.
   Argument  : String built up within block_module_header().
-  Comment   : Some text held in associated variable %pod_wrapper.
 
 =cut
 
-my %pod_wrapper = (
-    head => '
+sub pod_wrapper {
+    my ( $self, $podtext ) = @_;
+    my $head = <<'END_OF_HEAD';
 
 #################### main pod documentation begin ###################
 ## Below is the stub of documentation for your module. 
 ## You better edit it!
 
-',
-    tail => '
+END_OF_HEAD
+    my $cutline = <<'END_OF_CUT';
 
  ====cut
 
+END_OF_CUT
+    my $tail = <<'END_OF_TAIL';
 #################### main pod documentation end ###################
 
-',
-);
+END_OF_TAIL
 
-sub pod_wrapper {
-    my ( $self, $string ) = @_;
-    my ($head, $tail);
-    $head = $pod_wrapper{head};
-    $tail = $pod_wrapper{tail};
-    $tail =~ s/\n ====/\n=/g;
-    return join( '', $head, $string, $tail );
+    $cutline =~ s/\n ====/\n=/g;
+    return join( '', 
+        $head,     # optional
+        $podtext,  # required 
+        $cutline,  # required 
+        $tail      # optional
+    );
 }
 
 1;
