@@ -1,6 +1,6 @@
 block_begin                    651 compose_pm_file
 block_final_one                870 compose_pm_file
-block_module_header            734 compose_pm_file
+block_pod                      734 compose_pm_file
 block_new_method               839 compose_pm_file
 block_subroutine_header        796 compose_pm_file
 check_dir                      198 create_base_directory; create_pm_basics; complete_build

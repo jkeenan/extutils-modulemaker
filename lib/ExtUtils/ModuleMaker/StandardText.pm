@@ -334,7 +334,7 @@ EOF
 =head3 C<file_text_Changes()>
 
   Usage     : $self->file_text_Changes($only_in_pod) within complete_build; 
-              block_module_header()
+              block_pod()
   Purpose   : Composes text for Changes file
   Returns   : String holding text for Changes file
   Argument  : $only_in_pod:  True value to get only a HISTORY section for POD
@@ -621,7 +621,7 @@ sub compose_pm_file {
 
     $text_of_pm_file .= (
          ( $self->module_value( $module, 'NEED_POD' ) )
-         ? $self->block_module_header($module)
+         ? $self->block_pod($module)
          : ''
     );
 
@@ -680,7 +680,7 @@ END_OF_BEGIN
 
   Usage     : $self->module_value($module, @keys) 
               within block_begin(), file_text_test(),
-              compose_pm_file(),  block_module_header()
+              compose_pm_file(),  block_pod()
   Purpose   : When writing POD sections, you have to 'escape' 
               the POD markers to prevent the compiler from treating 
               them as real POD.  This method 'unescapes' them and puts header
@@ -707,9 +707,9 @@ sub module_value {
     }
 }
 
-=head3 C<block_module_header()>
+=head3 C<block_pod()>
 
-  Usage     : $self->block_module_header($module) inside compose_pm_file()
+  Usage     : $self->block_pod($module) inside compose_pm_file()
   Purpose   : Compose the main POD section within a pm file
   Returns   : String holding main POD section
   Argument  : $module: pointer to the module being built
@@ -734,7 +734,7 @@ sub module_value {
 
 =cut
 
-sub block_module_header {
+sub block_pod {
     my ( $self, $module ) = @_;
 
     my $description = <<EOFBLOCK;
@@ -931,7 +931,7 @@ sub log_message {
 =head3 C<pod_section()>
 
   Usage     : $self->pod_section($heading, $content) within 
-              block_module_header()
+              block_pod()
   Purpose   : When writing POD sections, you have to 'escape' 
               the POD markers to prevent the compiler from treating 
               them as real POD.  This method 'unescapes' them and puts header
@@ -955,13 +955,13 @@ END_OF_STUFF
 
 =head3 C<pod_wrapper()>
 
-  Usage     : $self->pod_wrapper($string) within block_module_header()
+  Usage     : $self->pod_wrapper($string) within block_pod()
   Purpose   : When writing POD sections, you have to 'escape' 
               the POD markers to prevent the compiler from treating 
               them as real POD.  This method 'unescapes' them and puts header
               and closer around main POD block in pm file, along with warning
               about stub documentation.
-  Argument  : String built up within block_module_header().
+  Argument  : String built up within block_pod().
 
 =cut
 
