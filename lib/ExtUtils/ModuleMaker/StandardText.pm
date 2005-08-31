@@ -177,7 +177,7 @@ sub create_base_directory {
     my $self = shift;
 
     $self->{Base_Dir} =
-      join( ( $self->{COMPACT} ) ? '-' : '/', split( /::/, $self->{NAME} ) );
+      join( ( $self->{COMPACT} ) ? q{-} : q{/}, split( /::/, $self->{NAME} ) );
     $self->check_dir( $self->{Base_Dir} );
 }
 
@@ -219,11 +219,12 @@ sub print_file {
 
     push( @{ $self->{MANIFEST} }, $filename )
       unless ( $filename eq 'MANIFEST' );
-    $self->log_message("writing file '$filename'");
+#    $self->log_message("writing file '$filename'");
+    $self->log_message( qq{writing file '$filename'});
 
     local *FILE;
     open( FILE, ">$self->{Base_Dir}/$filename" )
-      or $self->death_message( [ "Could not write '$filename', $!" ] );
+      or $self->death_message( [ qq{Could not write '$filename', $!} ] );
     print FILE $filetext;
     close FILE;
 }
@@ -245,9 +246,9 @@ sub generate_pm_file {
 
     $self->create_pm_basics($module);
 
-    my $page = $self->compose_pm_file($module);
+    my $text_of_pm_file = $self->compose_pm_file($module);
 
-    $self->print_file( $module->{FILE}, $page );
+    $self->print_file( $module->{FILE}, $text_of_pm_file );
 }
 
 =head2 Methods Called within C<complete_build()> as an Argument to C<print_fiile()>
@@ -348,10 +349,10 @@ EOF
 sub file_text_Changes {
     my ( $self, $only_in_pod ) = @_;
 
-    my $page;
+    my $text_of_Changes;
 
     unless ($only_in_pod) {
-        $page = <<EOF;
+        $text_of_Changes = <<EOF;
 Revision history for Perl module $self->{NAME}
 
 $self->{VERSION} $self->{timestamp}
@@ -361,13 +362,13 @@ $self->{VERSION} $self->{timestamp}
 EOF
     }
     else {
-        $page = <<EOF;
+        $text_of_Changes = <<EOF;
 $self->{VERSION} $self->{timestamp}
     - original version; created by ExtUtils::ModuleMaker $self->{eumm_version}
 EOF
     }
 
-    return $page;
+    return $text_of_Changes;
 }
 
 =head3 C<file_text_test()>
@@ -389,11 +390,11 @@ sub file_text_test {
     my $name    = $self->module_value( $module, 'NAME' );
     my $neednew = $self->module_value( $module, 'NEED_NEW_METHOD' );
 
-    my $page;
+    my $text_of_test_file;
     if ($neednew) {
         my $name = $module->{NAME};
 
-        $page = <<EOF;
+        $text_of_test_file = <<EOF;
 # -*- perl -*-
 
 # $testnum - check module loading and create testing directory
@@ -411,7 +412,7 @@ EOF
     }
     else {
 
-        $page = <<EOF;
+        $text_of_test_file = <<EOF;
 # -*- perl -*-
 
 # $testnum - check module loading and create testing directory
@@ -425,7 +426,7 @@ EOF
 
     }
 
-    return $page;
+    return $text_of_test_file;
 }
 
 =head3 C<file_text_Makefile()>
@@ -441,7 +442,7 @@ EOF
 
 sub file_text_Makefile {
     my $self = shift;
-    my $Makefile_text = q~
+    my $Makefile_format = q~
 
 use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
@@ -456,14 +457,14 @@ WriteMakefile(
                     },
 );
 ~;
-    my $page = sprintf $Makefile_text,
+    my $text_of_Makefile = sprintf $Makefile_format,
         map { my $s = $_; $s =~ s{'}{\\'}g; $s; }
     $self->{NAME},
     $self->{FILE},
     $self->{AUTHOR},
     $self->{EMAIL},
     $self->{ABSTRACT};
-    return $page;
+    return $text_of_Makefile;
 }
 
 =head3 C<file_text_Buildfile()>
@@ -485,7 +486,7 @@ sub file_text_Buildfile {
     # As of 0.15, Module::Build only allows a few licenses
     my $license_line = 1 if $self->{LICENSE} =~ /^(?:perl|gpl|artistic)$/;
 
-    my $page = <<EOF;
+    my $text_of_Buildfile = <<EOF;
 use Module::Build;
 # See perldoc Module::Build for details of how this works
 
@@ -495,17 +496,17 @@ EOF
 
     if ($license_line) {
 
-        $page .= <<EOF;
+        $text_of_Buildfile .= <<EOF;
       license         => '$self->{LICENSE}',
 EOF
 
     }
 
-    $page .= <<EOF;
+    $text_of_Buildfile .= <<EOF;
     )->create_build_script;
 EOF
 
-    return $page;
+    return $text_of_Buildfile;
 
 }
 
@@ -524,7 +525,7 @@ sub file_text_proxy_makefile {
     my $self = shift;
 
     # This comes directly from the docs for Module::Build::Compat
-    my $page = <<'EOF';
+    my $text_of_proxy = <<'EOF';
 unless (eval "use Module::Build::Compat 0.02; 1" ) {
   print "This module requires Module::Build to install itself.\n";
 
@@ -554,7 +555,7 @@ Module::Build::Compat->run_build_pl(args => \@ARGV);
 Module::Build::Compat->write_makefile();
 EOF
 
-    return $page;
+    return $text_of_proxy;
 }
 
 
@@ -739,6 +740,7 @@ sub block_pod {
 
     my $name             = $self->module_value( $module, 'NAME' );
     my $abstract         = $self->module_value( $module, 'ABSTRACT' );
+    my $synopsis         = qq{  use $name;\n  blah blah blah\n};
     my $description      = <<END_OF_DESC;
 Stub documentation for this module was created by ExtUtils::ModuleMaker.
 It looks like the author of the extension was negligent enough
@@ -752,14 +754,10 @@ END_OF_DESC
 
     my $text_of_pod = join(
         q{},
-        $self->pod_section(
-            NAME => $name . ' - ' . $abstract
+        $self->pod_section( NAME => $name . 
+            ( (defined $abstract) ? qq{ - $abstract} : q{} )
         ),
-        $self->pod_section(
-                SYNOPSIS => '  use '
-              . $name
-              . ";\n  blah blah blah\n"
-        ),
+        $self->pod_section( SYNOPSIS    => $synopsis ),
         $self->pod_section( DESCRIPTION => $description ),
         $self->pod_section( USAGE       => q{} ),
         $self->pod_section( BUGS        => q{} ),
@@ -769,7 +767,7 @@ END_OF_DESC
             ? $self->pod_section(
                 HISTORY => $self->file_text_Changes('only pod')
               )
-            : ()
+            : q{}
         ),
         $self->pod_section( AUTHOR     => $author_composite),
         $self->pod_section( COPYRIGHT  => $copyright),
@@ -797,7 +795,7 @@ END_OF_DESC
 
 sub block_subroutine_header {
     my ( $self, $module ) = @_;
-    my $string = <<EOFBLOCK;
+    my $text_of_subroutine_pod = <<EOFBLOCK;
 
 #################### subroutine header begin ####################
 
@@ -819,8 +817,8 @@ See Also   :
 
 EOFBLOCK
 
-    $string =~ s/\n ====/\n=/g;
-    return $string;
+    $text_of_subroutine_pod =~ s/\n ====/\n=/g;
+    return $text_of_subroutine_pod;
 }
 
 =head3 C<block_new_method()>
@@ -941,12 +939,12 @@ sub log_message {
 
 sub pod_section {
     my ( $self, $heading, $content ) = @_;
-    my $text_of_pod_section = <<END_OF_STUFF;
+    my $text_of_pod_section = <<END_OF_SECTION;
 
  ====head1 $heading
 
 $content
-END_OF_STUFF
+END_OF_SECTION
 
     $text_of_pod_section =~ s/\n ====/\n=/g;
     return $text_of_pod_section;
