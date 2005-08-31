@@ -1,27 +1,27 @@
-block_begin                    652 compose_pm_file
+block_begin                    651 compose_pm_file
 block_final_one                870 compose_pm_file
 block_module_header            734 compose_pm_file
 block_new_method               839 compose_pm_file
 block_subroutine_header        796 compose_pm_file
-compose_pm_file                601 generate_pm_file
-check_dir                      199 create_base_directory; create_pm_basics; complete_build
-create_base_directory          179 complete_build
-create_pm_basics               245 generate_pm_file
+check_dir                      198 create_base_directory; create_pm_basics; complete_build
+compose_pm_file                600 generate_pm_file
+create_base_directory          176 complete_build
+create_pm_basics               577 generate_pm_file
 death_message                  894 print_file; check_dir; validate_values
-file_text_Buildfile            507 complete_build: argument to print_file
-file_text_Changes              373 complete_build: argument to print_file; block_module_header
-file_text_Makefile             467 complete_build: argument to print_file
-file_text_README               320 complete_build: argument to print_file
-file_text_ToDo                 345 complete_build: argument to print_file
-file_text_proxy_makefile       548 complete_build: argument to print_file
-file_text_test                 411 complete_build: argument to print_file
-generate_pm_file               267 complete_build
-initialize_license             146 new; Interactive::License_Menu
-log_message                    924 print_file
+file_text_Buildfile            483 complete_build: argument to print_file
+file_text_Changes              349 complete_build: argument to print_file; block_module_header
+file_text_Makefile             443 complete_build: argument to print_file
+file_text_README               296 complete_build: argument to print_file
+file_text_ToDo                 321 complete_build: argument to print_file
+file_text_proxy_makefile       524 complete_build: argument to print_file
+file_text_test                 387 complete_build: argument to print_file
+generate_pm_file               243 complete_build
+initialize_license             143 new; Interactive::License_Menu
+log_message                    923 print_file
 module_value                   692 compose_pm_file; block_begin; file_text_test; block_module_header
 pod_section                    940 block_module_header
 pod_wrapper                    983 block_module_header
-print_file                     218 complete_build; generate_pm_file
+print_file                     217 complete_build; generate_pm_file
 set_author_composite            62 new; Interactive::Main_Menu
 set_dates                       87 new
-validate_values                109 new; Interactive::Main_Menu
+validate_values                106 new; Interactive::Main_Menu
