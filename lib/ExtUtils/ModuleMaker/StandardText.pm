@@ -62,12 +62,13 @@ Happy subclassing!
 sub set_author_composite {
     my $self = shift;
 
+    my $cpan_message = "CPAN ID: $self->{CPANID}"; 
     $self->{COMPOSITE} = (
         "\t"
          . join( "\n\t",
             $self->{AUTHOR},
-            "CPAN ID: $self->{CPANID}", # will need to be modified
-            $self->{ORGANIZATION},  # if defaults no longer provided
+            $cpan_message,
+            $self->{ORGANIZATION},
             $self->{EMAIL}, 
             $self->{WEBSITE}, 
         ),
@@ -107,19 +108,29 @@ sub validate_values {
     my $self = shift;
     my @errors = ();
 
-    push( @errors, 'NAME is required' )
+    my %error_msg = (
+        NAME_REQ    	=> q{NAME is required},
+        NAME_ILLEGAL	=> q{Module NAME contains illegal characters},
+        ABSTRACT    	=> q{ABSTRACTs are limited to 44 characters},
+        CPANID      	=> q{CPAN IDs are 3-9 characters},
+        EMAIL       	=> q{EMAIL addresses need to have an at sign},
+        WEBSITE     	=> q{WEBSITEs should start with an "http:" or "https:"},
+        LICENSE     	=> q{LICENSE is not recognized},
+    );
+
+    push( @errors, $error_msg{NAME_REQ} )
       unless ( $self->{NAME} );
-    push( @errors, 'Module NAME contains illegal characters' )
+    push( @errors, $error_msg{NAME_ILLEGAL} )
       if ( $self->{NAME} and $self->{NAME} !~ m/^[\w:]+$/ );
-    push( @errors, 'ABSTRACTs are limited to 44 characters' )
+    push( @errors, $error_msg{ABSTRACT} )
       if ( length( $self->{ABSTRACT} ) > 44 );
-    push( @errors, 'CPAN IDs are 3-9 characters' )
+    push( @errors, $error_msg{CPANID} )
       if ( $self->{CPANID} !~ m/^\w{3,9}$/ );
-    push( @errors, 'EMAIL addresses need to have an at sign' )
+    push( @errors, $error_msg{EMAIL} )
       if ( $self->{EMAIL} !~ m/.*\@.*/ );
-    push( @errors, 'WEBSITEs should start with an "http:" or "https:"' )
+    push( @errors, $error_msg{WEBSITE} )
       if ( $self->{WEBSITE} !~ m/https?:\/\/.*/ );
-    push( @errors, 'LICENSE is not recognized' )
+    push( @errors, $error_msg{LICENSE} )
       unless ( Verify_Local_License( $self->{LICENSE} )
         || Verify_Standard_License( $self->{LICENSE} ) );
 
@@ -253,9 +264,9 @@ sub generate_pm_file {
 
 =head2 Methods Called within C<complete_build()> as an Argument to C<print_fiile()>
 
-=head3 C<file_text_README()>
+=head3 C<text_README()>
 
-  Usage     : $self->file_text_README() within complete_build()
+  Usage     : $self->text_README() within complete_build()
   Purpose   : Build README
   Returns   : String holding text of README
   Argument  : n/a
@@ -264,7 +275,7 @@ sub generate_pm_file {
 
 =cut
 
-sub file_text_README {
+sub text_README {
     my $self = shift;
     my %README_text = (
         eumm_instructions => <<'END_OF_MAKE',
@@ -306,9 +317,9 @@ END_OF_BOTTOM
         $README_text{readme_bottom};
 }
 
-=head3 C<file_text_ToDo()>
+=head3 C<text_ToDo()>
 
-  Usage     : $self->file_text_ToDo() within complete_build()
+  Usage     : $self->text_ToDo() within complete_build()
   Purpose   : Composes text for ToDo file
   Returns   : String with text of ToDo file
   Argument  : n/a
@@ -318,7 +329,7 @@ END_OF_BOTTOM
 
 =cut
 
-sub file_text_ToDo {
+sub text_ToDo {
     my $self = shift;
 
     my $text = <<EOF;
@@ -332,9 +343,9 @@ EOF
     return $text;
 }
 
-=head3 C<file_text_Changes()>
+=head3 C<text_Changes()>
 
-  Usage     : $self->file_text_Changes($only_in_pod) within complete_build; 
+  Usage     : $self->text_Changes($only_in_pod) within complete_build; 
               block_pod()
   Purpose   : Composes text for Changes file
   Returns   : String holding text for Changes file
@@ -346,7 +357,7 @@ EOF
 
 =cut
 
-sub file_text_Changes {
+sub text_Changes {
     my ( $self, $only_in_pod ) = @_;
 
     my $text_of_Changes;
@@ -371,9 +382,9 @@ EOF
     return $text_of_Changes;
 }
 
-=head3 C<file_text_test()>
+=head3 C<text_test()>
 
-  Usage     : $self->file_text_test within complete_build($testnum, $module)
+  Usage     : $self->text_test within complete_build($testnum, $module)
   Purpose   : Composes text for a test for each pm file being requested in
               call to EU::MM
   Returns   : String holding complete text for a test file.
@@ -384,7 +395,7 @@ EOF
 
 =cut
 
-sub file_text_test {
+sub text_test {
     my ( $self, $testnum, $module ) = @_;
 
     my $name    = $self->module_value( $module, 'NAME' );
@@ -429,9 +440,9 @@ EOF
     return $text_of_test_file;
 }
 
-=head3 C<file_text_Makefile()>
+=head3 C<text_Makefile()>
 
-  Usage     : $self->file_text_Makefile() within complete_build()
+  Usage     : $self->text_Makefile() within complete_build()
   Purpose   : Build Makefile
   Returns   : String holding text of Makefile
   Argument  : n/a
@@ -440,7 +451,7 @@ EOF
 
 =cut
 
-sub file_text_Makefile {
+sub text_Makefile {
     my $self = shift;
     my $Makefile_format = q~
 
@@ -467,9 +478,9 @@ WriteMakefile(
     return $text_of_Makefile;
 }
 
-=head3 C<file_text_Buildfile()>
+=head3 C<text_Buildfile()>
 
-  Usage     : $self->file_text_Buildfile() within complete_build() 
+  Usage     : $self->text_Buildfile() within complete_build() 
   Purpose   : Composes text for a Buildfile for Module::Build
   Returns   : String holding text for Buildfile
   Argument  : n/a
@@ -480,7 +491,7 @@ WriteMakefile(
 
 =cut
 
-sub file_text_Buildfile {
+sub text_Buildfile {
     my $self = shift;
 
     # As of 0.15, Module::Build only allows a few licenses
@@ -510,9 +521,9 @@ EOF
 
 }
 
-=head3 C<file_text_proxy_makefile()>
+=head3 C<text_proxy_makefile()>
 
-  Usage     : $self->file_text_proxy_makefile() within complete_build()
+  Usage     : $self->text_proxy_makefile() within complete_build()
   Purpose   : Composes text for proxy makefile
   Returns   : String holding text for proxy makefile
   Argument  : n/a
@@ -521,7 +532,7 @@ EOF
 
 =cut
 
-sub file_text_proxy_makefile {
+sub text_proxy_makefile {
     my $self = shift;
 
     # This comes directly from the docs for Module::Build::Compat
@@ -680,7 +691,7 @@ END_OF_BEGIN
 =head3 C<module_value()>
 
   Usage     : $self->module_value($module, @keys) 
-              within block_begin(), file_text_test(),
+              within block_begin(), text_test(),
               compose_pm_file(),  block_pod()
   Purpose   : When writing POD sections, you have to 'escape' 
               the POD markers to prevent the compiler from treating 
@@ -765,7 +776,7 @@ END_OF_DESC
         (
             ( $self->{CHANGES_IN_POD} )
             ? $self->pod_section(
-                HISTORY => $self->file_text_Changes('only pod')
+                HISTORY => $self->text_Changes('only pod')
               )
             : q{}
         ),

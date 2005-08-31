@@ -8,17 +8,17 @@ compose_pm_file                599 generate_pm_file
 create_base_directory          176 complete_build
 create_pm_basics               576 generate_pm_file
 death_message                  897 print_file; check_dir; validate_values
-file_text_Buildfile            482 complete_build: argument to print_file
-file_text_Changes              348 complete_build: argument to print_file; block_pod
-file_text_Makefile             442 complete_build: argument to print_file
-file_text_README               266 complete_build: argument to print_file
-file_text_ToDo                 320 complete_build: argument to print_file
-file_text_proxy_makefile       523 complete_build: argument to print_file
-file_text_test                 386 complete_build: argument to print_file
+text_Buildfile                 482 complete_build: argument to print_file
+text_Changes                   348 complete_build: argument to print_file; block_pod
+text_Makefile                  442 complete_build: argument to print_file
+text_README                    266 complete_build: argument to print_file
+text_ToDo                      320 complete_build: argument to print_file
+text_proxy_makefile            523 complete_build: argument to print_file
+text_test                      386 complete_build: argument to print_file
 generate_pm_file               243 complete_build
 initialize_license             143 new; Interactive::License_Menu
 log_message                    926 print_file
-module_value                   695 compose_pm_file; block_begin; file_text_test; block_pod
+module_value                   695 compose_pm_file; block_begin; text_test; block_pod
 pod_section                    943 block_pod
 pod_wrapper                    968 block_pod
 print_file                     217 complete_build; generate_pm_file

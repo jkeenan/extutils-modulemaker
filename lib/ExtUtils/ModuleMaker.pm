@@ -86,11 +86,11 @@ sub complete_build {
     $self->check_dir( map { "$self->{Base_Dir}/$_" } qw (lib t scripts) );
 
     $self->print_file( 'LICENSE', $self->{LicenseParts}{LICENSETEXT} );
-    $self->print_file( 'README',  $self->file_text_README() );
-    $self->print_file( 'Todo',    $self->file_text_ToDo() );
+    $self->print_file( 'README',  $self->text_README() );
+    $self->print_file( 'Todo',    $self->text_ToDo() );
 
     unless ( $self->{CHANGES_IN_POD} ) {
-        $self->print_file( 'Changes', $self->file_text_Changes() );
+        $self->print_file( 'Changes', $self->text_Changes() );
     }
 
     my $ct = 1;
@@ -98,20 +98,20 @@ sub complete_build {
         $self->generate_pm_file($module);
         my $testfile = sprintf( "t/%03d_load.t", $ct );
         $self->print_file( $testfile,
-            $self->file_text_test( $testfile, $module ) );
+            $self->text_test( $testfile, $module ) );
         $ct++;
     }
 
     #Makefile must be created after generate_pm_file which sets $self->{FILE}
     if ( $self->{BUILD_SYSTEM} eq 'ExtUtils::MakeMaker' ) {
-        $self->print_file( 'Makefile.PL', $self->file_text_Makefile() );
+        $self->print_file( 'Makefile.PL', $self->text_Makefile() );
     }
     else {
-        $self->print_file( 'Build.PL', $self->file_text_Buildfile() );
+        $self->print_file( 'Build.PL', $self->text_Buildfile() );
         if ( $self->{BUILD_SYSTEM} eq 'Module::Build and proxy Makefile.PL' 
          or  $self->{BUILD_SYSTEM} eq 'Module::Build and Proxy') {
             $self->print_file( 'Makefile.PL',
-                $self->file_text_proxy_makefile() );
+                $self->text_proxy_makefile() );
         }
     }
 
