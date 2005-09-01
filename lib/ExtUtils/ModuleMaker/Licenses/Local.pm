@@ -3,11 +3,10 @@ use strict;
 local $^W = 1;
 
 BEGIN {
-    use Exporter ();
-    use vars qw ( @ISA @EXPORT_OK );
-#    $VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
-    @ISA         = qw(Exporter);
+    use base qw(Exporter);
+    use vars qw ( @EXPORT_OK );
     @EXPORT_OK   = qw(Get_Local_License Verify_Local_License);
+#    $VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
 }
 
 my %licenses = (

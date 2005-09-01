@@ -8,13 +8,13 @@ use File::Path;
 BEGIN {
     use base qw(Exporter);
     use vars qw ( @EXPORT_OK );
-#    $VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
     @EXPORT_OK   = qw(
         _get_home_directory
         _preexists_mmkr_directory
         _make_mmkr_directory
         _restore_mmkr_dir_status
     );
+#    $VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
 }
 
 sub _get_home_directory {

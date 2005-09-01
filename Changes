@@ -1,5 +1,18 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.3615 September 1, 2005
+    - No change in functionality, but extensive refactoring, largely in
+      response to Damian's response to my Perlmonks posting.  Refactored subs
+in Utility.pm so that getting the name of a .modulemaker directory,
+determining whether it exists or not and creating it if it doesn't yet exist
+are discrete operations.  This means that a user can use EU::MM without ever
+having to create a personal defaults directory (relying on EU:MM::Defaults)
+and without having one created involuntarily by EU::MM (except temporarily
+during testing).  All .t files and most .pm files had to be refactored to
+accomplish this.  Also, moved all relevant modules to 'use base' for
+inheritance rather than the require-push @ISA BEGIN block sequence.  Did this
+when I learned that 'use base' dates back to Perl 5.4.
+
 0.3614 August 31, 2005
     - No change in functionality, but extensive refactoring, mainly inside
       ExtUtils::ModuleMaker::StandardText.pm to pave the way for making it

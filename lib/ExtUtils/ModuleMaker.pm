@@ -2,12 +2,12 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 BEGIN {
-    use vars qw ( $VERSION ); 
-    $VERSION = '0.36_15';
     use base qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::StandardText
-    )
+    );
+    use vars qw ( $VERSION ); 
+    $VERSION = '0.36_15';
 };
 use ExtUtils::ModuleMaker::Utility qw( 
     _preexists_mmkr_directory
