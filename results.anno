@@ -1,27 +1,27 @@
-block_begin                    651 compose_pm_file
-block_final_one                873 compose_pm_file
-block_new_method               842 compose_pm_file
-block_pod                      737 compose_pm_file
-block_subroutine_header        799 compose_pm_file
-check_dir                      198 create_base_directory; create_pm_basics; complete_build
-compose_pm_file                599 generate_pm_file
-create_base_directory          176 complete_build
-create_pm_basics               576 generate_pm_file
-death_message                  897 print_file; check_dir; validate_values
-text_Buildfile                 482 complete_build: argument to print_file
-text_Changes                   348 complete_build: argument to print_file; block_pod
-text_Makefile                  442 complete_build: argument to print_file
-text_README                    266 complete_build: argument to print_file
-text_ToDo                      320 complete_build: argument to print_file
-text_proxy_makefile            523 complete_build: argument to print_file
-text_test                      386 complete_build: argument to print_file
-generate_pm_file               243 complete_build
-initialize_license             143 new; Interactive::License_Menu
-log_message                    926 print_file
-module_value                   695 compose_pm_file; block_begin; text_test; block_pod
-pod_section                    943 block_pod
-pod_wrapper                    968 block_pod
-print_file                     217 complete_build; generate_pm_file
+block_begin                    694 compose_pm_file
+block_final_one                912 compose_pm_file
+block_new_method               881 compose_pm_file
+block_pod                      780 compose_pm_file
+block_subroutine_header        838 compose_pm_file
+check_dir                      240 create_base_directory; create_pm_basics; complete_build
+compose_pm_file                642 generate_pm_file
+create_base_directory          217 complete_build
+create_pm_basics               619 generate_pm_file
+death_message                  936 print_file; check_dir; validate_values
+generate_pm_file               286 complete_build
+initialize_license             184 new; Interactive::License_Menu
+log_message                    965 print_file
+module_value                   738 compose_pm_file; block_begin; text_test; block_pod
+pod_section                    982 block_pod
+pod_wrapper                    100 block_pod
+print_file                     259 complete_build; generate_pm_file
 set_author_composite            62 new; Interactive::Main_Menu
-set_dates                       87 new
-validate_values                106 new; Interactive::Main_Menu
+set_dates                       88 new
+text_Buildfile                 525 complete_build: argument to print_file
+text_Changes                   391 complete_build: argument to print_file; block_pod
+text_Makefile                  485 complete_build: argument to print_file
+text_README                    309 complete_build: argument to print_file
+text_ToDo                      363 complete_build: argument to print_file
+text_proxy_makefile            566 complete_build: argument to print_file
+text_test                      429 complete_build: argument to print_file
+validate_values                107 new; Interactive::Main_Menu

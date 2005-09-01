@@ -1000,7 +1000,11 @@ END_OF_SECTION
               them as real POD.  This method 'unescapes' them and puts header
               and closer around main POD block in pm file, along with warning
               about stub documentation.
-  Argument  : String built up within block_pod().
+  Argument  : String holding text of POD which has been built up 
+              within block_pod().
+  Comment   : $head and $tail inside pod_wrapper() are optional and, in a 
+              subclass, could be redefined as empty strings;
+              but $cutline is mandatory as it supplies the last =cut
 
 =cut
 
