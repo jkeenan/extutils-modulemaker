@@ -2,15 +2,8 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 BEGIN {
-#    use vars qw ( $VERSION @ISA ); 
     use vars qw ( $VERSION ); 
     $VERSION = '0.36_15';
-#    require ExtUtils::ModuleMaker::Defaults;
-#    require ExtUtils::ModuleMaker::StandardText;
-#    push @ISA, qw(
-#        ExtUtils::ModuleMaker::Defaults
-#        ExtUtils::ModuleMaker::StandardText
-#    );
     use base qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::StandardText

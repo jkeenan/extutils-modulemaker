@@ -3,10 +3,9 @@ package ExtUtils::ModuleMaker::Interactive;
 use strict;
 local $^W = 1;
 BEGIN {
-    use vars qw ( $VERSION @ISA ); 
+    use vars qw ( $VERSION ); 
     $VERSION = '0.36_15';
-    require ExtUtils::ModuleMaker;
-    push @ISA, qw( ExtUtils::ModuleMaker );
+    use base qw( ExtUtils::ModuleMaker );
 }
 use Carp;
 
