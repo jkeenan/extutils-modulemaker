@@ -53,17 +53,8 @@ sub _preexists_mmkr_directory {
 }
 
 sub _make_mmkr_directory {
-#    my $mmkr_dir = _get_mmkr_directory();
-#    my $no_mmkr_dir_flag;
-#    if (! -d $mmkr_dir) {
-#        $no_mmkr_dir_flag++; 
-#        mkdir $mmkr_dir
-#            or croak "Unable to make directory $mmkr_dir for placement of personal defaults file: $!";
-#    }
-#    return ($mmkr_dir, $no_mmkr_dir_flag);
     my $mmkr_dir_ref = shift;
     my $dirname = $mmkr_dir_ref->[0];
-#    my $dirname = shift;
     if (! -d $dirname) {
         mkdir $dirname
             or croak "Unable to make directory $dirname for placement of personal defaults file or subclass: $!";
@@ -74,10 +65,6 @@ sub _make_mmkr_directory {
 sub _restore_mmkr_dir_status {
     my $mmkr_dir_ref = shift;
     my $mmkr_dir = $mmkr_dir_ref->[0];
-#    my $no_mmkr_dir_flag = shift;
-#    # 1 means there was NO .modulemaker directory at start of test file
-#    # 0 means there was such a directory
-#    if ($no_mmkr_dir_flag) {
     if (! defined $mmkr_dir_ref->[1]) {
         rmtree($mmkr_dir, 0, 1);
         if(! -d $mmkr_dir) {
