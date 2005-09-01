@@ -2,14 +2,19 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 BEGIN {
-    use vars qw ( $VERSION @ISA ); 
+#    use vars qw ( $VERSION @ISA ); 
+    use vars qw ( $VERSION ); 
     $VERSION = '0.36_15';
-    require ExtUtils::ModuleMaker::Defaults;
-    require ExtUtils::ModuleMaker::StandardText;
-    push @ISA, qw(
+#    require ExtUtils::ModuleMaker::Defaults;
+#    require ExtUtils::ModuleMaker::StandardText;
+#    push @ISA, qw(
+#        ExtUtils::ModuleMaker::Defaults
+#        ExtUtils::ModuleMaker::StandardText
+#    );
+    use base qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::StandardText
-    );
+    )
 };
 use ExtUtils::ModuleMaker::Utility qw( 
     _preexists_mmkr_directory
@@ -30,21 +35,13 @@ sub new {
 
     # multi-stage initialization of EU::MM object
     
-    # 1. Determine if user has stored an
-    # ExtUtils::ModuleMaker::Personal::Defaults file and, if so, unshift that
-    # on to @ISA so that its default_values() subroutine is run rather than that
-    # supplied by EU::MM itself.
-#    my ($mmkr_dir, $no_mmkr_dir_flag)  = 
-#        _make_mmkr_directory();
-#    push @INC, $mmkr_dir;
-#    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
-#    if (-f "$mmkr_dir/$pers_file") {
-#        require ExtUtils::ModuleMaker::Personal::Defaults;
-#        unshift @ISA, qw( ExtUtils::ModuleMaker::Personal::Defaults );
-#    } # no 'else' clause:  simply use EU::MM::Defaults
-#    my $mmkr_dir_ref = _preexists_mmkr_directory();
-#    $self->{mmkr_dir}  = $mmkr_dir_ref->[0];
-#    $self->{preexists} = $mmkr_dir_ref->[1];
+    # 1. Determine if there already exists on system a directory capable of
+    # holding user ExtUtils::ModuleMaker::Personal::Defaults.  The name of
+    # such a directory and whether it exists at THIS point are stored in an
+    # array, a reference to which is the return value of
+    # _preexists_mmkr_directory and which is then stored in the object.
+    # NOTE:  If the directory does not yet exists, it is not automatically
+    # created.
     $self->{mmkr_dir_ref} =  _preexists_mmkr_directory();
 
     # 2.  Populate object with default values.
@@ -214,10 +211,6 @@ END_BOTTOMFILE
 
     my $output =  $topfile . $kvpairs . $bottomfile;
 
-#    my ($mmkr_dir, $no_mmkr_dir_flag) = 
-#        _make_mmkr_directory();
-#    croak "Unable to locate suitable top directory for placement of personal defaults file: $!"
-#        unless (-d $mmkr_dir);
     my $mmkr_dir = _make_mmkr_directory($self->{mmkr_dir_ref});
     my $pers_path = "ExtUtils/ModuleMaker/Personal";
     my $full_dir = File::Spec->catdir($mmkr_dir, $pers_path);
