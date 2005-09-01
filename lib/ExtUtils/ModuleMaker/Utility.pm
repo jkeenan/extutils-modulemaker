@@ -35,30 +35,22 @@ sub _get_home_directory {
 }
 
 sub _get_personal_defaults_directory {
-    my ($realhome, $personal_dir, $no_personal_dir_flag); 
-#    if ($^O eq 'MSWin32') {
-#        $realhome = _get_home_directory();
-#        $personal_dir = "$realhome/.modulemaker"; 
-#        if (! -d $personal_dir) {
-#            $no_personal_dir_flag++; 
-#            mkdir $personal_dir
-#                or croak "Unable to make directory $personal_dir for placement of personal defaults file on Win32: $!";
-#        }
-#    } else { # Unix-like systems
-#        $realhome = _get_home_directory();
-#        $personal_dir = "$realhome/.modulemaker"; 
-#        if (! -d $personal_dir) {
-#            $no_personal_dir_flag++; 
-#            mkdir $personal_dir
-#                or croak "Unable to make directory $personal_dir for placement of personal defaults file underneath 'HOME': $!";
-#        }
-#    }
-    $realhome = _get_home_directory();
-    $personal_dir = "$realhome/.modulemaker"; 
-    if (! -d $personal_dir) {
-        $no_personal_dir_flag++; 
-        mkdir $personal_dir
-            or croak "Unable to make directory $personal_dir for placement of personal defaults file: $!";
+    my ($personal_dir, $no_personal_dir_flag); 
+    # if the modulemaker environmental variable has been set administratively,
+    # see if it holds a real directory and return that directory
+    if (defined $ENV{modulemaker} and -d $ENV{modulemaker}) {
+        $personal_dir = $ENV{modulemaker};
+    }
+    # if not, look in likely places given your OS; 
+    # mkdir it if possible;
+    # croak upon failure
+    else { 
+        $personal_dir = _get_home_directory() . "/.modulemaker"; 
+        if (! -d $personal_dir) {
+            $no_personal_dir_flag++; 
+            mkdir $personal_dir
+                or croak "Unable to make directory $personal_dir for placement of personal defaults file: $!";
+        }
     }
     return ($personal_dir, $no_personal_dir_flag);
 }
@@ -130,12 +122,27 @@ because C<$ENV{HOME}> is not defined there.
 
 =item * C<_get_personal_defaults_directory()>
 
-Once we have established that there exists an appropriate 'HOME' or home-like
-directory, we see if there is a F<.modulemaker> directory underneath it.  If
-so, we return it; if not, we create it and return it.  If the directory was
-I<not> there originally, we set the C<$no_personal_dir_flag> to a true
-value and return it; otherwise that variable returns as C<undef>.  The 
-F<.modulemaker> directory will hold ExtUtils::ModuleMaker::Personal::Defaults.
+If ExtUtils::ModuleMaker has already been installed on your system, it is
+possible that you or your system administrator has assigned a particular
+directory (outside the normal site location for Perl modules) to serve as 
+the location to hold other directories which in turn hold site-specific 
+default or configuration files for
+ExtUtils::ModuleMaker.  Such a directory would be assigned to an environmental
+variable C<modulemaker>, represented within Perl code as C<$ENV{modulemaker}>.
+If such a directory exists, C<_get_personal_defaults_directory()> returns it
+and it will hold ExtUtils::ModuleMaker::Personal::Defaults.
+
+If, as is more likely, C<$ENV{modulemaker}> has I<not> been set, then
+C<_get_personal_defaults_directory()> checks (via an internal call to
+C<_get_home_directory>) to see whether there exists an appropriate 'HOME' 
+or home-like directory on your system and whether there is a F<.modulemaker> 
+directory underneath it.  If so, C<_get_personal_defaults_directory()> 
+returns it; if not, the method call creates and returns it, C<croak>ing 
+upon failure.  If the directory was I<not> there originally, we set the 
+C<$no_personal_dir_flag> to a true value and return it as the second return
+value from C<_get_personal_defaults_directory()>; otherwise that 
+variable returns as C<undef>.  The F<.modulemaker> directory created will 
+hold ExtUtils::ModuleMaker::Personal::Defaults.
 
 C<_get_personal_defaults_directory()> calls C<_get_home_directory()>
 internally, so if you are using C<_get_personal_defaults_directory()> you do
