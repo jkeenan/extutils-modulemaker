@@ -12,7 +12,8 @@ BEGIN {
     );
 };
 use ExtUtils::ModuleMaker::Utility qw( 
-    _get_mmkr_directory
+    _preexists_mmkr_directory
+    _make_mmkr_directory
 );
 use Carp;
 use File::Path;
@@ -33,14 +34,18 @@ sub new {
     # ExtUtils::ModuleMaker::Personal::Defaults file and, if so, unshift that
     # on to @ISA so that its default_values() subroutine is run rather than that
     # supplied by EU::MM itself.
-    my ($mmkr_dir, $no_mmkr_dir_flag)  = 
-        _get_mmkr_directory();
-    push @INC, $mmkr_dir;
-    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
-    if (-f "$mmkr_dir/$pers_file") {
-        require ExtUtils::ModuleMaker::Personal::Defaults;
-        unshift @ISA, qw( ExtUtils::ModuleMaker::Personal::Defaults );
-    } # no 'else' clause:  simply use EU::MM::Defaults
+#    my ($mmkr_dir, $no_mmkr_dir_flag)  = 
+#        _make_mmkr_directory();
+#    push @INC, $mmkr_dir;
+#    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+#    if (-f "$mmkr_dir/$pers_file") {
+#        require ExtUtils::ModuleMaker::Personal::Defaults;
+#        unshift @ISA, qw( ExtUtils::ModuleMaker::Personal::Defaults );
+#    } # no 'else' clause:  simply use EU::MM::Defaults
+#    my $mmkr_dir_ref = _preexists_mmkr_directory();
+#    $self->{mmkr_dir}  = $mmkr_dir_ref->[0];
+#    $self->{preexists} = $mmkr_dir_ref->[1];
+    $self->{mmkr_dir_ref} =  _preexists_mmkr_directory();
 
     # 2.  Populate object with default values.
     my $defaults_ref;
@@ -209,10 +214,11 @@ END_BOTTOMFILE
 
     my $output =  $topfile . $kvpairs . $bottomfile;
 
-    my ($mmkr_dir, $no_mmkr_dir_flag) = 
-        _get_mmkr_directory();
-    croak "Unable to locate suitable top directory for placement of personal defaults file: $!"
-        unless (-d $mmkr_dir);
+#    my ($mmkr_dir, $no_mmkr_dir_flag) = 
+#        _make_mmkr_directory();
+#    croak "Unable to locate suitable top directory for placement of personal defaults file: $!"
+#        unless (-d $mmkr_dir);
+    my $mmkr_dir = _make_mmkr_directory($self->{mmkr_dir_ref});
     my $pers_path = "ExtUtils/ModuleMaker/Personal";
     my $full_dir = File::Spec->catdir($mmkr_dir, $pers_path);
     if (! -d $full_dir) {
@@ -230,7 +236,7 @@ END_BOTTOMFILE
     }
     open my $fh, '>', $pers_full 
         or croak "Unable to open $pers_full for writing: $!";
-    print $fh $output;
+    print $fh $output or croak "Unable to print $pers_full: $!";
     close $fh or croak "Unable to close $pers_full after writing: $!";
 }
 

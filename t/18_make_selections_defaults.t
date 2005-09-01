@@ -7,7 +7,8 @@ tests =>  106;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
 use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
-        _get_mmkr_directory
+        _preexists_mmkr_directory
+        _make_mmkr_directory
         _restore_mmkr_dir_status
     )
 );
@@ -53,8 +54,8 @@ was done.
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my ($mmkr_dir, $no_mmkr_dir_flag) = 
-            _get_mmkr_directory();
+        my $mmkr_dir_ref = _preexists_mmkr_directory();
+        my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
         ok( $mmkr_dir, "personal defaults directory now present on system");
 
         my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
@@ -89,7 +90,7 @@ was done.
 
 =pod BetaTesterProblem:
     The following method call failed for Alex on Debian.  Mysteriously, it
-failed at a call within it to _get_mmkr_directory (EU::MM line
+failed at a call within it to _make_mmkr_directory (EU::MM line
 209) -- which has been called many times within the test suite!
     It failed for Marc as well, with this error:
 Unable to make directory
@@ -141,7 +142,7 @@ error message at ModuleMaker line 216.
 
         ok(chdir $cwd, 'changed back to original directory after testing');
 
-        ok( _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
+        ok( _restore_mmkr_dir_status($mmkr_dir_ref),
             "original presence/absence of .modulemaker directory restored");
 
     }
@@ -151,8 +152,8 @@ error message at ModuleMaker line 216.
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my ($mmkr_dir, $no_mmkr_dir_flag) = 
-            _get_mmkr_directory();
+        my $mmkr_dir_ref = _preexists_mmkr_directory();
+        my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
         ok( $mmkr_dir, "personal defaults directory now present on system");
 
         my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
@@ -221,7 +222,7 @@ error message at ModuleMaker line 216.
 
         ok(chdir $cwd, 'changed back to original directory after testing');
 
-        ok( _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
+        ok( _restore_mmkr_dir_status($mmkr_dir_ref),
             "original presence/absence of .modulemaker directory restored");
 
     }
@@ -244,8 +245,8 @@ error message at ModuleMaker line 216.
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my ($mmkr_dir, $no_mmkr_dir_flag) = 
-            _get_mmkr_directory();
+        my $mmkr_dir_ref = _preexists_mmkr_directory();
+        my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
         ok( $mmkr_dir, "personal defaults directory now present on system");
 
         my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
@@ -305,7 +306,7 @@ error message at ModuleMaker line 216.
 
         ok(chdir $cwd, 'changed back to original directory after testing');
 
-        ok( _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
+        ok( _restore_mmkr_dir_status($mmkr_dir_ref),
             "original presence/absence of .modulemaker directory restored");
 
     }
