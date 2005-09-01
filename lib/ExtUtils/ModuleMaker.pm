@@ -7,7 +7,7 @@ BEGIN {
         ExtUtils::ModuleMaker::StandardText
     );
     use vars qw ( $VERSION ); 
-    $VERSION = '0.36_15';
+    $VERSION = '0.36_16';
 };
 use ExtUtils::ModuleMaker::Utility qw( 
     _preexists_mmkr_directory
@@ -260,7 +260,7 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
 =head1 VERSION
 
-This document references version 0.36_15 of ExtUtils::ModuleMaker, released
+This document references version 0.36_16 of ExtUtils::ModuleMaker, released
 to CPAN on September 1, 2005.
 
 =head1 DESCRIPTION
