@@ -106,34 +106,64 @@ sub set_dates {
 
 sub validate_values {
     my $self = shift;
-    my @errors = ();
 
+    # Key:    short-hand name for error condition
+    # Value:  anonymous array holding:
+    #   [0]:  error message
+    #   [1]:  condition which will generate error message
     my %error_msg = (
-        NAME_REQ    	=> q{NAME is required},
-        NAME_ILLEGAL	=> q{Module NAME contains illegal characters},
-        ABSTRACT    	=> q{ABSTRACTs are limited to 44 characters},
-        CPANID      	=> q{CPAN IDs are 3-9 characters},
-        EMAIL       	=> q{EMAIL addresses need to have an at sign},
-        WEBSITE     	=> q{WEBSITEs should start with an "http:" or "https:"},
-        LICENSE     	=> q{LICENSE is not recognized},
+        NAME_REQ    	=> [
+            q{NAME is required},
+            eval { ! $self->{NAME}; },
+        ],
+        NAME_ILLEGAL	=> [
+            q{Module NAME contains illegal characters},
+            eval { $self->{NAME} and $self->{NAME} !~ m/^[\w:]+$/; },
+        ],
+        ABSTRACT    	=> [
+            q{ABSTRACTs are limited to 44 characters},
+            eval { length( $self->{ABSTRACT} ) > 44; },
+        ],
+        CPANID      	=> [
+            q{CPAN IDs are 3-9 characters},
+            eval { $self->{CPANID} !~ m/^\w{3,9}$/; },
+        ],
+        EMAIL       	=> [
+            q{EMAIL addresses need to have an at sign},
+            eval { $self->{EMAIL} !~ m/.*\@.*/; },
+        ],
+        WEBSITE     	=> [
+            q{WEBSITEs should start with an "http:" or "https:"},
+            eval { $self->{WEBSITE} !~ m/https?:\/\/.*/; },
+        ],
+        LICENSE     	=> [
+            q{LICENSE is not recognized},
+            eval { ! (
+                Verify_Local_License($self->{LICENSE})
+                ||
+                Verify_Standard_License($self->{LICENSE})
+        ); },
+        ],
     );
 
-    push( @errors, $error_msg{NAME_REQ} )
-      unless ( $self->{NAME} );
-    push( @errors, $error_msg{NAME_ILLEGAL} )
-      if ( $self->{NAME} and $self->{NAME} !~ m/^[\w:]+$/ );
-    push( @errors, $error_msg{ABSTRACT} )
-      if ( length( $self->{ABSTRACT} ) > 44 );
-    push( @errors, $error_msg{CPANID} )
-      if ( $self->{CPANID} !~ m/^\w{3,9}$/ );
-    push( @errors, $error_msg{EMAIL} )
-      if ( $self->{EMAIL} !~ m/.*\@.*/ );
-    push( @errors, $error_msg{WEBSITE} )
-      if ( $self->{WEBSITE} !~ m/https?:\/\/.*/ );
-    push( @errors, $error_msg{LICENSE} )
-      unless ( Verify_Local_License( $self->{LICENSE} )
-        || Verify_Standard_License( $self->{LICENSE} ) );
+    # Errors should be checked in the following order
+    my @msgs_ordered = qw(
+        NAME_REQ
+        NAME_ILLEGAL
+        ABSTRACT
+        CPANID
+        EMAIL
+        WEBSITE
+        LICENSE
+    );
 
+    my @errors;
+
+    foreach my $attr ( @msgs_ordered ) {
+        push @errors, $error_msg{$attr}[0] 
+                   if $error_msg{$attr}[1];
+    }
+        
     return 1 unless @errors;
     $self->death_message(\@errors);
 }
@@ -189,6 +219,7 @@ sub create_base_directory {
 
     $self->{Base_Dir} =
       join( ( $self->{COMPACT} ) ? q{-} : q{/}, split( /::/, $self->{NAME} ) );
+
     $self->check_dir( $self->{Base_Dir} );
 }
 
