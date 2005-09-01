@@ -8,8 +8,8 @@ use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Licenses::Local' );
 use_ok( 'Cwd');
 use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
-        _get_personal_defaults_directory
-        _restore_personal_dir_status
+        _get_mmkr_directory
+        _restore_mmkr_dir_status
     )
 );
 
@@ -238,9 +238,9 @@ SKIP: {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my ($personal_dir, $no_personal_dir_flag) = 
-            _get_personal_defaults_directory();
-        ok( $personal_dir, "personal defaults directory now present on system");
+        my ($mmkr_dir, $no_mmkr_dir_flag) = 
+            _get_mmkr_directory();
+        ok( $mmkr_dir, "personal defaults directory now present on system");
 
         $testmod = 'Beta';
 
@@ -277,7 +277,7 @@ SKIP: {
 
         ok(chdir $odir, 'changed back to original directory after testing');
 
-        ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+        ok( _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
             "original presence/absence of .modulemaker directory restored");
 
     }

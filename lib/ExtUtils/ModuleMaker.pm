@@ -12,7 +12,7 @@ BEGIN {
     );
 };
 use ExtUtils::ModuleMaker::Utility qw( 
-    _get_personal_defaults_directory
+    _get_mmkr_directory
 );
 use Carp;
 use File::Path;
@@ -33,11 +33,11 @@ sub new {
     # ExtUtils::ModuleMaker::Personal::Defaults file and, if so, unshift that
     # on to @ISA so that its default_values() subroutine is run rather than that
     # supplied by EU::MM itself.
-    my ($personal_dir, $no_personal_dir_flag)  = 
-        _get_personal_defaults_directory();
-    push @INC, $personal_dir;
+    my ($mmkr_dir, $no_mmkr_dir_flag)  = 
+        _get_mmkr_directory();
+    push @INC, $mmkr_dir;
     my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
-    if (-f "$personal_dir/$pers_file") {
+    if (-f "$mmkr_dir/$pers_file") {
         require ExtUtils::ModuleMaker::Personal::Defaults;
         unshift @ISA, qw( ExtUtils::ModuleMaker::Personal::Defaults );
     } # no 'else' clause:  simply use EU::MM::Defaults
@@ -209,12 +209,12 @@ END_BOTTOMFILE
 
     my $output =  $topfile . $kvpairs . $bottomfile;
 
-    my ($personal_dir, $no_personal_dir_flag) = 
-        _get_personal_defaults_directory();
+    my ($mmkr_dir, $no_mmkr_dir_flag) = 
+        _get_mmkr_directory();
     croak "Unable to locate suitable top directory for placement of personal defaults file: $!"
-        unless (-d $personal_dir);
+        unless (-d $mmkr_dir);
     my $pers_path = "ExtUtils/ModuleMaker/Personal";
-    my $full_dir = File::Spec->catdir($personal_dir, $pers_path);
+    my $full_dir = File::Spec->catdir($mmkr_dir, $pers_path);
     if (! -d $full_dir) {
         mkpath( $full_dir );
         if ($@) {

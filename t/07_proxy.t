@@ -7,8 +7,8 @@ tests =>  58;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
 use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
-        _get_personal_defaults_directory
-        _restore_personal_dir_status
+        _get_mmkr_directory
+        _restore_mmkr_dir_status
     )
 );
 use lib ("./t/testlib");
@@ -36,13 +36,13 @@ SKIP: {
 
     ########################################################################
 
-    my ($personal_dir, $no_personal_dir_flag) = 
-        _get_personal_defaults_directory();
-    ok( $personal_dir, "personal defaults directory now present on system");
+    my ($mmkr_dir, $no_mmkr_dir_flag) = 
+        _get_mmkr_directory();
+    ok( $mmkr_dir, "personal defaults directory now present on system");
 
     my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
     my $pers_def_ref = 
-        _process_personal_defaults_file( $personal_dir, $pers_file );
+        _process_personal_defaults_file( $mmkr_dir, $pers_file );
 
     my ($mod, $filetext);
     my $testmod = 'Delta';
@@ -131,7 +131,7 @@ SKIP: {
 
     ok(chdir $odir, 'changed back to original directory after testing');
 
-    ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+    ok( _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
         "original presence/absence of .modulemaker directory restored");
 
 } # end SKIP block

@@ -34,8 +34,8 @@ use Carp;
 *copy = *File::Copy::copy;
 *move = *File::Copy::move;
 use ExtUtils::ModuleMaker::Utility qw(
-    _get_personal_defaults_directory
-    _restore_personal_dir_status
+    _get_mmkr_directory
+    _restore_mmkr_dir_status
 );
 
 sub read_file_string {
@@ -149,18 +149,18 @@ sub failsafe {
     my ($tdir, $mod);
     $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
-    my ($personal_dir, $no_personal_dir_flag) = 
-        _get_personal_defaults_directory();
-    ok( $personal_dir, "personal defaults directory now present on system");
+    my ($mmkr_dir, $no_mmkr_dir_flag) = 
+        _get_mmkr_directory();
+    ok( $mmkr_dir, "personal defaults directory now present on system");
     my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
     my $pers_def_ref = 
-        _process_personal_defaults_file( $personal_dir, $pers_file );
+        _process_personal_defaults_file( $mmkr_dir, $pers_file );
     local $@ = undef;
     eval { $mod  = ExtUtils::ModuleMaker->new (@$argslistref); };
     like($@, qr/$pattern/, $message);
     _reprocess_personal_defaults_file($pers_def_ref);
     ok(chdir $odir, 'changed back to original directory after testing');
-    ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+    ok( _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
         "original presence/absence of .modulemaker directory restored");
 }
 
@@ -170,13 +170,13 @@ sub licensetest {
     my ($tdir, $mod);
     $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, "changed to temp directory for testing $license");
-    my ($personal_dir, $no_personal_dir_flag) = 
-        _get_personal_defaults_directory();
-    ok( $personal_dir, "personal defaults directory now present on system");
+    my ($mmkr_dir, $no_mmkr_dir_flag) = 
+        _get_mmkr_directory();
+    ok( $mmkr_dir, "personal defaults directory now present on system");
 
     my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
     my $pers_def_ref = 
-        _process_personal_defaults_file( $personal_dir, $pers_file );
+        _process_personal_defaults_file( $mmkr_dir, $pers_file );
     ok($mod = ExtUtils::ModuleMaker->new(
         NAME      => "Alpha::$license",
         LICENSE   => $license,
@@ -188,24 +188,24 @@ sub licensetest {
     like($licensetext, $pattern, "$license license has predicted content");
     _reprocess_personal_defaults_file($pers_def_ref);
     ok(chdir $odir, 'changed back to original directory after testing');
-    ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+    ok( _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
         "original presence/absence of .modulemaker directory restored");
 }
 
 sub _starttest {
     my $realhome = _get_realhome();
     local $ENV{HOME} = _get_pseudodir("./t/testlib/pseudohome"); # 2 tests
-    my ( $personal_dir, $personal_defaults_file ) = 
+    my ( $mmkr_dir, $personal_defaults_file ) = 
         _get_personal_defaults($ENV{HOME});  # 1 test
-    return ( $realhome, $personal_dir, $personal_defaults_file );
+    return ( $realhome, $mmkr_dir, $personal_defaults_file );
 }
 
 sub _endtest {
-    my ($realhome, $personal_dir, $personal_defaults_file) = @_;
+    my ($realhome, $mmkr_dir, $personal_defaults_file) = @_;
     $ENV{HOME} = $realhome;
-    ( $personal_dir, $personal_defaults_file ) = 
+    ( $mmkr_dir, $personal_defaults_file ) = 
         _restore_personal_defaults( 
-            $personal_dir, $personal_defaults_file 
+            $mmkr_dir, $personal_defaults_file 
         ); # 1 test
 }
 
@@ -228,38 +228,38 @@ sub _get_pseudodir {
 
 sub _get_personal_defaults {
     my $home = shift;
-    my $personal_dir = "$home/.modulemaker"; 
+    my $mmkr_dir = "$home/.modulemaker"; 
     my $personal_defaults_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
-    if (-f "$personal_dir/$personal_defaults_file") {
-        move("$personal_dir/$personal_defaults_file", 
-             "$personal_dir/$personal_defaults_file.bak"); 
-        ok(-f "$personal_dir/$personal_defaults_file.bak",
+    if (-f "$mmkr_dir/$personal_defaults_file") {
+        move("$mmkr_dir/$personal_defaults_file", 
+             "$mmkr_dir/$personal_defaults_file.bak"); 
+        ok(-f "$mmkr_dir/$personal_defaults_file.bak",
             "_starttest:  personal defaults stored as .bak"); 
     } else {
         ok(1, "_starttest:  no personal defaults file found");
     }
-    return ( $personal_dir, $personal_defaults_file );
+    return ( $mmkr_dir, $personal_defaults_file );
 }
 
 sub _restore_personal_defaults {
-    my ( $personal_dir,  $personal_defaults_file ) = @_;
-    if (-f "$personal_dir/$personal_defaults_file.bak") {
-        move("$personal_dir/$personal_defaults_file.bak", 
-             "$personal_dir/$personal_defaults_file"); 
-        ok(-f "$personal_dir/$personal_defaults_file",
+    my ( $mmkr_dir,  $personal_defaults_file ) = @_;
+    if (-f "$mmkr_dir/$personal_defaults_file.bak") {
+        move("$mmkr_dir/$personal_defaults_file.bak", 
+             "$mmkr_dir/$personal_defaults_file"); 
+        ok(-f "$mmkr_dir/$personal_defaults_file",
             "_endtest:  personal defaults restored"); 
     } else {
         ok(1, "_endtest: no personal defaults file found");
     }
-    return ( $personal_dir,  $personal_defaults_file );
+    return ( $mmkr_dir,  $personal_defaults_file );
 }
 
 sub _process_personal_defaults_file {
-    my ($personal_dir, $pers_file) = @_;
+    my ($mmkr_dir, $pers_file) = @_;
     my $pers_file_hidden = "$pers_file" . '.hidden';
     my %pers;
-    $pers{full} = "$personal_dir/$pers_file";
-    $pers{hidden} = "$personal_dir/$pers_file_hidden";
+    $pers{full} = "$mmkr_dir/$pers_file";
+    $pers{hidden} = "$mmkr_dir/$pers_file_hidden";
     if (-f $pers{full}) {
         $pers{atime}   = (stat($pers{full}))[8];
         $pers{modtime} = (stat($pers{full}))[9];

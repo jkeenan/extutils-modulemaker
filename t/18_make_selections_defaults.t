@@ -7,8 +7,8 @@ tests =>  106;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
 use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
-        _get_personal_defaults_directory
-        _restore_personal_dir_status
+        _get_mmkr_directory
+        _restore_mmkr_dir_status
     )
 );
 use lib ("./t/testlib");
@@ -53,13 +53,13 @@ was done.
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my ($personal_dir, $no_personal_dir_flag) = 
-            _get_personal_defaults_directory();
-        ok( $personal_dir, "personal defaults directory now present on system");
+        my ($mmkr_dir, $no_mmkr_dir_flag) = 
+            _get_mmkr_directory();
+        ok( $mmkr_dir, "personal defaults directory now present on system");
 
         my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
         my $pers_def_ref = 
-            _process_personal_defaults_file( $personal_dir, $pers_file );
+            _process_personal_defaults_file( $mmkr_dir, $pers_file );
 
         push @INC, "$cwd/t/testlib";
         require ExtUtils::ModuleMaker::Testing::Defaults;
@@ -89,7 +89,7 @@ was done.
 
 =pod BetaTesterProblem:
     The following method call failed for Alex on Debian.  Mysteriously, it
-failed at a call within it to _get_personal_defaults_directory (EU::MM line
+failed at a call within it to _get_mmkr_directory (EU::MM line
 209) -- which has been called many times within the test suite!
     It failed for Marc as well, with this error:
 Unable to make directory
@@ -108,7 +108,7 @@ error message at ModuleMaker line 216.
 =cut
 
         $obj1->make_selections_defaults();
-        ok(-f "$personal_dir/$pers_file", "new Personal::Defaults installed");
+        ok(-f "$mmkr_dir/$pers_file", "new Personal::Defaults installed");
 
         my $obj2 = ExtUtils::ModuleMaker->new(
             NAME    => q{Ackus::Frackus},
@@ -141,7 +141,7 @@ error message at ModuleMaker line 216.
 
         ok(chdir $cwd, 'changed back to original directory after testing');
 
-        ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+        ok( _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
             "original presence/absence of .modulemaker directory restored");
 
     }
@@ -151,13 +151,13 @@ error message at ModuleMaker line 216.
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my ($personal_dir, $no_personal_dir_flag) = 
-            _get_personal_defaults_directory();
-        ok( $personal_dir, "personal defaults directory now present on system");
+        my ($mmkr_dir, $no_mmkr_dir_flag) = 
+            _get_mmkr_directory();
+        ok( $mmkr_dir, "personal defaults directory now present on system");
 
         my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
         my $pers_def_ref = 
-            _process_personal_defaults_file( $personal_dir, $pers_file );
+            _process_personal_defaults_file( $mmkr_dir, $pers_file );
 
         push @INC, "$cwd/t/testlib";
         require ExtUtils::ModuleMaker::Testing::Defaults;
@@ -188,7 +188,7 @@ error message at ModuleMaker line 216.
 
         check_MakefilePL($topdir, \@pred);
 
-        ok(-f "$personal_dir/$pers_file", "new Personal::Defaults installed");
+        ok(-f "$mmkr_dir/$pers_file", "new Personal::Defaults installed");
 
         my $obj2 = ExtUtils::ModuleMaker->new(
             NAME    => q{Ackus::Frackus},
@@ -221,7 +221,7 @@ error message at ModuleMaker line 216.
 
         ok(chdir $cwd, 'changed back to original directory after testing');
 
-        ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+        ok( _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
             "original presence/absence of .modulemaker directory restored");
 
     }
@@ -244,13 +244,13 @@ error message at ModuleMaker line 216.
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        my ($personal_dir, $no_personal_dir_flag) = 
-            _get_personal_defaults_directory();
-        ok( $personal_dir, "personal defaults directory now present on system");
+        my ($mmkr_dir, $no_mmkr_dir_flag) = 
+            _get_mmkr_directory();
+        ok( $mmkr_dir, "personal defaults directory now present on system");
 
         my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
         my $pers_def_ref = 
-            _process_personal_defaults_file( $personal_dir, $pers_file );
+            _process_personal_defaults_file( $mmkr_dir, $pers_file );
 
         ok(! system(qq{$^X -I"$cwd/blib/lib" "$cwd/blib/script/modulemaker" -Isn EU::MM::Testing::Defaults -a "Module abstract (<= 44 characters) goes here" -u "Hilton Stallone" -p RAMBO -o "Parliamentary Pictures" -w http://parliamentarypictures.com -e hiltons\@parliamentarypictures.com }), 
             "able to call modulemaker utility with save defaults option on");
@@ -272,7 +272,7 @@ error message at ModuleMaker line 216.
 
         check_MakefilePL($topdir, \@pred);
 
-        ok(-f "$personal_dir/$pers_file", "new Personal::Defaults installed");
+        ok(-f "$mmkr_dir/$pers_file", "new Personal::Defaults installed");
 
         my $obj2 = ExtUtils::ModuleMaker->new(
             NAME    => q{Ackus::Frackus},
@@ -305,7 +305,7 @@ error message at ModuleMaker line 216.
 
         ok(chdir $cwd, 'changed back to original directory after testing');
 
-        ok( _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+        ok( _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
             "original presence/absence of .modulemaker directory restored");
 
     }

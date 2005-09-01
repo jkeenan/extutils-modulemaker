@@ -12,8 +12,8 @@ BEGIN {
     @ISA         = qw(Exporter);
     @EXPORT_OK   = qw(
         _get_home_directory
-        _get_personal_defaults_directory
-        _restore_personal_dir_status
+        _get_mmkr_directory
+        _restore_mmkr_dir_status
     );
 }
 
@@ -34,35 +34,35 @@ sub _get_home_directory {
     }
 }
 
-sub _get_personal_defaults_directory {
-    my ($personal_dir, $no_personal_dir_flag); 
+sub _get_mmkr_directory {
+    my ($mmkr_dir, $no_mmkr_dir_flag); 
     # if the modulemaker environmental variable has been set administratively,
     # see if it holds a real directory and return that directory
     if (defined $ENV{modulemaker} and -d $ENV{modulemaker}) {
-        $personal_dir = $ENV{modulemaker};
+        $mmkr_dir = $ENV{modulemaker};
     }
     # if not, look in likely places given your OS; 
     # mkdir it if possible;
     # croak upon failure
     else { 
-        $personal_dir = _get_home_directory() . "/.modulemaker"; 
-        if (! -d $personal_dir) {
-            $no_personal_dir_flag++; 
-            mkdir $personal_dir
-                or croak "Unable to make directory $personal_dir for placement of personal defaults file: $!";
+        $mmkr_dir = _get_home_directory() . "/.modulemaker"; 
+        if (! -d $mmkr_dir) {
+            $no_mmkr_dir_flag++; 
+            mkdir $mmkr_dir
+                or croak "Unable to make directory $mmkr_dir for placement of personal defaults file: $!";
         }
     }
-    return ($personal_dir, $no_personal_dir_flag);
+    return ($mmkr_dir, $no_mmkr_dir_flag);
 }
 
-sub _restore_personal_dir_status {
-    my $personal_dir = shift;
-    my $no_personal_dir_flag = shift;
+sub _restore_mmkr_dir_status {
+    my $mmkr_dir = shift;
+    my $no_mmkr_dir_flag = shift;
     # 1 means there was NO .modulemaker directory at start of test file
     # 0 means there was such a directory
-    if ($no_personal_dir_flag) {
-        rmtree($personal_dir, 0, 1);
-        if(! -d $personal_dir) {
+    if ($no_mmkr_dir_flag) {
+        rmtree($mmkr_dir, 0, 1);
+        if(! -d $mmkr_dir) {
             return 1;
         } else {
             croak "Unable to restore .modulemaker directory created during test: $!";
@@ -82,12 +82,12 @@ ExtUtils::ModuleMaker::Utility - Utility subroutines for EU::MM
 
 =head1 SYNOPSIS
 
-  use ExtUtils::ModuleMaker::Utility qw( _get_personal_defaults_directory );
+  use ExtUtils::ModuleMaker::Utility qw( _get_mmkr_directory );
   ...
   $home_dir     = _get_home_directory();
-  ($personal_dir, $no_personal_dir_flag) 
-                = _get_personal_defaults_directory();
-  _restore_personal_dir_status($personal_dir, $no_personal_dir_flag),
+  ($mmkr_dir, $no_mmkr_dir_flag) 
+                = _get_mmkr_directory();
+  _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
 
 =head1 DESCRIPTION
 
@@ -121,7 +121,7 @@ On Unix-like systems, things are much simpler.  We simply check the value of
 C<$ENV{HOME}>.  We cannot do that on Win32 (at least not on ActivePerl),
 because C<$ENV{HOME}> is not defined there.
 
-=item * C<_get_personal_defaults_directory()>
+=item * C<_get_mmkr_directory()>
 
 Returns a two-element list.  The first element is the name of a directory.  
 The second is a flag indicating whether that directory already existed (C<undef>)
@@ -138,28 +138,28 @@ the location to hold other directories which in turn hold site-specific
 default or configuration files for ExtUtils::ModuleMaker.  Such a 
 directory would be assigned to an environmental variable C<modulemaker>, 
 represented within Perl code as C<$ENV{modulemaker}>.
-If such a directory exists, C<_get_personal_defaults_directory()> returns it
+If such a directory exists, C<_get_mmkr_directory()> returns it
 and it will hold ExtUtils::ModuleMaker::Personal::Defaults.
 
 If, as is more likely, C<$ENV{modulemaker}> has I<not> been set, then
-C<_get_personal_defaults_directory()> checks (via an internal call to
+C<_get_mmkr_directory()> checks (via an internal call to
 C<_get_home_directory>) to see whether there exists an appropriate 'HOME' 
 or home-like directory on your system and whether there is a F<.modulemaker> 
-directory underneath it.  If so, C<_get_personal_defaults_directory()> 
+directory underneath it.  If so, C<_get_mmkr_directory()> 
 returns it; if not, the method call creates and returns it, C<croak>ing 
 upon failure.  If the directory was I<not> there originally, we set the 
-C<$no_personal_dir_flag> to a true value and return it as the second return
-value from C<_get_personal_defaults_directory()>; otherwise that 
+C<$no_mmkr_dir_flag> to a true value and return it as the second return
+value from C<_get_mmkr_directory()>; otherwise that 
 variable returns as C<undef>.  The F<.modulemaker> directory created will 
 hold ExtUtils::ModuleMaker::Personal::Defaults.
 
-C<_get_personal_defaults_directory()> calls C<_get_home_directory()>
-internally, so if you are using C<_get_personal_defaults_directory()> you do
+C<_get_mmkr_directory()> calls C<_get_home_directory()>
+internally, so if you are using C<_get_mmkr_directory()> you do
 not need to call C<_get_home_directory()> first.
 
-=item * C<_restore_personal_dir_status()>
+=item * C<_restore_mmkr_dir_status()>
 
-Undoes C<_get_personal_defaults_directory()>, I<i.e.,> if there was no
+Undoes C<_get_mmkr_directory()>, I<i.e.,> if there was no
 F<.modulemaker> directory on the user's system before testing, any such
 directory created during testing is removed.  On the other hand, if there
 I<was> such a directory present before testing, it is left unchanged.
