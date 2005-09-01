@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::Utility;
-# as of 08/27/2005
+# as of 09-01-2005
 use strict;
 local $^W = 1;
 use Carp;
@@ -36,22 +36,29 @@ sub _get_home_directory {
 
 sub _get_personal_defaults_directory {
     my ($realhome, $personal_dir, $no_personal_dir_flag); 
-    if ($^O eq 'MSWin32') {
-        $realhome = _get_home_directory();
-        $personal_dir = "$realhome/.modulemaker"; 
-        if (! -d $personal_dir) {
-            $no_personal_dir_flag++; 
-            mkdir $personal_dir
-                or croak "Unable to make directory $personal_dir for placement of personal defaults file on Win32: $!";
-        }
-    } else { # Unix-like systems
-        $realhome = _get_home_directory();
-        $personal_dir = "$realhome/.modulemaker"; 
-        if (! -d $personal_dir) {
-            $no_personal_dir_flag++; 
-            mkdir $personal_dir
-                or croak "Unable to make directory $personal_dir for placement of personal defaults file underneath 'HOME': $!";
-        }
+#    if ($^O eq 'MSWin32') {
+#        $realhome = _get_home_directory();
+#        $personal_dir = "$realhome/.modulemaker"; 
+#        if (! -d $personal_dir) {
+#            $no_personal_dir_flag++; 
+#            mkdir $personal_dir
+#                or croak "Unable to make directory $personal_dir for placement of personal defaults file on Win32: $!";
+#        }
+#    } else { # Unix-like systems
+#        $realhome = _get_home_directory();
+#        $personal_dir = "$realhome/.modulemaker"; 
+#        if (! -d $personal_dir) {
+#            $no_personal_dir_flag++; 
+#            mkdir $personal_dir
+#                or croak "Unable to make directory $personal_dir for placement of personal defaults file underneath 'HOME': $!";
+#        }
+#    }
+    $realhome = _get_home_directory();
+    $personal_dir = "$realhome/.modulemaker"; 
+    if (! -d $personal_dir) {
+        $no_personal_dir_flag++; 
+        mkdir $personal_dir
+            or croak "Unable to make directory $personal_dir for placement of personal defaults file: $!";
     }
     return ($personal_dir, $no_personal_dir_flag);
 }
