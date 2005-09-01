@@ -101,15 +101,16 @@ ExtUtils::ModuleMaker and/or its test suite.
 =item * C<_get_home_directory()>
 
 Analyzes environmental information to determine whether there exists on the
-system a 'HOME' or 'home-equivalent' directory capable of holding directories
-which, in turn, will be appropriate for
-holding an ExtUtils::ModuleMaker::Personal::Defaults package.  On Win32, this
-directory is that returned by the following function from the F<Win32>module:
+system a 'HOME' or 'home-equivalent' directory.  Returns that directory if it
+exists; C<croak>s otherwise.
+
+On Win32, this directory is the one returned by the following function from the F<Win32>module:
 
     Win32->import( qw(CSIDL_LOCAL_APPDATA) );
     $realhome =  Win32::GetFolderPath( CSIDL_LOCAL_APPDATA() );
 
 ... which translates to something like F<C:\Documents and Settings\localuser\Local Settings\Application Data>.  
+
 Well, not quite.  On some systems, that directory does not exist.  What does
 exist is the same path less the F<Local Settings\\> level. So we run
 C<$realhome> through a regex to eliminate that.
@@ -122,13 +123,21 @@ because C<$ENV{HOME}> is not defined there.
 
 =item * C<_get_personal_defaults_directory()>
 
+Returns a two-element list.  The first element is the name of a directory.  
+The second is a flag indicating whether that directory already existed (C<undef>)
+or whether the method call had to create that directory (a true value).  The
+directory so returned will be one capable of holding directories and files
+particular to ExtUtils::Modulemaker's functioning on your system (I<e.g.,>
+holding F<ExtUtils/ModuleMaker/Personal/Defaults.pm>).  The flag is used only
+within ExtUtils::Modulemaker's test suite.
+
 If ExtUtils::ModuleMaker has already been installed on your system, it is
 possible that you or your system administrator has assigned a particular
 directory (outside the normal site location for Perl modules) to serve as 
 the location to hold other directories which in turn hold site-specific 
-default or configuration files for
-ExtUtils::ModuleMaker.  Such a directory would be assigned to an environmental
-variable C<modulemaker>, represented within Perl code as C<$ENV{modulemaker}>.
+default or configuration files for ExtUtils::ModuleMaker.  Such a 
+directory would be assigned to an environmental variable C<modulemaker>, 
+represented within Perl code as C<$ENV{modulemaker}>.
 If such a directory exists, C<_get_personal_defaults_directory()> returns it
 and it will hold ExtUtils::ModuleMaker::Personal::Defaults.
 
