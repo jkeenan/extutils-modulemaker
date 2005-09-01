@@ -134,7 +134,7 @@ sub validate_values {
         ],
         WEBSITE     	=> [
             q{WEBSITEs should start with an "http:" or "https:"},
-            eval { $self->{WEBSITE} !~ m/https?:\/\/.*/; },
+            eval { $self->{WEBSITE} !~ m{https?://.*}; },
         ],
         LICENSE     	=> [
             q{LICENSE is not recognized},
@@ -501,11 +501,11 @@ WriteMakefile(
 ~;
     my $text_of_Makefile = sprintf $Makefile_format,
         map { my $s = $_; $s =~ s{'}{\\'}g; $s; }
-    $self->{NAME},
-    $self->{FILE},
-    $self->{AUTHOR},
-    $self->{EMAIL},
-    $self->{ABSTRACT};
+            $self->{NAME},
+            $self->{FILE},
+            $self->{AUTHOR},
+            $self->{EMAIL},
+            $self->{ABSTRACT};
     return $text_of_Makefile;
 }
 

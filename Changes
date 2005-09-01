@@ -1,5 +1,10 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.3614 August 31, 2005
+    - No change in functionality, but extensive refactoring, mainly inside
+      ExtUtils::ModuleMaker::StandardText.pm to pave the way for making it
+subclassable.
+
 0.3613 August 28, 2005
     - To preclude the problems experienced by Alex and Marc in the future, I
       modified one sub in ExtUtils::ModuleMaker::Utility and created another. 

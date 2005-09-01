@@ -115,8 +115,8 @@ sub make_compact {
     my $module_name = shift;
     my ($topdir, $path, $pmfile);
     $topdir = $path = $module_name;
-    $topdir =~ s/::/-/g;
-    $path =~ s/::/\//g;
+    $topdir =~ s{::}{-}g;
+    $path   =~ s{::}{/}g;
     $pmfile = "$topdir/lib/${path}.pm";
     return ($topdir, $pmfile);
 }
