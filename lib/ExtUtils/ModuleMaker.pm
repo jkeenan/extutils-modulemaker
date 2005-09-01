@@ -3,7 +3,7 @@ use strict;
 local $^W = 1;
 BEGIN {
     use vars qw ( $VERSION @ISA ); 
-    $VERSION = '0.36_14';
+    $VERSION = '0.36_15';
     require ExtUtils::ModuleMaker::Defaults;
     require ExtUtils::ModuleMaker::StandardText;
     push @ISA, qw(
@@ -268,8 +268,8 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
 =head1 VERSION
 
-This document references version 0.36_14 of ExtUtils::ModuleMaker, released
-to CPAN on August 31, 2005.
+This document references version 0.36_15 of ExtUtils::ModuleMaker, released
+to CPAN on September 1, 2005.
 
 =head1 DESCRIPTION
 
@@ -669,12 +669,23 @@ in the subject line.
 
 =head1 ACKNOWLEDGMENTS
 
-Thanks to Geoff Avery for inventing and popularizing
-ExtUtils::Modulemaker.  Thanks for bug reports and fixes to David A
-Golden and an anonymous guest on rt.cpan.org.  Thanks for suggestions
-about testing the F<modulemaker> utility to Michael G Schwern on perl.qa
-and A Sinan Unur and Paul Lalli on comp.lang.perl.misc.  Thanks for help
-in dealing with a nasty bug in the testing to Perlmonks davidrw and tlm.
+Thanks first and foremost to Geoff Avery for creating ExtUtils::Modulemaker
+and popularizing it via presentations I attended at YAPC::NA::2003 (Boca
+Raton) and YAPC::EU::2003 (Paris).
+
+Soon after I took over maintenance of ExtUtils::ModuleMaker, David A
+Golden became a driving force in its ongoing development, providing
+suggestions for additional functionality as well as bug reports.
+
+Thanks for suggestions about testing the F<modulemaker> utility to 
+Michael G Schwern on perl.qa and A Sinan Unur and Paul Lalli on 
+comp.lang.perl.misc.  Thanks for help in dealing with a nasty bug in the 
+testing to Perlmonks davidrw and tlm.  That well known Perl hacker, Anonymous 
+Guest, contributed another bug report  on rt.cpan.org.
+
+As development proceeded, several issues were clarified by members of
+Perlmonks.org.  CountZero, xdg, Tanktalus, holli, TheDamian and nothingmuch
+made particularly useful suggestions.
 
 =head1 COPYRIGHT
 
