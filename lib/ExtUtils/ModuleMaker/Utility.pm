@@ -6,10 +6,9 @@ use Carp;
 use File::Path;
 
 BEGIN {
-    use Exporter ();
-    use vars qw ( @ISA @EXPORT_OK );
+    use base qw(Exporter);
+    use vars qw ( @EXPORT_OK );
 #    $VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
-    @ISA         = qw(Exporter);
     @EXPORT_OK   = qw(
         _get_home_directory
         _preexists_mmkr_directory
