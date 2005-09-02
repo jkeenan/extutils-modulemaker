@@ -54,7 +54,7 @@ sub new {
     foreach my $def ( keys %{$defaults_ref} ) {
         $self->{$def} = $defaults_ref->{$def};
     }
-#warn "\nXXX self author:  $self->{AUTHOR}\nself compact:  $self->{COMPACT}\n";
+    
     # 3.  Pull in arguments supplied to constructor.
     # These will come from one of three sources:
     # a.  In a script, KEY => 'Value' pairs supplied to new();
@@ -76,7 +76,6 @@ sub new {
     foreach my $param ( keys %parameters ) {
         $self->{$param} = $parameters{$param};
     }
-#warn "\nYYY self author:  $self->{AUTHOR}\nself compact:  $self->{COMPACT}\n";
 
     # 5.  Initialize keys set from information supplied above, system
     # info or EU::MM itself.
