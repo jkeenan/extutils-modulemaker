@@ -1,5 +1,11 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.3616 September 2, 2005
+    - Attempted to implement the factory concept per Damian on Perlmonks.
+      Ultimately this didn't work and had to be abandoned.  Correction of bugs
+in modulemaker re handling of command-line options for NEED_POD and
+NEED_NEW_METHOD.
+
 0.3615 September 1, 2005
     - No change in functionality, but extensive refactoring, largely in
       response to Damian's response to my Perlmonks posting.  Refactored subs
