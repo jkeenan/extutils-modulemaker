@@ -15,12 +15,6 @@ require Exporter;
     make_compact
     failsafe
     licensetest
-    _starttest
-    _endtest
-    _get_realhome
-    _get_pseudodir
-    _get_personal_defaults
-    _restore_personal_defaults
     _process_personal_defaults_file 
     _reprocess_personal_defaults_file 
 ); 
@@ -171,8 +165,6 @@ sub licensetest {
     my ($tdir, $mod);
     $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, "changed to temp directory for testing $license");
-#    my ($mmkr_dir, $no_mmkr_dir_flag) = 
-#        _make_mmkr_directory();
     my $mmkr_dir_ref = _preexists_mmkr_directory();
     my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
     ok( $mmkr_dir, "personal defaults directory now present on system");
@@ -191,71 +183,8 @@ sub licensetest {
     like($licensetext, $pattern, "$license license has predicted content");
     _reprocess_personal_defaults_file($pers_def_ref);
     ok(chdir $odir, 'changed back to original directory after testing');
-#    ok( _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
     ok( _restore_mmkr_dir_status($mmkr_dir_ref),
         "original presence/absence of .modulemaker directory restored");
-}
-
-sub _starttest {
-    my $realhome = _get_realhome();
-    local $ENV{HOME} = _get_pseudodir("./t/testlib/pseudohome"); # 2 tests
-    my ( $mmkr_dir, $personal_defaults_file ) = 
-        _get_personal_defaults($ENV{HOME});  # 1 test
-    return ( $realhome, $mmkr_dir, $personal_defaults_file );
-}
-
-sub _endtest {
-    my ($realhome, $mmkr_dir, $personal_defaults_file) = @_;
-    $ENV{HOME} = $realhome;
-    ( $mmkr_dir, $personal_defaults_file ) = 
-        _restore_personal_defaults( 
-            $mmkr_dir, $personal_defaults_file 
-        ); # 1 test
-}
-
-sub _get_realhome {
-    my $realhome;
-    if ($^O eq 'MSWin32') {
-        require Win32;
-        Win32->import( qw(CSIDL_LOCAL_APPDATA) );  # 0x001c 
-        $realhome =  Win32::GetFolderPath( CSIDL_LOCAL_APPDATA() );
-    } else {
-        $realhome = $ENV{HOME};
-    }
-}
-sub _get_pseudodir {
-    my $pseudodir = shift;
-    ok(-d $pseudodir, "_starttest:  pseudohome directory exists");
-    like($pseudodir, qr/pseudohome/, "_starttest:  pseudohome identified");
-    return $pseudodir;
-}
-
-sub _get_personal_defaults {
-    my $home = shift;
-    my $mmkr_dir = "$home/.modulemaker"; 
-    my $personal_defaults_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
-    if (-f "$mmkr_dir/$personal_defaults_file") {
-        move("$mmkr_dir/$personal_defaults_file", 
-             "$mmkr_dir/$personal_defaults_file.bak"); 
-        ok(-f "$mmkr_dir/$personal_defaults_file.bak",
-            "_starttest:  personal defaults stored as .bak"); 
-    } else {
-        ok(1, "_starttest:  no personal defaults file found");
-    }
-    return ( $mmkr_dir, $personal_defaults_file );
-}
-
-sub _restore_personal_defaults {
-    my ( $mmkr_dir,  $personal_defaults_file ) = @_;
-    if (-f "$mmkr_dir/$personal_defaults_file.bak") {
-        move("$mmkr_dir/$personal_defaults_file.bak", 
-             "$mmkr_dir/$personal_defaults_file"); 
-        ok(-f "$mmkr_dir/$personal_defaults_file",
-            "_endtest:  personal defaults restored"); 
-    } else {
-        ok(1, "_endtest: no personal defaults file found");
-    }
-    return ( $mmkr_dir,  $personal_defaults_file );
 }
 
 sub _process_personal_defaults_file {
