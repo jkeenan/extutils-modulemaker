@@ -2,6 +2,10 @@ package ExtUtils::ModuleMaker::Regular;
 use strict;
 local $^W = 1;
 BEGIN {
+    use ExtUtils::ModuleMaker::Utility qw( 
+        _preexists_mmkr_directory
+        _make_mmkr_directory
+    );
     use base qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::StandardText
@@ -9,10 +13,6 @@ BEGIN {
     use vars qw ( $VERSION ); 
     $VERSION = '0.36_16';
 };
-use ExtUtils::ModuleMaker::Utility qw( 
-    _preexists_mmkr_directory
-    _make_mmkr_directory
-);
 use Carp;
 use File::Path;
 use File::Spec;

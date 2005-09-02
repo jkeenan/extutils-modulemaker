@@ -30,6 +30,7 @@ sub new {
     # multi-stage initialization of EU::MM object
     
     # 1. 
+    $self->{mmkr_dir_ref} =  _preexists_mmkr_directory();
 
     # 2.  Populate object with default values.
     my $defaults_ref;
