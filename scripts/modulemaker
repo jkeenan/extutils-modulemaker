@@ -37,16 +37,34 @@ croak Usage() if ( $opts{h} );
 # my $defaults_ref = ExtUtils::ModuleMaker->default_values();
 
 my %standard_options = (
-    COMPACT          => ( ( $opts{c} ) ? 1 : 0 ),
+#    COMPACT          => ( ( $opts{c} ) ? 1 : 0 ),
+#    VERBOSE          => ( ( $opts{V} ) ? 1 : 0 ),
+#    CHANGES_IN_POD   => ( ( $opts{C} ) ? 1 : 0 ),
+#    NEED_POD         => ( ( $opts{P} ) ? 0 : 1 ),
+#    NEED_NEW_METHOD  => ( ( $opts{q} ) ? 0 : 1 ),
+#    INTERACTIVE      => ( ( $opts{I} ) ? 0 : 1 ),
+#    SAVE_AS_DEFAULTS => ( ( $opts{s} ) ? 1 : 0 ),
+
 #    COMPACT          => ( ( $opts{c} ) ? 1
 #        : (defined $defaults_ref->{COMPACT}) ? $defaults_ref->{COMPACT}
 #        : 0 ),
-    VERBOSE          => ( ( $opts{V} ) ? 1 : 0 ),
-    CHANGES_IN_POD   => ( ( $opts{C} ) ? 1 : 0 ),
-    NEED_POD         => ( ( $opts{P} ) ? 0 : 1 ),
-    NEED_NEW_METHOD  => ( ( $opts{q} ) ? 0 : 1 ),
+
+#    COMPACT          => ( ( $opts{c} ) ? 1 : () ),
+#    VERBOSE          => ( ( $opts{V} ) ? 1 : () ),
+#    CHANGES_IN_POD   => ( ( $opts{C} ) ? 1 : () ),
+#    NEED_POD         => ( ( $opts{P} ) ? 0 : () ),
+#    NEED_NEW_METHOD  => ( ( $opts{q} ) ? 0 : () ),
+#    INTERACTIVE      => ( ( $opts{I} ) ? 0 : () ),
+#    SAVE_AS_DEFAULTS => ( ( $opts{s} ) ? 1 : () ),
+    ( ( defined $opts{c} ) ? ( COMPACT               => $opts{c} ) : () ),
+    ( ( defined $opts{V} ) ? ( VERBOSE               => $opts{V} ) : () ),
+    ( ( defined $opts{C} ) ? ( CHANGES_IN_POD        => $opts{C} ) : () ),
+    ( ( defined $opts{P} ) ? ( NEED_POD              => $opts{P} ) : () ),
+    ( ( defined $opts{q} ) ? ( NEED_NEW_METHOD       => $opts{q} ) : () ),
+#    ( ( $opts{I} ) ? ( INTERACTIVE           => $opts{I} ) : 1  ),
     INTERACTIVE      => ( ( $opts{I} ) ? 0 : 1 ),
-    SAVE_AS_DEFAULTS => ( ( $opts{s} ) ? 1 : 0 ),
+    ( ( defined $opts{s} ) ? ( SAVE_AS_DEFAULTS      => $opts{s} ) : () ),
+
     ( ( $opts{n} ) ? ( NAME                  => $opts{n} ) : () ),
     ( ( $opts{a} ) ? ( ABSTRACT              => $opts{a} ) : () ),
     ( ( $opts{b} ) ? ( BUILD_SYSTEM          => $opts{b} ) : () ),

@@ -56,6 +56,15 @@ sub new {
     }
 #warn "\nXXX self author:  $self->{AUTHOR}\nself compact:  $self->{COMPACT}\n";
     # 3.  Pull in arguments supplied to constructor.
+    # These will come from one of three sources:
+    # a.  In a script, KEY => 'Value' pairs supplied to new();
+    # b.  From modulemaker command-line, -option 'Value' pairs following
+    # 'modulemaker';
+    # c.  From modulemaker interactive mode, hard-wired values which may
+    # supersede (b) values.
+    # NOTE:  *Any* values coming in here will supersede the defaults
+    # established above, whether those defaults came from EU::MM::Defaults or
+    # from EU::MM::Personal::Defaults somewhere on system.
     my @arglist = @_;
     croak "Must be hash or balanced list of key-value pairs: $!"
         if (@arglist % 2);
