@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::Interactive;
-# as of 09-01-2005
+# as of 09-03-2005
 use strict;
 local $^W = 1;
 BEGIN {
@@ -8,6 +8,7 @@ BEGIN {
     $VERSION = '0.36_16';
 }
 use Carp;
+use Data::Dumper;
 
 ########## CONSTRUCTOR ##########
 #
@@ -59,15 +60,6 @@ my %destinations = (
         R => 'Main Menu',
         X => 'exit',
     },
-);
-
-my %Directives_Menu = (
-    C => [ 'Compact        ', 'COMPACT' ],
-    P => [ 'Permissions    ', 'PERMISSIONS' ],
-    V => [ 'Verbose        ', 'VERBOSE' ],
-    D => [ 'Include POD    ', 'NEED_POD' ],
-    N => [ 'Include new    ', 'NEED_NEW_METHOD' ],
-    H => [ 'History in POD ', 'CHANGES_IN_POD' ],
 );
 
 my %Flagged = (
@@ -279,37 +271,81 @@ sub _prepare_author_defaults {
     my $defaults_ref = $self->default_values();
     my %author_defaults = (
         AUTHOR  => {
-                default  => ${$defaults_ref}{AUTHOR},
+                default  => $defaults_ref->{AUTHOR},
                 string   => 'Author      ',
                 opt      => 'u',
                 select   => 'N',
             },
         CPANID => {
-                default  => ${$defaults_ref}{CPANID},
+                default  => $defaults_ref->{CPANID},
                 string   => 'CPAN ID     ',
                 opt      => 'p',
                 select   => 'C',
             },
         ORGANIZATION => {
-                default  => ${$defaults_ref}{ORGANIZATION},
+                default  => $defaults_ref->{ORGANIZATION},
                 string   => 'Organization',
                 opt      => 'o',
                 select   => 'O',
             },
         WEBSITE => {
-                default  => ${$defaults_ref}{WEBSITE},
+                default  => $defaults_ref->{WEBSITE},
                 string   => 'Website     ',
                 opt      => 'w',
                 select   => 'W',
             },
         EMAIL => {
-                default  => ${$defaults_ref}{EMAIL},
+                default  => $defaults_ref->{EMAIL},
                 string   => 'Email       ',
                 opt      => 'e',
                 select   => 'E',
             },
     );
     return { %author_defaults };
+}
+
+sub _prepare_directives_defaults {
+    my $self = shift;
+    my $defaults_ref = $self->default_values();
+    my %directives_defaults = (
+        COMPACT  => {
+                default  => $defaults_ref->{COMPACT},
+                string   => 'Compact        ',
+                opt      => 'c',
+                select   => 'C',
+            },
+        VERBOSE  => {
+                default  => $defaults_ref->{VERBOSE},
+                string   => 'Verbose        ',
+                opt      => 'V',
+                select   => 'V',
+            },
+        NEED_POD  => {
+                default  => $defaults_ref->{NEED_POD},
+                string   => 'Include POD    ',
+                opt      => 'P',
+                select   => 'D',
+            },
+        NEED_NEW_METHOD  => {
+                default  => $defaults_ref->{NEED_NEW_METHOD},
+                string   => 'Include new    ',
+                opt      => 'q',
+                select   => 'N',
+            },
+        CHANGES_IN_POD  => {
+                default  => $defaults_ref->{CHANGES_IN_POD},
+                string   => 'History in POD ',
+                opt      => 'C',
+                select   => 'H',
+            },
+        PERMISSIONS  => {
+                default  => $defaults_ref->{PERMISSIONS},
+                string   => 'Permissions    ',
+                opt      => 'r',
+                select   => 'P',
+            },
+    );
+    return { %directives_defaults };
 }
 
 sub Main_Menu {
@@ -376,16 +412,15 @@ sub Author_Menu {
 
     my $author_defaults_ref = $MOD->_prepare_author_defaults();
     my %author_defaults = %{$author_defaults_ref};
-    my %Author_Menu = map 
-        { $author_defaults{$_}{select} => [ $author_defaults{$_}{string}, $_ ] }
-            keys %author_defaults;
+    my %Author_Menu = map {
+        $author_defaults{$_}{select} => 
+            [ $author_defaults{$_}{string}, $_ ]
+        } keys %author_defaults;
 
     my $string = $messages{'Author Menu'};
-    my $stuff  = join(
-        "\n",
-        map {
-            "$_ - $Author_Menu{$_}[0]  '"
-              . $MOD->{ $Author_Menu{$_}[1] } . "'"
+    my $stuff  = join( "\n", map {
+            qq{$_ - $Author_Menu{$_}[0]  '}             #'
+              . $MOD->{ $Author_Menu{$_}[1] } . q{'}
           } qw (N C O W E)
     );
     $string =~ s|##Data Here##|$stuff|;
@@ -405,23 +440,30 @@ sub Author_Menu {
 
 sub Directives_Menu {
     my $MOD = shift;
+# warn "at start of Directives_Menu:  $MOD->{COMPACT}\n";
+    my $directives_defaults_ref = $MOD->_prepare_directives_defaults();
+    my %directives_defaults = %{$directives_defaults_ref};
+    my %Directives_Menu = map { 
+        $directives_defaults{$_}{select} => 
+            [ $directives_defaults{$_}{string}, $_ ]
+    } keys %directives_defaults;
 
     my $string = $messages{Directives_Menu};
-    my $stuff  = join(
-        "\n",
+    my $stuff  = join( "\n",
         (
             map {
-                "$_ - $Directives_Menu{$_}[0]  '"
-                  . $MOD->{ $Directives_Menu{$_}[1] } . "'"
+                qq{$_ - $Directives_Menu{$_}[0]  '}             #'
+                  . $MOD->{ $Directives_Menu{$_}[1] } . q{'}
+#                  . $Directives_Menu{$_}[1] . q{'}
               } qw (C V D N H)
         ),
-        "P - $Directives_Menu{P}[0]  '"
+        qq{P - $Directives_Menu{P}[0]  '}
           . sprintf(
             "%04o - %d",
             $MOD->{ $Directives_Menu{P}[1] },
             $MOD->{ $Directives_Menu{P}[1] }
           )
-          . "'",
+          . q{'},
     );
     $string =~ s|##Data Here##|$stuff|;
 

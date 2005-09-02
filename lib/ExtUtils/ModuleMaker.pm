@@ -6,7 +6,7 @@ BEGIN {
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::StandardText
     );
-    use vars qw ( $VERSION ); 
+    use vars qw ( $VERSION @ISA ); 
     $VERSION = '0.36_16';
 };
 use ExtUtils::ModuleMaker::Utility qw( 
@@ -36,6 +36,17 @@ sub new {
     # NOTE:  If the directory does not yet exists, it is not automatically
     # created.
     $self->{mmkr_dir_ref} =  _preexists_mmkr_directory();
+    {
+        my $mmkr_dir = $self->{mmkr_dir_ref}->[0];
+        if (defined $self->{mmkr_dir_ref}->[1]) {
+            push @INC, $mmkr_dir;
+        }
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        if (-f "$mmkr_dir/$pers_file") {
+            require ExtUtils::ModuleMaker::Personal::Defaults;
+            unshift @ISA, qw(ExtUtils::ModuleMaker::Personal::Defaults);
+        }
+    }
 
     # 2.  Populate object with default values.
     my $defaults_ref;
@@ -43,7 +54,7 @@ sub new {
     foreach my $def ( keys %{$defaults_ref} ) {
         $self->{$def} = $defaults_ref->{$def};
     }
-
+#warn "\nXXX self author:  $self->{AUTHOR}\nself compact:  $self->{COMPACT}\n";
     # 3.  Pull in arguments supplied to constructor.
     my @arglist = @_;
     croak "Must be hash or balanced list of key-value pairs: $!"
@@ -56,6 +67,7 @@ sub new {
     foreach my $param ( keys %parameters ) {
         $self->{$param} = $parameters{$param};
     }
+#warn "\nYYY self author:  $self->{AUTHOR}\nself compact:  $self->{COMPACT}\n";
 
     # 5.  Initialize keys set from information supplied above, system
     # info or EU::MM itself.
