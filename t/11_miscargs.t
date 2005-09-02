@@ -372,7 +372,7 @@ SKIP: {
         ok(@filelines = read_file_array("lib/Alpha/${testmod}.pm"),
             'Able to read module into array');
         is( (grep {/^(sub new|=(head|cut))/} @filelines), 0, 
-            "no sub new() correctly detected in module");
+            "no sub new() or POD correctly detected in module");
 
         _reprocess_personal_defaults_file($pers_def_ref);
 
