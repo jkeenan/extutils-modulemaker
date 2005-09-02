@@ -29,6 +29,10 @@ methods.  Nevertheless, they are documented here primarily so that users
 writing plug-ins for ExtUtils::ModuleMaker's standard text know what methods
 need to be subclassed.
 
+The methods below are called in C<ExtUtils::ModuleMaker::complet_build()> 
+but not in that same package's C<new>.  For methods called in
+C<new>, please see ExtUtils::ModuleMaker::Initializers.
+
 The descriptions below are presented in hierarchical order rather than
 alphabetically.  The order is that of ''how close to the surface can a
 particular method called?'', where 'surface' means being called within
@@ -44,163 +48,6 @@ quasi-private methods.
 Happy subclassing!
 
 =head1 METHODS
-
-=head2 Methods Called within C<new()>
-
-=head3 C<set_author_composite>
-
-  Usage     : $self->set_author_composite() within new() and
-              Interactive::Main_Menu()
-  Purpose   : Sets $self key COMPOSITE by composing it from $self keys AUTHOR,
-              CPANID, ORGANIZATION, EMAIL and WEBSITE
-  Returns   : n/a
-  Argument  : n/a
-  Comment   : 
-
-=cut
-
-sub set_author_composite {
-    my $self = shift;
-
-    my $cpan_message = "CPAN ID: $self->{CPANID}"; 
-    $self->{COMPOSITE} = (
-        "\t"
-         . join( "\n\t",
-            $self->{AUTHOR},
-            $cpan_message,
-            $self->{ORGANIZATION},
-            $self->{EMAIL}, 
-            $self->{WEBSITE}, 
-        ),
-    );
-}
-
-=head3 C<set_dates()>
-
-  Usage     : $self->set_dates() within new()
-  Purpose   : Sets 3 keys in $self:  year, timestamp and COPYRIGHT_YEAR
-  Returns   : n/a
-  Argument  : n/a
-  Comment   : 
-
-=cut
-
-sub set_dates {
-    my $self = shift;
-    $self->{year}      = (localtime)[5] + 1900;
-    $self->{timestamp} = scalar localtime;
-    $self->{COPYRIGHT_YEAR} ||= $self->{year};
-}
-
-=head3 C<validate_values()>
-
-  Usage     : $self->validate_values() within complete_build() and 
-              Interactive::Main_Menu()
-  Purpose   : Verify module values are valid and complete.
-  Returns   : Error message if there is a problem
-  Argument  : n/a
-  Throws    : Will die with a death_message if errors and not interactive.
-  Comment   : References many $self keys
-
-=cut
-
-sub validate_values {
-    my $self = shift;
-
-    # Key:    short-hand name for error condition
-    # Value:  anonymous array holding:
-    #   [0]:  error message
-    #   [1]:  condition which will generate error message
-    my %error_msg = (
-        NAME_REQ    	=> [
-            q{NAME is required},
-            eval { ! $self->{NAME}; },
-        ],
-        NAME_ILLEGAL	=> [
-            q{Module NAME contains illegal characters},
-            eval { $self->{NAME} and $self->{NAME} !~ m/^[\w:]+$/; },
-        ],
-        ABSTRACT    	=> [
-            q{ABSTRACTs are limited to 44 characters},
-            eval { length( $self->{ABSTRACT} ) > 44; },
-        ],
-        CPANID      	=> [
-            q{CPAN IDs are 3-9 characters},
-            eval { $self->{CPANID} !~ m/^\w{3,9}$/; },
-        ],
-        EMAIL       	=> [
-            q{EMAIL addresses need to have an at sign},
-            eval { $self->{EMAIL} !~ m/.*\@.*/; },
-        ],
-        WEBSITE     	=> [
-            q{WEBSITEs should start with an "http:" or "https:"},
-            eval { $self->{WEBSITE} !~ m{https?://.*}; },
-        ],
-        LICENSE     	=> [
-            q{LICENSE is not recognized},
-            eval { ! (
-                Verify_Local_License($self->{LICENSE})
-                ||
-                Verify_Standard_License($self->{LICENSE})
-        ); },
-        ],
-    );
-
-    # Errors should be checked in the following order
-    my @msgs_ordered = qw(
-        NAME_REQ
-        NAME_ILLEGAL
-        ABSTRACT
-        CPANID
-        EMAIL
-        WEBSITE
-        LICENSE
-    );
-
-    my @errors;
-
-    foreach my $attr ( @msgs_ordered ) {
-        push @errors, $error_msg{$attr}[0] 
-                   if $error_msg{$attr}[1];
-    }
-        
-    return 1 unless @errors;
-    $self->death_message(\@errors);
-}
-
-=head3 C<initialize_license>
-
-  Usage     : $self->initialize_license() within new() and
-              Interactive::License_Menu
-  Purpose   : Gets appropriate license and, where necessary, fills in 'blanks'
-              with information such as COPYRIGHT_YEAR, AUTHOR and
-              ORGANIZATION; sets $self keys LICENSE and LicenseParts
-  Returns   : n/a
-  Argument  : n/a 
-  Comment   :
-
-=cut 
-
-sub initialize_license {
-    my $self = shift;
-
-    $self->{LICENSE} = lc( $self->{LICENSE} );
-
-    my $license_function = Get_Local_License( $self->{LICENSE} )
-      || Get_Standard_License( $self->{LICENSE} );
-
-    if ( ref($license_function) eq 'CODE' ) {
-        $self->{LicenseParts} = $license_function->();
-
-        $self->{LicenseParts}{LICENSETEXT} =~
-          s/###year###/$self->{COPYRIGHT_YEAR}/ig;
-        $self->{LicenseParts}{LICENSETEXT} =~
-          s/###owner###/$self->{AUTHOR}/ig;
-        $self->{LicenseParts}{LICENSETEXT} =~
-          s/###organization###/$self->{ORGANIZATION}/ig;
-    }
-
-}
 
 =head2 Methods Called within C<complete_build()>
 

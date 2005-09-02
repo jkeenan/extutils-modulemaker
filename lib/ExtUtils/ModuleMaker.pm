@@ -4,6 +4,7 @@ local $^W = 1;
 BEGIN {
     use base qw(
         ExtUtils::ModuleMaker::Defaults
+        ExtUtils::ModuleMaker::Initializers
         ExtUtils::ModuleMaker::StandardText
     );
     use vars qw ( $VERSION @ISA ); 
