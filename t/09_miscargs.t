@@ -1,4 +1,4 @@
-# t/11_miscargs.t
+# t/09_miscargs.t
 # tests of miscellaneous arguments passed to constructor
 use strict;
 local $^W = 1;

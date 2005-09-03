@@ -21,11 +21,12 @@ t/04_compact.t
 t/05_abstract.t
 t/06_build.t
 t/07_proxy.t
-t/09_mmkr.t
-t/11_miscargs.t
-t/12_standard_text.t
-t/13_license.t
-t/18_make_selections_defaults.t
+t/08_mmkr.t
+t/09_miscargs.t
+t/10_standard_text.t
+t/11_license.t
+t/12_make_selections_defaults.t
+t/13_alt_build.t
 t/testlib/Auxiliary.pm
 t/testlib/Defaults/Identify.pm
 t/testlib/ExtUtils/ModuleMaker/Alt_block_new_method.pm

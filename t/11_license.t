@@ -1,4 +1,4 @@
-# t/13_license.t
+# t/11_license.t
 use strict;
 local $^W = 1;
 use Test::More 

@@ -1,4 +1,4 @@
-# t/19_alt_build.t
+# t/13_alt_build.t
 # test whether methods overriding those provided by EU::MM::StandardText
 # create files as intended
 use strict;

@@ -1,4 +1,4 @@
-# t/11_standard_text.t
+# t/10_standard_text.t
 # tests of importation of standard text from
 # lib/ExtUtils/Modulemaker/Defaults.pm
 use strict;
