@@ -1,9 +1,9 @@
-# t/14_alt_no_ToDo.t
+# t/14_alt_no_Todo.t
 use strict;
 local $^W = 1;
 use vars qw( @INC );
 use Test::More 
-tests =>  34;
+tests =>  33;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
@@ -32,10 +32,9 @@ use Carp;
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (34 - 5) if $@;
+        (33 - 5) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
-    use_ok( 'IO::Capture::Stdout' );
 
     my $odir = cwd();
     my ($tdir, $mod, $testmod, $filetext, @filelines, %lines);
@@ -61,7 +60,7 @@ SKIP: {
 
         # real tests go here
 
-        my $alt = "ExtUtils/ModuleMaker/Alt_no_ToDo.pm";
+        my $alt = "ExtUtils/ModuleMaker/Alt_no_Todo.pm";
         copy( "$odir/t/testlib/$alt", "$mmkr_dir/$alt")
             or die "Unable to copy $alt for testing: $!";
         ok(-f "$mmkr_dir/$alt", "file copied for testing");
@@ -72,7 +71,7 @@ SKIP: {
                 NAME           => "Alpha::$testmod",
                 COMPACT        => 1,
                 ALT_BUILD      =>
-                    q{ExtUtils::ModuleMaker::Alt_no_ToDo},
+                    q{ExtUtils::ModuleMaker::Alt_no_Todo},
             ),
             "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
         );

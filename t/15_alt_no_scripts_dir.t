@@ -1,11 +1,9 @@
-# t/13_alt_block_new_method.t
-# test whether methods overriding those provided by EU::MM::StandardText
-# create files as intended
+# t/15_no_scripts_dir.t
 use strict;
 local $^W = 1;
 use vars qw( @INC );
 use Test::More 
-tests =>  34;
+tests =>  32;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
@@ -34,7 +32,7 @@ use Carp;
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (34 - 5) if $@;
+        (32 - 5) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
 
@@ -62,7 +60,7 @@ SKIP: {
 
         # real tests go here
 
-        my $alt = "ExtUtils/ModuleMaker/Alt_block_new_method.pm";
+        my $alt = "ExtUtils/ModuleMaker/Alt_no_scripts_dir.pm";
         copy( "$odir/t/testlib/$alt", "$mmkr_dir/$alt")
             or die "Unable to copy $alt for testing: $!";
         ok(-f "$mmkr_dir/$alt", "file copied for testing");
@@ -73,7 +71,7 @@ SKIP: {
                 NAME           => "Alpha::$testmod",
                 COMPACT        => 1,
                 ALT_BUILD      =>
-                    q{ExtUtils::ModuleMaker::Alt_block_new_method},
+                    q{ExtUtils::ModuleMaker::Alt_no_scripts_dir},
             ),
             "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
         );
@@ -82,23 +80,11 @@ SKIP: {
 
         ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
         ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
-        ok( -d, "directory $_ exists" ) for ( qw/lib scripts t/);
+        ok( -d, "directory $_ exists" ) for ( qw/lib t/);
         ok( -f, "file $_ exists" )
             for ( qw/Changes LICENSE Makefile.PL MANIFEST README Todo/);
         ok( -f, "file $_ exists" )
             for ( "lib/Alpha/${testmod}.pm", "t/001_load.t" );
-
-        $filetext = read_file_string("lib/Alpha/${testmod}.pm");
-        my $newstr = <<'ENDNEW';
-sub new {
-    my $class = shift;
-    my $self = bless ({}, $class);
-    return $self;
-}
-ENDNEW
-
-        ok( (index($filetext, $newstr)) > -1, 
-            "string present in file as predicted");
 
         unlink( "$mmkr_dir/$alt" )
             or croak "Unable to unlink $alt for testing: $!";
@@ -115,4 +101,6 @@ ENDNEW
 
     }
 } # end SKIP block
+
+
 
