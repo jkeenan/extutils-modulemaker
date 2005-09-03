@@ -17,6 +17,7 @@ require Exporter;
     licensetest
     _process_personal_defaults_file 
     _reprocess_personal_defaults_file 
+    _tests_pm_hidden
 ); 
 use File::Temp qw| tempdir |;
 use Cwd;
@@ -230,6 +231,22 @@ sub _reprocess_personal_defaults_file {
         ok(1, "test not relevant");
         ok(1, "test not relevant");
     }
+}
+
+sub _get_els {
+    my $persref = shift;
+    my %pers = %$persref;
+    my %pm = %{$pers{pm}};
+    my %hidden = %{$pers{hidden}};
+    return ( pm => scalar(keys %pm), hidden => scalar(keys %hidden) );
+}
+
+sub _tests_pm_hidden {
+    my $persref = shift;
+    my $predref = shift;
+    my %el = _get_els($persref);
+    is($predref->{pm}, $el{pm}, "correct number of .pm files");
+    is($predref->{hidden}, $el{hidden}, "correct number of .pm.hidden files");
 }
 
 1;
