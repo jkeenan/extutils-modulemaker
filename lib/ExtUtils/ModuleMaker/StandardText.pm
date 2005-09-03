@@ -195,11 +195,11 @@ END_OF_BOTTOM
         $README_text{readme_bottom};
 }
 
-=head3 C<text_ToDo()>
+=head3 C<text_Todo()>
 
-  Usage     : $self->text_ToDo() within complete_build()
-  Purpose   : Composes text for ToDo file
-  Returns   : String with text of ToDo file
+  Usage     : $self->text_Todo() within complete_build()
+  Purpose   : Composes text for Todo file
+  Returns   : String with text of Todo file
   Argument  : n/a
   Throws    : n/a
   Comment   : This method is a likely candidate for alteration in a subclass
@@ -207,7 +207,7 @@ END_OF_BOTTOM
 
 =cut
 
-sub text_ToDo {
+sub text_Todo {
     my $self = shift;
 
     my $text = <<EOF;
