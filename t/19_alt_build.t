@@ -5,8 +5,8 @@ use strict;
 local $^W = 1;
 use vars qw( @INC );
 use Test::More 
-# tests =>  199;
-qw(no_plan);
+tests =>  35;
+# qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
 use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
@@ -19,9 +19,6 @@ use_ok( 'ExtUtils::ModuleMaker::Utility', qw(
     )
 );
 use lib ("./t/testlib");
-#my $cwd = cwd();
-#warn $cwd;
-#use lib ($cwd ."t/testlib");
 use_ok( 'Auxiliary', qw(
         read_file_string
         read_file_array
@@ -31,13 +28,13 @@ use_ok( 'Auxiliary', qw(
     )
 );
 use_ok( 'File::Copy' );
-use Data::Dumper;
+use Carp;
 
 
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (199 - 5) if $@;
+        (35 - 5) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use_ok( 'IO::Capture::Stdout' );
@@ -64,32 +61,52 @@ SKIP: {
         $persref = _identify_pm_files_in_personal_dir($mmkr_dir);
         _tests_pm_hidden($persref, { pm => 0, hidden => 1 });
 
-# real tests go here
-#warn "$_" for @INC;
+        # real tests go here
 
-        copy($odir/t/testlib/ExtUtils/ModuleMaker/Alternative/block_new_method.pm",
+        my $alt = "ExtUtils/ModuleMaker/Alt_block_new_method.pm";
+        copy( "$odir/t/testlib/$alt", "$mmkr_dir/$alt")
+            or die "Unable to copy $alt for testing: $!";
+        ok(-f "$mmkr_dir/$alt", "file copied for testing");
+
         $testmod = 'Beta';
         
-#warn $_ for @INC;;        
         ok( $mod = ExtUtils::ModuleMaker->new( 
                 NAME           => "Alpha::$testmod",
                 COMPACT        => 1,
                 ALT_BUILD      =>
-                    q{ExtUtils::ModuleMaker::Alternative::block_new_method},
+                    q{ExtUtils::ModuleMaker::Alt_block_new_method},
             ),
             "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
         );
-warn $mod->dump_keys(qw| NAME AUTHOR COMPACT ALT_BUILD |);        
+
         ok( $mod->complete_build(), 'call complete_build()' );
 
-#        ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
-#        ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
-#        ok( -d, "directory $_ exists" ) for ( qw/lib scripts t/);
-#        ok( -f, "file $_ exists" )
-#            for ( qw/Changes LICENSE Makefile.PL MANIFEST README Todo/);
-#        ok( -f, "file $_ exists" )
-#            for ( "lib/Alpha/${testmod}.pm", "t/001_load.t" );
-        
+        ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
+        ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
+        ok( -d, "directory $_ exists" ) for ( qw/lib scripts t/);
+        ok( -f, "file $_ exists" )
+            for ( qw/Changes LICENSE Makefile.PL MANIFEST README Todo/);
+        ok( -f, "file $_ exists" )
+            for ( "lib/Alpha/${testmod}.pm", "t/001_load.t" );
+        open my $fh, "lib/Alpha/${testmod}.pm" or croak "Unable to open: $!";
+        local $_;
+        my $count;
+        while (<$fh>) {
+            if (
+                m|^sub new \{|
+             or m|^    my \$class = shift;|
+             or m|^    my \$self = bless \(\{\}, \$class\);|
+             or m|^    return \$self;|
+            ) {
+                $count++;
+            }
+        }
+        is($count, 4, "correct number of matching lines in sub new");
+
+        unlink( "$mmkr_dir/$alt" )
+            or croak "Unable to unlink $alt for testing: $!";
+        ok(! -f "$mmkr_dir/$alt", "file $alt deleted after testing");
+
         _reveal_pm_files_in_personal_dir($persref);
         $persref = _identify_pm_files_in_personal_dir($mmkr_dir);
         _tests_pm_hidden($persref, { pm => 1, hidden => 0 });
@@ -100,38 +117,5 @@ warn $mod->dump_keys(qw| NAME AUTHOR COMPACT ALT_BUILD |);
             "original presence/absence of .modulemaker directory restored");
 
     }
-     
-
 } # end SKIP block
-
-__END__
-
-        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
-        my $pers_def_ref = 
-            _process_personal_defaults_file( $mmkr_dir, $pers_file );
-
-        my ($capture, %count);
-        $capture = IO::Capture::Stdout->new();
-        $capture->start();
-        ok( $mod->complete_build(), 'call complete_build()' );
-        $capture->stop();
-        for my $l ($capture->read()) {
-            $count{'mkdir'}++ if $l =~ /^mkdir/;
-            $count{'writing'}++ if $l =~ /^writing file/;
-        }
-        is($count{'mkdir'}, 5, "correct no. of directories created announced verbosely");
-        is($count{'writing'}, 8, "correct no. of files created announced verbosely");
-
-        ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
-        ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
-        ok( -d, "directory $_ exists" ) for ( qw/lib scripts t/);
-        ok( -f, "file $_ exists" )
-            for ( qw/Changes LICENSE Makefile.PL MANIFEST README Todo/);
-        ok( -f, "file $_ exists" )
-            for ( "lib/Alpha/${testmod}.pm", "t/001_load.t" );
-        
-        ok($filetext = read_file_string('Makefile.PL'),
-            'Able to read Makefile.PL');
-        
-        _reprocess_personal_defaults_file($pers_def_ref);
 
