@@ -88,20 +88,18 @@ SKIP: {
             for ( qw/Changes LICENSE Makefile.PL MANIFEST README Todo/);
         ok( -f, "file $_ exists" )
             for ( "lib/Alpha/${testmod}.pm", "t/001_load.t" );
-        open my $fh, "lib/Alpha/${testmod}.pm" or croak "Unable to open: $!";
-        local $_;
-        my $count;
-        while (<$fh>) {
-            if (
-                m|^sub new \{|
-             or m|^    my \$class = shift;|
-             or m|^    my \$self = bless \(\{\}, \$class\);|
-             or m|^    return \$self;|
-            ) {
-                $count++;
-            }
-        }
-        is($count, 4, "correct number of matching lines in sub new");
+
+        $filetext = read_file_string("lib/Alpha/${testmod}.pm");
+        my $newstr = <<'ENDNEW';
+sub new {
+    my $class = shift;
+    my $self = bless ({}, $class);
+    return $self;
+}
+ENDNEW
+
+        ok( (index($filetext, $newstr)) > -1, 
+            "string present in file as predicted");
 
         unlink( "$mmkr_dir/$alt" )
             or croak "Unable to unlink $alt for testing: $!";
