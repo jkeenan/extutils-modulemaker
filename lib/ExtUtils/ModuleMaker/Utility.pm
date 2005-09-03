@@ -13,6 +13,9 @@ BEGIN {
         _preexists_mmkr_directory
         _make_mmkr_directory
         _restore_mmkr_dir_status
+        _identify_pm_files_in_personal_dir
+        _hide_pm_files_in_personal_dir
+        _reveal_pm_files_in_personal_dir
     );
 #    $VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
 }
@@ -76,6 +79,91 @@ sub _restore_mmkr_dir_status {
         return 1;
     }
 }
+
+sub _identify_pm_files_in_personal_dir {
+    my $mmkr_dir = shift;
+    my $full_dir = "$mmkr_dir/ExtUtils/ModuleMaker/Personal";
+    my @pm_files = glob("$full_dir/*.pm");
+    my @pm_files_hidden = glob("$full_dir/*.pm.hidden");
+    # sanity check:
+    # If there are .pm files, there should be no .pm.hidden files
+    # and vice versa.
+    if ( scalar(@pm_files) and scalar(@pm_files_hidden) )  {
+        croak "Both .pm and .pm.hidden files found in $full_dir: $!";
+    }
+    my %pers;
+    my %pm;
+    foreach my $f (@pm_files) {
+        $pm{$f}{atime}   = (stat($f))[8];
+        $pm{$f}{modtime} = (stat($f))[9];
+    }
+    my %hidden;
+    foreach my $f (@pm_files_hidden) {
+        $hidden{$f}{atime}   = (stat($f))[8];
+        $hidden{$f}{modtime} = (stat($f))[9];
+    }
+    $pers{dir}    = $full_dir;;
+    $pers{pm}     = \%pm;
+    $pers{hidden} = \%hidden;
+    return \%pers;
+}
+
+sub _hide_pm_files_in_personal_dir {
+    my $per_dir_ref = shift;
+    my %pers = %{$per_dir_ref};
+    my %pm = %{$pers{pm}};
+    foreach my $f (keys %pm) {
+        my $new = "$f.hidden";
+        rename $f, $new or croak "Unable to rename $f: $!";
+        utime $pm{$f}{atime}, $pm{$f}{modtime}, $new;
+    }
+}
+
+sub _reveal_pm_files_in_personal_dir {
+    my $per_dir_ref = shift;
+    my %pers = %{$per_dir_ref};
+    my %hidden = %{$pers{hidden}};
+    foreach my $f (keys %hidden) {
+        $f =~ m{(.*)\.hidden$};
+        my $new = $1;
+        rename $f, $new or croak "Unable to rename $f: $!";
+        utime $hidden{$f}{atime}, $hidden{$f}{modtime}, $new;
+    }
+}
+
+#sub _hide_pm_files_in_personal_dir {
+#    my $mmkr_dir = shift;
+#    my $full_dir = "$mmkr_dir/ExtUtils/ModuleMaker/Personal";
+#    my @pm_files = glob("$full_dir/*.pm");
+#    my %pers;
+#    foreach my $f (@pm_files) {
+#        $pers{$f}{orig}    = $f;
+#        $pers{$f}{hidden}  = $f . '.hidden';
+#        $pers{$f}{atime}   = (stat($pers{$f}{orig}))[8];
+#        $pers{$f}{modtime} = (stat($pers{$f}{orig}))[9];
+#        rename $pers{$f}{orig},
+#               $pers{$f}{hidden}
+#            or croak "Unable to rename $pers{$f}{orig}: $!";
+#    }
+#    return { %pers };
+#}
+#
+#sub _reveal_pm_files_in_personal_dir {
+#    my $pers_def_ref = shift;
+#    my %pers = %{$pers_def_ref};
+#    foreach my $f (keys %pers) {
+#        if (-f $pers{$f}->{hidden} ) {
+#            rename $pers{$f}->{hidden},
+#                   $pers{$f}->{orig},
+#                or croak "Unable to rename $pers{$f}->{hidden}: $!";
+#            utime $pers{$f}->{atime}, 
+#                  $pers{$f}->{modtime}, 
+#                  ($pers{$f}->{orig});
+#        } else {
+#            croak "Unable to locate file $pers{$f}->{hidden} for restoring: $!";
+#        }
+#    }
+#}
 
 1;
 

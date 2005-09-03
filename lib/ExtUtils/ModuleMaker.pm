@@ -98,6 +98,18 @@ sub new {
 sub complete_build {
     my $self = shift;
 
+    if (defined $self->{alternative_build}) {
+        my $alt_build = $self->{alternative_build};
+        unless ($alt_build =~ /^ExtUtils::ModuleMaker::/) {
+            $alt_build = q{ExtUtils::ModuleMaker::} . $alt_build;
+        }
+        eval { require $alt_build; };
+        if ($@) {
+            croak "Unable to locate $alt_build for alternative methods: $!";
+        } else {
+            unshift @ISA, $alt_build;
+        };
+    }
     $self->create_base_directory();
     $self->check_dir( map { "$self->{Base_Dir}/$_" } qw (lib t scripts) );
 

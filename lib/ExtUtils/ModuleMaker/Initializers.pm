@@ -32,6 +32,12 @@ C<complete_build>, please see ExtUtils::ModuleMaker::StandardText.  Some of
 the methods below are also called within methods in
 ExtUtils::ModuleMaker::Interactive.
 
+Subclassers:  It is recommended that, at ExtUtils::ModuleMaker's current state
+of development, you I<not> subclass these methods but instead focus your
+efforts on subclassing the methods in ExtUtils::ModuleMaker::StandardText.
+The latter package's methods focus more closely on the structure and content
+of the files built by ExtUtils::ModuleMaker.
+
 Happy subclassing!
 
 =head1 METHODS
