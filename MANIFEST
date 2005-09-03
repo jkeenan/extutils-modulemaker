@@ -28,7 +28,6 @@ t/11_license.t
 t/12_make_selections_defaults.t
 t/13_alt_build.t
 t/testlib/Auxiliary.pm
-t/testlib/Defaults/Identify.pm
 t/testlib/ExtUtils/ModuleMaker/Alt_block_new_method.pm
 t/testlib/ExtUtils/ModuleMaker/Testing/Defaults.pm
 t/testlib/IO/Capture.pm
