@@ -1,19 +1,19 @@
 Changes
-LICENSE
-Makefile.PL
-README
-MANIFEST
-MANIFEST.SKIP
-Todo
 lib/ExtUtils/ModuleMaker.pm
 lib/ExtUtils/ModuleMaker/Defaults.pm
 lib/ExtUtils/ModuleMaker/Initializers.pm
 lib/ExtUtils/ModuleMaker/Interactive.pm
+lib/ExtUtils/ModuleMaker/Licenses/Local.pm
+lib/ExtUtils/ModuleMaker/Licenses/Standard.pm
 lib/ExtUtils/ModuleMaker/Public.pm
 lib/ExtUtils/ModuleMaker/StandardText.pm
 lib/ExtUtils/ModuleMaker/Utility.pm
-lib/ExtUtils/ModuleMaker/Licenses/Standard.pm
-lib/ExtUtils/ModuleMaker/Licenses/Local.pm
+LICENSE
+Makefile.PL
+MANIFEST
+MANIFEST.SKIP
+META.yml			Module meta-data (added by MakeMaker)
+README
 scripts/modulemaker
 t/01_ini.t
 t/02_bad_constructor.t
@@ -33,6 +33,7 @@ t/15_mmkr_alt_block_new_method.t
 t/16_mmkr_alt_no_Todo.t
 t/testlib/Auxiliary.pm
 t/testlib/ExtUtils/ModuleMaker/Alt_block_new_method.pm
+t/testlib/ExtUtils/ModuleMaker/Alt_no_scripts_dir.pm
 t/testlib/ExtUtils/ModuleMaker/Alt_no_Todo.pm
 t/testlib/ExtUtils/ModuleMaker/Testing/Defaults.pm
 t/testlib/IO/Capture.pm
@@ -40,5 +41,3 @@ t/testlib/IO/Capture/ErrorMessages.pm
 t/testlib/IO/Capture/Stderr.pm
 t/testlib/IO/Capture/Stdout.pm
 t/testlib/IO/Capture/Tie_STDx.pm
-META.yml                                 Module meta-data (added by MakeMaker)
-
