@@ -1,5 +1,10 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.37   September 3, 2005
+    - Implemented ALT_BUILD; tested via script call and modulemaker
+      command-line.  It does not appear that complete_build() can be
+subclassed as of yet.
+
 0.3616 September 2, 2005
     - Attempted to implement the factory concept per Damian on Perlmonks.
       Ultimately this didn't work and had to be abandoned.  Correction of bugs
