@@ -93,12 +93,9 @@ sub new {
     # EU::MM::Licenses::Standard
     $self->initialize_license();
 
-    return $self;
-}
-
-sub complete_build {
-    my $self = shift;
-
+    # 8.  Any EU::MM methods (except new()) can be overriden by supplying a
+    # value for ALT_BUILD (command-line option 'd') where the value is a Perl
+    # module located in @INC
     if (defined $self->{ALT_BUILD}) {
         my $alt_build = $self->{ALT_BUILD};
         unless ($alt_build =~ /^ExtUtils::ModuleMaker::/) {
@@ -111,6 +108,12 @@ sub complete_build {
             unshift @ISA, $alt_build;
         };
     }
+    return $self;
+}
+
+sub complete_build {
+    my $self = shift;
+
     $self->create_base_directory();
     $self->check_dir( map { "$self->{Base_Dir}/$_" } qw (lib t scripts) );
 

@@ -32,7 +32,7 @@ $VERSION = '0.36_17';
 ##### START LIVE CODE #####
 
 my %opts;
-getopts( "bhqsCIPVcn:a:v:l:u:p:o:w:e:t:r:", \%opts );
+getopts( "bhqsCIPVcn:a:v:l:u:p:o:w:e:t:r:d:", \%opts );
 croak Usage() if ( $opts{h} );
 
 # print Dumper(\%opts);
@@ -58,6 +58,7 @@ my %standard_options = (
     ( ( $opts{w} ) ? ( WEBSITE               => $opts{w} ) : () ),
     ( ( $opts{e} ) ? ( EMAIL                 => $opts{e} ) : () ),
     ( ( $opts{r} ) ? ( PERMISSIONS           => $opts{r} ) : () ),
+    ( ( $opts{d} ) ? ( ALT_BUILD             => $opts{d} ) : () ),
     USAGE_MESSAGE => Usage(),
 );
 
@@ -85,6 +86,7 @@ Currently Supported Features
     -b   Specify a build system for this extension
     -c   Flag for compact base directory name
     -C   Omit creating the Changes file, add HISTORY heading to stub POD
+    -d   Call methods which override default methods from this module
     -e   Specify author's e-mail address
     -h   Display this help message
     -I   Disable INTERACTIVE mode, the command line arguments better be complete
@@ -94,6 +96,7 @@ Currently Supported Features
     -p   Specify author's CPAN ID
     -P   Omit the stub POD section
     -q   Flag to omit a constructor from module
+    -r   Specify permissions
     -s   Flag to save selections as new personal default values
     -u   Specify (in quotes) author's name
     -v   Specify a version number for this extension
@@ -293,6 +296,11 @@ Flag for compact base directory name
 
 Omit creating the Changes file, add HISTORY heading to stub POD
 
+=item * -d
+
+Name of Perl module whose methods will override defaults provided in
+F<ExtUtils/ModuleMaker.pm> and F<ExtUtils/ModuleMaker/StandardText.pm>.
+
 =item * -e
 
 Specify author's e-mail address
@@ -328,6 +336,10 @@ Omit the stub POD section
 =item * -q
 
 Do not include a constructor (C<new()>) in the F<*.pm> file.
+
+=item * -r
+
+Set permissions.
 
 =item * -s
 
@@ -373,7 +385,7 @@ LICENSE file included with this module.
 
 =head1 SEE ALSO
 
-F<ExtUtils::ModuleMaker>, F<perlnewmod>, F<h2xs>, F<ExtUtils::MakeMaker>.
+F<ExtUtils::ModuleMaker>, F<ExtUtils::ModuleMaker::StandardText>, F<perlnewmod>, F<h2xs>, F<ExtUtils::MakeMaker>.
 
 =cut
 

@@ -1,9 +1,9 @@
-# t/15_no_scripts_dir.t
+# t/15_alt_no_scripts_dir.t
 use strict;
 local $^W = 1;
 use vars qw( @INC );
 use Test::More 
-tests =>  32;
+tests =>  33;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
@@ -32,7 +32,7 @@ use Carp;
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (32 - 5) if $@;
+        (33 - 5) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
 
@@ -80,7 +80,9 @@ SKIP: {
 
         ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
         ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
-        ok( -d, "directory $_ exists" ) for ( qw/lib t/);
+#        ok( -d, "directory $_ exists" ) for ( qw/ lib t scripts /);
+        ok( -d, "directory $_ exists" ) for ( qw/ lib t /);
+        ok(! -d "scripts", "no scripts dir created");
         ok( -f, "file $_ exists" )
             for ( qw/Changes LICENSE Makefile.PL MANIFEST README Todo/);
         ok( -f, "file $_ exists" )
