@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::Initializers;
-# as of 09-02-2005
+# as of 09-03-2005
 use strict;
 local $^W = 1;
 use ExtUtils::ModuleMaker::Licenses::Standard qw(

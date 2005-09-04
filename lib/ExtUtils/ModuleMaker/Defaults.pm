@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::Defaults;
-# as of 09-01-2005
+# as of 09-03-2005
 use strict;
 
 my $usage = <<ENDOFUSAGE;

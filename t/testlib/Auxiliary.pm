@@ -1,6 +1,6 @@
 package Auxiliary;
 # Contains test subroutines for distribution with ExtUtils::ModuleMaker
-# As of:  September 2, 2005
+# As of:  September 3, 2005
 use strict;
 use warnings;
 use vars qw| @ISA @EXPORT_OK |; 
