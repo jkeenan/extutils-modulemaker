@@ -1,4 +1,4 @@
-# t/15_alt_no_scripts_dir.t
+# t/17_alt_no_scripts_dir.t
 use strict;
 local $^W = 1;
 use vars qw( @INC );
