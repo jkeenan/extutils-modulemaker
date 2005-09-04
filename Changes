@@ -1,5 +1,13 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.3701 September 4, 2005
+    - Created ExtUtils::ModuleMaker::Public to hold all publicly available
+      methods except new().  This was done in the hope that it would make
+complete_build() and other such methods subclassable.  Also:  realized I had
+failed to include t/testlib/ExtUtils/ModuleMaker/Alt_no_Todo.pm in MANIFEST,
+which meant it wasn't bundled in tarball that went up to CPAN.  Deleted v0.37
+from CPAN; corrected MANIFEST.
+
 0.37   September 3, 2005
     - Implemented ALT_BUILD; tested via script call and modulemaker
       command-line.  It does not appear that complete_build() can be
