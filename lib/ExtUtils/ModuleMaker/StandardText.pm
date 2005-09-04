@@ -2,6 +2,8 @@ package ExtUtils::ModuleMaker::StandardText;
 # as of 09-03-2005
 use strict;
 local $^W = 1;
+use vars qw ( $VERSION );
+$VERSION = '0.37';
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
     Get_Standard_License
     Verify_Standard_License

@@ -2,23 +2,20 @@ package ExtUtils::ModuleMaker::Utility;
 # as of 09-03-2005
 use strict;
 local $^W = 1;
+use base qw(Exporter);
+use vars qw( @EXPORT_OK $VERSION );
+$VERSION = '0.37';
+@EXPORT_OK   = qw(
+    _get_home_directory
+    _preexists_mmkr_directory
+    _make_mmkr_directory
+    _restore_mmkr_dir_status
+    _identify_pm_files_in_personal_dir
+    _hide_pm_files_in_personal_dir
+    _reveal_pm_files_in_personal_dir
+);
 use Carp;
 use File::Path;
-
-BEGIN {
-    use base qw(Exporter);
-    use vars qw ( @EXPORT_OK );
-    @EXPORT_OK   = qw(
-        _get_home_directory
-        _preexists_mmkr_directory
-        _make_mmkr_directory
-        _restore_mmkr_dir_status
-        _identify_pm_files_in_personal_dir
-        _hide_pm_files_in_personal_dir
-        _reveal_pm_files_in_personal_dir
-    );
-#    $VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
-}
 
 sub _get_home_directory {
     my $realhome;
