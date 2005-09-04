@@ -3,7 +3,7 @@ use strict;
 local $^W = 1;
 BEGIN {
     use vars qw( $VERSION @ISA ); 
-    $VERSION = '0.37';
+    $VERSION = '0.37_01';
     use base qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::Initializers
@@ -93,7 +93,8 @@ sub new {
     # EU::MM::Licenses::Standard
     $self->initialize_license();
 
-    # 8.  Any EU::MM methods (except new()) can be overriden by supplying a
+    # 8.  Any EU::MM methods stored in ExtUtils::ModuleMaker::Standard Text i
+    # can be overriden by supplying a
     # value for ALT_BUILD (command-line option 'd') where the value is a Perl
     # module located in @INC
     if (defined $self->{ALT_BUILD}) {
@@ -298,8 +299,8 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
 =head1 VERSION
 
-This document references version 0.37 of ExtUtils::ModuleMaker, released
-to CPAN on September 3, 2005.
+This document references version 0.37_01 of ExtUtils::ModuleMaker, released
+to CPAN on September 4, 2005.
 
 =head1 DESCRIPTION
 
@@ -333,8 +334,11 @@ distribution via CPAN.
 =head2 Usage from the command-line with F<modulemaker>
 
 The easiest way to use ExtUtils::ModuleMaker is to invoke the 
-F<modulemaker> script from the command-line.  See the documentation for 
-F<modulemaker> bundled with this distribution.
+F<modulemaker> script from the command-line.  You can control the content of
+the files built by F<modulemaker> either by supplying command-line options or
+-- easier still -- replying to the screen prompts in F<modulemaker>'s
+interactive mode.  See the documentation for F<modulemaker> bundled with 
+this distribution.
 
 =head2 Usage within a Perl script
 
@@ -347,10 +351,9 @@ described in the next section.
 
 In this version of ExtUtils::ModuleMaker there are five publicly 
 callable methods.  Two of them, C<new> and C<complete_build> control the
-building of the file and directory structure for a new Perl
-distribution.  The other three, C<dump_keys>, C<dump_keys_except> and 
-C<get_license> are intended
-primarily as shortcuts for some diagnosing problems with an
+building of the file and directory structure for a new Perl distribution.  
+The other three, C<dump_keys>, C<dump_keys_except> and C<get_license> are 
+intended primarily as shortcuts for some diagnosing problems with an 
 ExtUtils::ModuleMaker object.
 
 =head4 C<new>
@@ -517,6 +520,12 @@ Include a simple 'new' method in the object oriented module.  (Default is on)
 Don't include a 'Changes' file, but instead add a HISTORY section to the POD. 
 (Default is off).
 
+=item * ALT_BUILD
+
+Name of Perl package holding methods which override those called withiin
+C<complete_build> to shape the content of files created by using
+ExtUtils::ModuleMaker.
+
 =back
 
 =head4 C<complete_build>
@@ -636,20 +645,29 @@ C<ABSTRACT> in any F<Personal/Defaults.pm> file you create as well.
 
 =back
 
-=head3 Private Methods
+=head3 Methods Called Internally and How to Customize ExtUtils::ModuleMaker by Overriding Them
 
 There are a variety of other ExtUtil::ModuleMaker methods which are not
 currently in the public interface.  As they are primarily used within 
-C<new()> and
-C<complete_build()>, their implementation and interface may change in
-the future.  See the code for inline documentation.
+C<new()> and C<complete_build()>, their implementation and interface may 
+change in the future.  See the code for inline documentation.
 
 Most of these private methods supply the 'boilerplate' text found in the files
 created by C<complete_build()>.  They are found in
 F<lib/ExtUtils/ModuleMaker/StandardText.pm> and are available for you 
-to hack on.  In an upcoming version you will be able to store your own
-selections for standard text just as you now can do for your personal
-defaults. 
+to hack on.
+
+You can customize the files created by ExtUtils::ModuleMaker by overriding any
+of the quasi-private methods called by
+C<ExtUtils::ModuleMaker::complete_build()>.  To do so, you should first study
+package ExtUtils::ModuleMaker::StandardText which is included in this
+distribution.  Identify the method controlling a particular aspect of the
+files built by ExtUtils::ModuleMaker.  Create a new package whose name begins
+with 'ExtUtils::ModuleMaker::'.  Revise the relevant method(s) as needed and
+place the revised methods in this new package.  Install this package in the
+location on your system where all other locally installed Perl packages are
+installed or in the same directory tree as Personal::Defaults.  Supply the
+package's name as the value of the C<ALT_BUILD> argument to the constructor.
 
 =head1 CAVEATS
 
