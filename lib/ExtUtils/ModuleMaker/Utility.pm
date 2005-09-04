@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::Utility;
-# as of 09-02-2005
+# as of 09-03-2005
 use strict;
 local $^W = 1;
 use Carp;
@@ -130,40 +130,6 @@ sub _reveal_pm_files_in_personal_dir {
         utime $hidden{$f}{atime}, $hidden{$f}{modtime}, $new;
     }
 }
-
-#sub _hide_pm_files_in_personal_dir {
-#    my $mmkr_dir = shift;
-#    my $full_dir = "$mmkr_dir/ExtUtils/ModuleMaker/Personal";
-#    my @pm_files = glob("$full_dir/*.pm");
-#    my %pers;
-#    foreach my $f (@pm_files) {
-#        $pers{$f}{orig}    = $f;
-#        $pers{$f}{hidden}  = $f . '.hidden';
-#        $pers{$f}{atime}   = (stat($pers{$f}{orig}))[8];
-#        $pers{$f}{modtime} = (stat($pers{$f}{orig}))[9];
-#        rename $pers{$f}{orig},
-#               $pers{$f}{hidden}
-#            or croak "Unable to rename $pers{$f}{orig}: $!";
-#    }
-#    return { %pers };
-#}
-#
-#sub _reveal_pm_files_in_personal_dir {
-#    my $pers_def_ref = shift;
-#    my %pers = %{$pers_def_ref};
-#    foreach my $f (keys %pers) {
-#        if (-f $pers{$f}->{hidden} ) {
-#            rename $pers{$f}->{hidden},
-#                   $pers{$f}->{orig},
-#                or croak "Unable to rename $pers{$f}->{hidden}: $!";
-#            utime $pers{$f}->{atime}, 
-#                  $pers{$f}->{modtime}, 
-#                  ($pers{$f}->{orig});
-#        } else {
-#            croak "Unable to locate file $pers{$f}->{hidden} for restoring: $!";
-#        }
-#    }
-#}
 
 1;
 
