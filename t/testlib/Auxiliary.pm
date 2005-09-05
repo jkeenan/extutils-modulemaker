@@ -1,6 +1,6 @@
 package Auxiliary;
 # Contains test subroutines for distribution with ExtUtils::ModuleMaker
-# As of:  September 4, 2005
+# As of:  September 5, 2005
 use strict;
 use warnings;
 use vars qw| @ISA @EXPORT_OK |; 
@@ -18,11 +18,15 @@ require Exporter;
     _process_personal_defaults_file 
     _reprocess_personal_defaults_file 
     _tests_pm_hidden
+    _get_els
+    _subclass_preparatory_tests
+    _subclass_cleanup_tests
 ); 
-use File::Temp qw| tempdir |;
+use Carp;
 use Cwd;
 use File::Copy;
-use Carp;
+use File::Path;
+use File::Temp qw| tempdir |;
 *ok = *Test::More::ok;
 *is = *Test::More::is;
 *like = *Test::More::like;
@@ -32,6 +36,9 @@ use ExtUtils::ModuleMaker::Utility qw(
     _preexists_mmkr_directory
     _make_mmkr_directory
     _restore_mmkr_dir_status
+    _identify_pm_files_under_mmkr_dir
+    _hide_pm_files_under_mmkr_dir
+    _reveal_pm_files_under_mmkr_dir
 );
 
 sub read_file_string {
@@ -245,8 +252,88 @@ sub _tests_pm_hidden {
     my $persref = shift;
     my $predref = shift;
     my %el = _get_els($persref);
-    is($predref->{pm}, $el{pm}, "correct number of .pm files");
-    is($predref->{hidden}, $el{hidden}, "correct number of .pm.hidden files");
+    is($el{pm}, $predref->{pm}, "correct number of .pm files");
+    is($el{hidden}, $predref->{hidden}, "correct number of .pm.hidden files");
+}
+
+sub _subclass_preparatory_tests {
+    my $odir = shift;
+    my $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
+
+    my $mmkr_dir_ref = _preexists_mmkr_directory();
+    my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
+    ok($mmkr_dir, "home/.modulemaker directory now present on system");
+    my $eumm = "ExtUtils/ModuleMaker";
+    my $eumm_dir = "$mmkr_dir/$eumm";
+    unless (-d $eumm_dir) {
+            mkpath($eumm_dir) or croak "Unable to make path: $!";
+    }
+    ok(-d $eumm_dir, "eumm directory now exists");
+
+    my $persref;
+
+    $persref = _identify_pm_files_under_mmkr_dir($eumm_dir);
+    my %els1 = _get_els($persref);
+
+    _hide_pm_files_under_mmkr_dir($persref);
+
+    $persref = _identify_pm_files_under_mmkr_dir($eumm_dir);
+    my %els2 = _get_els($persref);
+
+    if (! $els1{pm}) {
+        is($els1{pm}, $els2{pm}, 
+            "no .pm files originally, so no .pm files now");
+        is($els1{pm}, $els2{hidden}, 
+            "no .pm files originally, so no .pm.hidden files now");
+    } elsif ($els1{pm}) {
+        is($els2{pm}, 0,
+            "original .pm files are now hidden");
+        is($els1{pm}, $els2{hidden},
+            ".pm.hidden files exist");
+    }
+
+    my $sourcedir = "$odir/t/testlib/$eumm";
+    ok( -d $sourcedir, "source directory exists");
+    ok( -d $eumm_dir, "destination directory exists");
+    return {
+        mmkr_dir_ref     => $mmkr_dir_ref,
+        persref          => $persref,
+        initial_els_ref  => \%els1,
+        sourcedir        => $sourcedir,
+        eumm_dir         => $eumm_dir,
+    }
+}
+
+sub _subclass_cleanup_tests {
+    my $cleanup_ref = shift;
+    my $persref         = $cleanup_ref->{persref};
+    my $eumm_dir        = $cleanup_ref->{eumm_dir};
+    my %els1            = %{ $cleanup_ref->{initial_els_ref} };
+    my $odir            = $cleanup_ref->{odir}; 
+    my $mmkr_dir_ref    = $cleanup_ref->{mmkr_dir_ref};
+
+    _reveal_pm_files_under_mmkr_dir($persref);
+
+    $persref = _identify_pm_files_under_mmkr_dir($eumm_dir);
+    my %els3 = _get_els($persref);
+
+    if (! $els1{pm}) {
+        is($els1{pm}, $els3{pm}, 
+            "no .pm files originally, so no .pm files now");
+        is($els1{pm}, $els3{hidden}, 
+            "no .pm files originally, so no .pm.hidden files now");
+    } elsif ($els1{pm}) {
+        is($els1{pm}, $els3{pm},
+            "same number of .pm files as originally");
+        is($els3{hidden}, 0,
+            "no more .pm.hidden files");
+    }
+
+    ok(chdir $odir, 'changed back to original directory after testing');
+
+    ok( _restore_mmkr_dir_status($mmkr_dir_ref),
+        "original presence/absence of .modulemaker directory restored");
 }
 
 1;

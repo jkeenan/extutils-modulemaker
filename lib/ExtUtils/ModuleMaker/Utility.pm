@@ -1,18 +1,18 @@
 package ExtUtils::ModuleMaker::Utility;
-# as of 09-04-2005
+# as of 09-05-2005
 use strict;
 local $^W = 1;
 use base qw(Exporter);
 use vars qw( @EXPORT_OK $VERSION );
-$VERSION = '0.38_01';
+$VERSION = '0.39';
 @EXPORT_OK   = qw(
     _get_home_directory
     _preexists_mmkr_directory
     _make_mmkr_directory
     _restore_mmkr_dir_status
-    _identify_pm_files_in_personal_dir
-    _hide_pm_files_in_personal_dir
-    _reveal_pm_files_in_personal_dir
+    _identify_pm_files_under_mmkr_dir
+    _hide_pm_files_under_mmkr_dir
+    _reveal_pm_files_under_mmkr_dir
 );
 use Carp;
 use File::Path;
@@ -77,7 +77,7 @@ sub _restore_mmkr_dir_status {
     }
 }
 
-sub _identify_pm_files_in_personal_dir {
+sub _identify_pm_files_under_mmkr_dir {
     my $mmkr_dir = shift;
     my $full_dir = "$mmkr_dir/ExtUtils/ModuleMaker/Personal";
     my @pm_files = glob("$full_dir/*.pm");
@@ -105,7 +105,7 @@ sub _identify_pm_files_in_personal_dir {
     return \%pers;
 }
 
-sub _hide_pm_files_in_personal_dir {
+sub _hide_pm_files_under_mmkr_dir {
     my $per_dir_ref = shift;
     my %pers = %{$per_dir_ref};
     my %pm = %{$pers{pm}};
@@ -116,7 +116,7 @@ sub _hide_pm_files_in_personal_dir {
     }
 }
 
-sub _reveal_pm_files_in_personal_dir {
+sub _reveal_pm_files_under_mmkr_dir {
     my $per_dir_ref = shift;
     my %pers = %{$per_dir_ref};
     my %hidden = %{$pers{hidden}};

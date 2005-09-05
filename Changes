@@ -1,127 +1,42 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
-0.3701 September 4, 2005
-    - Created ExtUtils::ModuleMaker::Public to hold all publicly available
-      methods except new().  This was done in the hope that it would make
-complete_build() and other such methods subclassable.  Also:  realized I had
-failed to include t/testlib/ExtUtils/ModuleMaker/Alt_no_Todo.pm in MANIFEST,
-which meant it wasn't bundled in tarball that went up to CPAN.  Deleted v0.37
-from CPAN; corrected MANIFEST.
+0.39   September 5, 2005
+    - v0.38 was reported by two beta-testers to fail in tests depending on
+      whether the user had or had not previously created a home/.modulemaker
+directory on user's system.  Set v0.38 for deletion from CPAN.
+
+0.38   September 4, 2005
+    - v0.37 failed to include t/testlib/ExtUtils/ModuleMaker/Alt_no_Todo.pm 
+in MANIFEST, which meant it wasn't bundled in tarball that went up to CPAN.
+Corrected MANIFEST; set v0.37 for deletion from CPAN.
 
 0.37   September 3, 2005
-    - Implemented ALT_BUILD; tested via script call and modulemaker
-      command-line.  It does not appear that complete_build() can be
-subclassed as of yet.
-
-0.3616 September 2, 2005
-    - Attempted to implement the factory concept per Damian on Perlmonks.
-      Ultimately this didn't work and had to be abandoned.  Correction of bugs
-in modulemaker re handling of command-line options for NEED_POD and
-NEED_NEW_METHOD.
-
-0.3615 September 1, 2005
-    - No change in functionality, but extensive refactoring, largely in
-      response to Damian's response to my Perlmonks posting.  Refactored subs
-in Utility.pm so that getting the name of a .modulemaker directory,
-determining whether it exists or not and creating it if it doesn't yet exist
-are discrete operations.  This means that a user can use EU::MM without ever
-having to create a personal defaults directory (relying on EU:MM::Defaults)
-and without having one created involuntarily by EU::MM (except temporarily
-during testing).  All .t files and most .pm files had to be refactored to
-accomplish this.  Also, moved all relevant modules to 'use base' for
-inheritance rather than the require-push @ISA BEGIN block sequence.  Did this
-when I learned that 'use base' dates back to Perl 5.4.
-
-0.3614 August 31, 2005
-    - No change in functionality, but extensive refactoring, mainly inside
-      ExtUtils::ModuleMaker::StandardText.pm to pave the way for making it
-subclassable.
-
-0.3613 August 28, 2005
-    - To preclude the problems experienced by Alex and Marc in the future, I
-      modified one sub in ExtUtils::ModuleMaker::Utility and created another. 
-     _get_personal_defaults_directory() was modified to return a flag which,
-if true, indicates that no $HOME/.modulemaker was found on the system at the
-beginning of a given block of tests.  _restore_personal_dir_status() was then
-created to take note of this flag at the end of a given block of tests and, if
-such a directory had been created during the testing process, removing it so
-that the user's system status is ultimately unchanged.  This required
-modification of every test file and (for t/02 and t/13) two subroutines in
-t/testlib/Auxiliary.pm, as well as to calls to
-_get_personal_defaults_directory in ModuleMaker.pm.
-    - Extensive work cleaning up internals of StandardText.pm.  Hashes that
-      were external to methods brought back inside.  Methods decomposed into
-finer parts for more fine-grained replaceability.  Many variables and methods
-renamed for clarity.  Closing off 0.36_13 so that next version reflects
-attempts to be able to subclass StandardText.
-
-0.3612 August 28, 2005
-    - Alex Gill continued to report problems with t/06, t/07 and t/18.  He
-      sent me the output for all three.  I realized that the problem with t/06
-and t/07 was that, not having Module::Build installed on his system, the SKIP
-block was being activated -- but I had left one test (for changing back to the
-original directory)  outside the SKIP block at the end of these files.  So the
-harness was reporting a number of tests run different from that calculated at
-the beginning of the SKIP block.  I moved this test back inside the SKIP block
-in these files -- as well as in t/03, t/04, t/05.
-    - Marc Prewitt reported the same problem with t/18 that Alex did, though
-      he was running Perl 5.6 on Linux and Solaris.  Problem has to do with
-the ability to create a directory for Personal::Defaults.  After taking a
-crash course in File::Path and File::Spec, I think I have corrected the
-problem with make_selections_defaults().
-
-0.3611 August 27, 2005
-    - Alex Gill reported problems while testing t/06, t/07 and t/18.  I
-      couldn't reproduce the problems with t/06 and t/07 (at first) and asked
-Alex to re-run those tests with 'prove'.  With t/18, I realized that I had not
-tested for the possibility that a user would not already have a
-$HOME/.modulemaker directory installed on his/her system.  So I refactored
-code in ExtUtils::ModuleMaker::Utility into two distinct subroutines, with
-_get_home_directory() establishing a .modulemaker directory and
-_get_personal_defaults_directory establishing the directory that will hold
-Personal::Defaults.  Sent this version back to same 7 people for further
-testing.
-
-0.3610 August 27, 2005
-    - Completed work to get modulemaker to work in interactive mode.  Sent
-      this version to 7 people for beta testing.
-
-0.3609 August 27, 2005
-    - Created make_selections_defaults() method.  It works so far in scripts
-      and in modulemaker non-interactive mode.
-
-0.3608 August 25, 2005
-    - Test suite can now detect presence of Personal::Defaults file in
-      appropriate place on system and work around it during testing.
-
-0.3607 August 19, 2005
-    - Much work, but particularly important was the elimination of %AUTHOR in
-      favor of 5 top-level keys.
-
-0.3606 August 16, 2005
-	- Fixing interactive mode.
-
-0.3605 August 13, 2005
-
-0.3604 July 31, 2005
-	- Adapted test suite so that it will run (albeit skipping most
-	  tests) on versions of Perl < 5.6.
-
-0.3603 July 23, 2005
-        - Intermediate version not released to CPAN.  Starting to move
-          standard copy to Defaults::standard_text(). Realized that
-block_final_one() was making no use of $module, so eliminated $module
-from sub's argument list.  Similarly, realized that block_new_method()
-was making no use of $module, so eliminated it from the sub's argument
-list.
-
-0.3602 July 22, 2005
-        - Intermediate version not released to CPAN.  After much sweat,
-          moved sub default_values() to new package
-lib/ExtUtils/ModuleMaker/Defaults.pm.
-        - Created sub failsafe() as testing subroutine for
-          t/02_bad_constructor.t.
-        - Corrected one misspecified test in t/03_quick.t.
+    - Added method make_selections_defaults() to the public interface.  User
+      can now override the default values for attributes in the object created
+by ExtUtils::ModuleMaker::new().  The values which a user enters in a
+particular invocation of new() can be saved in a file called
+ExtUtils/ModuleMaker/Personal/Defaults.pm which overrides
+ExtUtils/ModuleMaker/Defaults.pm.  This file is saved in a .modulemaker/
+directory which is in turn located beneath the user's home directory or an
+equivalent thereto.  make_selections_defaults() can be activated from the
+modulemaker command line via the '-s' option or from modulemaker interactive
+mode's Main Menu, choice 'H'.
+    - Added capability for user to override particular methods called within
+      ExtUtils::ModuleMaker::complete_build.  This is done by setting the
+ALT_BUILD attribute passed to new() or by passing the name of a Perl package
+to the '-d' option to the modulemaker utility in command-line mode.
+    - To prepare for the two extensions to ExtUtils::ModuleMaker's
+      capabilities described above, most of the quasi-public methods
+previously found in ExtUtils/ModuleMaker.pm were moved to
+ExtUtils::ModuleMaker::Initializers.pm (in the case of methods called within
+new() for the purpose of initializing attributes with default values) or to
+ExtUtils/ModuleMaker/StandardText.pm (in the case of methods called within
+complete_build() for the purpose of creating directories, files and writing
+content to files.  These two packages are require-d into the
+ExtUtils::ModuleMaker object at run-time.
+    - Addition of the new capabilities described above required the creation
+      of many new tests.  Some test files were renumbered so that there are no
+longer gaps in their order.
 
 0.36 July 18, 2005
         - Corrected error pointed out by CPAN tester Scott R. Godin:
