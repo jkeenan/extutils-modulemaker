@@ -139,10 +139,11 @@ ExtUtils::ModuleMaker::Utility - Utility subroutines for EU::MM
 =head1 SYNOPSIS
 
   use ExtUtils::ModuleMaker::Utility qw( _make_mmkr_directory );
-  ...
-  $home_dir     = _get_home_directory();
-  ($mmkr_dir, $no_mmkr_dir_flag) 
-                = _make_mmkr_directory();
+
+  $home_dir = _get_home_directory();
+  
+  ($mmkr_dir, $no_mmkr_dir_flag) = _make_mmkr_directory();
+
   _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
 
 =head1 DESCRIPTION
