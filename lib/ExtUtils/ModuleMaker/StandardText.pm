@@ -545,17 +545,17 @@ sub block_begin {
     my $package_line  = "package $module->{NAME};\n";
     my $strict_line   = "use strict;\n";
     my $warnings_line = "use warnings;\n";  # not included in standard version
-    my $begin_block   = <<'END_OF_BEGIN';
+    my $begin_block   = <<"END_OF_BEGIN";
 
 BEGIN {
     use Exporter ();
-    use vars qw($VERSION @ISA @EXPORT @EXPORT_OK \%EXPORT_TAGS);
-    $VERSION     = $version;
-    @ISA         = qw(Exporter);
+    use vars qw(\$VERSION \@ISA \@EXPORT \@EXPORT_OK \%EXPORT_TAGS);
+    \$VERSION     = '$version';
+    \@ISA         = qw(Exporter);
     #Give a hoot don't pollute, do not export more than needed by default
-    @EXPORT      = qw();
-    @EXPORT_OK   = qw();
-    %EXPORT_TAGS = ();
+    \@EXPORT      = qw();
+    \@EXPORT_OK   = qw();
+    \%EXPORT_TAGS = ();
 }
 
 END_OF_BEGIN

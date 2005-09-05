@@ -3,8 +3,8 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests =>  199;
-# qw(no_plan);
+# tests =>  199;
+qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
 use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
@@ -150,7 +150,7 @@ SKIP: {
 
     }
 
-    ##### Sets 3 and 3a:  Tests of dump_keys() and dump_keys_except() methods.
+    ##### Sets 3 and 4:  Tests of dump_keys() and dump_keys_except() methods.
     {
         $tdir = tempdir( CLEANUP => 1);
 
@@ -236,7 +236,7 @@ SKIP: {
 
     }
 
-    ##### Sets 4 & 5 & 6:  Tests of NEED_POD and NEED_NEW_METHOD options #####
+    ##### Sets 5 & 6 & 7:  Tests of NEED_POD and NEED_NEW_METHOD options #####
 
     {
         $tdir = tempdir( CLEANUP => 1);
@@ -383,7 +383,7 @@ SKIP: {
 
     }
         
-    ######### Set #7:  Test of EXTRA_MODULES Option ##########
+    ######### Set #8:  Test of EXTRA_MODULES Option ##########
      
     {
         $tdir = tempdir( CLEANUP => 1);
@@ -444,5 +444,55 @@ SKIP: {
 
     }
 
+    ########################################################################
+    # Set 9:  Test VERSION for value other than 0.01; make sure it is quoted
+    # in .pm file.
+
+    {
+        $tdir = tempdir( CLEANUP => 1);
+        ok(chdir $tdir, 'changed to temp directory for testing');
+
+        my $mmkr_dir_ref = _preexists_mmkr_directory();
+        my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
+        ok( $mmkr_dir, "personal defaults directory now present on system");
+
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        my $pers_def_ref = 
+            _process_personal_defaults_file( $mmkr_dir, $pers_file );
+
+        $testmod = 'Beta';
+        
+        ok( $mod = ExtUtils::ModuleMaker->new( 
+                NAME           => "Alpha::$testmod",
+                COMPACT        => 1,
+                VERSION        => q{0.3},
+            ),
+            "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
+        );
+        
+        ok( $mod->complete_build(), 'call complete_build()' );
+
+        ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
+        ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
+        ok( -d, "directory $_ exists" ) for ( qw/lib scripts t/);
+        ok( -f, "file $_ exists" )
+            for ( qw/Changes LICENSE Makefile.PL MANIFEST README Todo/);
+        ok( -f, "file $_ exists" )
+            for ( "lib/Alpha/${testmod}.pm", "t/001_load.t" );
+        
+        ok($filetext = read_file_string("lib/Alpha/$testmod.pm"),
+            "Able to read lib/Alpha/$testmod.pm");
+        like($filetext, qr/\$VERSION\s+=\s+'0\.3'/,
+            "VERSION number is correct and properly quoted");
+        
+        _reprocess_personal_defaults_file($pers_def_ref);
+
+        ok(chdir $odir, 'changed back to original directory after testing');
+
+        ok( _restore_mmkr_dir_status($mmkr_dir_ref),
+            "original presence/absence of .modulemaker directory restored");
+
+    }
+     
 } # end SKIP block
 

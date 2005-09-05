@@ -13,7 +13,7 @@ ENDOFUSAGE
 
 my %default_values = (
         LICENSE          => 'perl',
-        VERSION          => 0.01,
+        VERSION          => '0.01',
         ABSTRACT         => 'Module abstract (<= 44 characters) goes here',
         AUTHOR           => 'A. U. Thor',
         CPANID           => 'MODAUTHOR',
