@@ -2,7 +2,7 @@ package ExtUtils::ModuleMaker::Defaults;
 # as of 09-04-2005
 use strict;
 use vars qw( $VERSION );
-$VERSION = '0.38';
+$VERSION = '0.38_01';
 
 my $usage = <<ENDOFUSAGE;
 
@@ -36,5 +36,24 @@ sub default_values {
     my $self = shift;
     return { %default_values };
 }
+
+=head1 NAME
+
+ExtUtils::ModuleMaker::Defaults - Default values for ExtUtils::ModuleMaker objects
+
+=head1 METHODS
+
+=head3 C<default_values()>
+
+  Usage     : $self->default_values() within new(); within
+              ExtUtils::ModuleMaker::Interactive::_prepare_author_defaults() 
+              and _prepare_directives_defaults(); 
+              within t/testlib/Testing/Defaults.pm
+  Purpose   : Set the default values for ExtUtils::ModuleMaker object elements
+  Returns   : Reference to a hash of default values
+  Argument  : n/a
+  Comment   : Can be overridden by establishing a Personal::Defaults file.
+
+=cut
 
 1;

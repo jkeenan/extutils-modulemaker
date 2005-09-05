@@ -3,7 +3,7 @@ package ExtUtils::ModuleMaker::StandardText;
 use strict;
 local $^W = 1;
 use vars qw ( $VERSION );
-$VERSION = '0.38';
+$VERSION = '0.38_01';
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
     Get_Standard_License
     Verify_Standard_License
@@ -17,8 +17,7 @@ use Carp;
 
 =head1 NAME
 
-ExtUtils::ModuleMaker::StandardText - Methods used within
-ExtUtils::ModuleMaker
+ExtUtils::ModuleMaker::StandardText - Methods used within ExtUtils::ModuleMaker
 
 =head1 DESCRIPTION
 
@@ -142,7 +141,7 @@ sub generate_pm_file {
     $self->print_file( $module->{FILE}, $text_of_pm_file );
 }
 
-=head2 Methods Called within C<complete_build()> as an Argument to C<print_fiile()>
+=head2 Methods Called within C<complete_build()> as an Argument to C<print_file()>
 
 =head3 C<text_README()>
 

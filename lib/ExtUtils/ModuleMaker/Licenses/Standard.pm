@@ -5,7 +5,7 @@ local $^W = 1;
 BEGIN {
     use base qw(Exporter);
     use vars qw( @EXPORT_OK $VERSION );
-    $VERSION = '0.38';
+    $VERSION = '0.38_01';
     @EXPORT_OK   = qw(Get_Standard_License Verify_Standard_License);
 #    $VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
 }
@@ -14,11 +14,11 @@ BEGIN {
 
 =head1 NAME
 
-ExtUtils::ModuleMaker::Licenses::Local - Templates for the module's License/Copyright
+ExtUtils::ModuleMaker::Licenses::Standard - Open source software licenses
 
 =head1 SYNOPSIS
 
-  use ExtUtils::ModuleMaker::Local::Licenses;
+  use ExtUtils::ModuleMaker::Licenses::Standard;
   blah blah blah
 
 =head1 DESCRIPTION
