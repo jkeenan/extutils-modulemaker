@@ -337,15 +337,28 @@ sub _subclass_cleanup_tests {
 }
 
 sub _identify_pm_files_under_mmkr_dir {
-    my $mmkr_dir = shift;
-    my $full_dir = "$mmkr_dir/ExtUtils/ModuleMaker/Personal";
-    my @pm_files = glob("$full_dir/*.pm");
-    my @pm_files_hidden = glob("$full_dir/*.pm.hidden");
-    # sanity check:
+    my $eumm_dir = shift;
+    my (@pm_files, @pm_files_hidden);
+    opendir my $dirh, $eumm_dir 
+        or croak "Unable to open $eumm_dir for reading: $!";
+# warn "exists: $eumm_dir";
+    while (my $f = readdir($dirh)) {
+        if ($f =~ /\.pm$/) {
+            push @pm_files, "$eumm_dir/$f";
+        } elsif ($f =~ /\.pm\.hidden$/) {
+            push @pm_files_hidden, "$eumm_dir/$f";
+        } else {
+            next;
+        }
+    }
+    closedir $dirh or croak "Unable to close $eumm_dir after reading: $!";
+#warn "pm_files:  @pm_files";
+#warn "pm_hidden_files:  @pm_files_hidden";
+#    # sanity check:
     # If there are .pm files, there should be no .pm.hidden files
     # and vice versa.
     if ( scalar(@pm_files) and scalar(@pm_files_hidden) )  {
-        croak "Both .pm and .pm.hidden files found in $full_dir: $!";
+        croak "Both .pm and .pm.hidden files found in $eumm_dir: $!";
     }
     my %pers;
     my %pm;
@@ -358,7 +371,7 @@ sub _identify_pm_files_under_mmkr_dir {
         $hidden{$f}{atime}   = (stat($f))[8];
         $hidden{$f}{modtime} = (stat($f))[9];
     }
-    $pers{dir}    = $full_dir;;
+    $pers{dir}    = $eumm_dir;;
     $pers{pm}     = \%pm;
     $pers{hidden} = \%hidden;
     return \%pers;

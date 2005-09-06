@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::Utility;
-# as of 09-06-2005
+# as of 09-05-2005
 use strict;
 local $^W = 1;
 use base qw(Exporter);
@@ -11,9 +11,6 @@ $VERSION = '0.39_01';
     _make_mmkr_directory
     _restore_mmkr_dir_status
 );
-#    _identify_pm_files_under_mmkr_dir
-#    _hide_pm_files_under_mmkr_dir
-#    _reveal_pm_files_under_mmkr_dir
 use Carp;
 use File::Path;
 
