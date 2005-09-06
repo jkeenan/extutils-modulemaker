@@ -36,10 +36,10 @@ use ExtUtils::ModuleMaker::Utility qw(
     _preexists_mmkr_directory
     _make_mmkr_directory
     _restore_mmkr_dir_status
-    _identify_pm_files_under_mmkr_dir
-    _hide_pm_files_under_mmkr_dir
-    _reveal_pm_files_under_mmkr_dir
 );
+#    _identify_pm_files_under_mmkr_dir
+#    _hide_pm_files_under_mmkr_dir
+#    _reveal_pm_files_under_mmkr_dir
 
 sub read_file_string {
     my $file = shift;
@@ -334,6 +334,57 @@ sub _subclass_cleanup_tests {
 
     ok( _restore_mmkr_dir_status($mmkr_dir_ref),
         "original presence/absence of .modulemaker directory restored");
+}
+
+sub _identify_pm_files_under_mmkr_dir {
+    my $mmkr_dir = shift;
+    my $full_dir = "$mmkr_dir/ExtUtils/ModuleMaker/Personal";
+    my @pm_files = glob("$full_dir/*.pm");
+    my @pm_files_hidden = glob("$full_dir/*.pm.hidden");
+    # sanity check:
+    # If there are .pm files, there should be no .pm.hidden files
+    # and vice versa.
+    if ( scalar(@pm_files) and scalar(@pm_files_hidden) )  {
+        croak "Both .pm and .pm.hidden files found in $full_dir: $!";
+    }
+    my %pers;
+    my %pm;
+    foreach my $f (@pm_files) {
+        $pm{$f}{atime}   = (stat($f))[8];
+        $pm{$f}{modtime} = (stat($f))[9];
+    }
+    my %hidden;
+    foreach my $f (@pm_files_hidden) {
+        $hidden{$f}{atime}   = (stat($f))[8];
+        $hidden{$f}{modtime} = (stat($f))[9];
+    }
+    $pers{dir}    = $full_dir;;
+    $pers{pm}     = \%pm;
+    $pers{hidden} = \%hidden;
+    return \%pers;
+}
+
+sub _hide_pm_files_under_mmkr_dir {
+    my $per_dir_ref = shift;
+    my %pers = %{$per_dir_ref};
+    my %pm = %{$pers{pm}};
+    foreach my $f (keys %pm) {
+        my $new = "$f.hidden";
+        rename $f, $new or croak "Unable to rename $f: $!";
+        utime $pm{$f}{atime}, $pm{$f}{modtime}, $new;
+    }
+}
+
+sub _reveal_pm_files_under_mmkr_dir {
+    my $per_dir_ref = shift;
+    my %pers = %{$per_dir_ref};
+    my %hidden = %{$pers{hidden}};
+    foreach my $f (keys %hidden) {
+        $f =~ m{(.*)\.hidden$};
+        my $new = $1;
+        rename $f, $new or croak "Unable to rename $f: $!";
+        utime $hidden{$f}{atime}, $hidden{$f}{modtime}, $new;
+    }
 }
 
 1;
