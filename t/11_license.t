@@ -253,6 +253,7 @@ SKIP: {
     	    AUTHOR => "J E Keenan", 
     		ORGANIZATION => "The World Wide Webby",
         ), "object created for Alpha::$testmod");
+
         ok($mod->complete_build(), "build files for Alpha::$testmod");
 
         ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );

@@ -275,45 +275,47 @@ EOF
 =cut
 
 sub text_test {
-    my ( $self, $testnum, $module ) = @_;
+    my ( $self, $testfilename, $module ) = @_;
 
     my $name    = $self->module_value( $module, 'NAME' );
     my $neednew = $self->module_value( $module, 'NEED_NEW_METHOD' );
-
     my $text_of_test_file;
-    if ($neednew) {
-        my $name = $module->{NAME};
 
-        $text_of_test_file = <<EOF;
+    my %test_file_texts;
+    $test_file_texts{multifile}{neednew} = <<MFNN;
 # -*- perl -*-
 
-# $testnum - check module loading and create testing directory
+# $testfilename - check module loading and create testing directory
 
 use Test::More tests => 2;
 
-BEGIN { use_ok( '$name' ); }
+BEGIN { use_ok( '$module->{NAME}' ); }
 
 my \$object = ${name}->new ();
-isa_ok (\$object, '$name');
+isa_ok (\$object, '$module->{NAME}');
 
 
-EOF
+MFNN
 
-    }
-    else {
-
-        $text_of_test_file = <<EOF;
+    $test_file_texts{multifile}{zeronew} = <<MFZN;
 # -*- perl -*-
 
-# $testnum - check module loading and create testing directory
+# $testfilename - check module loading and create testing directory
 
 use Test::More tests => 1;
 
-BEGIN { use_ok( '$name' ); }
+BEGIN { use_ok( '$module->{NAME}' ); }
 
 
-EOF
+MFZN
 
+    unless ($self->{EXTRA_MODULES_SINGLE_TEST_FILE}) {
+        if ($neednew) {
+            $text_of_test_file = $test_file_texts{multifile}{neednew};
+        }
+        else {
+            $text_of_test_file = $test_file_texts{multifile}{zeronew};
+        }
     }
 
     return $text_of_test_file;

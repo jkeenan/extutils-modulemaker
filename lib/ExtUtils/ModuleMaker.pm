@@ -127,16 +127,17 @@ sub complete_build {
         $self->print_file( 'Changes', $self->text_Changes() );
     }
 
-#    my $ct = 1;
     my $ct = $self->{FIRST_TEST_NUMBER};
-    foreach my $module ( $self, @{ $self->{EXTRA_MODULES} } ) {
-        $self->generate_pm_file($module);
-#        my $testfile = sprintf( "t/%03d_load.t", $ct );
-        my $testfile = sprintf(
-            "t/". $self->{TEST_NUMBER_FORMAT} . $self->{TEST_NAME}, $ct );
-        $self->print_file( $testfile,
-            $self->text_test( $testfile, $module ) );
-        $ct++;
+    unless ($self->{EXTRA_MODULES_SINGLE_TEST_FILE}) {
+        foreach my $module ( $self, @{ $self->{EXTRA_MODULES} } ) {
+            $self->generate_pm_file($module);
+            my $testfilename = sprintf(
+                "t/" . $self->{TEST_NUMBER_FORMAT} . $self->{TEST_NAME}, $ct );
+            $self->print_file( $testfilename,
+                $self->text_test( $testfilename, $module ) );
+            $ct++;
+        }
+    } else {
     }
 
     #Makefile must be created after generate_pm_file which sets $self->{FILE}
@@ -222,6 +223,10 @@ my @keys_needed = qw(
     CHANGES_IN_POD
     PERMISSIONS
     USAGE_MESSAGE
+    FIRST_TEST_NUMBER
+    TEST_NUMBER_FORMAT
+    TEST_NAME
+    EXTRA_MODULES_SINGLE_TEST_FILE
 );
 
 my $kvpairs;

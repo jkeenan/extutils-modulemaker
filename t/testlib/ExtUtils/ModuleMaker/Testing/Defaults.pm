@@ -33,6 +33,7 @@ my %default_values = (
         FIRST_TEST_NUMBER   => 1,
         TEST_NUMBER_FORMAT  => "%03d",
         TEST_NAME           => '_load.t',
+        EXTRA_MODULES_SINGLE_TEST_FILE => 0,
 );
 
 sub default_values {
