@@ -30,6 +30,9 @@ my %default_values = (
         PERMISSIONS      => 0755,
         SAVE_AS_DEFAULTS => 0,
         USAGE_MESSAGE    => $usage,
+        FIRST_TEST_NUMBER   => 1,
+        TEST_NUMBER_FORMAT  => "%03d",
+        TEST_NAME           => '_load.t',
 );
 
 sub default_values {

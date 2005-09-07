@@ -127,10 +127,13 @@ sub complete_build {
         $self->print_file( 'Changes', $self->text_Changes() );
     }
 
-    my $ct = 1;
+#    my $ct = 1;
+    my $ct = $self->{FIRST_TEST_NUMBER};
     foreach my $module ( $self, @{ $self->{EXTRA_MODULES} } ) {
         $self->generate_pm_file($module);
-        my $testfile = sprintf( "t/%03d_load.t", $ct );
+#        my $testfile = sprintf( "t/%03d_load.t", $ct );
+        my $testfile = sprintf(
+            "t/". $self->{TEST_NUMBER_FORMAT} . $self->{TEST_NAME}, $ct );
         $self->print_file( $testfile,
             $self->text_test( $testfile, $module ) );
         $ct++;
