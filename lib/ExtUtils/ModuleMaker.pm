@@ -3,7 +3,7 @@ use strict;
 local $^W = 1;
 BEGIN {
     use vars qw( $VERSION @ISA ); 
-    $VERSION = '0.39_01';
+    $VERSION = '0.39_02';
     use base qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::Initializers
@@ -127,10 +127,16 @@ sub complete_build {
         $self->print_file( 'Changes', $self->text_Changes() );
     }
 
-    my $ct = $self->{FIRST_TEST_NUMBER};
+    my @pmfiles = ( $self );
+    foreach my $f ( @{ $self->{EXTRA_MODULES} } ) {
+        push @pmfiles, $f;
+    }
+    foreach my $module ( @pmfiles ) {
+        $self->generate_pm_file($module);
+    }
     unless ($self->{EXTRA_MODULES_SINGLE_TEST_FILE}) {
-        foreach my $module ( $self, @{ $self->{EXTRA_MODULES} } ) {
-            $self->generate_pm_file($module);
+        my $ct = $self->{FIRST_TEST_NUMBER};
+        foreach my $module ( @pmfiles ) {
             my $testfilename = sprintf(
                 "t/" . $self->{TEST_NUMBER_FORMAT} . $self->{TEST_NAME}, $ct );
             $self->print_file( $testfilename,
@@ -138,6 +144,12 @@ sub complete_build {
             $ct++;
         }
     } else {
+        my $testfilename = sprintf(
+            "t/" . $self->{TEST_NUMBER_FORMAT} . $self->{TEST_NAME}, 
+            $self->{FIRST_TEST_NUMBER}
+        );
+        $self->print_file( $testfilename,
+            $self->text_test_multi( $testfilename, \@pmfiles ) );
     }
 
     #Makefile must be created after generate_pm_file which sets $self->{FILE}
@@ -307,8 +319,8 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
 =head1 VERSION
 
-This document references version 0.39_01 of ExtUtils::ModuleMaker, released
-to CPAN on September 6, 2005.
+This document references version 0.39_02 of ExtUtils::ModuleMaker, released
+to CPAN on September 8, 2005.
 
 =head1 DESCRIPTION
 

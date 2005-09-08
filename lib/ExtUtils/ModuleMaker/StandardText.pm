@@ -1,9 +1,9 @@
 package ExtUtils::ModuleMaker::StandardText;
-# as of 09-06-2005
+# as of 09-08-2005
 use strict;
 local $^W = 1;
 use vars qw ( $VERSION );
-$VERSION = '0.39_01';
+$VERSION = '0.39_02';
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
     Get_Standard_License
     Verify_Standard_License
@@ -279,10 +279,9 @@ sub text_test {
 
     my $name    = $self->module_value( $module, 'NAME' );
     my $neednew = $self->module_value( $module, 'NEED_NEW_METHOD' );
-    my $text_of_test_file;
 
     my %test_file_texts;
-    $test_file_texts{multifile}{neednew} = <<MFNN;
+    $test_file_texts{neednew} = <<MFNN;
 # -*- perl -*-
 
 # $testfilename - check module loading and create testing directory
@@ -297,7 +296,7 @@ isa_ok (\$object, '$module->{NAME}');
 
 MFNN
 
-    $test_file_texts{multifile}{zeronew} = <<MFZN;
+    $test_file_texts{zeronew} = <<MFZN;
 # -*- perl -*-
 
 # $testfilename - check module loading and create testing directory
@@ -309,17 +308,52 @@ BEGIN { use_ok( '$module->{NAME}' ); }
 
 MFZN
 
-    unless ($self->{EXTRA_MODULES_SINGLE_TEST_FILE}) {
-        if ($neednew) {
-            $text_of_test_file = $test_file_texts{multifile}{neednew};
-        }
-        else {
-            $text_of_test_file = $test_file_texts{multifile}{zeronew};
-        }
-    }
+    return $neednew ? $test_file_texts{neednew}
+                    : $test_file_texts{zeronew};
+}
 
+sub text_test_multi {
+    my ( $self, $testfilename, $pmfilesref ) = @_;
+    my @pmfiles = @{$pmfilesref};
+
+    my $top = <<END_OF_TOP;
+# -*- perl -*-
+
+# $testfilename - check module loading and create testing directory
+END_OF_TOP
+
+    my $number_line = q{use Test::More tests => } . scalar(@pmfiles) . q{;};
+
+    my $begin_block = "BEGIN {\n";
+    foreach my $f (@pmfiles) {
+        $begin_block .= "    use_ok( '$f->{NAME}' );\n";
+    }
+    $begin_block .= "}\n";
+
+    my $text_of_test_file = join("\n", (
+            $top,
+            $number_line,
+            $begin_block,
+        )
+    );
     return $text_of_test_file;
 }
+
+#    $test_file_texts{neednew} = <<MTNN;
+## -*- perl -*-
+#
+## $testfilename - check module loading and create testing directory
+#
+#use Test::More tests => 2;
+#
+#BEGIN { use_ok( '$module->{NAME}' ); }
+#
+#my \$object = ${name}->new ();
+#isa_ok (\$object, '$module->{NAME}');
+#
+#
+#MTNN
+#
 
 =head3 C<text_Makefile()>
 
