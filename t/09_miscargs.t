@@ -31,6 +31,7 @@ SKIP: {
         read_file_string
         read_file_array
     );
+    use lib('t/testlib');
     use_ok( 'IO::Capture::Stdout' );
 
     my $odir = cwd();

@@ -31,8 +31,6 @@ SKIP: {
 
     #######################################################################
 
-#    my ($mmkr_dir, $no_mmkr_dir_flag) = 
-#        _make_mmkr_directory();
     my $mmkr_dir_ref = _preexists_mmkr_directory();
     my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
     ok( $mmkr_dir, "personal defaults directory now present on system");
@@ -82,7 +80,6 @@ SKIP: {
 
     ok(chdir $odir, 'changed back to original directory after testing');
 
-#    ok( _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
     ok( _restore_mmkr_dir_status($mmkr_dir_ref),
         "original presence/absence of .modulemaker directory restored");
 
