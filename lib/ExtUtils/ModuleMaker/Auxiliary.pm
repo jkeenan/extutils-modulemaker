@@ -82,7 +82,7 @@ sub check_MakefilePL {
     my ($topdir, $predictref) = @_;
     my @pred = @$predictref;
 
-    my $mkfl = "$topdir/Makefile.PL";
+    my $mkfl = File::Spec->catfile( $topdir, q{Makefile.PL} );
     local *MAK;
     open MAK, $mkfl or die "Unable to open Makefile.PL: $!";
     my $bigstr;
@@ -117,7 +117,6 @@ sub make_compact {
     $topdir = $path = $module_name;
     $topdir =~ s{::}{-}g;
     $path   =~ s{::}{/}g;
-#    $pmfile = "$topdir/lib/${path}.pm";
     $path .= q{.pm};
     $pmfile = File::Spec->catfile( $topdir, q{lib}, $path );
     return ($topdir, $pmfile);
@@ -154,7 +153,6 @@ sub failsafe {
     my $mmkr_dir_ref = _preexists_mmkr_directory();
     my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
     ok( $mmkr_dir, "personal defaults directory now present on system");
-#    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
     my $pers_file = File::Spec->catfile(
        qw| ExtUtils ModuleMaker Personal Defaults.pm |
     );
@@ -179,7 +177,6 @@ sub licensetest {
     my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
     ok( $mmkr_dir, "personal defaults directory now present on system");
 
-#    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
     my $pers_file = File::Spec->catfile(
        qw| ExtUtils ModuleMaker Personal Defaults.pm |
     );
@@ -204,8 +201,6 @@ sub _process_personal_defaults_file {
     my ($mmkr_dir, $pers_file) = @_;
     my $pers_file_hidden = $pers_file . '.hidden';
     my %pers;
-#    $pers{full} = "$mmkr_dir/$pers_file";
-#    $pers{hidden} = "$mmkr_dir/$pers_file_hidden";
     $pers{full} = File::Spec->catfile( $mmkr_dir, $pers_file );
     $pers{hidden} = File::Spec->catfile( $mmkr_dir, $pers_file_hidden );
     if (-f $pers{full}) {
@@ -263,8 +258,6 @@ sub _subclass_preparatory_tests {
     my $mmkr_dir_ref = _preexists_mmkr_directory();
     my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
     ok($mmkr_dir, "home/.modulemaker directory now present on system");
-#    my $eumm = "ExtUtils/ModuleMaker";
-#    my $eumm_dir = "$mmkr_dir/$eumm";
     my $eumm = File::Spec->catfile( qw| ExtUtils ModuleMaker | );
     my $eumm_dir = File::Spec->catfile( $mmkr_dir, $eumm );
     unless (-d $eumm_dir) {
@@ -294,7 +287,6 @@ sub _subclass_preparatory_tests {
             ".pm.hidden files exist");
     }
 
-#    my $sourcedir = "$odir/t/testlib/$eumm";
     my $sourcedir = File::Spec->catdir( $odir, q{t}, q{testlib}, $eumm );
     ok( -d $sourcedir, "source directory exists");
     ok( -d $eumm_dir, "destination directory exists");
@@ -345,10 +337,9 @@ sub _identify_pm_files_under_mmkr_dir {
         or croak "Unable to open $eumm_dir for reading: $!";
     while (my $f = readdir($dirh)) {
         if ($f =~ /\.pm$/) {
-#            push @pm_files, "$eumm_dir/$f";
             push @pm_files, File::Spec->catfile( $eumm_dir, $f );
         } elsif ($f =~ /\.pm\.hidden$/) {
-            push @pm_files_hidden, "$eumm_dir/$f";
+            push @pm_files_hidden, File::Spec->catfile( $eumm_dir, $f );
         } else {
             next;
         }
