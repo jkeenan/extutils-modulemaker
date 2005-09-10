@@ -3,7 +3,7 @@ use strict;
 local $^W = 1;
 BEGIN {
     use vars qw( $VERSION @ISA ); 
-    $VERSION = '0.39_02';
+    $VERSION = '0.39_04';
     use base qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::Initializers
@@ -319,8 +319,8 @@ ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
 =head1 VERSION
 
-This document references version 0.39_02 of ExtUtils::ModuleMaker, released
-to CPAN on September 8, 2005.
+This document references version 0.39_04 of ExtUtils::ModuleMaker, released
+to CPAN on September 9, 2005.
 
 =head1 DESCRIPTION
 

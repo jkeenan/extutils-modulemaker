@@ -11,7 +11,7 @@ use Carp;
 use vars qw ( $VERSION );
 use Data::Dumper;
 
-$VERSION = '0.39_02';
+$VERSION = '0.39_04';
 
 ##### Index of Variables (Aug 18 2005) #####
 # %opts
@@ -119,8 +119,8 @@ modulemaker - interactive interface to ExtUtils::ModuleMaker
 
 =head1 VERSION
 
-This document references version 0.39_02 of modulemaker, released
-to CPAN on September 8, 2005.
+This document references version 0.39_04 of modulemaker, released
+to CPAN on September 9, 2005.
 
 =head1 USAGE -- Simple
 
