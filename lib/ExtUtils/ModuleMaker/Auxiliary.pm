@@ -202,10 +202,12 @@ sub licensetest {
 
 sub _process_personal_defaults_file {
     my ($mmkr_dir, $pers_file) = @_;
-    my $pers_file_hidden = "$pers_file" . '.hidden';
+    my $pers_file_hidden = $pers_file . '.hidden';
     my %pers;
-    $pers{full} = "$mmkr_dir/$pers_file";
-    $pers{hidden} = "$mmkr_dir/$pers_file_hidden";
+#    $pers{full} = "$mmkr_dir/$pers_file";
+#    $pers{hidden} = "$mmkr_dir/$pers_file_hidden";
+    $pers{full} = File::Spec->catfile( $mmkr_dir, $pers_file );
+    $pers{hidden} = File::Spec->catfile( $mmkr_dir, $pers_file_hidden );
     if (-f $pers{full}) {
         $pers{atime}   = (stat($pers{full}))[8];
         $pers{modtime} = (stat($pers{full}))[9];
@@ -261,8 +263,10 @@ sub _subclass_preparatory_tests {
     my $mmkr_dir_ref = _preexists_mmkr_directory();
     my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
     ok($mmkr_dir, "home/.modulemaker directory now present on system");
-    my $eumm = "ExtUtils/ModuleMaker";
-    my $eumm_dir = "$mmkr_dir/$eumm";
+#    my $eumm = "ExtUtils/ModuleMaker";
+#    my $eumm_dir = "$mmkr_dir/$eumm";
+    my $eumm = File::Spec->catfile( qw| ExtUtils ModuleMaker | );
+    my $eumm_dir = File::Spec->catfile( $mmkr_dir, $eumm );
     unless (-d $eumm_dir) {
             mkpath($eumm_dir) or croak "Unable to make path: $!";
     }
