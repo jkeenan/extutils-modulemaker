@@ -154,7 +154,10 @@ sub failsafe {
     my $mmkr_dir_ref = _preexists_mmkr_directory();
     my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
     ok( $mmkr_dir, "personal defaults directory now present on system");
-    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+#    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+    my $pers_file = File::Spec->catfile(
+       qw| ExtUtils ModuleMaker Personal Defaults.pm |
+    );
     my $pers_def_ref = 
         _process_personal_defaults_file( $mmkr_dir, $pers_file );
     local $@ = undef;
@@ -176,7 +179,10 @@ sub licensetest {
     my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
     ok( $mmkr_dir, "personal defaults directory now present on system");
 
-    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+#    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+    my $pers_file = File::Spec->catfile(
+       qw| ExtUtils ModuleMaker Personal Defaults.pm |
+    );
     my $pers_def_ref = 
         _process_personal_defaults_file( $mmkr_dir, $pers_file );
     ok($mod = ExtUtils::ModuleMaker->new(
