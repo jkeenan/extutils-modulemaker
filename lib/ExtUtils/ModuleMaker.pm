@@ -137,8 +137,15 @@ sub complete_build {
     unless ($self->{EXTRA_MODULES_SINGLE_TEST_FILE}) {
         my $ct = $self->{FIRST_TEST_NUMBER};
         foreach my $module ( @pmfiles ) {
+            my $testword;
+            if ($self->{TEST_NAME_DERIVED_FROM_MODULE_NAME}) {
+                $testword = $module;
+                $testword =~ s/::/_/g;
+            } else {
+                $testword = $self->{TEST_NAME};
+            }
             my $testfilename = sprintf(
-                "t/" . $self->{TEST_NUMBER_FORMAT} . $self->{TEST_NAME}, $ct );
+                "t/" . $self->{TEST_NUMBER_FORMAT} . $testword, $ct );
             $self->print_file( $testfilename,
                 $self->text_test( $testfilename, $module ) );
             $ct++;
@@ -239,6 +246,7 @@ my @keys_needed = qw(
     TEST_NUMBER_FORMAT
     TEST_NAME
     EXTRA_MODULES_SINGLE_TEST_FILE
+    TEST_NAME_DERIVED_FROM_MODULE_NAME
 );
 
 my $kvpairs;
