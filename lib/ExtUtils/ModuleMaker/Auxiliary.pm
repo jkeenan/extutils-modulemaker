@@ -294,7 +294,8 @@ sub _subclass_preparatory_tests {
             ".pm.hidden files exist");
     }
 
-    my $sourcedir = "$odir/t/testlib/$eumm";
+#    my $sourcedir = "$odir/t/testlib/$eumm";
+    my $sourcedir = File::Spec->catdir( $odir, q{t}, q{testlib}, $eumm );
     ok( -d $sourcedir, "source directory exists");
     ok( -d $eumm_dir, "destination directory exists");
     return {
@@ -344,7 +345,8 @@ sub _identify_pm_files_under_mmkr_dir {
         or croak "Unable to open $eumm_dir for reading: $!";
     while (my $f = readdir($dirh)) {
         if ($f =~ /\.pm$/) {
-            push @pm_files, "$eumm_dir/$f";
+#            push @pm_files, "$eumm_dir/$f";
+            push @pm_files, File::Spec->catfile( $eumm_dir, $f );
         } elsif ($f =~ /\.pm\.hidden$/) {
             push @pm_files_hidden, "$eumm_dir/$f";
         } else {
