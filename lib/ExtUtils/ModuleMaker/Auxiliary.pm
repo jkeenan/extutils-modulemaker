@@ -25,6 +25,7 @@ use Carp;
 use Cwd;
 use File::Copy;
 use File::Path;
+use File::Spec;
 use File::Temp qw| tempdir |;
 *ok = *Test::More::ok;
 *is = *Test::More::is;
@@ -116,7 +117,9 @@ sub make_compact {
     $topdir = $path = $module_name;
     $topdir =~ s{::}{-}g;
     $path   =~ s{::}{/}g;
-    $pmfile = "$topdir/lib/${path}.pm";
+#    $pmfile = "$topdir/lib/${path}.pm";
+    $path .= q{.pm};
+    $pmfile = File::Spec->catfile( $topdir, q{lib}, $path );
     return ($topdir, $pmfile);
 }
 

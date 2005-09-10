@@ -43,8 +43,10 @@ sub new {
         if (defined $self->{mmkr_dir_ref}->[1]) {
             push @INC, $mmkr_dir;
         }
-        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
-        if (-f "$mmkr_dir/$pers_file") {
+        my $pers_file = File::Spec->catfile( $mmkr_dir,
+            qw| ExtUtils ModuleMaker Personal Defaults.pm |
+        );
+        if (-f $pers_file) {
             require ExtUtils::ModuleMaker::Personal::Defaults;
             unshift @ISA, qw(ExtUtils::ModuleMaker::Personal::Defaults);
         }
@@ -99,7 +101,7 @@ sub new {
     # module located in @INC
     if (defined $self->{ALT_BUILD}) {
         my $alt_build = $self->{ALT_BUILD};
-        unless ($alt_build =~ /^ExtUtils::ModuleMaker::/) {
+        unless ($alt_build =~ m{^ExtUtils::ModuleMaker::}) {
             $alt_build = q{ExtUtils::ModuleMaker::} . $alt_build;
         }
         eval "require $alt_build";
@@ -116,7 +118,9 @@ sub complete_build {
     my $self = shift;
 
     $self->create_base_directory();
-    $self->check_dir( map { "$self->{Base_Dir}/$_" } qw (lib t scripts) );
+    $self->check_dir( map
+        { File::Spec->catdir( $self->{Base_Dir}, $_ ) }
+        qw (lib t scripts) );
 
     $self->print_file( 'LICENSE', $self->{LicenseParts}{LICENSETEXT} );
     $self->print_file( 'README',  $self->text_README() );
@@ -146,7 +150,7 @@ sub complete_build {
             }
             if ($self->{TEST_NAME_DERIVED_FROM_MODULE_NAME}) {
                 $testmiddle = $self->module_value( $module, 'NAME' );
-                $testmiddle =~ s/::/$self->{TEST_NAME_SEPARATOR}/g;
+                $testmiddle =~ s|::|$self->{TEST_NAME_SEPARATOR}|g;
             } else {
                 $testmiddle = $self->{TEST_NAME};
             }
@@ -265,8 +269,6 @@ END_BOTTOMFILE
     my $output =  $topfile . $kvpairs . $bottomfile;
 
     my $mmkr_dir = _make_mmkr_directory($self->{mmkr_dir_ref});
-#    my $pers_path = "ExtUtils/ModuleMaker/Personal";
-#    my $full_dir = File::Spec->catdir($mmkr_dir, $pers_path);
     my $full_dir = File::Spec->catdir($mmkr_dir,
         qw| ExtUtils ModuleMaker Personal |
     );
@@ -275,8 +277,7 @@ END_BOTTOMFILE
         if ($@) {
             croak "Unable to make directory for placement of personal defaults file: $!"; };
     }
-    my $pers_file = "Defaults.pm";
-    my $pers_full = "$full_dir/$pers_file";
+    my $pers_full = File::Spec->catfile( $full_dir, q{Defaults.pm} );
     if (-f $pers_full ) {
         my $modtime = (stat($pers_full))[9];
         rename $pers_full,
