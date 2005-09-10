@@ -28,11 +28,11 @@ t/10_standard_text.t
 t/11_license.t
 t/12_make_selections_defaults.t
 t/13_alt_block_new_method.t
-t/14_alt_no_Todo.t
-t/15_mmkr_alt_block_new_method.t
-t/16_mmkr_alt_no_Todo.t
+# t/14_alt_no_Todo.t
+t/14_mmkr_alt_block_new_method.t
+# t/16_mmkr_alt_no_Todo.t
 t/testlib/ExtUtils/ModuleMaker/Alt_block_new_method.pm
-t/testlib/ExtUtils/ModuleMaker/Alt_no_Todo.pm
+# t/testlib/ExtUtils/ModuleMaker/Alt_no_Todo.pm
 t/testlib/ExtUtils/ModuleMaker/Testing/Defaults.pm
 t/testlib/IO/Capture.pm
 t/testlib/IO/Capture/ErrorMessages.pm
