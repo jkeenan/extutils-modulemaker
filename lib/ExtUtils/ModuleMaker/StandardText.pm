@@ -13,6 +13,7 @@ use ExtUtils::ModuleMaker::Licenses::Local qw(
     Verify_Local_License
 );
 use File::Path;
+use File::Spec;
 use Carp;
 
 =head1 NAME
@@ -109,11 +110,11 @@ sub print_file {
 
     push( @{ $self->{MANIFEST} }, $filename )
       unless ( $filename eq 'MANIFEST' );
-#    $self->log_message("writing file '$filename'");
     $self->log_message( qq{writing file '$filename'});
 
+    my $file = File::Spec->catfile( $self->{Base_Dir}, $filename );
     local *FILE;
-    open( FILE, ">$self->{Base_Dir}/$filename" )
+    open( FILE, ">$file" )
       or $self->death_message( [ qq{Could not write '$filename', $!} ] );
     print FILE $filetext;
     close FILE;
@@ -550,10 +551,12 @@ sub create_pm_basics {
     my ( $self, $module ) = @_;
     my @layers = split( /::/, $module->{NAME} );
     my $file   = pop(@layers);
-    my $dir    = join( '/', 'lib', @layers );
+    $file .= '.pm';
+    my $dir    = File::Spec->catdir( 'lib', @layers );
 
-    $self->check_dir("$self->{Base_Dir}/$dir");
-    $module->{FILE} = "$dir/$file.pm";
+    my $fulldir = File::Spec->catdir( $self->{Base_Dir}, $dir );
+    $self->check_dir($fulldir);
+    $module->{FILE} = File::Spec->catfile( $dir, $file );
 }
 
 =head3 C<compose_pm_file()>

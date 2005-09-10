@@ -236,31 +236,6 @@ use strict;
 my %default_values = (
 END_TOPFILE
     
-#my @keys_needed = qw(
-#    LICENSE
-#    VERSION
-#    AUTHOR
-#    CPANID
-#    ORGANIZATION
-#    WEBSITE
-#    EMAIL
-#    BUILD_SYSTEM
-#    COMPACT
-#    VERBOSE
-#    INTERACTIVE
-#    NEED_POD
-#    NEED_NEW_METHOD
-#    CHANGES_IN_POD
-#    PERMISSIONS
-#    USAGE_MESSAGE
-#    FIRST_TEST_NUMBER
-#    TEST_NUMBER_FORMAT
-#    TEST_NAME
-#    EXTRA_MODULES_SINGLE_TEST_FILE
-#    TEST_NAME_DERIVED_FROM_MODULE_NAME
-#    TEST_NAME_SEPARATOR
-#);
-
 my @keys_needed;
 for my $k (@dv) {
     push @keys_needed, $k
