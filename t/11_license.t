@@ -21,8 +21,7 @@ SKIP: {
         (561 - 3) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
-    use lib ("./t/testlib");
-    use Auxiliary qw(
+    use ExtUtils::ModuleMaker::Auxiliary qw(
         licensetest
         read_file_string
     );

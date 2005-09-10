@@ -6,8 +6,7 @@ tests =>  32;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
-use lib ("./t/testlib");
-use_ok( 'Auxiliary', qw(
+use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
         _subclass_preparatory_tests
         _subclass_cleanup_tests
     )

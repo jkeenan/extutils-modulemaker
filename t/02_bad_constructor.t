@@ -6,8 +6,7 @@ tests => 112;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
-use lib ("./t/testlib");
-use Auxiliary qw(
+use ExtUtils::ModuleMaker::Auxiliary qw(
     failsafe
 );
 
@@ -16,40 +15,41 @@ SKIP: {
     skip "failsafe requires File::Temp, core with Perl 5.6", 
         (112 - 4) if $@;
     use warnings;
+    my $caller = 'ExtUtils::ModuleMaker';
 
     ###########################################################################
 
-    failsafe([ 'NAME' ], "^Must be hash or balanced list of key-value pairs:",
+    failsafe($caller, [ 'NAME' ], "^Must be hash or balanced list of key-value pairs:",
         "Constructor correctly failed due to odd number of arguments"
     );
 
-    failsafe( [ 'NAME' => 'Jim', 'ABSTRACT' ], 
+    failsafe($caller,  [ 'NAME' => 'Jim', 'ABSTRACT' ], 
         "^Must be hash or balanced list of key-value pairs:",
         "Constructor correctly failed due to odd number of arguments"
     );
 
-    failsafe( [
+    failsafe($caller,  [
         'ABSTRACT' => 'The quick brown fox jumps over the lazy dog',
     ], 
         "^NAME is required",
         "Constructor correctly failed due to lack of NAME for module"
     );
 
-    failsafe( [
+    failsafe($caller,  [
         'NAME' => 'My::B!ad::Module',
     ], 
         "^Module NAME contains illegal characters",
         "Constructor correctly failed due to illegal characters in module name"
     );
 
-    failsafe( [
+    failsafe($caller,  [
         'NAME' => "My'BadModule",
     ], 
         "^Module NAME contains illegal characters",
         "Perl 4-style single-quote path separators no longer supported"
     );
 
-    failsafe( [
+    failsafe($caller,  [
         'NAME'     => 'ABC::XYZ',
         'ABSTRACT' => '123456789012345678901234567890123456789012345',
     ], 
@@ -57,7 +57,7 @@ SKIP: {
         "Constructor correctly failed due to ABSTRACT > 44 characters"
     );
 
-    failsafe( [
+    failsafe($caller,  [
         'NAME'     => 'ABC::DEF',
         'AUTHOR'   => 'James E Keenan',
         'CPANID'   => 'ABCDEFGHIJ',
@@ -66,7 +66,7 @@ SKIP: {
         "Constructor correctly failed due to CPANID > 9 characters"
     );
 
-    failsafe( [
+    failsafe($caller,  [
         'NAME'     => 'ABC::XYZ',
         'AUTHOR'   => 'James E Keenan',
         'CPANID'   => 'AB',
@@ -75,7 +75,7 @@ SKIP: {
         "Constructor correctly failed due to CPANID < 3 characters"
     );
 
-    failsafe( [
+    failsafe($caller,  [
         'NAME'     => 'ABC::XYZ',
         'AUTHOR'   => 'James E Keenan',
         'EMAIL'    => 'jkeenancpan.org',
@@ -84,7 +84,7 @@ SKIP: {
         "Constructor correctly failed; e-mail must have '\@' sign"
     );
 
-    failsafe( [
+    failsafe($caller,  [
         'NAME'     => 'ABC::XYZ',
         'AUTHOR'   => 'James E Keenan',
         'WEBSITE'   => 'ftp://ftp.perl.org',
@@ -93,7 +93,7 @@ SKIP: {
         "Constructor correctly failed; websites start 'http' or 'https'"
     );
 
-    failsafe( [
+    failsafe($caller,  [
         'NAME'     => 'ABC::XYZ',
         'LICENSE'  => 'dka;fkkj3o9jflvbkja0 lkasd;ldfkJKD38kdd;llk45',
     ], 

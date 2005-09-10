@@ -12,8 +12,7 @@ use_ok( 'ExtUtils::ModuleMaker::Utility', qw(
         _restore_mmkr_dir_status
     )
 );
-use lib ("./t/testlib");
-use_ok( 'Auxiliary', qw(
+use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
         _process_personal_defaults_file 
         _reprocess_personal_defaults_file 
     )
@@ -25,8 +24,7 @@ SKIP: {
         (171 - 4) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
-    use lib ("./t/testlib");
-    use Auxiliary qw(
+    use ExtUtils::ModuleMaker::Auxiliary qw(
         check_MakefilePL 
         check_pm_file
         make_compact

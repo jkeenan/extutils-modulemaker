@@ -147,9 +147,9 @@ sub constructor_present {
 }
 
 sub failsafe {
-    my ($argslistref, $pattern, $message) = @_;
+    my ($caller, $argslistref, $pattern, $message) = @_;
     my $odir = cwd();
-    my ($tdir, $mod);
+    my ($tdir, $obj);
     $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
     my $mmkr_dir_ref = _preexists_mmkr_directory();
@@ -159,7 +159,8 @@ sub failsafe {
     my $pers_def_ref = 
         _process_personal_defaults_file( $mmkr_dir, $pers_file );
     local $@ = undef;
-    eval { $mod  = ExtUtils::ModuleMaker->new (@$argslistref); };
+#    eval { $obj  = ExtUtils::ModuleMaker->new (@$argslistref); };
+    eval { $obj  = $caller->new (@$argslistref); };
     like($@, qr/$pattern/, $message);
     _reprocess_personal_defaults_file($pers_def_ref);
     ok(chdir $odir, 'changed back to original directory after testing');
