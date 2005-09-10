@@ -1,9 +1,10 @@
 package ExtUtils::ModuleMaker::Auxiliary;
 # Contains test subroutines for distribution with ExtUtils::ModuleMaker
-# As of:  September 9, 2005
+# As of:  September 10, 2005
 use strict;
-use warnings;
-use vars qw| @ISA @EXPORT_OK |; 
+local $^W = 1;
+use vars qw( $VERSION @ISA @EXPORT_OK );
+$VERSION = '0.39_05';
 require Exporter;
 @ISA         = qw(Exporter);
 @EXPORT_OK   = qw(
@@ -390,6 +391,14 @@ sub _reveal_pm_files_under_mmkr_dir {
         utime $hidden{$f}{atime}, $hidden{$f}{modtime}, $new;
     }
 }
+
+#################### DOCUMENTATION ####################
+
+=head1 NAME
+
+ExtUtils::ModuleMaker::Auxiliary - Subroutines for testing ExtUtils::ModuleMaker
+
+=cut
 
 1;
 

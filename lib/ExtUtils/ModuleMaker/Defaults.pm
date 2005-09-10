@@ -1,8 +1,8 @@
 package ExtUtils::ModuleMaker::Defaults;
-# as of 09-09-2005
+# as of 09-10-2005
 use strict;
 use vars qw( $VERSION );
-$VERSION = '0.39_04';
+$VERSION = '0.39_05';
 
 my $usage = <<ENDOFUSAGE;
 
@@ -30,14 +30,16 @@ my %default_values = (
         PERMISSIONS      => 0755,
         SAVE_AS_DEFAULTS => 0,
         USAGE_MESSAGE    => $usage,
-        FIRST_TEST_NUMBER   => 1,
-        TEST_NUMBER_FORMAT  => "%03d",
-        TEST_NAME           => 'load',
-        EXTRA_MODULES_SINGLE_TEST_FILE => 0,
-        TEST_NAME_DERIVED_FROM_MODULE_NAME => 0,
-        TEST_NAME_SEPARATOR => '_',
-        INCLUDE_MANIFEST_SKIP => 0,
-        INCLUDE_TODO => 1,
+        FIRST_TEST_NUMBER                   => 1,
+        TEST_NUMBER_FORMAT                  => "%03d",
+        TEST_NAME                           => 'load',
+        EXTRA_MODULES_SINGLE_TEST_FILE      => 0,
+        TEST_NAME_DERIVED_FROM_MODULE_NAME  => 0,
+        TEST_NAME_SEPARATOR                 => q{_},
+        INCLUDE_MANIFEST_SKIP               => 0,
+        INCLUDE_TODO                        => 1,
+        INCLUDE_POD_COVERAGE_TEST           => 0,
+        INCLUDE_POD_TEST                    => 0,
 );
 
 sub default_values {

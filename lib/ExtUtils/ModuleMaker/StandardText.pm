@@ -1,9 +1,9 @@
 package ExtUtils::ModuleMaker::StandardText;
-# as of 09-09-2005
+# as of 09-10-2005
 use strict;
 local $^W = 1;
 use vars qw ( $VERSION );
-$VERSION = '0.39_04';
+$VERSION = '0.39_05';
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
     Get_Standard_License
     Verify_Standard_License
@@ -492,8 +492,8 @@ EOF
   Returns   : String with text of MANIFEST.SKIP file
   Argument  : n/a
   Throws    : n/a
-  Comment   : This method is a likely candidate for alteration in a subclass
   Comment   : References $self key NAME
+  Comment   : Adapted from David Golden's ExtUtils::ModuleMaker::TT
 
 =cut
 
@@ -529,6 +529,61 @@ sub text_MANIFEST_SKIP {
 END_OF_SKIP
 
     return $text_of_SKIP;
+}
+
+=head3 C<text_pod_coverage_test()>
+
+  Usage     : $self->text_pod_coverage_test() within complete_build()
+  Purpose   : Composes text for t/pod-coverage.t
+  Returns   : String with text of t/pod-coverage.t
+  Argument  : n/a
+  Throws    : n/a
+  Comment   : Adapted from Andy Lester's Module::Starter
+  Comment   : I don't think of much of this metric, but Andy and Damian do,
+              so if you want it you set INCLUDE_POD_COVERAGE_TEST => 1
+=cut
+
+sub text_pod_coverage_test {
+    my $self = shift;
+
+    my $text_of_pod_coverage_test = <<'END_OF_POD_COVERAGE_TEST';
+#!perl -T
+
+use Test::More;
+eval "use Test::Pod::Coverage 1.04";
+plan skip_all => "Test::Pod::Coverage 1.04 required for testing POD coverage"
+    if $@;
+all_pod_coverage_ok();
+END_OF_POD_COVERAGE_TEST
+
+    return $text_of_pod_coverage_test;
+}
+
+=head3 C<text_pod_test()>
+
+  Usage     : $self->text_pod_test() within complete_build()
+  Purpose   : Composes text for t/pod.t
+  Returns   : String with text of t/pod.t
+  Argument  : n/a
+  Throws    : n/a
+  Comment   : Adapted from Andy Lester's Module::Starter
+  Comment   : I don't think of much of this metric, but Andy and Damian do,
+              so if you want it you set INCLUDE_POD_TEST => 1
+=cut
+
+sub text_pod_test {
+    my $self = shift;
+
+    my $text_of_pod_test = <<'END_OF_POD_TEST';
+#!perl -T
+
+use Test::More;
+eval "use Test::Pod 1.14";
+plan skip_all => "Test::Pod 1.14 required for testing POD" if $@;
+all_pod_files_ok();
+END_OF_POD_TEST
+
+    return $text_of_pod_test;
 }
 
 
