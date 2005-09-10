@@ -37,9 +37,6 @@ use ExtUtils::ModuleMaker::Utility qw(
     _make_mmkr_directory
     _restore_mmkr_dir_status
 );
-#    _identify_pm_files_under_mmkr_dir
-#    _hide_pm_files_under_mmkr_dir
-#    _reveal_pm_files_under_mmkr_dir
 
 sub read_file_string {
     my $file = shift;
