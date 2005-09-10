@@ -265,8 +265,11 @@ END_BOTTOMFILE
     my $output =  $topfile . $kvpairs . $bottomfile;
 
     my $mmkr_dir = _make_mmkr_directory($self->{mmkr_dir_ref});
-    my $pers_path = "ExtUtils/ModuleMaker/Personal";
-    my $full_dir = File::Spec->catdir($mmkr_dir, $pers_path);
+#    my $pers_path = "ExtUtils/ModuleMaker/Personal";
+#    my $full_dir = File::Spec->catdir($mmkr_dir, $pers_path);
+    my $full_dir = File::Spec->catdir($mmkr_dir,
+        qw| ExtUtils ModuleMaker Personal |
+    );
     if (! -d $full_dir) {
         mkpath( $full_dir );
         if ($@) {
