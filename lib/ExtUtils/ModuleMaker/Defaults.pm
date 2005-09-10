@@ -32,9 +32,10 @@ my %default_values = (
         USAGE_MESSAGE    => $usage,
         FIRST_TEST_NUMBER   => 1,
         TEST_NUMBER_FORMAT  => "%03d",
-        TEST_NAME           => '_load.t',
+        TEST_NAME           => 'load',
         EXTRA_MODULES_SINGLE_TEST_FILE => 0,
         TEST_NAME_DERIVED_FROM_MODULE_NAME => 0,
+        TEST_NAME_SEPARATOR => '_',
 );
 
 sub default_values {

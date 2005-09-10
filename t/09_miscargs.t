@@ -3,7 +3,7 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests =>  260;
+tests =>  328;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
@@ -24,7 +24,7 @@ use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (260 - 4) if $@;
+        (328 - 4) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use ExtUtils::ModuleMaker::Auxiliary qw(
@@ -546,6 +546,148 @@ SKIP: {
             );
         
         my $filetext = read_file_string("t/001_load.t");
+        my $number_line = q{use Test::More tests => 4;};
+        ok( (index($filetext, $number_line)) > -1, 
+            "test file lists predicted number in plan");
+        my @use = qw(
+                Alpha::Sigma
+                Alpha::Sigma::Gamma
+                Alpha::Sigma::Delta
+                Alpha::Sigma::Gamma::Epsilon
+        );
+        foreach my $f (@use) {
+            my $newstr = "    use_ok( '$f' );";
+            ok( (index($filetext, $newstr)) > -1, 
+                "test file contains use_ok for $f");
+        }
+
+        _reprocess_personal_defaults_file($pers_def_ref);
+
+        ok(chdir $odir, 'changed back to original directory after testing');
+
+        ok( _restore_mmkr_dir_status($mmkr_dir_ref),
+            "original presence/absence of .modulemaker directory restored");
+
+    }
+
+    ######### Set # 11:  Test of EXTRA_MODULES Option ##########
+    ########## with test names derived from module names #######
+     
+    {
+        $tdir = tempdir( CLEANUP => 1);
+        ok(chdir $tdir, 'changed to temp directory for testing');
+
+        my $mmkr_dir_ref = _preexists_mmkr_directory();
+        my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
+        ok( $mmkr_dir, "personal defaults directory now present on system");
+
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        my $pers_def_ref = 
+            _process_personal_defaults_file( $mmkr_dir, $pers_file );
+
+        $testmod = 'Sigma';
+        
+        ok( $mod = ExtUtils::ModuleMaker->new( 
+                NAME           => "Alpha::$testmod",
+                COMPACT        => 1,
+                EXTRA_MODULES  => [
+                    { NAME => "Alpha::${testmod}::Gamma" },
+                    { NAME => "Alpha::${testmod}::Delta" },
+                    { NAME => "Alpha::${testmod}::Gamma::Epsilon" },
+                ],
+                TEST_NAME_DERIVED_FROM_MODULE_NAME => 1,
+                TEST_NUMBER_FORMAT  => undef,
+            ),
+            "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
+        );
+        
+        ok( $mod->complete_build(), 'call complete_build()' );
+
+        ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
+        ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
+        ok( -d, "directory $_ exists" ) for ( qw/lib scripts t/);
+        ok( -f, "file $_ exists" )
+            for ( qw/Changes LICENSE Makefile.PL MANIFEST README Todo/);
+        ok( -d, "directory $_ exists" ) for (
+                "lib/Alpha",
+                "lib/Alpha/${testmod}",
+                "lib/Alpha/${testmod}/Gamma",
+        );
+        ok( -f, "file $_ exists" )
+            for (
+                "lib/Alpha/${testmod}.pm",
+                "lib/Alpha/${testmod}/Gamma.pm",
+                "lib/Alpha/${testmod}/Delta.pm",
+                "lib/Alpha/${testmod}/Gamma/Epsilon.pm",
+                "t/Alpha_${testmod}.t",
+                "t/Alpha_${testmod}_Gamma.t",
+                "t/Alpha_${testmod}_Delta.t",
+                "t/Alpha_${testmod}_Gamma_Epsilon.t",
+        );
+        
+        _reprocess_personal_defaults_file($pers_def_ref);
+
+        ok(chdir $odir, 'changed back to original directory after testing');
+
+        ok( _restore_mmkr_dir_status($mmkr_dir_ref),
+            "original presence/absence of .modulemaker directory restored");
+
+    }
+
+    ######### Set # 12:  Test of EXTRA_MODULES Option ##########
+    ########## with all tests in a single file #################
+    ########## with no number in test name #####################
+     
+    {
+        $tdir = tempdir( CLEANUP => 1);
+        ok(chdir $tdir, 'changed to temp directory for testing');
+
+        my $mmkr_dir_ref = _preexists_mmkr_directory();
+        my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
+        ok( $mmkr_dir, "personal defaults directory now present on system");
+
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        my $pers_def_ref = 
+            _process_personal_defaults_file( $mmkr_dir, $pers_file );
+
+        $testmod = 'Sigma';
+        
+        ok( $mod = ExtUtils::ModuleMaker->new( 
+                NAME           => "Alpha::$testmod",
+                COMPACT        => 1,
+                EXTRA_MODULES  => [
+                    { NAME => "Alpha::${testmod}::Gamma" },
+                    { NAME => "Alpha::${testmod}::Delta" },
+                    { NAME => "Alpha::${testmod}::Gamma::Epsilon" },
+                ],
+                EXTRA_MODULES_SINGLE_TEST_FILE => 1,
+                TEST_NUMBER_FORMAT  => undef,
+            ),
+            "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
+        );
+        
+        ok( $mod->complete_build(), 'call complete_build()' );
+
+        ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
+        ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
+        ok( -d, "directory $_ exists" ) for ( qw/lib scripts t/);
+        ok( -f, "file $_ exists" )
+            for ( qw/Changes LICENSE Makefile.PL MANIFEST README Todo/);
+        ok( -d, "directory $_ exists" ) for (
+                "lib/Alpha",
+                "lib/Alpha/${testmod}",
+                "lib/Alpha/${testmod}/Gamma",
+        );
+        ok( -f, "file $_ exists" )
+            for (
+                "lib/Alpha/${testmod}.pm",
+                "lib/Alpha/${testmod}/Gamma.pm",
+                "lib/Alpha/${testmod}/Delta.pm",
+                "lib/Alpha/${testmod}/Gamma/Epsilon.pm",
+                "t/load.t",
+        );
+        
+        my $filetext = read_file_string("t/load.t");
         my $number_line = q{use Test::More tests => 4;};
         ok( (index($filetext, $number_line)) > -1, 
             "test file lists predicted number in plan");

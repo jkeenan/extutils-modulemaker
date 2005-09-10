@@ -17,7 +17,6 @@ require Exporter;
     licensetest
     _process_personal_defaults_file 
     _reprocess_personal_defaults_file 
-    _tests_pm_hidden
     _get_els
     _subclass_preparatory_tests
     _subclass_cleanup_tests
@@ -156,7 +155,6 @@ sub failsafe {
     my $pers_def_ref = 
         _process_personal_defaults_file( $mmkr_dir, $pers_file );
     local $@ = undef;
-#    eval { $obj  = ExtUtils::ModuleMaker->new (@$argslistref); };
     eval { $obj  = $caller->new (@$argslistref); };
     like($@, qr/$pattern/, $message);
     _reprocess_personal_defaults_file($pers_def_ref);
@@ -246,14 +244,6 @@ sub _get_els {
     return ( pm => scalar(keys %pm), hidden => scalar(keys %hidden) );
 }
 
-sub _tests_pm_hidden {
-    my $persref = shift;
-    my $predref = shift;
-    my %el = _get_els($persref);
-    is($el{pm}, $predref->{pm}, "correct number of .pm files");
-    is($el{hidden}, $predref->{hidden}, "correct number of .pm.hidden files");
-}
-
 sub _subclass_preparatory_tests {
     my $odir = shift;
     my $tdir = tempdir( CLEANUP => 1);
@@ -339,7 +329,6 @@ sub _identify_pm_files_under_mmkr_dir {
     my (@pm_files, @pm_files_hidden);
     opendir my $dirh, $eumm_dir 
         or croak "Unable to open $eumm_dir for reading: $!";
-# warn "exists: $eumm_dir";
     while (my $f = readdir($dirh)) {
         if ($f =~ /\.pm$/) {
             push @pm_files, "$eumm_dir/$f";
@@ -350,9 +339,7 @@ sub _identify_pm_files_under_mmkr_dir {
         }
     }
     closedir $dirh or croak "Unable to close $eumm_dir after reading: $!";
-#warn "pm_files:  @pm_files";
-#warn "pm_hidden_files:  @pm_files_hidden";
-#    # sanity check:
+    # sanity check:
     # If there are .pm files, there should be no .pm.hidden files
     # and vice versa.
     if ( scalar(@pm_files) and scalar(@pm_files_hidden) )  {

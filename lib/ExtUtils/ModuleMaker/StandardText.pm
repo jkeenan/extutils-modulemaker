@@ -484,6 +484,52 @@ EOF
     return $text_of_proxy;
 }
 
+=head3 C<text_MANIFEST_SKIP()>
+
+  Usage     : $self->text_MANIFEST_SKIP() within complete_build()
+  Purpose   : Composes text for MANIFEST.SKIP file
+  Returns   : String with text of MANIFEST.SKIP file
+  Argument  : n/a
+  Throws    : n/a
+  Comment   : This method is a likely candidate for alteration in a subclass
+  Comment   : References $self key NAME
+
+=cut
+
+sub text_MANIFEST_SKIP {
+    my $self = shift;
+
+    my $text_of_SKIP = <<'END_OF_SKIP';
+# Version control files and dirs.
+\bRCS\b
+\bCVS\b
+,v$
+.svn/
+
+# ExtUtils::MakeMaker generated files and dirs.
+^MANIFEST\.(?!SKIP)
+^Makefile$
+^blib/
+^blibdirs$
+^PM_to_blib$
+^MakeMaker-\d
+                                                                                                                    
+# Module::Build
+^Build$
+^_build
+
+# Temp, old, vi and emacs files.
+~$
+\.old$
+^#.*#$
+^\.#
+\.swp$
+\.bak$
+END_OF_SKIP
+
+    return $text_of_SKIP;
+}
+
 
 =head2 Methods Called within C<generate_pm_file()>
 

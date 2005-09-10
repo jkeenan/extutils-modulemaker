@@ -137,24 +137,34 @@ sub complete_build {
     unless ($self->{EXTRA_MODULES_SINGLE_TEST_FILE}) {
         my $ct = $self->{FIRST_TEST_NUMBER};
         foreach my $module ( @pmfiles ) {
-            my $testword;
-            if ($self->{TEST_NAME_DERIVED_FROM_MODULE_NAME}) {
-                $testword = $module;
-                $testword =~ s/::/_/g;
+            my ($teststart, $testmiddle);
+            if (defined $self->{TEST_NUMBER_FORMAT}) {
+                $teststart = "t/" . $self->{TEST_NUMBER_FORMAT} .
+                    $self->{TEST_NAME_SEPARATOR};
             } else {
-                $testword = $self->{TEST_NAME};
+                $teststart = "t/";
             }
-            my $testfilename = sprintf(
-                "t/" . $self->{TEST_NUMBER_FORMAT} . $testword, $ct );
+            if ($self->{TEST_NAME_DERIVED_FROM_MODULE_NAME}) {
+                $testmiddle = $self->module_value( $module, 'NAME' );
+                $testmiddle =~ s/::/$self->{TEST_NAME_SEPARATOR}/g;
+            } else {
+                $testmiddle = $self->{TEST_NAME};
+            }
+            my $testfilename = sprintf( $teststart . $testmiddle . q{.t}, $ct );
             $self->print_file( $testfilename,
                 $self->text_test( $testfilename, $module ) );
             $ct++;
         }
     } else {
-        my $testfilename = sprintf(
-            "t/" . $self->{TEST_NUMBER_FORMAT} . $self->{TEST_NAME}, 
-            $self->{FIRST_TEST_NUMBER}
-        );
+        my $teststart;
+        if (defined $self->{TEST_NUMBER_FORMAT}) {
+            $teststart = "t/" . $self->{TEST_NUMBER_FORMAT} .
+                $self->{TEST_NAME_SEPARATOR};
+        } else {
+            $teststart = "t/";
+        }
+        my $testfilename = sprintf( $teststart . $self->{TEST_NAME} . q{.t}, 
+            $self->{FIRST_TEST_NUMBER});
         $self->print_file( $testfilename,
             $self->text_test_multi( $testfilename, \@pmfiles ) );
     }
@@ -218,6 +228,7 @@ sub get_license {
 sub make_selections_defaults {
     my $self = shift;
     my %selections = %{$self};
+    my @dv = keys %{ $self->default_values() };
     my $topfile = <<'END_TOPFILE';
 package ExtUtils::ModuleMaker::Personal::Defaults;
 use strict;
@@ -225,29 +236,36 @@ use strict;
 my %default_values = (
 END_TOPFILE
     
-my @keys_needed = qw(
-    LICENSE
-    VERSION
-    AUTHOR
-    CPANID
-    ORGANIZATION
-    WEBSITE
-    EMAIL
-    BUILD_SYSTEM
-    COMPACT
-    VERBOSE
-    INTERACTIVE
-    NEED_POD
-    NEED_NEW_METHOD
-    CHANGES_IN_POD
-    PERMISSIONS
-    USAGE_MESSAGE
-    FIRST_TEST_NUMBER
-    TEST_NUMBER_FORMAT
-    TEST_NAME
-    EXTRA_MODULES_SINGLE_TEST_FILE
-    TEST_NAME_DERIVED_FROM_MODULE_NAME
-);
+#my @keys_needed = qw(
+#    LICENSE
+#    VERSION
+#    AUTHOR
+#    CPANID
+#    ORGANIZATION
+#    WEBSITE
+#    EMAIL
+#    BUILD_SYSTEM
+#    COMPACT
+#    VERBOSE
+#    INTERACTIVE
+#    NEED_POD
+#    NEED_NEW_METHOD
+#    CHANGES_IN_POD
+#    PERMISSIONS
+#    USAGE_MESSAGE
+#    FIRST_TEST_NUMBER
+#    TEST_NUMBER_FORMAT
+#    TEST_NAME
+#    EXTRA_MODULES_SINGLE_TEST_FILE
+#    TEST_NAME_DERIVED_FROM_MODULE_NAME
+#    TEST_NAME_SEPARATOR
+#);
+
+my @keys_needed;
+for my $k (@dv) {
+    push @keys_needed, $k
+        unless ($k eq 'ABSTRACT' or $k eq 'SAVE_AS_DEFAULTS');
+}
 
 my $kvpairs;
 foreach my $k (@keys_needed) {
