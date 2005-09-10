@@ -36,6 +36,8 @@ my %default_values = (
         EXTRA_MODULES_SINGLE_TEST_FILE => 0,
         TEST_NAME_DERIVED_FROM_MODULE_NAME => 0,
         TEST_NAME_SEPARATOR => '_',
+        INCLUDE_MANIFEST_SKIP => 0,
+        INCLUDE_TODO => 1,
 );
 
 sub default_values {

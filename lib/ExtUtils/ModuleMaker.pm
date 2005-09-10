@@ -125,7 +125,10 @@ sub complete_build {
     $self->print_file( 'LICENSE', $self->{LicenseParts}{LICENSETEXT} );
     $self->print_file( 'README',  $self->text_README() );
     $self->print_file( 'Todo',    $self->text_Todo() )
-        if $self->text_Todo();
+#        if $self->text_Todo();
+        if $self->{INCLUDE_TODO};
+    $self->print_file( 'MANIFEST.SKIP', $self->text_MANIFEST_SKIP() )
+        if $self->{INCLUDE_MANIFEST_SKIP};
 
     unless ( $self->{CHANGES_IN_POD} ) {
         $self->print_file( 'Changes', $self->text_Changes() );
