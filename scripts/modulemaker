@@ -122,7 +122,7 @@ modulemaker - interactive interface to ExtUtils::ModuleMaker
 This document references version 0.39_05 of modulemaker, released
 to CPAN on September 10, 2005.
 
-=head1 USAGE -- Simple
+=head1 USAGE::Simple
 
 =head2 Easy
 
@@ -136,7 +136,7 @@ At the command-prompt, simply call:
 
 At the command-prompt, call C<modulemaker> with as many options as you can type correctly:
 
-    modulemaker [-CIPVchq] [-v version] [-n module_name] [-a abstract]
+    modulemaker [-CIPVchqs] [-v version] [-n module_name] [-a abstract]
         [-u author_name] [-p author_CPAN_ID] [-o organization]
         [-w author_website] [-e author_e-mail]
         [-l license_name] [-b build_system]
@@ -147,15 +147,13 @@ You can specify some of the arguments on the command-line and then -- assuming
 you don't include the C<-I> option -- F<modulemaker> will then switch to
 interactive mode so that you can finish entering arguments at the prompts.
 
-=head1 USAGE -- More
+=head1 USAGE::More
 
 =head2 Menus
 
 You will be presented with a series of menus looking something like this:
 
-=over 4
-
-=item * Main Menu
+=head3 Main Menu
 
   ------------------------
 
@@ -177,7 +175,32 @@ You will be presented with a series of menus looking something like this:
 
   Please choose which feature you would like to edit: 
 
-=item * Author Menu
+In many cases you make your selection by typing a single letter or number and
+hitting the C<Return> key.  In the remaining cases, you have to type what you
+want.
+
+Note that in the Main Menu:
+
+=over 4
+
+=item * G
+
+C<G> generates the directories and files requested, then exits.
+
+=item * H
+
+C<H> generates the directories and files requested, saves the values you have
+entered (with the exception of the module's name and abstract) in a personal
+defaults file, then exits.  (See the documentation for ExtUtils::ModuleMaker
+for a more complete discussion of this feature.)
+
+=item * X
+
+C<X> exits without generating directories or file.
+
+=back
+
+=head3 Author Menu
 
   ------------------------
 
@@ -195,7 +218,14 @@ You will be presented with a series of menus looking something like this:
 
   Please choose which feature you would like to edit:
 
-=item * License Menu
+The values you enter here to override the Current Values may be good choices
+for the C<H> 'save selections as defaults' feature in the Main Menu.
+
+Note that you cannot generate directories or files from this menu.  You must
+return (C<R>) to the Main Menu first.  You can, however, bail out of the
+program from this menu with C<X>.
+
+=head3 License Menu
 
   ------------------------
 
@@ -239,7 +269,7 @@ You will be presented with a series of menus looking something like this:
 
   Please choose which license you would like to use:
 
-=item * Directives Menu
+=head3 Directives Menu
 
   ------------------------
  
@@ -258,7 +288,11 @@ You will be presented with a series of menus looking something like this:
  
   Please choose which feature you would like to edit:
  
-=item * Build System Menu
+As with the Author Menu above, the values you enter here to override the 
+Current Values may be good choices for the C<H> 'save selections as 
+defaults' feature in the Main Menu.
+
+=head3 Build System Menu
 
   ------------------------
 
@@ -273,8 +307,6 @@ You will be presented with a series of menus looking something like this:
   X - Exit immediately
 
   Please choose which build system you would like to use:
-
-=back
 
 =head2 Features Currently Supported with Command-Line Options
 

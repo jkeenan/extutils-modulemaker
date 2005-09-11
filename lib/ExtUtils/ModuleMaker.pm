@@ -804,30 +804,312 @@ C<ABSTRACT> in any F<Personal/Defaults.pm> file you create as well.
 
 =back
 
-=head2 Methods Called Internally and How to Customize ExtUtils::ModuleMaker by Overriding Them
+=head1 CUSTOMIZATION
 
-There are a variety of other ExtUtil::ModuleMaker methods which are not
-currently in the public interface.  As they are primarily used within 
-C<new()> and C<complete_build()>, their implementation and interface may 
-change in the future.  See the code for inline documentation.
+ExtUtils::ModuleMaker is designed to be customizable to your needs and to
+offer you more flexibility as you become more experienced with it.
 
-Most of these private methods supply the 'boilerplate' text found in the files
-created by C<complete_build()>.  They are found in
-F<lib/ExtUtils/ModuleMaker/StandardText.pm> and are available for you 
-to hack on.
+=head2 Via F<modulemaker> Utility Interactive Mode
 
-You can customize the files created by ExtUtils::ModuleMaker by overriding any
-of the quasi-private methods called by
-C<ExtUtils::ModuleMaker::complete_build()>.  To do so, you should first study
-package ExtUtils::ModuleMaker::StandardText which is included in this
-distribution.  Identify the method controlling a particular aspect of the
-files built by ExtUtils::ModuleMaker.  Create a new package whose name begins
-with 'ExtUtils::ModuleMaker::'.  Revise the relevant method(s) as needed and
-place the revised methods in this new package.  Install this package in the
-location on your system where all other locally installed Perl packages are
-installed or in the same directory tree as Personal::Defaults.  Supply the
-package's name as the value of the C<ALT_BUILD> argument to the constructor.
+As with everything else about ExtUtils::ModuleMaker, the easiest, 
+laziest way to get started is via the F<modulemaker> utility; see 
+its documentation.  Suppose that you have entered your correct name, 
+email address and website at the prompts in F<modulemaker>'s Author Menu.  
 
+  ------------------------
+
+  modulemaker: Author Menu
+
+      Feature       Current Value
+  N - Author        'John Q Public'
+  C - CPAN ID       'MODAUTHOR'
+  O - Organization  'XYZ Corp.'
+  W - Website       'http://public.net/~jqpublic'
+  E - Email         'jqpublic@public.net'
+
+  R - Return to main menu
+  X - Exit immediately
+
+  Please choose which feature you would like to edit:
+
+Why should you ever have to enter this information again?  Return 
+to the F<modulemaker> Main Menu (C<R>).
+
+  ------------------------
+
+  modulemaker: Main Menu
+
+      Feature                     Current Value
+  N - Name of module              ''
+  S - Abstract                    'Module abstract (<= 44 characters) goes here'
+  A - Author information
+  L - License                     'perl'
+  D - Directives
+  B - Build system                'ExtUtils::MakeMaker'
+
+  G - Generate module
+  H - Generate module;
+      save selections as defaults
+
+  X - Exit immediately
+
+  Please choose which feature you would like to edit: 
+
+Select C<H> instead of C<G> to generate the distribution.  An internal 
+call to C<make_selections_defaults()> will save those selections in a 
+personal defaults file and present them to you on the Author Menu the 
+next time you go to use it.
+
+=head2 Via F<modulemaker> Utility Command-Line Options Mode
+
+For simplicity, not all of ExtUtils::ModuleMaker's default values are
+represented on F<modulemaker>'s menus.  Those that are not represented there
+cannot be changed from there.  They I<can>, however, in many cases be
+specified as options passed to F<modulemaker> on the command-line and
+automatically saved as personal defaults by including the C<s> flag as one of
+those options.  If, for example, your name is 'John Q Public' and you want all
+modules you create to have compact top-level directories, you would call:
+
+    %   modulemaker -Icsn Sample::Module -u 'John Q Public'
+
+A distribution with a top-level directory F<Sample-Module> would be created.
+'John Q Public' would appear in appropriate places in
+F<Sample-Module/Makefile.PL> and F<Sample-Module/lib/Sample/Module.pm>.  You
+could then throw away the entire F<Sample-Module> directory tree.  The I<next>
+time you call C<modulemaker>, 
+
+    %   modulemaker -In Second::Module
+
+would suffice to generate a compact top-level directory and 'John Q Public' 
+would appear in appropriate locations instead of the dreaded 'A. U. Thor'.
+
+=head2 Via C<ExtUtils::ModuleMaker::new()
+
+In I<all> cases, ExtUtils::ModuleMaker's default values can be overridden with 
+arguments passed to C<new()> inside a Perl program.  The overriding can be made
+permanent by then calling C<make_selections_defaults()>.
+
+Suppose, for
+example, that you want the files in your test suite to appear in a numerical
+order starting from C<0> rather than ExtUtils::ModuleMaker's own default
+starting point of C<1>.  Suppose, further, that you want such the number in
+the test file's name to be formatted as a two-digit string padded with zeroes
+rather than ExtUtils::ModuleMaker's own default format of a three-digit,
+zero-padded string.  And, suppose still further that you want the numerical
+part of the test filename to be joined to the lexical part with a dot (C<.>)
+rather than ExtUtils::ModuleMaker's own default linkage character of an
+underscore (C<_>).  And, suppose yet still further that you want the lexical
+part of the test filename to reflect the module's name rather than
+ExtUtils::ModuleMaker's default of C<load>.  
+
+Your Perl program would look like this:
+
+    #!/usr/local/bin/perl
+    use strict;
+    use warnings;
+    use ExtUtils::ModuleMaker;
+    
+    my $mod = ExtUtils::ModuleMaker->new(
+        NAME        => 'Sample::Module',
+        AUTHOR      => 'John Q Public',
+        COMPACT     => 1,
+        FIRST_TEST_NUMBER    => 0,
+        TEST_NUMBER_FORMAT   => "%02d",
+        TEST_NAME_SEPARATOR  => q{.},
+        TEST_NAME_DERIVED_FROM_MODULE_NAME => 1,
+    );
+    
+    $mod->make_selections_defaults();
+
+A subsequent call to the F<modulemaker> utility,
+
+    %    modulemaker -In Second::Balcony::Jump
+
+would generate a directory tree with a compact top-level, 'John Q Public' in
+appropriate locations in F<Second-Balcony-Jump/Makefile.PL> and
+F<Second-Balcony-Jump/lib/Second/Balcony/Jump.pm> and a test file called
+F<Second-Balcony-Jump/t/00.Second.Balcony.Jump.t>.
+
+=head2 Via Subclassing ExtUtils::ModuleMaker
+
+If you're a power-user, once you start playing with ExtUtils::ModuleMaker, you
+won't be able to stop.  You'll ask yourself, ''Self, if I can change the
+default values, why can't I change the 'boilerplate' copy that appears inside
+the files which ExtUtils::ModuleMaker creates?''
+
+Now, you can.  You can hack on the methods which
+C<ExtUtils::ModuleMaker::new()> and C<complete_build()> call internally to
+customize their results to your heart's desire.  The key:  build an entirely
+new Perl extension whose F<lib/*.pm> file has a C<default_values()> method
+which overrides the default values you want overridden -- and I<only> those
+values -- and other methods that override the methods you need overridden --
+and I<only> those methods.  Follow these steps:
+
+=head 3 Study F<ExtUtils::ModuleMaker::Defaults>, F<ExtUtils::ModuleMaker::Initializers> and F<ExtUtils::ModuleMaker::StandardText>
+
+ExtUtils::ModuleMaker's default values are stored in
+F<lib/ExtUtils/ModuleMaker.pm> and exported in its C<default_values()> method.
+Identify those values which you wish to change.
+
+ExtUtils::ModuleMaker's other internal methods are found in two other files:
+F</lib/ExtUtils/ModuleMaker/Initializers.pm> and
+F<lib/ExtUtils/ModuleMaker/StandardText.pm>.  Rule of thumb:  If an internal
+method is called within C<new()>, it is found in
+ExtUtils::ModuleMaker::Initializers.  If it is called within
+C<complete_build()>, it is found in ExtUtils::ModuleMaker::StandardText.
+Study these two packages to identify the methods you wish to override.
+
+I<Hint:>  You should probably think about overriding methods in
+ExtUtils::ModuleMaker::StandardText before overriding those in
+ExtUtils::ModuleMaker::Initializers.
+
+=head3 Use F<modulemaker> to Create the Framework for a New Distribution
+
+You're creating a new Perl extension.  Who ya gonna call?  F<modulemaker>,
+natch!
+
+Suppose that you've gotten on the 'Perl Best Practices' bandwagon and want to
+create all your Perl extensions in the style recommended by Damian Conway in
+the book of the same name.  Use F<modulemaker> to create the framework:
+
+    %    modulemaker -Icqn ExtUtils::ModuleMaker::PBP \ 
+         -u 'James E Keenan' \ 
+         -p JKEENAN \
+         -o 'Perl Seminar NY' \ 
+         -w http://search.cpan.org/~jkeenan/
+
+You used the C<-q> option above because you do I<not> want or need a
+constructor in the new package you are creating.  That package will I<inherit>
+its constructor from ExtUtils::ModuleMaker.
+
+=head3 Edit the F<lib/*.pm> File
+
+Open up the best text-editor at your disposal and proceed to hack:
+
+    %    vi ExtUtils-ModuleMaker-PBP/lib/ExtUtils/ModuleMaker/PBP.pm
+
+Add this line near the top of the file:
+
+    use base qw{ ExtUtils::ModuleMaker };
+
+so that ExtUtils::ModuleMaker::PBP inherits from ExtUtils::ModuleMaker (which,
+in turn, inherits from ExtUtils::ModuleMaker::Defaults,
+ExtUtils::ModuleMaker::Initializers and ExtUtils::ModuleMaker::StandardText).
+
+If you have carefully studied ExtUtils::ModuleMaker::Defaults,
+ExtUtils::ModuleMaker::StandardText and I<Perl Best Practices>, you will write
+methods including the following:
+
+    sub default_values {
+        my $self = shift;
+        my $defaults_ref = $self->SUPER::default_values();
+        $defaults_ref->{COMPACT} = 1;
+        $defaults_ref->{FIRST_TEST_NUMBER}  = 0;
+        $defaults_ref->{TEST_NUMBER_FORMAT} = "%02d";
+        $defaults_ref->{EXTRA_MODULES_SINGLE_TEST_FILE} = 1;
+        $defaults_ref->{TEST_NAME_SEPARATOR} = q{.};
+        $defaults_ref->{INCLUDE_TODO} = 0;
+        $defaults_ref->{INCLUDE_POD_COVERAGE_TEST}  = 1;
+        $defaults_ref->{INCLUDE_POD_TEST}           = 1;
+        return $defaults_ref;;
+    }
+    
+    sub text_Makefile {
+        my $self = shift;
+        my $Makefile_format = q~
+    use strict;
+    use warnings;
+    use ExtUtils::MakeMaker;
+    
+    WriteMakefile(
+        NAME            => '%s',
+        AUTHOR          => '%s <%s>',
+        VERSION_FROM    => '%s',
+        ABSTRACT_FROM   => '%s',
+        PL_FILES        => {},
+        PREREQ_PM    => {
+            'Test::More'    => 0,
+            'version'       => 0,
+        },
+        dist            => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
+        clean           => { FILES => '%s-*' },
+    );
+    ~;
+        my $text_of_Makefile = sprintf $Makefile_format,
+            map { my $s = $_; $s =~ s{'}{\\'}g; $s; }
+                $self->{NAME},
+                $self->{AUTHOR},
+                $self->{EMAIL},
+                $self->{FILE},
+                $self->{FILE},
+                $self->{FILE};
+        return $text_of_Makefile;
+    }
+    
+Of course, for true Perl laziness, you'll use CPAN distribution
+ExtUtils::ModuleMaker::PBP, written by the author of ExtUtils::ModuleMaker as
+an exemplar of subclassing ExtUtils::ModuleMaker and generating the same
+output as Damian Conway's Module::Starter::PBP.
+
+=head3 Test
+
+How do you know you have correctly subclassed ExtUtils::ModuleMaker?  With a
+test suite, of course.  With careful editing, you can use many of
+ExtUtils::ModuleMaker's own tests in your new distribution.  You will, of
+course, have to change a number of tests, because the default values implied
+by Conway's recommendations are different from ExtUtils::ModuleMaker's own
+defaults.  Among other things, you will have to do a search-and-replace on all
+constructor calls.
+
+    %    perl -pi'*.bak' -e 's{ExtUtils::ModuleMaker->new}{ExtUtils::ModuleMaker::PBP->new}g;'
+
+Of course, you I<should> have written your tests first, right?
+
+=head3 Install and Use
+
+You would install your new distribution as you would any other Perl
+distribution, I<i.e.,> with either ExtUtils::MakeMaker or Module::Build,
+depending on which you chose in creating your subclass.
+
+    #!/usr/local/bin/perl
+    use strict;
+    use warnings;
+    use ExtUtils::ModuleMaker::PBP;
+    
+    my $mod = ExtUtils::ModuleMaker::PBP->new(
+        NAME        => 'Sample::Module',
+    );
+   
+    $mod->complete_build();
+
+For bonus points, adapt the F<modulemaker> utility to work with
+ExtUtils::ModuleMaker::PBP.
+
+=head3 An Alternative Approach to Subclassing
+
+There is one other way to subclass to ExtUtils::ModuleMaker which bears
+mentioning more because the author used it in the development of this version
+of ExtUtils::ModuleMaker than because it is recommended.  If for some reason
+you do not wish to create a full-fledged Perl distribution for your subclass,
+you can simply write the subclassing package and store it in the same
+directory hierarchy on your system in which your personal defaults file is
+stored.
+
+For example, suppose you are experimenting and only wish to override one
+method in ExtUtils::ModuleMaker::StandardText.  You can create a package
+called ExtUtils::ModuleMaker::AlternativeText.  If you are working on a
+Unix-like system, you would move that file such that its path would be:
+
+    "$ENV{HOME}/.modulemaker/ExtUtils/ModuleMaker/AlternativeText.pm"
+
+You would then add one argument to your call to
+C<ExtUtils::ModuleMaker::new()>:
+
+    my $mod = ExtUtils::ModuleMaker->new(
+        NAME        => 'Sample::Module',
+        ALT_BUILD   => 'ExtUtils::ModuleMaker::AlternativeText',
+    );
+    
 =head1 CAVEATS
 
 =over 4
@@ -837,9 +1119,9 @@ package's name as the value of the C<ALT_BUILD> argument to the constructor.
 While the maintainer has attempted to make the code in
 F<lib/ExtUtils/Modulemaker.pm> and the F<modulemaker> utility compatible
 with versions of Perl older than 5.6, the test suite currently requires
-5.6 or later.  Eventually, we'll put those tests which absolutely
-require 5.6 or later into SKIP blocks so that the tests will run cleanly
-on 5.4 or 5.5.
+5.6 or later.  The tests which require 5.6 or later are placed in SKIP blocks.
+Since the overwhelming majority of the tests I<do> require 5.6, running the
+test suite on earlier Perl versions won't report much that is meaningful.
 
 =item * Testing of F<modulemaker>'s Interactive Mode
 
@@ -896,6 +1178,13 @@ made particularly useful suggestions, as did Brian Clarkson.
 
 Thanks also go to the following beta testers:  Alex Gill, Marc Prewitt, Scott
 Godin, Reinhard Urban and imacat.
+
+Version 0.39 of ExtUtils::ModuleMaker encountered spurious testing failure reports
+from testers.cpan.org.  These were eventually diagnosed as being due to bugs
+in the automated testing programs and/or their operating environments on
+different systems -- I<i.e.,> to problems outside ExtUtils::ModuleMaker
+itself.  Several Perlmonks helped investigate this problem:  chromatic,
+dave_the_m, randyk, and njh.
 
 =head1 COPYRIGHT
 
