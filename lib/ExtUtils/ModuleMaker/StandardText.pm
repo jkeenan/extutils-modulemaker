@@ -66,8 +66,9 @@ Happy subclassing!
 sub create_base_directory {
     my $self = shift;
 
-    $self->{Base_Dir} =
-      join( ( $self->{COMPACT} ) ? q{-} : q{/}, split( /::/, $self->{NAME} ) );
+    $self->{Base_Dir} = File::Spec->rel2abs(
+      join( ( $self->{COMPACT} ) ? q{-} : q{/}, split( /::/, $self->{NAME} ) )
+    );
 
     $self->check_dir( $self->{Base_Dir} );
 }

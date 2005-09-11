@@ -169,7 +169,8 @@ sub failsafe {
 }
 
 sub licensetest {
-    my ($license, $pattern) = @_;
+#    my ($license, $pattern) = @_;
+    my ($caller, $license, $pattern) = @_;
     my $odir = cwd();
     my ($tdir, $mod);
     $tdir = tempdir( CLEANUP => 1);
@@ -183,7 +184,8 @@ sub licensetest {
     );
     my $pers_def_ref = 
         _process_personal_defaults_file( $mmkr_dir, $pers_file );
-    ok($mod = ExtUtils::ModuleMaker->new(
+#    ok($mod = ExtUtils::ModuleMaker->new(
+    ok($mod = $caller->new(
         NAME      => "Alpha::$license",
         LICENSE   => $license,
         COMPACT   => 1,
