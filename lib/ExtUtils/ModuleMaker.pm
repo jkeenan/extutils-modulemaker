@@ -3,7 +3,7 @@ use strict;
 local $^W = 1;
 BEGIN {
     use vars qw( $VERSION @ISA ); 
-    $VERSION = '0.39_05a';
+    $VERSION = '0.39_07';
     use base qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::Initializers
@@ -338,8 +338,8 @@ Inside a Perl program:
 
 =head1 VERSION
 
-This document references version 0.39_05 of ExtUtils::ModuleMaker, released
-to CPAN on September 10, 2005.
+This document references version 0.39_07 of ExtUtils::ModuleMaker, released
+to CPAN on September 12, 2005.
 
 =head1 DESCRIPTION
 
@@ -883,7 +883,7 @@ time you call C<modulemaker>,
 would suffice to generate a compact top-level directory and 'John Q Public' 
 would appear in appropriate locations instead of the dreaded 'A. U. Thor'.
 
-=head2 Via C<ExtUtils::ModuleMaker::new()
+=head2 Via C<ExtUtils::ModuleMaker::new()>
 
 In I<all> cases, ExtUtils::ModuleMaker's default values can be overridden with 
 arguments passed to C<new()> inside a Perl program.  The overriding can be made
@@ -945,7 +945,7 @@ which overrides the default values you want overridden -- and I<only> those
 values -- and other methods that override the methods you need overridden --
 and I<only> those methods.  Follow these steps:
 
-=head 3 Study F<ExtUtils::ModuleMaker::Defaults>, F<ExtUtils::ModuleMaker::Initializers> and F<ExtUtils::ModuleMaker::StandardText>
+=head3 Study F<ExtUtils::ModuleMaker::Defaults>, F<ExtUtils::ModuleMaker::Initializers> and F<ExtUtils::ModuleMaker::StandardText>
 
 ExtUtils::ModuleMaker's default values are stored in
 F<lib/ExtUtils/ModuleMaker.pm> and exported in its C<default_values()> method.

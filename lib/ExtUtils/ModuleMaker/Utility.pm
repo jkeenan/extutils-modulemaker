@@ -4,7 +4,7 @@ use strict;
 local $^W = 1;
 use base qw(Exporter);
 use vars qw( @EXPORT_OK $VERSION );
-$VERSION = '0.39_05';
+$VERSION = '0.39_07';
 @EXPORT_OK   = qw(
     _get_home_directory
     _preexists_mmkr_directory
@@ -13,70 +13,6 @@ $VERSION = '0.39_05';
 );
 use Carp;
 use File::Path;
-
-sub _get_home_directory {
-    my $realhome;
-    if ($^O eq 'MSWin32') {
-        require Win32;
-        Win32->import( qw(CSIDL_LOCAL_APPDATA) );  # 0x001c 
-        $realhome =  Win32::GetFolderPath( CSIDL_LOCAL_APPDATA() );
-        return $realhome if (-d $realhome);
-        $realhome =~ s|(.*?)\\Local Settings(.*)|$1$2|;
-        return $realhome if (-d $realhome);
-        croak "Unable to identify directory equivalent to 'HOME' on Win32: $!";
-    } else { # Unix-like systems
-        $realhome = $ENV{HOME};
-        return $realhome if (-d $realhome);
-        croak "Unable to identify 'HOME' directory: $!";
-    }
-}
-
-# if the modulemaker environmental variable has been set administratively,
-# return its contents;
-# otherwise, formulate a directory name from the home directory
-sub _get_mmkr_directory {
-    return (defined $ENV{modulemaker})
-        ? $ENV{modulemaker}
-        : _get_home_directory() . "/.modulemaker";
-}
-
-sub _preexists_mmkr_directory {
-    my $dirname = _get_mmkr_directory(); 
-    if (-d $dirname) {
-        return [$dirname, 1];
-    } else {
-        return [$dirname, undef];
-    }
-}
-
-sub _make_mmkr_directory {
-    my $mmkr_dir_ref = shift;
-    my $dirname = $mmkr_dir_ref->[0];
-    if (! -d $dirname) {
-        mkdir $dirname
-            or croak "Unable to make directory $dirname for placement of personal defaults file or subclass: $!";
-    }
-    return $dirname;
-}
-
-sub _restore_mmkr_dir_status {
-    my $mmkr_dir_ref = shift;
-    my $mmkr_dir = $mmkr_dir_ref->[0];
-    if (! defined $mmkr_dir_ref->[1]) {
-        rmtree($mmkr_dir, 0, 1);
-        if(! -d $mmkr_dir) {
-            return 1;
-        } else {
-            croak "Unable to restore .modulemaker directory created during test: $!";
-        }
-    } else {
-        return 1;
-    }
-}
-
-1;
-
-#################### DOCUMENTATION ####################
 
 =head1 NAME
 
@@ -99,9 +35,7 @@ ExtUtils::ModuleMaker and/or its test suite.
 
 =head1 USAGE
 
-=over 4
-
-=item * C<_get_home_directory()>
+=head2 C<_get_home_directory()>
 
 Analyzes environmental information to determine whether there exists on the
 system a 'HOME' or 'home-equivalent' directory.  Returns that directory if it
@@ -114,8 +48,8 @@ On Win32, this directory is the one returned by the following function from the 
 
 ... which translates to something like F<C:\Documents and Settings\localuser\Local Settings\Application Data>.  
 
-Well, not quite.  On some systems, that directory does not exist.  What does
-exist is the same path less the F<Local Settings\\> level. So we run
+Well, not quite.  On some systems, that directory does not exist or is hidden. 
+What does exist is the same path less the F<Local Settings\\> level. So we run
 C<$realhome> through a regex to eliminate that.
 
     $realhome =~ s|(.*?)\\Local Settings(.*)|$1$2|;
@@ -124,7 +58,53 @@ On Unix-like systems, things are much simpler.  We simply check the value of
 C<$ENV{HOME}>.  We cannot do that on Win32 (at least not on ActivePerl),
 because C<$ENV{HOME}> is not defined there.
 
-=item * C<_make_mmkr_directory()>
+=cut
+
+sub _get_home_directory {
+    my $realhome;
+    if ($^O eq 'MSWin32') {
+        require Win32;
+        Win32->import( qw(CSIDL_LOCAL_APPDATA) );  # 0x001c 
+        $realhome =  Win32::GetFolderPath( CSIDL_LOCAL_APPDATA() );
+        return $realhome if (-d $realhome);
+        $realhome =~ s|(.*?)\\Local Settings(.*)|$1$2|;
+        return $realhome if (-d $realhome);
+        croak "Unable to identify directory equivalent to 'HOME' on Win32: $!";
+    } else { # Unix-like systems
+        $realhome = $ENV{HOME};
+        return $realhome if (-d $realhome);
+        croak "Unable to identify 'HOME' directory: $!";
+    }
+}
+
+=head2 C<_get_mmkr_directory()>
+
+=cut
+
+sub _get_mmkr_directory {
+    return (defined $ENV{modulemaker})
+        ? $ENV{modulemaker}
+        : _get_home_directory() . "/.modulemaker";
+}
+
+=head2 C<_preexists_mmkr_directory()>
+
+If the modulemaker environmental variable has been set administratively,
+ return its contents.  Otherwise, compose a directory name from the home 
+directory.
+
+=cut
+
+sub _preexists_mmkr_directory {
+    my $dirname = _get_mmkr_directory(); 
+    if (-d $dirname) {
+        return [$dirname, 1];
+    } else {
+        return [$dirname, undef];
+    }
+}
+
+=head2 C<_make_mmkr_directory()>
 
 Returns a two-element list.  The first element is the name of a directory.  
 The second is a flag indicating whether that directory already existed (C<undef>)
@@ -160,14 +140,43 @@ C<_make_mmkr_directory()> calls C<_get_home_directory()>
 internally, so if you are using C<_make_mmkr_directory()> you do
 not need to call C<_get_home_directory()> first.
 
-=item * C<_restore_mmkr_dir_status()>
+=cut
+
+sub _make_mmkr_directory {
+    my $mmkr_dir_ref = shift;
+    my $dirname = $mmkr_dir_ref->[0];
+    if (! -d $dirname) {
+        mkdir $dirname
+            or croak "Unable to make directory $dirname for placement of personal defaults file or subclass: $!";
+    }
+    return $dirname;
+}
+
+=head2 C<_restore_mmkr_dir_status()>
 
 Undoes C<_make_mmkr_directory()>, I<i.e.,> if there was no
 F<.modulemaker> directory on the user's system before testing, any such
 directory created during testing is removed.  On the other hand, if there
 I<was> such a directory present before testing, it is left unchanged.
 
-=back
+=cut
+
+sub _restore_mmkr_dir_status {
+    my $mmkr_dir_ref = shift;
+    my $mmkr_dir = $mmkr_dir_ref->[0];
+    if (! defined $mmkr_dir_ref->[1]) {
+        rmtree($mmkr_dir, 0, 1);
+        if(! -d $mmkr_dir) {
+            return 1;
+        } else {
+            croak "Unable to restore .modulemaker directory created during test: $!";
+        }
+    } else {
+        return 1;
+    }
+}
+
+1;
 
 =head1 BUGS
 
