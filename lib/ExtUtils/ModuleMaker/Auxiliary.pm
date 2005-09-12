@@ -268,6 +268,10 @@ sub _subclass_preparatory_tests {
     }
     ok(-d $eumm_dir, "eumm directory now exists");
 
+    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+    my $pers_def_ref = 
+        _process_personal_defaults_file( $mmkr_dir, $pers_file );
+
     my $persref;
 
     $persref = _identify_pm_files_under_mmkr_dir($eumm_dir);
@@ -296,6 +300,7 @@ sub _subclass_preparatory_tests {
     return {
         mmkr_dir_ref     => $mmkr_dir_ref,
         persref          => $persref,
+        pers_def_ref     => $pers_def_ref,
         initial_els_ref  => \%els1,
         sourcedir        => $sourcedir,
         eumm_dir         => $eumm_dir,
@@ -305,6 +310,7 @@ sub _subclass_preparatory_tests {
 sub _subclass_cleanup_tests {
     my $cleanup_ref = shift;
     my $persref         = $cleanup_ref->{persref};
+    my $pers_def_ref    = $cleanup_ref->{pers_def_ref};
     my $eumm_dir        = $cleanup_ref->{eumm_dir};
     my %els1            = %{ $cleanup_ref->{initial_els_ref} };
     my $odir            = $cleanup_ref->{odir}; 
@@ -326,6 +332,8 @@ sub _subclass_cleanup_tests {
         is($els3{hidden}, 0,
             "no more .pm.hidden files");
     }
+
+    _reprocess_personal_defaults_file($pers_def_ref);
 
     ok(chdir $odir, 'changed back to original directory after testing');
 

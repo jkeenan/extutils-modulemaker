@@ -4,7 +4,7 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests =>  34;
+tests =>  39;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
@@ -21,7 +21,7 @@ use Carp;
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (34 - 4) if $@;
+        (39 - 4) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
 
@@ -33,6 +33,7 @@ SKIP: {
         my $prepref = _subclass_preparatory_tests($odir);
 
         my $persref         = $prepref->{persref};
+        my $pers_def_ref    = $prepref->{pers_def_ref};
         my %els1            = %{ $prepref->{initial_els_ref} };
         my $eumm_dir        = $prepref->{eumm_dir};
         my $mmkr_dir_ref    = $prepref->{mmkr_dir_ref};
@@ -86,6 +87,7 @@ ENDNEW
 
         _subclass_cleanup_tests( {
             persref         => $persref,
+            pers_def_ref    => $pers_def_ref,
             eumm_dir        => $eumm_dir,
             initial_els_ref => \%els1,
             odir            => $odir,

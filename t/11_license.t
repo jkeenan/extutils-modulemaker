@@ -2,7 +2,7 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests =>  561;
+tests =>  567;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Licenses::Local' );
@@ -13,12 +13,17 @@ use_ok( 'ExtUtils::ModuleMaker::Utility', qw(
         _restore_mmkr_dir_status
     )
 );
+use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
+        _process_personal_defaults_file 
+        _reprocess_personal_defaults_file 
+    )
+);
 
 
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (561 - 3) if $@;
+        (567 - 4) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use ExtUtils::ModuleMaker::Auxiliary qw(
@@ -244,15 +249,19 @@ SKIP: {
         my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
         ok( $mmkr_dir, "personal defaults directory now present on system");
 
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        my $pers_def_ref = 
+            _process_personal_defaults_file( $mmkr_dir, $pers_file );
+    
         $testmod = 'Beta';
 
         ok($mod = ExtUtils::ModuleMaker->new( 
                 NAME           => "Alpha::$testmod",
                 COMPACT        => 1,
                 LICENSE        => 'looselips',
-    	    COPYRIGHT_YEAR => 1899,
-    	    AUTHOR => "J E Keenan", 
-    		ORGANIZATION => "The World Wide Webby",
+        	    COPYRIGHT_YEAR => 1899,
+        	    AUTHOR         => "J E Keenan", 
+    	    	ORGANIZATION   => "The World Wide Webby",
         ), "object created for Alpha::$testmod");
 
         ok($mod->complete_build(), "build files for Alpha::$testmod");
@@ -277,6 +286,8 @@ SKIP: {
             qr/^={69}\s+={69}.*?={69}\s+={69}.*?={69}\s+={69}/s,
             "formatting for license and copyright found as expected"
         );
+
+        _reprocess_personal_defaults_file($pers_def_ref);
 
         ok(chdir $odir, 'changed back to original directory after testing');
 
