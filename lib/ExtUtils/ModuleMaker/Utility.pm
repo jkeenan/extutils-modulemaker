@@ -4,7 +4,7 @@ use strict;
 local $^W = 1;
 use base qw(Exporter);
 use vars qw( @EXPORT_OK $VERSION );
-$VERSION = '0.39_07';
+$VERSION = '0.39_08';
 @EXPORT_OK   = qw(
     _get_home_directory
     _preexists_mmkr_directory

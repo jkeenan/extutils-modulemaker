@@ -4,7 +4,7 @@ package ExtUtils::ModuleMaker::Auxiliary;
 use strict;
 local $^W = 1;
 use vars qw( $VERSION @ISA @EXPORT_OK );
-$VERSION = '0.39_07';
+$VERSION = '0.39_08';
 require Exporter;
 @ISA         = qw(Exporter);
 @EXPORT_OK   = qw(
@@ -169,7 +169,6 @@ sub failsafe {
 }
 
 sub licensetest {
-#    my ($license, $pattern) = @_;
     my ($caller, $license, $pattern) = @_;
     my $odir = cwd();
     my ($tdir, $mod);
@@ -184,7 +183,6 @@ sub licensetest {
     );
     my $pers_def_ref = 
         _process_personal_defaults_file( $mmkr_dir, $pers_file );
-#    ok($mod = ExtUtils::ModuleMaker->new(
     ok($mod = $caller->new(
         NAME      => "Alpha::$license",
         LICENSE   => $license,

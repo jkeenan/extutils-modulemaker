@@ -3,7 +3,7 @@ package ExtUtils::ModuleMaker::Initializers;
 use strict;
 local $^W = 1;
 use vars qw( $VERSION );
-$VERSION = '0.39_07';
+$VERSION = '0.39_08';
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
     Get_Standard_License
     Verify_Standard_License
