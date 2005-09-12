@@ -608,11 +608,14 @@ sub create_pm_basics {
     my @layers = split( /::/, $module->{NAME} );
     my $file   = pop(@layers);
     $file .= '.pm';
-    my $dir    = File::Spec->catdir( 'lib', @layers );
-
-    my $fulldir = File::Spec->catdir( $self->{Base_Dir}, $dir );
+#    my $dir    = File::Spec->catdir( 'lib', @layers );
+#    my $fulldir = File::Spec->catdir( $self->{Base_Dir}, $dir );
+#    $self->check_dir($fulldir);
+#    $module->{FILE} = File::Spec->catfile( $dir, $file );
+    my $dir         = join( '/', 'lib', @layers );
+    my $fulldir     = join( '/',  $self->{Base_Dir}, $dir );
     $self->check_dir($fulldir);
-    $module->{FILE} = File::Spec->catfile( $dir, $file );
+    $module->{FILE} = join( '/', $dir, $file );
 }
 
 =head3 C<compose_pm_file()>
