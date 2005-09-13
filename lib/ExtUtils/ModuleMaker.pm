@@ -91,8 +91,9 @@ sub new {
     $self->validate_values();
 
     # 7.  Initialize $self->{FILE} (done here because it presumes a validated
-    # NAME, which was only done in step 6
-    $self->set_file_composite();
+    # NAME, which was only done in step 6).  But allow exception for
+    # Interactive mode because it throws a spurious warning.
+    $self->set_file_composite() unless $self->{INTERACTIVE};
 
     # 8.  Initialize keys set from EU::MM::Licenses::Local or
     # EU::MM::Licenses::Standard
@@ -149,6 +150,18 @@ sub complete_build {
         $self->text_pod_test() )
             if $self->{INCLUDE_POD_TEST};                   # default is off
 
+    if ( $self->{BUILD_SYSTEM} eq 'ExtUtils::MakeMaker' ) {
+        $self->print_file( 'Makefile.PL', $self->text_Makefile() );
+    }
+    else {
+        $self->print_file( 'Build.PL', $self->text_Buildfile() );
+        if ( $self->{BUILD_SYSTEM} eq 'Module::Build and proxy Makefile.PL' 
+         or  $self->{BUILD_SYSTEM} eq 'Module::Build and Proxy') {
+            $self->print_file( 'Makefile.PL',
+                $self->text_proxy_makefile() );
+        }
+    }
+
     my @pmfiles = ( $self );
     foreach my $f ( @{ $self->{EXTRA_MODULES} } ) {
         push @pmfiles, $f;
@@ -192,17 +205,6 @@ sub complete_build {
     }
 
     #Makefile must be created after generate_pm_file which sets $self->{FILE}
-    if ( $self->{BUILD_SYSTEM} eq 'ExtUtils::MakeMaker' ) {
-        $self->print_file( 'Makefile.PL', $self->text_Makefile() );
-    }
-    else {
-        $self->print_file( 'Build.PL', $self->text_Buildfile() );
-        if ( $self->{BUILD_SYSTEM} eq 'Module::Build and proxy Makefile.PL' 
-         or  $self->{BUILD_SYSTEM} eq 'Module::Build and Proxy') {
-            $self->print_file( 'Makefile.PL',
-                $self->text_proxy_makefile() );
-        }
-    }
 
     $self->print_file( 'MANIFEST', join( "\n", @{ $self->{MANIFEST} } ) );
     $self->make_selections_defaults() if $self->{SAVE_AS_DEFAULTS};
