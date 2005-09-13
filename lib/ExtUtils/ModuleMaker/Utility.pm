@@ -24,6 +24,8 @@ ExtUtils::ModuleMaker::Utility - Utility subroutines for EU::MM
 
   $home_dir = _get_home_directory();
   
+  $mmkr_dir = _get_mmkr_directory();
+
   ($mmkr_dir, $no_mmkr_dir_flag) = _make_mmkr_directory();
 
   _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
@@ -79,6 +81,12 @@ sub _get_home_directory {
 
 =head2 C<_get_mmkr_directory()>
 
+If the modulemaker environmental variable (C<$ENV{modulemaker}>) has been 
+set administratively, return its contents.  Otherwise, compose a directory 
+name from the home directory.  Note:  This subroutine
+simply returns the I<name> of a path; it does not check for the path's
+existence as a directory.
+
 =cut
 
 sub _get_mmkr_directory {
@@ -89,9 +97,11 @@ sub _get_mmkr_directory {
 
 =head2 C<_preexists_mmkr_directory()>
 
-If the modulemaker environmental variable has been set administratively,
- return its contents.  Otherwise, compose a directory name from the home 
-directory.
+Internally calls C<_get_mmkr_directory()> to get an appropriate name for a
+directory.  Returns a reference to an array holding a two-element list.  
+The first element is that directory name.  The second is a flag indicating 
+whether that directory already exists (a true value) or not  (C<undef>).  
+The flag is used only within ExtUtils::Modulemaker's test suite.
 
 =cut
 
@@ -106,39 +116,10 @@ sub _preexists_mmkr_directory {
 
 =head2 C<_make_mmkr_directory()>
 
-Returns a two-element list.  The first element is the name of a directory.  
-The second is a flag indicating whether that directory already existed (C<undef>)
-or whether the method call had to create that directory (a true value).  The
-directory so returned will be one capable of holding directories and files
-particular to ExtUtils::Modulemaker's functioning on your system (I<e.g.,>
-holding F<ExtUtils/ModuleMaker/Personal/Defaults.pm>).  The flag is used only
-within ExtUtils::Modulemaker's test suite.
-
-If ExtUtils::ModuleMaker has already been installed on your system, it is
-possible that you or your system administrator has assigned a particular
-directory (outside the normal site location for Perl modules) to serve as 
-the location to hold other directories which in turn hold site-specific 
-default or configuration files for ExtUtils::ModuleMaker.  Such a 
-directory would be assigned to an environmental variable C<modulemaker>, 
-represented within Perl code as C<$ENV{modulemaker}>.
-If such a directory exists, C<_make_mmkr_directory()> returns it
-and it will hold ExtUtils::ModuleMaker::Personal::Defaults.
-
-If, as is more likely, C<$ENV{modulemaker}> has I<not> been set, then
-C<_make_mmkr_directory()> checks (via an internal call to
-C<_get_home_directory>) to see whether there exists an appropriate 'HOME' 
-or home-like directory on your system and whether there is a F<.modulemaker> 
-directory underneath it.  If so, C<_make_mmkr_directory()> 
-returns it; if not, the method call creates and returns it, C<croak>ing 
-upon failure.  If the directory was I<not> there originally, we set the 
-C<$no_mmkr_dir_flag> to a true value and return it as the second return
-value from C<_make_mmkr_directory()>; otherwise that 
-variable returns as C<undef>.  The F<.modulemaker> directory created will 
-hold ExtUtils::ModuleMaker::Personal::Defaults.
-
-C<_make_mmkr_directory()> calls C<_get_home_directory()>
-internally, so if you are using C<_make_mmkr_directory()> you do
-not need to call C<_get_home_directory()> first.
+Takes as argument the array reference returned by
+C<_preexists_mmkr_directory()>. Examines the first element in that array --
+the directory name -- and creates the directory if it doesn't already exist.
+The function C<croak>s if the directory cannot be created.
 
 =cut
 
@@ -206,4 +187,32 @@ F<ExtUtils::ModuleMaker>, F<modulemaker>, perl(1).
 
 =cut
 
+__END__
+
+The
+directory so returned will be one capable of holding directories and files
+particular to ExtUtils::Modulemaker's functioning on your system (I<e.g.,>
+holding F<ExtUtils/ModuleMaker/Personal/Defaults.pm>)..
+
+If ExtUtils::ModuleMaker has already been installed on your system, it is
+possible that you or your system administrator has assigned a particular
+directory (outside the normal site location for Perl modules) to serve as 
+the location to hold other directories which in turn hold site-specific 
+default or configuration files for ExtUtils::ModuleMaker.  Such a 
+directory would be assigned to an environmental variable C<modulemaker>, 
+represented within Perl code as C<$ENV{modulemaker}>.
+If such a directory exists, C<_make_mmkr_directory()> returns it
+and it will hold ExtUtils::ModuleMaker::Personal::Defaults.
+
+If, as is more likely, C<$ENV{modulemaker}> has I<not> been set, then
+C<_make_mmkr_directory()> checks (via an internal call to
+C<_get_home_directory>) to see whether there exists an appropriate 'HOME' 
+or home-like directory on your system and whether there is a F<.modulemaker> 
+directory underneath it.  If so, C<_make_mmkr_directory()> 
+returns it; if not, the method call creates and returns it, C<croak>ing 
+upon failure.  If the directory was I<not> there originally, we set the 
+C<$no_mmkr_dir_flag> to a true value and return it as the second return
+value from C<_make_mmkr_directory()>; otherwise that 
+variable returns as C<undef>.  The F<.modulemaker> directory created will 
+hold ExtUtils::ModuleMaker::Personal::Defaults.
 

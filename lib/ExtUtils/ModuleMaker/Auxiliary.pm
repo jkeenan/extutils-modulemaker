@@ -39,6 +39,21 @@ use ExtUtils::ModuleMaker::Utility qw(
     _restore_mmkr_dir_status
 );
 
+=head1 NAME
+
+ExtUtils::ModuleMaker::Auxiliary - Subroutines for testing ExtUtils::ModuleMaker
+
+=head2 C<read_file_string()>
+
+    Function:   Read the contents of a file into a string.
+    Argument:   String holding name of a file created by complete_build().
+    Returns:    String holding text of the file read.
+    Used:       To see whether text of files such as README, Makefile.PL,
+                etc. was created correctly by returning a string against which
+                a pattern can be matched.
+
+=cut
+
 sub read_file_string {
     my $file = shift;
     open my $fh, $file or die "Unable to open filehandle: $!";
@@ -47,6 +62,17 @@ sub read_file_string {
     return $filetext;
 }
 
+=head2 C<read_file_array()>
+
+    Function:   Read a file line-by-line  into an array.
+    Argument:   String holding name of a file created by complete_build().
+    Returns:    Array holding the lines of the file read.
+    Used:       To see whether text of files such as README, Makefile.PL,
+                etc. was created correctly by returning an array against whose 
+                elements patterns can be matched.
+
+=cut
+
 sub read_file_array {
     my $file = shift;
     open my $fh, $file or die "Unable to open filehandle: $!";
@@ -54,6 +80,27 @@ sub read_file_array {
     close $fh or die "Unable to close filehandle: $!";
     return @filetext;
 }
+
+=head2 C<six_file_tests()>
+
+    Function:   Verify that content of MANIFEST and lib/*.pm were created
+                correctly.
+    Argument:   Two arguments:
+                1.  A number predicting the number of entries in the MANIFEST.
+                2.  The stem of the lib/*.pm file, i.e., what immediately
+                    precedes the .pm.
+    Returns:    n/a.
+    Used:       To see whether MANIFEST and lib/*.pm have correct text.  
+                Runs 6 Test::More tests:
+                1.  Number of entries in MANIFEST.
+                2.  Change to directory under lib.
+                3.  Applies read_file_string to the stem.pm file.
+                4.  Determine whether stem.pm's POD contains module name and
+                    abstract.
+                5.  Determine whether POD contains a HISTORY head.
+                6.  Determine whether POD contains correct author information.
+
+=cut
 
 sub six_file_tests {
     my ($manifest_entries, $testmod) = @_;
@@ -79,6 +126,21 @@ sub six_file_tests {
         'POD contains correct author info');
 } 
 
+=head2 C<check_MakefilePL()>
+
+    Function:   Verify that content of Makefile.PL was created correctly.
+    Argument:   Two arguments:
+                1.  A string holding the directory in which the Makefile.PL
+                    should have been created.
+                2.  A reference to an array holding strings each of which is a
+                    prediction as to content of particular lines in Makefile.PL.
+    Returns:    n/a.
+    Used:       To see whether Makefile.PL created by complete_build() has
+                correct entries.  Runs 1 Test::More test which checks NAME,
+                VERSION_FROM, AUTHOR and ABSTRACT.  
+
+=cut
+
 sub check_MakefilePL {
     my ($topdir, $predictref) = @_;
     my @pred = @$predictref;
@@ -86,9 +148,7 @@ sub check_MakefilePL {
     my $mkfl = File::Spec->catfile( $topdir, q{Makefile.PL} );
     local *MAK;
     open MAK, $mkfl or die "Unable to open Makefile.PL: $!";
-    my $bigstr;
-    {    local $/; $bigstr = <MAK>; }
-    close MAK;
+    my $bigstr = read_file_string($mkfl);
     like($bigstr, qr/
             NAME.+($pred[0]).+
             VERSION_FROM.+($pred[1]).+
@@ -399,14 +459,6 @@ sub _reveal_pm_files_under_mmkr_dir {
         utime $hidden{$f}{atime}, $hidden{$f}{modtime}, $new;
     }
 }
-
-#################### DOCUMENTATION ####################
-
-=head1 NAME
-
-ExtUtils::ModuleMaker::Auxiliary - Subroutines for testing ExtUtils::ModuleMaker
-
-=cut
 
 1;
 
