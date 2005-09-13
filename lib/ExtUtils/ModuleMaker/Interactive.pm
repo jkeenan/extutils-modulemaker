@@ -383,6 +383,7 @@ sub Main_Menu {
                 print "ERROR:  Must enter module name!\n";
                 next MAIN_LOOP;
             } elsif ($MOD->validate_values()) {
+                $MOD->set_file_composite();
                 print "Module files are being generated.\n";
                 return ('done');
             } else {
@@ -395,6 +396,7 @@ sub Main_Menu {
                 print "ERROR:  Must enter module name!\n";
                 next MAIN_LOOP;
             } elsif ($MOD->validate_values()) {
+                $MOD->set_file_composite();
                 $MOD->make_selections_defaults();
                 print "Module files are being generated;\n";
                 print "  selections are being saved as defaults.\n";

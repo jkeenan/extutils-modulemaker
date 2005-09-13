@@ -74,6 +74,26 @@ sub set_author_composite {
     );
 }
 
+=head3 C<set_file_composite>
+
+  Usage     : $self->set_file_composite() within new()
+  Purpose   : Sets $self key COMPOSITE by composing it from $self key NAME
+  Returns   : n/a
+  Argument  : n/a
+  Comment   : 
+
+=cut
+
+sub set_file_composite {
+    my $self = shift;
+
+    my @layers = split( /::/, $self->{NAME} );
+    my $file   = pop(@layers);
+    $file .= '.pm';
+    my $dir         = join( '/', 'lib', @layers );
+    $self->{FILE} = join( '/', $dir, $file );
+}
+
 =head3 C<set_dates()>
 
   Usage     : $self->set_dates() within new()
@@ -200,6 +220,7 @@ sub initialize_license {
     }
 
 }
+
 
 1;
 

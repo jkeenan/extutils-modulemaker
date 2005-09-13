@@ -90,11 +90,15 @@ sub new {
     # 6.  Validate values supplied so far to weed out most likely errors
     $self->validate_values();
 
-    # 7.  Initialize keys set from EU::MM::Licenses::Local or
+    # 7.  Initialize $self->{FILE} (done here because it presumes a validated
+    # NAME, which was only done in step 6
+    $self->set_file_composite();
+
+    # 8.  Initialize keys set from EU::MM::Licenses::Local or
     # EU::MM::Licenses::Standard
     $self->initialize_license();
 
-    # 8.  Any EU::MM methods stored in ExtUtils::ModuleMaker::Standard Text
+    # 9.  Any EU::MM methods stored in ExtUtils::ModuleMaker::Standard Text
     # can be overriden by supplying a
     # value for ALT_BUILD (command-line option 'd') where the value is a Perl
     # module located in @INC
@@ -117,8 +121,8 @@ sub complete_build {
     my $self = shift;
 
     $self->create_base_directory();
-    $self->create_directory( map
-        { File::Spec->catdir( $self->{Base_Dir}, $_ ) }
+
+    $self->create_directory( map { File::Spec->catdir( $self->{Base_Dir}, $_ ) }
         qw (lib t scripts)
     );
 
@@ -257,7 +261,12 @@ END_TOPFILE
 my @keys_needed;
 for my $k (@dv) {
     push @keys_needed, $k
-        unless ($k eq 'ABSTRACT' or $k eq 'SAVE_AS_DEFAULTS');
+        unless (
+            $k eq 'NAME'             or
+            $k eq 'ABSTRACT'         or 
+            $k eq 'SAVE_AS_DEFAULTS' or
+            $k eq 'FILE'
+        );
 }
 
 my $kvpairs;
