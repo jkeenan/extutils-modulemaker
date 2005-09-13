@@ -59,7 +59,7 @@ Happy subclassing!
   Purpose   : Create the directory where all the files will be created.
   Returns   : $DIR = directory name where the files will live
   Argument  : n/a
-  Comment   : $self keys Base_Dir, COMPACT, NAME.  Calls method check_dir.
+  Comment   : $self keys Base_Dir, COMPACT, NAME.  Calls method create_directory.
 
 =cut
 
@@ -70,12 +70,12 @@ sub create_base_directory {
       join( ( $self->{COMPACT} ) ? q{-} : q{/}, split( /::/, $self->{NAME} ) )
     );
 
-    $self->check_dir( $self->{Base_Dir} );
+    $self->create_directory( $self->{Base_Dir} );
 }
 
-=head3 C<check_dir()>
+=head3 C<create_directory()>
 
-  Usage     : check_dir( [ I<list of directories to be built> ] )
+  Usage     : create_directory( [ I<list of directories to be built> ] )
               in complete_build; create_base_directory; create_pm_basics 
   Purpose   : Creates directory(ies) requested.
   Returns   : n/a
@@ -87,7 +87,7 @@ sub create_base_directory {
 
 =cut
 
-sub check_dir {
+sub create_directory {
     my $self = shift;
 
     return mkpath( \@_, $self->{VERBOSE}, $self->{PERMISSIONS} );
@@ -583,7 +583,7 @@ END_OF_POD_TEST
               (as there can be more than one module built by EU::MM);
               for the primary module it is a pointer to $self
   Comment   : References $self keys NAME, Base_Dir, and FILE.  
-              Calls method check_dir.
+              Calls method create_directory.
 
 =cut
 
@@ -594,7 +594,7 @@ sub create_pm_basics {
     $file .= '.pm';
     my $dir         = join( '/', 'lib', @layers );
     my $fulldir     = join( '/',  $self->{Base_Dir}, $dir );
-    $self->check_dir($fulldir);
+    $self->create_directory($fulldir);
     $module->{FILE} = join( '/', $dir, $file );
 }
 
@@ -896,7 +896,7 @@ EOFBLOCK
 =head3 C<death_message()>
 
   Usage     : $self->death_message( [ I<list of error messages> ] ) 
-              in validate_values; check_dir; print_file
+              in validate_values; create_directory; print_file
   Purpose   : Croaks with error message composed from elements in the list
               passed by reference as argument
   Returns   : [ To come. ]

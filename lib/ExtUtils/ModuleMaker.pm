@@ -117,7 +117,7 @@ sub complete_build {
     my $self = shift;
 
     $self->create_base_directory();
-    $self->check_dir( map
+    $self->create_directory( map
         { File::Spec->catdir( $self->{Base_Dir}, $_ ) }
         qw (lib t scripts)
     );
