@@ -124,8 +124,11 @@ sub complete_build {
     $self->create_base_directory();
 
     $self->create_directory( map { File::Spec->catdir( $self->{Base_Dir}, $_ ) }
-        qw (lib t scripts)
-    );
+        qw{ lib t } );                                      # always on
+
+    $self->create_directory( map { File::Spec->catdir( $self->{Base_Dir}, $_ ) }
+        qw{ scripts } )
+            if $self->{INCLUDE_SCRIPTS_DIRECTORY};          # default is on
 
     $self->print_file( 'README',  $self->text_README() );   # always on
     
@@ -204,8 +207,6 @@ sub complete_build {
             $self->text_test_multi( $testfilename, \@pmfiles ) );
     }
 
-    #Makefile must be created after generate_pm_file which sets $self->{FILE}
-
     $self->print_file( 'MANIFEST', join( "\n", @{ $self->{MANIFEST} } ) );
     $self->make_selections_defaults() if $self->{SAVE_AS_DEFAULTS};
     return 1;
@@ -264,10 +265,8 @@ my @keys_needed;
 for my $k (@dv) {
     push @keys_needed, $k
         unless (
-            $k eq 'NAME'             or
             $k eq 'ABSTRACT'         or 
-            $k eq 'SAVE_AS_DEFAULTS' or
-            $k eq 'FILE'
+            $k eq 'SAVE_AS_DEFAULTS'
         );
 }
 
@@ -550,6 +549,16 @@ this feature.  Default is off.)
 Boolean value which, if true, includes a F<Todo> file in the distribution in
 which the module's author or maintainer can discuss future lines of
 development.  (Default is on.)
+
+=item * INCLUDE_LICENSE
+
+Boolean value which, if true, includes a F<LICENSE> file in the distribution.
+(Which LICENSE file is determined in the ___ option.)  (Default is on.)
+
+=item * INCLUDE_SCRIPTS_DIRECTORY
+
+Boolean value which, if true, includes a F<scripts/> directory (at the same
+level as F<lib/> or F<t/>).  (Default is on.)
 
 =back
 

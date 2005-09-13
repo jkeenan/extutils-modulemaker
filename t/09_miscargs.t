@@ -3,8 +3,8 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests =>  431;
-# qw(no_plan);
+# tests =>  431;
+qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
 use_ok( 'ExtUtils::ModuleMaker::Utility', qw( 
@@ -897,6 +897,56 @@ SKIP: {
         ok( -f, "file $_ exists" )
             for ( "lib/Alpha/${testmod}.pm", "t/001_load.t" );
         ok(! -f 'LICENSE', "LICENSE correctly not created" );
+        
+        ok($filetext = read_file_string('Makefile.PL'),
+            'Able to read Makefile.PL');
+
+        _reprocess_personal_defaults_file($pers_def_ref);
+
+        ok(chdir $odir, 'changed back to original directory after testing');
+
+        ok( _restore_mmkr_dir_status($mmkr_dir_ref),
+            "original presence/absence of .modulemaker directory restored");
+    }
+        
+    ##### Set 17:  Test of (negating) INCLUDE_SCRIPTS_DIRECTORY option #####
+
+    {
+        $tdir = tempdir( CLEANUP => 1);
+        ok(chdir $tdir, 'changed to temp directory for testing');
+
+        my $mmkr_dir_ref = _preexists_mmkr_directory();
+        my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
+        ok( $mmkr_dir, "personal defaults directory now present on system");
+
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        my $pers_def_ref = 
+            _process_personal_defaults_file( $mmkr_dir, $pers_file );
+
+        $testmod = 'Phi';
+        
+        ok( $mod = ExtUtils::ModuleMaker->new( 
+                NAME           => "Alpha::$testmod",
+                COMPACT        => 1,
+                INCLUDE_SCRIPTS_DIRECTORY => 0,
+            ),
+            "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
+        );
+        
+        ok( $mod->complete_build(), 'call complete_build()' );
+
+        ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
+        ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
+        ok( -d, "directory $_ exists" ) for ( qw/lib         t/);
+        ok(! -d 'scripts', "scripts directory correctly not created");
+
+        ok( -f, "file $_ exists" )
+            for ( qw|
+                Changes     LICENSE      Makefile.PL 
+                MANIFEST    README       Todo
+            | );
+        ok( -f, "file $_ exists" )
+            for ( "lib/Alpha/${testmod}.pm", "t/001_load.t" );
         
         ok($filetext = read_file_string('Makefile.PL'),
             'Able to read Makefile.PL');
