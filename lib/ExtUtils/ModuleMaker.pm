@@ -122,22 +122,28 @@ sub complete_build {
         qw (lib t scripts)
     );
 
-    $self->print_file( 'LICENSE', $self->{LicenseParts}{LICENSETEXT} );
-    $self->print_file( 'README',  $self->text_README() );
+    $self->print_file( 'README',  $self->text_README() );   # always on
+    
+    $self->print_file( 'LICENSE', $self->{LicenseParts}{LICENSETEXT} )
+        if $self->{INCLUDE_LICENSE};                        # default is on 
+
+    $self->print_file( 'Todo',    $self->text_Todo() )
+        if $self->{INCLUDE_TODO};                           # default is on
+
     $self->print_file( 'Changes', $self->text_Changes() )
-        unless ( $self->{CHANGES_IN_POD} );         # default is off
-    $self->print_file( 'Todo', 
-        $self->text_Todo() )
-            if $self->{INCLUDE_TODO};               # defaults is on
+        unless ( $self->{CHANGES_IN_POD} );                 # default is off
+
     $self->print_file( 'MANIFEST.SKIP',    
         $self->text_MANIFEST_SKIP() )
-            if $self->{INCLUDE_MANIFEST_SKIP};      # default is off
+            if $self->{INCLUDE_MANIFEST_SKIP};              # default is off
+
     $self->print_file( File::Spec->catfile( qw| t pod-coverage.t | ),
         $self->text_pod_coverage_test() )
-            if $self->{INCLUDE_POD_COVERAGE_TEST};  # default is off
+            if $self->{INCLUDE_POD_COVERAGE_TEST};          # default is off
+            
     $self->print_file( File::Spec->catfile( qw| t pod.t | ),
         $self->text_pod_test() )
-            if $self->{INCLUDE_POD_TEST};           # default is off
+            if $self->{INCLUDE_POD_TEST};                   # default is off
 
     my @pmfiles = ( $self );
     foreach my $f ( @{ $self->{EXTRA_MODULES} } ) {

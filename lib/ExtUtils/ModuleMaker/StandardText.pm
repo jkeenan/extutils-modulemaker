@@ -341,22 +341,6 @@ END_OF_TOP
     return $text_of_test_file;
 }
 
-#    $test_file_texts{neednew} = <<MTNN;
-## -*- perl -*-
-#
-## $testfilename - check module loading and create testing directory
-#
-#use Test::More tests => 2;
-#
-#BEGIN { use_ok( '$module->{NAME}' ); }
-#
-#my \$object = ${name}->new ();
-#isa_ok (\$object, '$module->{NAME}');
-#
-#
-#MTNN
-#
-
 =head3 C<text_Makefile()>
 
   Usage     : $self->text_Makefile() within complete_build()
@@ -608,10 +592,6 @@ sub create_pm_basics {
     my @layers = split( /::/, $module->{NAME} );
     my $file   = pop(@layers);
     $file .= '.pm';
-#    my $dir    = File::Spec->catdir( 'lib', @layers );
-#    my $fulldir = File::Spec->catdir( $self->{Base_Dir}, $dir );
-#    $self->check_dir($fulldir);
-#    $module->{FILE} = File::Spec->catfile( $dir, $file );
     my $dir         = join( '/', 'lib', @layers );
     my $fulldir     = join( '/',  $self->{Base_Dir}, $dir );
     $self->check_dir($fulldir);

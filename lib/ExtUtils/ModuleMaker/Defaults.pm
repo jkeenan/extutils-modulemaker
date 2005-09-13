@@ -40,6 +40,7 @@ my %default_values = (
         INCLUDE_TODO                        => 1,
         INCLUDE_POD_COVERAGE_TEST           => 0,
         INCLUDE_POD_TEST                    => 0,
+        INCLUDE_LICENSE                     => 1,
 );
 
 sub default_values {
