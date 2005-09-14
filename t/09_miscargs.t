@@ -17,6 +17,7 @@ use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
         _process_personal_defaults_file 
         _reprocess_personal_defaults_file 
         read_file_string
+        read_file_array
     )
 );
 
@@ -950,6 +951,80 @@ SKIP: {
         
         ok($filetext = read_file_string('Makefile.PL'),
             'Able to read Makefile.PL');
+
+        _reprocess_personal_defaults_file($pers_def_ref);
+
+        ok(chdir $odir, 'changed back to original directory after testing');
+
+        ok( _restore_mmkr_dir_status($mmkr_dir_ref),
+            "original presence/absence of .modulemaker directory restored");
+    }
+        
+    ##### Set 18:  Test of INCLUDE_FILE_IN_PM option #####
+
+    {
+        $tdir = tempdir( CLEANUP => 1);
+        ok(chdir $tdir, 'changed to temp directory for testing');
+
+        my $mmkr_dir_ref = _preexists_mmkr_directory();
+        my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
+        ok( $mmkr_dir, "personal defaults directory now present on system");
+
+        my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
+        my $pers_def_ref = 
+            _process_personal_defaults_file( $mmkr_dir, $pers_file );
+
+        $testmod = 'Kappa';
+        
+        ok( $mod = ExtUtils::ModuleMaker->new( 
+                NAME           => "Alpha::$testmod",
+                COMPACT        => 1,
+                EXTRA_MODULES  => [
+                    { NAME => "Alpha::${testmod}::Gamma" },
+                    { NAME => "Alpha::${testmod}::Delta" },
+                    { NAME => "Alpha::${testmod}::Gamma::Epsilon" },
+                ],
+                INCLUDE_FILE_IN_PM => "$odir/t/testlib/arbitrary.txt",
+            ),
+            "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
+        );
+        
+        ok( $mod->complete_build(), 'call complete_build()' );
+
+        ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
+        ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
+        ok( -d, "directory $_ exists" ) for ( qw/lib scripts t/);
+
+        ok( -f, "file $_ exists" )
+            for ( qw|
+                Changes     LICENSE      Makefile.PL 
+                MANIFEST    README       Todo
+            | );
+
+        ok( -d, "directory $_ exists" ) for (
+                "lib/Alpha",
+                "lib/Alpha/${testmod}",
+                "lib/Alpha/${testmod}/Gamma",
+            );
+
+        my @pm_pred = (
+                "lib/Alpha/${testmod}.pm",
+                "lib/Alpha/${testmod}/Gamma.pm",
+                "lib/Alpha/${testmod}/Delta.pm",
+                "lib/Alpha/${testmod}/Gamma/Epsilon.pm",
+        );
+        my @t_pred = (
+                't/001_load.t',
+                't/002_load.t',
+                't/003_load.t',
+                't/004_load.t',
+        );
+        ok( -f, "file $_ exists" ) for ( @pm_pred, @t_pred);
+        for my $pm (@pm_pred) {
+            my $line = read_file_string($pm);
+            like($line, qr<=pod.+INCLUDE_FILE_IN_PM.+sub marine {}>s,
+                "$pm contains pod header, key-value pair, sub");
+        }
 
         _reprocess_personal_defaults_file($pers_def_ref);
 

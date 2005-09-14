@@ -635,6 +635,12 @@ sub compose_pm_file {
     );
 
     $text_of_pm_file .= (
+        ( $self->module_value( $module, 'INCLUDE_FILE_IN_PM' ) )
+        ? $self->block_include_file_in_pm()
+        : q{}
+    );
+
+    $text_of_pm_file .= (
          ( $self->module_value( $module, 'NEED_POD' ) )
          ? $self->block_pod($module)
          : q{}
@@ -722,75 +728,6 @@ sub module_value {
     }
 }
 
-=head3 C<block_pod()>
-
-  Usage     : $self->block_pod($module) inside compose_pm_file()
-  Purpose   : Compose the main POD section within a pm file
-  Returns   : String holding main POD section
-  Argument  : $module: pointer to the module being built
-              (as there can be more than one module built by EU::MM);
-              for the primary module it is a pointer to $self
-  Throws    : n/a
-  Comment   : This method is a likely candidate for alteration in a subclass
-  Comment   : In StandardText formulation, contains the following components:
-              warning about stub documentation needing editing
-              pod wrapper top
-              NAME - ABSTRACT
-              SYNOPSIS
-              DESCRIPTION
-              USAGE
-              BUGS
-              SUPPORT
-              HISTORY (as requested)
-              AUTHOR
-              COPYRIGHT
-              SEE ALSO
-              pod wrapper bottom
-
-=cut
-
-sub block_pod {
-    my ( $self, $module ) = @_;
-
-    my $name             = $self->module_value( $module, 'NAME' );
-    my $abstract         = $self->module_value( $module, 'ABSTRACT' );
-    my $synopsis         = qq{  use $name;\n  blah blah blah\n};
-    my $description      = <<END_OF_DESC;
-Stub documentation for this module was created by ExtUtils::ModuleMaker.
-It looks like the author of the extension was negligent enough
-to leave the stub unedited.
-
-Blah blah blah.
-END_OF_DESC
-    my $author_composite = $self->module_value( $module, 'COMPOSITE' );
-    my $copyright        = $self->module_value( $module, 'LicenseParts', 'COPYRIGHT');
-    my $see_also         = q{perl(1).};
-
-    my $text_of_pod = join(
-        q{},
-        $self->pod_section( NAME => $name . 
-            ( (defined $abstract) ? qq{ - $abstract} : q{} )
-        ),
-        $self->pod_section( SYNOPSIS    => $synopsis ),
-        $self->pod_section( DESCRIPTION => $description ),
-        $self->pod_section( USAGE       => q{} ),
-        $self->pod_section( BUGS        => q{} ),
-        $self->pod_section( SUPPORT     => q{} ),
-        (
-            ( $self->{CHANGES_IN_POD} )
-            ? $self->pod_section(
-                HISTORY => $self->text_Changes('only pod')
-              )
-            : q{}
-        ),
-        $self->pod_section( AUTHOR     => $author_composite),
-        $self->pod_section( COPYRIGHT  => $copyright),
-        $self->pod_section( 'SEE ALSO' => $see_also),
-    );
-
-    return $self->pod_wrapper($text_of_pod);
-}
-
 =head3 C<block_subroutine_header()>
 
   Usage     : $self->block_subroutine_header($module) within compose_pm_file()
@@ -866,6 +803,101 @@ sub new
 EOFBLOCK
 }
 
+=head3 C<block_include_file_in_pm()>
+
+  Usage     : $self->block_include_file_in_pm() within compose_pm_file()
+  Purpose   : Include text from an arbitrary file on disk in .pm file,
+              e.g., subroutine stubs you want in each of several extra
+              modules.
+  Returns   : String holding text of arbitrary file.
+  Argument  : $module: pointer to the module being built
+              (as there can be more than one module built by EU::MM);
+              for the primary module it is a pointer to $self
+  Throws    : n/a
+  Comment   : References $self->{INCLUDE_FILE_IN_PM}, whose value must be a
+              path to a single, readable file
+
+=cut
+
+sub block_include_file_in_pm {
+    my ( $self, $module ) = @_;
+    my $arb = $self->{INCLUDE_FILE_IN_PM};
+    local *ARB;
+    open ARB, $arb or croak "Could not open $arb for inclusion: $!";
+    my $text_included = do { local $/; <ARB> }; 
+    close ARB or croak "Could not close $arb after reading: $!";
+    return $text_included;
+}
+
+=head3 C<block_pod()>
+
+  Usage     : $self->block_pod($module) inside compose_pm_file()
+  Purpose   : Compose the main POD section within a pm file
+  Returns   : String holding main POD section
+  Argument  : $module: pointer to the module being built
+              (as there can be more than one module built by EU::MM);
+              for the primary module it is a pointer to $self
+  Throws    : n/a
+  Comment   : This method is a likely candidate for alteration in a subclass
+  Comment   : In StandardText formulation, contains the following components:
+              warning about stub documentation needing editing
+              pod wrapper top
+              NAME - ABSTRACT
+              SYNOPSIS
+              DESCRIPTION
+              USAGE
+              BUGS
+              SUPPORT
+              HISTORY (as requested)
+              AUTHOR
+              COPYRIGHT
+              SEE ALSO
+              pod wrapper bottom
+
+=cut
+
+sub block_pod {
+    my ( $self, $module ) = @_;
+
+    my $name             = $self->module_value( $module, 'NAME' );
+    my $abstract         = $self->module_value( $module, 'ABSTRACT' );
+    my $synopsis         = qq{  use $name;\n  blah blah blah\n};
+    my $description      = <<END_OF_DESC;
+Stub documentation for this module was created by ExtUtils::ModuleMaker.
+It looks like the author of the extension was negligent enough
+to leave the stub unedited.
+
+Blah blah blah.
+END_OF_DESC
+    my $author_composite = $self->module_value( $module, 'COMPOSITE' );
+    my $copyright        = $self->module_value( $module, 'LicenseParts', 'COPYRIGHT');
+    my $see_also         = q{perl(1).};
+
+    my $text_of_pod = join(
+        q{},
+        $self->pod_section( NAME => $name . 
+            ( (defined $abstract) ? qq{ - $abstract} : q{} )
+        ),
+        $self->pod_section( SYNOPSIS    => $synopsis ),
+        $self->pod_section( DESCRIPTION => $description ),
+        $self->pod_section( USAGE       => q{} ),
+        $self->pod_section( BUGS        => q{} ),
+        $self->pod_section( SUPPORT     => q{} ),
+        (
+            ( $self->{CHANGES_IN_POD} )
+            ? $self->pod_section(
+                HISTORY => $self->text_Changes('only pod')
+              )
+            : q{}
+        ),
+        $self->pod_section( AUTHOR     => $author_composite),
+        $self->pod_section( COPYRIGHT  => $copyright),
+        $self->pod_section( 'SEE ALSO' => $see_also),
+    );
+
+    return $self->pod_wrapper($text_of_pod);
+}
+
 =head3 C<block_final_one()>
 
   Usage     : $self->block_final_one() within compose_pm_file()
@@ -880,6 +912,7 @@ EOFBLOCK
               e.g., some may not want the comment line included.
 
 =cut
+
 
 sub block_final_one {
     my $self = shift;
