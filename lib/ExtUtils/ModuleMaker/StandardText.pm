@@ -1,9 +1,9 @@
 package ExtUtils::ModuleMaker::StandardText;
-# as of 09-12-2005
+# as of 09-14-2005
 use strict;
 local $^W = 1;
 use vars qw ( $VERSION );
-$VERSION = '0.39_09';
+$VERSION = '0.39_10';
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
     Get_Standard_License
     Verify_Standard_License
@@ -279,8 +279,8 @@ EOF
 sub text_test {
     my ( $self, $testfilename, $module ) = @_;
 
-    my $name    = $self->module_value( $module, 'NAME' );
-    my $neednew = $self->module_value( $module, 'NEED_NEW_METHOD' );
+    my $name    = $self->process_attribute( $module, 'NAME' );
+    my $neednew = $self->process_attribute( $module, 'NEED_NEW_METHOD' );
 
     my %test_file_texts;
     $test_file_texts{neednew} = <<MFNN;
@@ -620,8 +620,8 @@ sub compose_pm_file {
     $text_of_pm_file .= (
          (
             (
-                 ( $self->module_value( $module, 'NEED_POD' ) )
-              && ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
+                 ( $self->process_attribute( $module, 'NEED_POD' ) )
+              && ( $self->process_attribute( $module, 'NEED_NEW_METHOD' ) )
             )
             ? $self->block_subroutine_header($module)
          : q{}
@@ -629,19 +629,19 @@ sub compose_pm_file {
     );
 
     $text_of_pm_file .= (
-        ( $self->module_value( $module, 'NEED_NEW_METHOD' ) )
+        ( $self->process_attribute( $module, 'NEED_NEW_METHOD' ) )
         ? $self->block_new_method()
         : q{}
     );
 
     $text_of_pm_file .= (
-        ( $self->module_value( $module, 'INCLUDE_FILE_IN_PM' ) )
+        ( $self->process_attribute( $module, 'INCLUDE_FILE_IN_PM' ) )
         ? $self->block_include_file_in_pm()
         : q{}
     );
 
     $text_of_pm_file .= (
-         ( $self->module_value( $module, 'NEED_POD' ) )
+         ( $self->process_attribute( $module, 'NEED_POD' ) )
          ? $self->block_pod($module)
          : q{}
     );
@@ -671,7 +671,7 @@ sub compose_pm_file {
 
 sub block_begin {
     my ( $self, $module ) = @_;
-    my $version = $self->module_value( $module, 'VERSION' );
+    my $version = $self->process_attribute( $module, 'VERSION' );
     my $package_line  = "package $module->{NAME};\n";
     my $strict_line   = "use strict;\n";
     my $warnings_line = "use warnings;\n";  # not included in standard version
@@ -697,23 +697,28 @@ END_OF_BEGIN
     return $text;
 }
 
-=head3 C<module_value()>
+=head3 C<process_attribute()>
 
-  Usage     : $self->module_value($module, @keys) 
+  Usage     : $self->process_attribute($module, @keys) 
               within block_begin(), text_test(),
-              compose_pm_file(),  block_pod()
-  Purpose   : When writing POD sections, you have to 'escape' 
-              the POD markers to prevent the compiler from treating 
-              them as real POD.  This method 'unescapes' them and puts header
-              and closer around individual POD headings within pm file.
-  Arguments : First is pointer to module being formed.  Second is an array
-              whose members are the section(s) of the POD being written. 
+              compose_pm_file(),  block_pod(), complete_build()
+  Purpose   : 
+              For the particular .pm file now being processed (value of the
+              NAME key of the first argument: $module), see if there exists a
+              key whose name is the second argument.  If so, return it.  
+              Otherwise, return the value of the key by that name in the
+              EU::MM object.  If we have a two-level hash (currently only in
+              License_Parts, process down to that level.
+  Arguments : First argument is a reference to an anonymous hash which has at
+              least one element with key NAME and value of the module being 
+              processed.  Second is an array of key names, although in all but
+              one case it's a single-element (NAME) array.
   Comment   : [The method's name is very opaque and not self-documenting.
               Function of the code is not easily evident.  Rename?  Refactor?]
 
 =cut
 
-sub module_value {
+sub process_attribute {
     my ( $self, $module, @keys ) = @_;
 
     if ( scalar(@keys) == 1 ) {
@@ -859,8 +864,8 @@ sub block_include_file_in_pm {
 sub block_pod {
     my ( $self, $module ) = @_;
 
-    my $name             = $self->module_value( $module, 'NAME' );
-    my $abstract         = $self->module_value( $module, 'ABSTRACT' );
+    my $name             = $self->process_attribute( $module, 'NAME' );
+    my $abstract         = $self->process_attribute( $module, 'ABSTRACT' );
     my $synopsis         = qq{  use $name;\n  blah blah blah\n};
     my $description      = <<END_OF_DESC;
 Stub documentation for this module was created by ExtUtils::ModuleMaker.
@@ -869,8 +874,8 @@ to leave the stub unedited.
 
 Blah blah blah.
 END_OF_DESC
-    my $author_composite = $self->module_value( $module, 'COMPOSITE' );
-    my $copyright        = $self->module_value( $module, 'LicenseParts', 'COPYRIGHT');
+    my $author_composite = $self->process_attribute( $module, 'COMPOSITE' );
+    my $copyright        = $self->process_attribute( $module, 'LicenseParts', 'COPYRIGHT');
     my $see_also         = q{perl(1).};
 
     my $text_of_pod = join(

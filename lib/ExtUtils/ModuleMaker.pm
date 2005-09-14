@@ -3,7 +3,7 @@ use strict;
 local $^W = 1;
 BEGIN {
     use vars qw( $VERSION @ISA ); 
-    $VERSION = '0.39_09';
+    $VERSION = '0.39_10';
     use base qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::Initializers
@@ -183,7 +183,7 @@ sub complete_build {
                 $teststart = "t/";
             }
             if ($self->{TEST_NAME_DERIVED_FROM_MODULE_NAME}) {
-                $testmiddle = $self->module_value( $module, 'NAME' );
+                $testmiddle = $self->process_attribute( $module, 'NAME' );
                 $testmiddle =~ s|::|$self->{TEST_NAME_SEPARATOR}|g;
             } else {
                 $testmiddle = $self->{TEST_NAME};
@@ -354,8 +354,8 @@ Inside a Perl program:
 
 =head1 VERSION
 
-This document references version 0.39_09 of ExtUtils::ModuleMaker, released
-to CPAN on September 12, 2005.
+This document references version 0.39_10 of ExtUtils::ModuleMaker, released
+to CPAN on September 14, 2005.
 
 =head1 DESCRIPTION
 
