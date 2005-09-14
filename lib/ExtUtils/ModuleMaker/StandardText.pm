@@ -526,6 +526,7 @@ END_OF_SKIP
   Comment   : Adapted from Andy Lester's Module::Starter
   Comment   : I don't think of much of this metric, but Andy and Damian do,
               so if you want it you set INCLUDE_POD_COVERAGE_TEST => 1
+
 =cut
 
 sub text_pod_coverage_test {
@@ -554,6 +555,7 @@ END_OF_POD_COVERAGE_TEST
   Comment   : Adapted from Andy Lester's Module::Starter
   Comment   : I don't think of much of this metric, but Andy and Damian do,
               so if you want it you set INCLUDE_POD_TEST => 1
+
 =cut
 
 sub text_pod_test {
