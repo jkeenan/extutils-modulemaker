@@ -158,7 +158,7 @@ sub _restore_mmkr_dir_status {
     }
 }
 
-=head3 C<_get_dir_and_file()>
+=head2 C<_get_dir_and_file()>
 
   Usage     : _get_dir_and_file($module) within generate_pm_file()
   Purpose   : Get directory and name for .pm file being processed
