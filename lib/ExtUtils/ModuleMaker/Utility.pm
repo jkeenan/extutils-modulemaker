@@ -10,6 +10,7 @@ $VERSION = '0.39_10';
     _preexists_mmkr_directory
     _make_mmkr_directory
     _restore_mmkr_dir_status
+    _get_dir_and_file
 );
 use Carp;
 use File::Path;
@@ -155,6 +156,26 @@ sub _restore_mmkr_dir_status {
     } else {
         return 1;
     }
+}
+
+=head3 C<_get_dir_and_file()>
+
+  Usage     : _get_dir_and_file($module) within generate_pm_file()
+  Purpose   : Get directory and name for .pm file being processed
+  Returns   : 2-element list: First $dir; Second: $file
+  Argument  : $module: pointer to the module being built
+              (as there can be more than one module built by EU::MM);
+              for the primary module it is a pointer to $self
+  Comment   : Merely a utility subroutine to refactor code; not a method call.
+
+=cut
+
+sub _get_dir_and_file {
+    my $module = shift;
+    my @layers      = split( /::/, $module->{NAME} );
+    my $file        = pop(@layers) . '.pm';
+    my $dir         = join( '/', 'lib', @layers );
+    return ($dir, $file);
 }
 
 1;

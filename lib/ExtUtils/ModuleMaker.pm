@@ -3,7 +3,7 @@ use strict;
 local $^W = 1;
 BEGIN {
     use vars qw( $VERSION @ISA ); 
-    $VERSION = '0.39_10';
+    $VERSION = '0.39_11';
     use base qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::Initializers
@@ -13,6 +13,7 @@ BEGIN {
 use ExtUtils::ModuleMaker::Utility qw( 
     _preexists_mmkr_directory
     _make_mmkr_directory
+    _get_dir_and_file
 );
 use Carp;
 use File::Path;
@@ -170,18 +171,34 @@ sub complete_build {
         push @pmfiles, $f;
     }
     foreach my $module ( @pmfiles ) {
-        $self->generate_pm_file($module);
+        my ($dir, $file) = _get_dir_and_file($module);
+        $self->create_directory( join( '/',  $self->{Base_Dir}, $dir ) );
+        my $text_of_pm_file = $self->text_pm_file($module);
+        $self->print_file( join( '/', $dir, $file ), $text_of_pm_file );
     }
+
+    # How test files are created depends on how tests for EXTRA_MODULES
+    # are handled: 1 test file per extra module (default) or all tests for all 
+    # modules in a single file (example:  PBP).
     unless ($self->{EXTRA_MODULES_SINGLE_TEST_FILE}) {
         my $ct = $self->{FIRST_TEST_NUMBER};
         foreach my $module ( @pmfiles ) {
             my ($teststart, $testmiddle);
+            
+            # Are we going to include a number at start of test name?
+            # (default)  If so, what is sprintf format and what character is
+            # used to separate it from the lexical part of the test name?
             if (defined $self->{TEST_NUMBER_FORMAT}) {
                 $teststart = "t/" . $self->{TEST_NUMBER_FORMAT} .
                     $self->{TEST_NAME_SEPARATOR};
             } else {
                 $teststart = "t/";
             }
+
+            # Are we going to derive the lexical part of the test name from
+            # the name of the module it is testing?  (non-default)
+            # Or are we simply going to use our pre-defined test name?
+            # (default)
             if ($self->{TEST_NAME_DERIVED_FROM_MODULE_NAME}) {
                 $testmiddle = $self->process_attribute( $module, 'NAME' );
                 $testmiddle =~ s|::|$self->{TEST_NAME_SEPARATOR}|g;
@@ -354,8 +371,8 @@ Inside a Perl program:
 
 =head1 VERSION
 
-This document references version 0.39_10 of ExtUtils::ModuleMaker, released
-to CPAN on September 14, 2005.
+This document references version 0.39_11 of ExtUtils::ModuleMaker, released
+to CPAN on September 15, 2005.
 
 =head1 DESCRIPTION
 

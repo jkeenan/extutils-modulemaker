@@ -1,9 +1,9 @@
 package ExtUtils::ModuleMaker::StandardText;
-# as of 09-14-2005
+# as of 09-15-2005
 use strict;
 local $^W = 1;
 use vars qw ( $VERSION );
-$VERSION = '0.39_10';
+$VERSION = '0.39_11';
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
     Get_Standard_License
     Verify_Standard_License
@@ -119,28 +119,6 @@ sub print_file {
       or $self->death_message( [ qq{Could not write '$filename', $!} ] );
     print FILE $filetext;
     close FILE;
-}
-
-=head3 C<generate_pm_file>
-
-  Usage     : $self->generate_pm_file($module) within complete_build()
-  Purpose   : Create a pm file out of assembled components
-  Returns   : n/a
-  Argument  : $module: pointer to the module being built
-              (as there can be more than one module built by EU::MM);
-              for the primary module it is a pointer to $self
-  Comment   : 3 components:  create_pm_basics; compose_pm_file; print_file
-
-=cut
-
-sub generate_pm_file {
-    my ( $self, $module ) = @_;
-
-    $self->create_pm_basics($module);
-
-    my $text_of_pm_file = $self->compose_pm_file($module);
-
-    $self->print_file( $module->{FILE}, $text_of_pm_file );
 }
 
 =head2 Methods Called within C<complete_build()> as an Argument to C<print_file()>
@@ -573,36 +551,9 @@ END_OF_POD_TEST
     return $text_of_pod_test;
 }
 
+=head3 C<text_pm_file()>
 
-=head2 Methods Called within C<generate_pm_file()>
-
-=head3 C<create_pm_basics>
-
-  Usage     : $self->create_pm_basics($module) within generate_pm_file()
-  Purpose   : Conducts check on directory 
-  Returns   : For a given pm file, sets the FILE key: directory/file 
-  Argument  : $module: pointer to the module being built
-              (as there can be more than one module built by EU::MM);
-              for the primary module it is a pointer to $self
-  Comment   : References $self keys NAME, Base_Dir, and FILE.  
-              Calls method create_directory.
-
-=cut
-
-sub create_pm_basics {
-    my ( $self, $module ) = @_;
-    my @layers = split( /::/, $module->{NAME} );
-    my $file   = pop(@layers);
-    $file .= '.pm';
-    my $dir         = join( '/', 'lib', @layers );
-    my $fulldir     = join( '/',  $self->{Base_Dir}, $dir );
-    $self->create_directory($fulldir);
-    $module->{FILE} = join( '/', $dir, $file );
-}
-
-=head3 C<compose_pm_file()>
-
-  Usage     : $self->compose_pm_file($module) within generate_pm_file()
+  Usage     : $self->text_pm_file($module) within generate_pm_file()
   Purpose   : Composes a string holding all elements for a pm file
   Returns   : String holding text for a pm file
   Argument  : $module: pointer to the module being built
@@ -613,7 +564,7 @@ sub create_pm_basics {
 
 =cut
 
-sub compose_pm_file {
+sub text_pm_file {
     my $self = shift;
     my $module = shift;
       
@@ -652,12 +603,11 @@ sub compose_pm_file {
     return ($module, $text_of_pm_file);
 }
 
-
-=head2 Methods Called within C<compose_pm_file()>
+=head2 Methods Called within C<text_pm_file()>
 
 =head3 C<block_begin()>
 
-  Usage     : $self->block_begin($module) within compose_pm_file()
+  Usage     : $self->block_begin($module) within text_pm_file()
   Purpose   : Composes the standard code for top of a Perl pm file
   Returns   : String holding code for top of pm file
   Argument  : $module: pointer to the module being built
@@ -703,7 +653,7 @@ END_OF_BEGIN
 
   Usage     : $self->process_attribute($module, @keys) 
               within block_begin(), text_test(),
-              compose_pm_file(),  block_pod(), complete_build()
+              text_pm_file(),  block_pod(), complete_build()
   Purpose   : 
               For the particular .pm file now being processed (value of the
               NAME key of the first argument: $module), see if there exists a
@@ -737,7 +687,7 @@ sub process_attribute {
 
 =head3 C<block_subroutine_header()>
 
-  Usage     : $self->block_subroutine_header($module) within compose_pm_file()
+  Usage     : $self->block_subroutine_header($module) within text_pm_file()
   Purpose   : Composes an inline comment for pm file (much like this inline
               comment) which documents purpose of a subroutine
   Returns   : String containing text for inline comment
@@ -781,7 +731,7 @@ EOFBLOCK
 
 =head3 C<block_new_method()>
 
-  Usage     : $self->block_new_method() within compose_pm_file()
+  Usage     : $self->block_new_method() within text_pm_file()
   Purpose   : Build 'new()' method as part of a pm file
   Returns   : String holding sub new.
   Argument  : $module: pointer to the module being built
@@ -812,7 +762,7 @@ EOFBLOCK
 
 =head3 C<block_include_file_in_pm()>
 
-  Usage     : $self->block_include_file_in_pm() within compose_pm_file()
+  Usage     : $self->block_include_file_in_pm() within text_pm_file()
   Purpose   : Include text from an arbitrary file on disk in .pm file,
               e.g., subroutine stubs you want in each of several extra
               modules.
@@ -838,7 +788,7 @@ sub block_include_file_in_pm {
 
 =head3 C<block_pod()>
 
-  Usage     : $self->block_pod($module) inside compose_pm_file()
+  Usage     : $self->block_pod($module) inside text_pm_file()
   Purpose   : Compose the main POD section within a pm file
   Returns   : String holding main POD section
   Argument  : $module: pointer to the module being built
@@ -907,7 +857,7 @@ END_OF_DESC
 
 =head3 C<block_final_one()>
 
-  Usage     : $self->block_final_one() within compose_pm_file()
+  Usage     : $self->block_final_one() within text_pm_file()
   Purpose   : Compose code and comment that conclude a pm file and guarantee
               that the module returns a true value
   Returns   : String containing code and comment concluding a pm file
