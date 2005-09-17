@@ -2,61 +2,69 @@ package ExtUtils::ModuleMaker::Opts;
 # as of 09-16-2005
 use strict;
 local $^W = 1;
-# use base qw(Exporter);
-# use vars qw( @EXPORT_OK $VERSION );
 use vars qw( $VERSION );
 $VERSION = '0.39_12';
-#@EXPORT_OK   = qw(
-#    get_standard_options
-#);
 use Getopt::Std;
 use Carp;
-
 
 my %opts;
 getopts( "bhqsCIPVcn:a:v:l:u:p:o:w:e:t:r:d:", \%opts );
 croak Usage() if ( $opts{h} );
 
-my %standard_options = (
-    ( ( $opts{c} ) ? ( COMPACT               => $opts{c} ) : () ),
-    ( ( $opts{V} ) ? ( VERBOSE               => $opts{V} ) : () ),
-    ( ( $opts{C} ) ? ( CHANGES_IN_POD        => $opts{C} ) : () ),
-    ( ( $opts{P} ) ? ( NEED_POD              => 0        ) : () ),
-    ( ( $opts{q} ) ? ( NEED_NEW_METHOD       => 0        ) : () ),
-#    ( ( $opts{I} ) ? ( INTERACTIVE           => 0        ) : 1  ),
-    INTERACTIVE      => ( ( $opts{I} ) ? 0 : 1 ),
-    ( ( $opts{s} ) ? ( SAVE_AS_DEFAULTS      => $opts{s} ) : () ),
-    
-    ( ( $opts{n} ) ? ( NAME                  => $opts{n} ) : () ),
-    ( ( $opts{a} ) ? ( ABSTRACT              => $opts{a} ) : () ),
-    ( ( $opts{b} ) ? ( BUILD_SYSTEM          => $opts{b} ) : () ),
-    ( ( $opts{v} ) ? ( VERSION               => $opts{v} ) : () ),
-    ( ( $opts{l} ) ? ( LICENSE               => $opts{l} ) : () ),
-    ( ( $opts{u} ) ? ( AUTHOR                => $opts{u} ) : () ),
-    ( ( $opts{p} ) ? ( CPANID                => $opts{p} ) : () ),
-    ( ( $opts{o} ) ? ( ORGANIZATION          => $opts{o} ) : () ),
-    ( ( $opts{w} ) ? ( WEBSITE               => $opts{w} ) : () ),
-    ( ( $opts{e} ) ? ( EMAIL                 => $opts{e} ) : () ),
-    ( ( $opts{r} ) ? ( PERMISSIONS           => $opts{r} ) : () ),
-    ( ( $opts{d} ) ? ( ALT_BUILD             => $opts{d} ) : () ),
-    USAGE_MESSAGE => Usage(),
-);
-
 sub new {
     my $class = shift;
-    my $eumm  = shift;
+    my $eumm_package  = shift;
+    my $eumm_script   = shift;
     my $self = bless( {}, $class );
+    $self->{NAME} = $class;
+    {
+        eval "require $eumm_package";
+        no strict 'refs';
+        $self->{VERSION} = ${$eumm_package . "::VERSION"};
+    }
+    $self->{PACKAGE} = $eumm_package;
+    $self->{SCRIPT} = $eumm_script;
+    my %standard_options = (
+        ( ( $opts{c} ) ? ( COMPACT               => $opts{c} ) : () ),
+        ( ( $opts{V} ) ? ( VERBOSE               => $opts{V} ) : () ),
+        ( ( $opts{C} ) ? ( CHANGES_IN_POD        => $opts{C} ) : () ),
+        ( ( $opts{P} ) ? ( NEED_POD              => 0        ) : () ),
+        ( ( $opts{q} ) ? ( NEED_NEW_METHOD       => 0        ) : () ),
+    #    ( ( $opts{I} ) ? ( INTERACTIVE           => 0        ) : 1  ),
+        INTERACTIVE      => ( ( $opts{I} ) ? 0 : 1 ),
+        ( ( $opts{s} ) ? ( SAVE_AS_DEFAULTS      => $opts{s} ) : () ),
+        
+        ( ( $opts{n} ) ? ( NAME                  => $opts{n} ) : () ),
+        ( ( $opts{a} ) ? ( ABSTRACT              => $opts{a} ) : () ),
+        ( ( $opts{b} ) ? ( BUILD_SYSTEM          => $opts{b} ) : () ),
+        ( ( $opts{v} ) ? ( VERSION               => $opts{v} ) : () ),
+        ( ( $opts{l} ) ? ( LICENSE               => $opts{l} ) : () ),
+        ( ( $opts{u} ) ? ( AUTHOR                => $opts{u} ) : () ),
+        ( ( $opts{p} ) ? ( CPANID                => $opts{p} ) : () ),
+        ( ( $opts{o} ) ? ( ORGANIZATION          => $opts{o} ) : () ),
+        ( ( $opts{w} ) ? ( WEBSITE               => $opts{w} ) : () ),
+        ( ( $opts{e} ) ? ( EMAIL                 => $opts{e} ) : () ),
+        ( ( $opts{r} ) ? ( PERMISSIONS           => $opts{r} ) : () ),
+        ( ( $opts{d} ) ? ( ALT_BUILD             => $opts{d} ) : () ),
+        USAGE_MESSAGE => Usage(
+            $self->{SCRIPT},
+            $self->{PACKAGE},
+            $self->{VERSION},
+        ),
+    );
+    $self->{STANDARD_OPTIONS} = { %standard_options };
+    
     return $self;
 }
 
+
 sub get_standard_options {
     my $self = shift;
-    require $self;
-
-    return %standard_options;
+    return %{ $self->{STANDARD_OPTIONS} };
 }
 
 sub Usage {
+    my ($script, $eumm_package, $eumm_version) = @_;
     my $message = <<ENDOFUSAGE;
 modulemaker [-CIPVch] [-v version] [-n module_name] [-a abstract]
         [-u author_name] [-p author_CPAN_ID] [-o organization]
@@ -85,15 +93,70 @@ Currently Supported Features
     -V   Flag for verbose messages during module creation
     -w   Specify author's web site
 
-modulemaker version: $VERSION
-ExtUtils::ModuleMaker version: $ExtUtils::ModuleMaker::VERSION
+$script version: $VERSION
+$eumm_package version: $eumm_version
 ENDOFUSAGE
 
     return ($message);
 }
-#'
-__END__
 
-my $opt = ExtUtils::ModuleMaker::Opts->new(q{ExtUtils::ModuleMaker});
-my %standard_options = $opt->get_standard_options();
-my $mod = ExtUtils::ModuleMaker::Interactive->new( %standard_options);
+1;
+
+################### DOCUMENTATION ################### 
+
+=head1 NAME
+
+ExtUtils::ModuleMaker::Opts - Process command-line options for F<modulemaker>
+
+=head1 SYNOPSIS
+
+    use ExtUtils::ModuleMaker::Opts;
+
+    $eumm_package = q{ExtUtils::ModuleMaker};
+    $eumm_script  = q{modulemaker};
+    
+    $opt = ExtUtils::ModuleMaker::Opts->new(
+        $eumm_package,
+        $eumm_script,
+    );
+    
+    $mod = ExtUtils::ModuleMaker::Interactive->new(
+        $opt->get_standard_options()
+    );
+
+=head1 DESCRIPTION
+
+The methods in this package provide processing of command-line options for 
+F<modulemaker>, the command-line utility associated with Perl extension
+ExtUtils::ModuleMaker, and for similar utilities associated with Perl
+extensions which subclass ExtUtils::ModuleMaker.
+
+=head1 METHODS
+
+=head2 C<new()>
+
+  Usage     : $opt = ExtUtils::ModuleMaker::Opts->new($package,$script) from
+              inside a command-line utility such as modulemaker
+  Purpose   : Creates an ExtUtils::ModuleMaker::Opts object
+  Returns   : An ExtUtils::ModuleMaker::Opts object
+  Argument  : Two arguments:
+              1. String holding 'ExtUtils::ModuleMaker' or a package
+              subclassed therefrom, e.g., 'ExtUtils::ModuleMaker::PBP'.
+              2. String holding 'modulemaker' or the name of a command-line
+                 utility similar to 'modulemaker' and found in the 
+                 'scripts/' directory of the distribution named in 
+                 argument 1
+
+=head2 C<get_standard_options()>
+
+  Usage     : %standard_options = $opt->get_standard_options from
+              inside a command-line utility such as modulemaker
+  Purpose   : Provide arguments to ExtUtils::ModuleMaker::Interactive::new()
+              or to the constructor of the 'Interactive' package of a 
+              distribution subclassing ExtUtils::ModuleMaker
+  Returns   : A hash suitable for passing to 
+              ExtUtils::ModuleMaker::Interactive::new() or similar constructor
+  Argument  : n/a
+
+=cut
+
