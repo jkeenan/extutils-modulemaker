@@ -7,7 +7,7 @@ use Carp;
 
 =head3 C<block_new_method()>
 
-  Usage     : $self->block_new_method() within compose_pm_file()
+  Usage     : $self->block_new_method() within text_pm_file()
   Purpose   : Build 'new()' method as part of a pm file
   Returns   : String holding sub new.
   Argument  : $module: pointer to the module being built

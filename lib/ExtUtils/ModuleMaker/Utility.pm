@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::Utility;
-# as of 09-05-2005
+# as of 09-15-2005
 use strict;
 local $^W = 1;
 use base qw(Exporter);
