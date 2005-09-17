@@ -1,11 +1,11 @@
 package ExtUtils::ModuleMaker::Opts;
-# as of 09-15-2005
+# as of 09-16-2005
 use strict;
 local $^W = 1;
 # use base qw(Exporter);
 # use vars qw( @EXPORT_OK $VERSION );
 use vars qw( $VERSION );
-$VERSION = '0.39_11';
+$VERSION = '0.39_12';
 #@EXPORT_OK   = qw(
 #    get_standard_options
 #);
