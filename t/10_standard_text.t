@@ -23,7 +23,7 @@ use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (44 - 2) if $@;
+        (44 - 4) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use ExtUtils::ModuleMaker::Auxiliary qw(
