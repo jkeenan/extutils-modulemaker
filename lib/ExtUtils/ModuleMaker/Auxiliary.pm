@@ -43,6 +43,14 @@ use ExtUtils::ModuleMaker::Utility qw(
 
 ExtUtils::ModuleMaker::Auxiliary - Subroutines for testing ExtUtils::ModuleMaker
 
+=head1 DESCRIPTION
+
+This package contains subroutines used in one or more F<t/*.t> files in
+ExtUtils::ModuleMaker's test suite.  They may prove useful in writing test
+suites for distributions which subclass ExtUtils::ModuleMaker.
+
+=head1 SUBROUTINES
+
 =head2 C<read_file_string()>
 
     Function:   Read the contents of a file into a string.
@@ -51,6 +59,10 @@ ExtUtils::ModuleMaker::Auxiliary - Subroutines for testing ExtUtils::ModuleMaker
     Used:       To see whether text of files such as README, Makefile.PL,
                 etc. was created correctly by returning a string against which
                 a pattern can be matched.
+
+=head1 SEE ALSO
+
+F<ExtUtils::ModuleMaker>.
 
 =cut
 

@@ -49,6 +49,10 @@ sub default_values {
     return { %default_values };
 }
 
+1;
+
+#################### DOCUMENTATION #################### 
+
 =head1 NAME
 
 ExtUtils::ModuleMaker::Defaults - Default values for ExtUtils::ModuleMaker objects
@@ -65,7 +69,12 @@ ExtUtils::ModuleMaker::Defaults - Default values for ExtUtils::ModuleMaker objec
   Returns   : Reference to a hash of default values
   Argument  : n/a
   Comment   : Can be overridden by establishing a Personal::Defaults file.
+  Comment   : See ExtUtils::ModuleMaker::PBP for an example of subclassing 
+              this method.
+
+=head1 SEE ALSO
+
+F<ExtUtils::ModuleMaker>.
 
 =cut
 
-1;

@@ -7,6 +7,7 @@ use vars qw( @EXPORT_OK $VERSION );
 $VERSION = '0.39_13';
 @EXPORT_OK   = qw(
     _get_home_directory
+    _get_mmkr_directory
     _preexists_mmkr_directory
     _make_mmkr_directory
     _restore_mmkr_dir_status
@@ -21,20 +22,32 @@ ExtUtils::ModuleMaker::Utility - Utility subroutines for EU::MM
 
 =head1 SYNOPSIS
 
-  use ExtUtils::ModuleMaker::Utility qw( _make_mmkr_directory );
+    use ExtUtils::ModuleMaker::Utility qw(
+        _get_home_directory
+        _get_mmkr_directory
+        _preexists_mmkr_directory
+        _make_mmkr_directory
+        _restore_mmkr_dir_status
+        _get_dir_and_file
+    );
 
-  $home_dir = _get_home_directory();
-  
-  $mmkr_dir = _get_mmkr_directory();
+    $home_dir = _get_home_directory();
 
-  ($mmkr_dir, $no_mmkr_dir_flag) = _make_mmkr_directory();
+    $mmkr_dir = _get_mmkr_directory();
 
-  _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
+    $dirref = _preexists_mmkr_directory();
+
+    ($mmkr_dir, $no_mmkr_dir_flag) = _make_mmkr_directory();
+
+    _restore_mmkr_dir_status($mmkr_dir, $no_mmkr_dir_flag),
+
+    ($dir, $file) = _get_dir_and_file($module);
 
 =head1 DESCRIPTION
 
 This package holds utility subroutines imported and used by
-ExtUtils::ModuleMaker and/or its test suite.
+ExtUtils::ModuleMaker and/or its test suite.  The subroutines exist primarily
+to eliminate blocks of repeated code.
 
 =head1 USAGE
 
@@ -69,12 +82,14 @@ sub _get_home_directory {
         require Win32;
         Win32->import( qw(CSIDL_LOCAL_APPDATA) );  # 0x001c 
         $realhome =  Win32::GetFolderPath( CSIDL_LOCAL_APPDATA() );
+        $realhome =~ s{ }{\\ }g;
         return $realhome if (-d $realhome);
         $realhome =~ s|(.*?)\\Local Settings(.*)|$1$2|;
         return $realhome if (-d $realhome);
         croak "Unable to identify directory equivalent to 'HOME' on Win32: $!";
     } else { # Unix-like systems
         $realhome = $ENV{HOME};
+        $realhome =~ s{ }{\\ }g;
         return $realhome if (-d $realhome);
         croak "Unable to identify 'HOME' directory: $!";
     }
@@ -204,7 +219,7 @@ LICENSE file included with this module.
 
 =head1 SEE ALSO
 
-F<ExtUtils::ModuleMaker>, F<modulemaker>, perl(1).
+F<ExtUtils::ModuleMaker>.
 
 =cut
 

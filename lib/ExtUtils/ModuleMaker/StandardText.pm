@@ -26,20 +26,20 @@ The methods described below are 'quasi-private' methods which are called by
 the publicly available methods of ExtUtils::ModuleMaker and
 ExtUtils::ModuleMaker::Interactive.  They are 'quasi-private' in the sense
 that they are not intended to be called by the everyday user of
-ExtUtils::ModuleMaker.  But nothing prevents a user from calling these
-methods.  Nevertheless, they are documented here primarily so that users
-writing plug-ins for ExtUtils::ModuleMaker's standard text know what methods
+ExtUtils::ModuleMaker.  Nothing prevents a user from calling these
+methods, but they are documented here primarily so that users
+writing plug-ins for ExtUtils::ModuleMaker's standard text will know what methods
 need to be subclassed.
 
-The methods below are called in C<ExtUtils::ModuleMaker::complet_build()> 
-but not in that same package's C<new>.  For methods called in
-C<new>, please see ExtUtils::ModuleMaker::Initializers.
+The methods below are called in C<ExtUtils::ModuleMaker::complete_build()> 
+but not in that same package's C<new()>.  For methods called in
+C<new()>, please see ExtUtils::ModuleMaker::Initializers.
 
 The descriptions below are presented in hierarchical order rather than
 alphabetically.  The order is that of ''how close to the surface can a
 particular method called?'', where 'surface' means being called within
-C<ExtUtils::ModuleMaker::new()> or C<ExtUtils::ModuleMaker::complete_build()>.
-So methods called within one of those two public methods are described before
+C<ExtUtils::ModuleMaker::complete_build()>. 
+So methods called within C<complete_build()> are described before
 methods which are only called within other quasi-private methods.  Some of the
 methods described are also called within ExtUtils::ModuleMaker::Interactive
 methods.  And some quasi-private methods are called within both public and
@@ -599,7 +599,7 @@ sub text_pm_file {
          : q{}
     );
 
-    $text_of_pm_file .= $self->block_final_one();
+    $text_of_pm_file .= $self->block_final();
     return ($module, $text_of_pm_file);
 }
 
@@ -855,9 +855,9 @@ END_OF_DESC
     return $self->pod_wrapper($text_of_pod);
 }
 
-=head3 C<block_final_one()>
+=head3 C<block_final()>
 
-  Usage     : $self->block_final_one() within text_pm_file()
+  Usage     : $self->block_final() within text_pm_file()
   Purpose   : Compose code and comment that conclude a pm file and guarantee
               that the module returns a true value
   Returns   : String containing code and comment concluding a pm file
@@ -871,7 +871,7 @@ END_OF_DESC
 =cut
 
 
-sub block_final_one {
+sub block_final {
     my $self = shift;
     return <<EOFBLOCK;
 
@@ -997,6 +997,12 @@ END_OF_TAIL
         $tail      # optional
     );
 }
+
+=head1 SEE ALSO
+
+F<ExtUtils::ModuleMaker>, F<ExtUtils::ModuleMaker::Initializers>.
+
+=cut
 
 1;
 

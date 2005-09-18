@@ -158,5 +158,11 @@ extensions which subclass ExtUtils::ModuleMaker.
               ExtUtils::ModuleMaker::Interactive::new() or similar constructor
   Argument  : n/a
 
+=head1 SEE ALSO
+
+F<ExtUtils::ModuleMaker>, F<modulemaker>,
+F<ExtUtils::ModuleMaker::Interactive>, F<ExtUtils::ModuleMaker::PBP>,
+F<mmkrpbp>.
+
 =cut
 

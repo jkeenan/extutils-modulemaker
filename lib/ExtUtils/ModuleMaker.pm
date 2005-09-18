@@ -378,8 +378,8 @@ to CPAN on September 17, 2005.
 
 This module is a replacement for the most typical use of the F<h2xs> 
 utility bundled with all Perl distributions:  the creation of the 
-directories and files required for a pure-Perl module to be distributable 
-on the Comprehensive Perl Archive Network (CPAN).
+directories and files required for a pure-Perl module to be installable with
+F<make> and distributable on the Comprehensive Perl Archive Network (CPAN).
 
 F<h2xs> has many options which are useful -- indeed, necessary -- for 
 the creation of a properly structured distribution that includes C code 
@@ -390,14 +390,14 @@ as well as Perl code.  Most of the time, however, F<h2xs> is used as follows
 to create a distribution containing only Perl code.  ExtUtils::ModuleMaker is 
 intended to be an easy-to-use replacement for I<this> use of F<h2xs>.  
 
-While ExtUtils::ModuleMaker can be called from within a Perl script (as in 
-the SYNOPSIS above), it is most easily used by a command-prompt invocation 
+While you can call ExtUtils::ModuleMaker from within a Perl script (as in 
+the SYNOPSIS above), it's easier to use with a command-prompt invocation 
 of the F<modulemaker> script bundled with this distribution:
 
     %   modulemaker
 
-and then responding to the prompts.  For Perl programmers, laziness is a 
-virtue -- and F<modulemaker> is the laziest way to create a 
+Then respond to the prompts.  For Perl programmers, laziness is a 
+virtue -- and F<modulemaker> is far and away the laziest way to create a 
 pure Perl distribution which meets all the requirements for worldwide 
 distribution via CPAN.
 
@@ -411,14 +411,14 @@ the files built by F<modulemaker> either by supplying command-line options or
 -- easier still -- replying to the screen prompts in F<modulemaker>'s
 interactive mode.
 
-I<If you are learning about ExtUtils::ModuleMaker for the 
+B<I<If you are encountering ExtUtils::ModuleMaker for the 
 first time, you should turn now to the documentation for F<modulemaker> which
-is bundled this distribution.>  Return to this document once you have gotten
+is bundled this distribution.>>  Return to this document once you have become
 familiar with F<modulemaker>.
 
 =head2 Use of Public Methods within a Perl Program
 
-ExtUtils::ModuleMaker can be used within a Perl script to generate the
+You can use ExtUtils::ModuleMaker within a Perl script to generate the
 directories and files needed to begin work on a CPAN-ready Perl distribution.
 You will need to call C<new()> and C<complete_build()>, both of which are
 described in the next section.  These two methods control the
@@ -435,7 +435,9 @@ ExtUtils::ModuleMaker by saving keystrokes entered for attributes.
 
 Creates and returns an ExtUtils::ModuleMaker object.  Takes a list 
 containing key-value pairs with information specifying the
-structure and content of the new module(s).  With the exception of 
+structure and content of the new module(s).  (In this documentation, we will
+sometimes refer to these key-value pairs as the I<attributes> of the
+ExtUtils::ModuleMaker object.)  With the exception of 
 key C<EXTRA_MODULES> (see below), the values in these pairs 
 are all strings.  Like most such lists of key-value pairs, this list 
 is probably best held in a hash.   Keys which may be specified are:
@@ -451,7 +453,7 @@ is probably best held in a hash.   Keys which may be specified are:
 The I<only> required feature.  This is the name of the primary module 
 (with 'C<::>' separators if needed).  Will no longer support the older,
 Perl 4-style separator ''C<'>'' like the module F<D'Oh>.  There is no 
-current default for NAME.
+current default for NAME; you must supply a name explicitly.
 
 =back
 
@@ -526,7 +528,7 @@ For a module named ''Foo::Bar::Baz'' creates a base directory named
 
 =item * VERBOSE
 
-Prints messages as it creates directories, writes files, etc. (Default 
+Prints messages to STDOUT as it creates directories, writes files, etc. (Default 
 is off.)
 
 =item * PERMISSIONS
@@ -570,7 +572,7 @@ development.  (Default is on.)
 =item * INCLUDE_LICENSE
 
 Boolean value which, if true, includes a F<LICENSE> file in the distribution.
-(Which LICENSE file is determined in the ___ option.)  (Default is on.)
+(Which LICENSE file is determined in the LICENSE option.)  (Default is on.)
 
 =item * INCLUDE_SCRIPTS_DIRECTORY
 
@@ -720,7 +722,7 @@ by interactive scripts like F<modulemaker>.  (Default is off.)
 
 Name of a Perl package holding methods which override those called withiin
 C<complete_build> to shape the content of files created by using
-ExtUtils::ModuleMaker.
+ExtUtils::ModuleMaker.  See "An Alternative Approach to Subclassing" below.
 
 =back
 
@@ -737,10 +739,8 @@ about whether those files have been created with the correct content.
 
 When troubleshooting problems with an ExtUtils::ModuleMaker object, it
 is often useful to use F<Data::Dumper> to dump the contents of the
-object.  However, since certain elements of that object are often quite
-lengthy (I<e.g,> the values of keys C<LicenseParts> and
-C<USAGE_MESSAGE>), it's handy to have a dumper function that dumps
-C<only> designated keys.
+object.  Use C<dump_keys()> when you only need to examine a few of the
+object's attributes.
 
     $mod->dump_keys( qw| NAME ABSTRACT | );
 
@@ -753,8 +753,7 @@ lengthy (I<e.g,> the values of keys C<LicenseParts> and
 C<USAGE_MESSAGE>), it's handy to have a dumper function that dumps all
 keys I<except> certain designated keys.
 
-    @excluded_keys = qw| LicenseParts USAGE_MESSAGE |;
-    $mod->dump_keys_except(@excluded_keys);
+    $mod->dump_keys_except(qw| LicenseParts USAGE_MESSAGE |);
 
 =head3 C<get_license>
 
@@ -906,9 +905,9 @@ next time you go to use it.
 =head2 Via F<modulemaker> Utility Command-Line Options Mode
 
 For simplicity, not all of ExtUtils::ModuleMaker's default values are
-represented on F<modulemaker>'s menus.  Those that are not represented there
-cannot be changed from there.  They I<can>, however, in many cases be
-specified as options passed to F<modulemaker> on the command-line and
+represented on F<modulemaker>'s menus.  Those that are not represented on
+those menus cannot be changed from there.  They I<can>, however, in many 
+cases be specified as options passed to F<modulemaker> on the command-line and
 automatically saved as personal defaults by including the C<s> flag as one of
 those options.  If, for example, your name is 'John Q Public' and you want all
 modules you create to have compact top-level directories, you would call:
@@ -919,7 +918,7 @@ A distribution with a top-level directory F<Sample-Module> would be created.
 'John Q Public' would appear in appropriate places in
 F<Sample-Module/Makefile.PL> and F<Sample-Module/lib/Sample/Module.pm>.  You
 could then throw away the entire F<Sample-Module> directory tree.  The I<next>
-time you call C<modulemaker>, 
+time you call C<modulemaker>, the call
 
     %   modulemaker -In Second::Module
 
@@ -929,21 +928,38 @@ would appear in appropriate locations instead of the dreaded 'A. U. Thor'.
 =head2 Via C<ExtUtils::ModuleMaker::new()>
 
 In I<all> cases, ExtUtils::ModuleMaker's default values can be overridden with 
-arguments passed to C<new()> inside a Perl program.  The overriding can be made
-permanent by then calling C<make_selections_defaults()>.
+arguments passed to C<new()> inside a Perl program.  The overriding can then 
+be made permanent by calling C<make_selections_defaults()>.
 
-Suppose, for
-example, that you want the files in your test suite to appear in a numerical
+Suppose, for example, 
+
+=over 4
+
+=item 1
+
+that you want the files in your test suite to appear in a numerical
 order starting from C<0> rather than ExtUtils::ModuleMaker's own default
-starting point of C<1>.  Suppose, further, that you want such the number in
+starting point of C<1>;
+
+=item 2
+
+that you want the number in
 the test file's name to be formatted as a two-digit string padded with zeroes
 rather than ExtUtils::ModuleMaker's own default format of a three-digit,
-zero-padded string.  And, suppose still further that you want the numerical
-part of the test filename to be joined to the lexical part with a dot (C<.>)
-rather than ExtUtils::ModuleMaker's own default linkage character of an
-underscore (C<_>).  And, suppose yet still further that you want the lexical
-part of the test filename to reflect the module's name rather than
-ExtUtils::ModuleMaker's default of C<load>.  
+zero-padded string;
+
+=item 3
+
+that you want the numerical part of the test filename to be joined to the 
+lexical part with a dot (C<.>) rather than ExtUtils::ModuleMaker's own 
+default linkage character of an underscore (C<_>); and
+
+=item 4
+
+that you want the lexical part of the test filename to reflect the module's 
+name rather than ExtUtils::ModuleMaker's default of C<load>.  
+
+=back
 
 Your Perl program would look like this:
 
@@ -983,16 +999,14 @@ the files which ExtUtils::ModuleMaker creates?''
 Now, you can.  You can hack on the methods which
 C<ExtUtils::ModuleMaker::new()> and C<complete_build()> call internally to
 customize their results to your heart's desire.  The key:  build an entirely
-new Perl extension whose F<lib/*.pm> file has a C<default_values()> method
-which overrides the default values you want overridden -- and I<only> those
-values -- and other methods that override the methods you need overridden --
-and I<only> those methods.  Follow these steps:
+new Perl extension whose F<lib/*.pm> file has methods that override the methods 
+you need overridden -- and I<only> those methods.  Follow these steps:
 
-=head3 Study F<ExtUtils::ModuleMaker::Defaults>, F<ExtUtils::ModuleMaker::Initializers> and F<ExtUtils::ModuleMaker::StandardText>
+=head3 1. Study F<ExtUtils::ModuleMaker::Defaults>, F<::Initializers> and F<::StandardText>
 
 ExtUtils::ModuleMaker's default values are stored in
-F<lib/ExtUtils/ModuleMaker.pm> and exported in its C<default_values()> method.
-Identify those values which you wish to change.
+F<lib/ExtUtils/ModuleMaker/Defaults.pm>, specifically, in its 
+C<default_values()> method.  Identify those values which you wish to change.
 
 ExtUtils::ModuleMaker's other internal methods are found in two other files:
 F</lib/ExtUtils/ModuleMaker/Initializers.pm> and
@@ -1002,14 +1016,20 @@ ExtUtils::ModuleMaker::Initializers.  If it is called within
 C<complete_build()>, it is found in ExtUtils::ModuleMaker::StandardText.
 Study these two packages to identify the methods you wish to override.
 
+I<Hint:>  If changing a default value in ExtUtils::ModuleMaker::Defaults will
+achieve your objective, make that change rather than trying to override
+methods in ExtUtils::ModuleMaker::Initializers or
+ExtUtils::ModuleMaker::StandardText.
+
 I<Hint:>  You should probably think about overriding methods in
 ExtUtils::ModuleMaker::StandardText before overriding those in
 ExtUtils::ModuleMaker::Initializers.
 
-=head3 Use F<modulemaker> to Create the Framework for a New Distribution
+=head3 2. Use F<modulemaker> to Create the Framework for a New Distribution
 
 You're creating a new Perl extension.  Who ya gonna call?  F<modulemaker>,
-natch!
+natch!  (If you have not read the documentation for F<modulemaker> by this
+point, do so now.)
 
 Suppose that you've gotten on the 'Perl Best Practices' bandwagon and want to
 create all your Perl extensions in the style recommended by Damian Conway in
@@ -1025,7 +1045,7 @@ You used the C<-q> option above because you do I<not> want or need a
 constructor in the new package you are creating.  That package will I<inherit>
 its constructor from ExtUtils::ModuleMaker.
 
-=head3 Edit the F<lib/*.pm> File
+=head3 3. Edit the F<lib/*.pm> File
 
 Open up the best text-editor at your disposal and proceed to hack:
 
@@ -1046,14 +1066,14 @@ methods including the following:
     sub default_values {
         my $self = shift;
         my $defaults_ref = $self->SUPER::default_values();
-        $defaults_ref->{COMPACT} = 1;
-        $defaults_ref->{FIRST_TEST_NUMBER}  = 0;
-        $defaults_ref->{TEST_NUMBER_FORMAT} = "%02d";
+        $defaults_ref->{COMPACT}                        = 1;
+        $defaults_ref->{FIRST_TEST_NUMBER}              = 0;
+        $defaults_ref->{TEST_NUMBER_FORMAT}             = "%02d";
         $defaults_ref->{EXTRA_MODULES_SINGLE_TEST_FILE} = 1;
-        $defaults_ref->{TEST_NAME_SEPARATOR} = q{.};
-        $defaults_ref->{INCLUDE_TODO} = 0;
-        $defaults_ref->{INCLUDE_POD_COVERAGE_TEST}  = 1;
-        $defaults_ref->{INCLUDE_POD_TEST}           = 1;
+        $defaults_ref->{TEST_NAME_SEPARATOR}            = q{.};
+        $defaults_ref->{INCLUDE_TODO}                   = 0;
+        $defaults_ref->{INCLUDE_POD_COVERAGE_TEST}      = 1;
+        $defaults_ref->{INCLUDE_POD_TEST}               = 1;
         return $defaults_ref;;
     }
     
@@ -1088,13 +1108,13 @@ methods including the following:
                 $self->{FILE};
         return $text_of_Makefile;
     }
-    
+
 Of course, for true Perl laziness, you'll use CPAN distribution
 ExtUtils::ModuleMaker::PBP, written by the author of ExtUtils::ModuleMaker as
 an exemplar of subclassing ExtUtils::ModuleMaker and generating the same
 output as Damian Conway's Module::Starter::PBP.
 
-=head3 Test
+=head3 4. Test
 
 How do you know you have correctly subclassed ExtUtils::ModuleMaker?  With a
 test suite, of course.  With careful editing, you can use many of
@@ -1108,7 +1128,7 @@ constructor calls.
 
 Of course, you I<should> have written your tests first, right?
 
-=head3 Install and Use
+=head3 5. Install and Use
 
 You would install your new distribution as you would any other Perl
 distribution, I<i.e.,> with either ExtUtils::MakeMaker or Module::Build,
@@ -1125,13 +1145,14 @@ depending on which you chose in creating your subclass.
    
     $mod->complete_build();
 
-For bonus points, adapt the F<modulemaker> utility to work with
-ExtUtils::ModuleMaker::PBP.
+For an adaptation of the F<modulemaker> utility to work with
+ExtUtils::ModuleMaker::PBP, see F<mmkrpbp> which is bundled with the latter
+package.
 
 =head3 An Alternative Approach to Subclassing
 
 There is one other way to subclass to ExtUtils::ModuleMaker which bears
-mentioning more because the author used it in the development of this version
+mentioning, more because the author used it in the development of this version
 of ExtUtils::ModuleMaker than because it is recommended.  If for some reason
 you do not wish to create a full-fledged Perl distribution for your subclass,
 you can simply write the subclassing package and store it in the same
@@ -1152,7 +1173,7 @@ C<ExtUtils::ModuleMaker::new()>:
         NAME        => 'Sample::Module',
         ALT_BUILD   => 'ExtUtils::ModuleMaker::AlternativeText',
     );
-    
+
 =head1 CAVEATS
 
 =over 4
@@ -1174,7 +1195,8 @@ mode.  However, this is necessarily the most difficult test, as its
 testing would require capturing the STDIN, STDOUT and STDERR for a
 process spawned by a C<system('modulemaker')> call from within a test
 file.  For now, the maintainer has relied on repeated visual inspection
-of the screen prompts generated by F<modulemaker>.
+of the screen prompts generated by F<modulemaker>.  With luck, F<Expect>-based
+tests will be available in a future version.
 
 =item * Testing F<modulemaker> on Non-*nix-Like Operating Systems
 
@@ -1184,6 +1206,35 @@ a given operating system parses command-line arguments.  The maintainer
 has tested this on Darwin and Win32 and, thanks to a suggestion by A.
 Sinan Unur, solved a problem on Win32.  Results on other operating
 systems may differ; feedback is welcome.
+
+=back
+
+=head1 TO DO
+
+=over 4
+
+=item *
+
+Tests for F<modulemaker>'s interactive mode.
+
+=item *
+
+Possible new C<USE_AS_BASE> attribute which would insert modules from which 
+user's new module will inherit.
+
+    USE_AS_BASE => [ qw|
+        Template::Toolkit
+        Module::Build
+        Lingua::Romana::Perligata
+        Acme::Buffy
+    | ],
+
+Such an attribute would require replacement copy for
+C<ExtUtils::ModuleMaker::StandardText::block_begin()>.
+
+=item *
+
+Creation of a mailing list for ExtUtils::ModuleMaker.
 
 =back
 
@@ -1197,7 +1248,9 @@ org).
 =head1 SUPPORT
 
 Send email to jkeenan [at] cpan [dot] org.  Please include 'modulemaker'
-in the subject line.
+in the subject line.  Please report any bugs or feature requests to
+C<bug-ExtUtils-ModuleMaker\@rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org>.
 
 =head1 ACKNOWLEDGMENTS
 
@@ -1207,7 +1260,10 @@ Raton) and YAPC::EU::2003 (Paris).
 
 Soon after I took over maintenance of ExtUtils::ModuleMaker, David A
 Golden became a driving force in its ongoing development, providing
-suggestions for additional functionality as well as bug reports.
+suggestions for additional functionality as well as bug reports.  David is the
+author of ExtUtils::ModuleMaker::PBP which, while not a pure subclass of
+ExtUtils::ModuleMaker, extends its functionality for users of
+Template::Toolkit.
 
 Thanks for suggestions about testing the F<modulemaker> utility to 
 Michael G Schwern on perl.qa and A Sinan Unur and Paul Lalli on 
@@ -1239,9 +1295,33 @@ it and/or modify it under the same terms as Perl itself.
 The full text of the license can be found in the
 LICENSE file included with this module.
 
+=head1 DISCLAIMER OF WARRANTY
+
+BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE SOFTWARE ''AS IS'' WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
+YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE
+LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
+THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
+SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
+
 =head1 SEE ALSO
 
-F<modulemaker>, F<perlnewmod>, F<h2xs>, F<ExtUtils::MakeMaker>.
+F<modulemaker>, F<perlnewmod>, F<h2xs>, F<ExtUtils::MakeMaker>, F<Module::Build>,
+F<ExtUtils::ModuleMaker::PBP>, F<ExtUtils::ModuleMaker::TT>, F<mmkrpbp>.
 
 =cut
 

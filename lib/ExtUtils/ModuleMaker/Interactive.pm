@@ -594,13 +594,13 @@ ExtUtils::ModuleMaker::Interactive - Hold methods used in F<modulemaker>
 
     use ExtUtils::ModuleMaker::Interactive;
 
-    ...  # ExtUtils::ModuleMaker::new() called here
-    
-    $MOD->run_interactive() if $MOD->{INTERACTIVE};
+    $mod = ExtUtils::ModuleMaker::Interactive->new(%standard_options);
+
+    $mod->run_interactive() if $mod->{INTERACTIVE};
 
     ...  # ExtUtils::ModuleMaker::complete_build() called here
     
-    $MOD->closing_message();
+    $mod->closing_message();
 
 =head1 DESCRIPTION
 
