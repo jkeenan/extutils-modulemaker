@@ -31,7 +31,6 @@ t/12_make_selections_defaults.t
 t/13_alt_block_new_method.t
 t/14_mmkr_alt_block_new_method.t
 t/testlib/arbitrary.txt
-t/testlib/ExtUtils/ModuleMaker/alt
 t/testlib/ExtUtils/ModuleMaker/Alt_block_new_method.pm
 t/testlib/ExtUtils/ModuleMaker/Testing/Defaults.pm
 t/testlib/IO/Capture.pm
