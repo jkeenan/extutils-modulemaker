@@ -1,10 +1,10 @@
 package ExtUtils::ModuleMaker::Utility;
-# as of 09-17-2005
+# as of 09-19-2005
 use strict;
 local $^W = 1;
 use base qw(Exporter);
 use vars qw( @EXPORT_OK $VERSION );
-$VERSION = '0.39_13';
+$VERSION = '0.41';
 @EXPORT_OK   = qw(
     _get_home_directory
     _get_mmkr_directory
@@ -82,14 +82,14 @@ sub _get_home_directory {
         require Win32;
         Win32->import( qw(CSIDL_LOCAL_APPDATA) );  # 0x001c 
         $realhome =  Win32::GetFolderPath( CSIDL_LOCAL_APPDATA() );
-        $realhome =~ s{ }{\\ }g;
+        $realhome =~ s{ }{\ }g;
         return $realhome if (-d $realhome);
         $realhome =~ s|(.*?)\\Local Settings(.*)|$1$2|;
         return $realhome if (-d $realhome);
         croak "Unable to identify directory equivalent to 'HOME' on Win32: $!";
     } else { # Unix-like systems
         $realhome = $ENV{HOME};
-        $realhome =~ s{ }{\\ }g;
+        $realhome =~ s{ }{\ }g;
         return $realhome if (-d $realhome);
         croak "Unable to identify 'HOME' directory: $!";
     }
