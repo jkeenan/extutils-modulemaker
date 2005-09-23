@@ -705,6 +705,14 @@ to be included in the F<t/> directory.  This test is advocated by some Perl
 quality assurance experts and module authors.  However, since the maintainer 
 of ExtUtils::ModuleMaker is not persuaded of its worth, default is off.
 
+=item * INCLUDE_FILE_IN_PM
+
+String holding a path to a file containing Perl code and/or documentation
+which will be included in each F<lib/*.pm> file created in a particular
+distribution. By default, such content is placed after any constructor and
+before the main POD block.  This could, for example, be used to insert stub
+subroutines in each package within a distribution.  Default is off.
+
 =back
 
 =item * Arguments for Advanced Usages
