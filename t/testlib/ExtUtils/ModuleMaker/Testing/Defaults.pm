@@ -42,6 +42,7 @@ my %default_values = (
         INCLUDE_POD_TEST                    => 0,
         INCLUDE_LICENSE                     => 1,
         INCLUDE_SCRIPTS_DIRECTORY           => 1,
+        INCLUDE_FILE_IN_PM                  => 0,
 );
 
 sub default_values {

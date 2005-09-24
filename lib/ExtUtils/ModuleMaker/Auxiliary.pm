@@ -21,6 +21,8 @@ require Exporter;
     _get_els
     _subclass_preparatory_tests
     _subclass_cleanup_tests
+    _save_pretesting_status
+    _restore_pretesting_status
 ); 
 use Carp;
 use Cwd;
@@ -470,6 +472,30 @@ sub _reveal_pm_files_under_mmkr_dir {
         rename $f, $new or croak "Unable to rename $f: $!";
         utime $hidden{$f}{atime}, $hidden{$f}{modtime}, $new;
     }
+}
+
+sub _save_pretesting_status {
+    my $mmkr_dir_ref = _preexists_mmkr_directory();
+    my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
+    ok( $mmkr_dir, "personal defaults directory now present on system");
+    my $pers_def_ref = _process_personal_defaults_file(
+        $mmkr_dir, 
+        "ExtUtils/ModuleMaker/Personal/Defaults.pm"
+    );
+    return {
+        cwd             => cwd(),
+        mmkr_dir_ref    => $mmkr_dir_ref,
+        pers_def_ref    => $pers_def_ref,
+    }
+}
+
+sub _restore_pretesting_status {
+    my $statusref = shift;
+    _reprocess_personal_defaults_file($statusref->{pers_def_ref});
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory after testing");
+    ok( _restore_mmkr_dir_status($statusref->{mmkr_dir_ref}),
+        "original presence/absence of .modulemaker directory restored");
 }
 
 1;

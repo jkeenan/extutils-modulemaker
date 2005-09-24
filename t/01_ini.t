@@ -39,11 +39,14 @@ my ($vol, $dirs, $file) = File::Spec->splitpath( $mmkr_dir );
 my $tempdir = File::Spec->catfile( $dirs, $file . '_temp' );
 ok( move ($mmkr_dir, $tempdir), 
     "personal defaults directory temporarily renamed");
+
 my $mod = ExtUtils::ModuleMaker->new( NAME => 'Alpha::Beta' );
 isa_ok($mod, 'ExtUtils::ModuleMaker');
-ok( move ($tempdir, $mmkr_dir), 
-    "personal defaults directory restored");
 
-ok( _restore_mmkr_dir_status($mmkr_dir_ref),
-    "original presence/absence of .modulemaker directory restored");
+END {
+    ok( move ($tempdir, $mmkr_dir), 
+        "personal defaults directory restored");
 
+    ok( _restore_mmkr_dir_status($mmkr_dir_ref),
+        "original presence/absence of .modulemaker directory restored");
+}
