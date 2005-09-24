@@ -13,7 +13,7 @@ use ExtUtils::ModuleMaker::Auxiliary qw(
 SKIP: {
     eval { require 5.006_001 };
     skip "failsafe requires File::Temp, core with Perl 5.6", 
-        (112 - 4) if $@;
+        (112 - 2) if $@;
     use warnings;
     my $caller = 'ExtUtils::ModuleMaker';
 
