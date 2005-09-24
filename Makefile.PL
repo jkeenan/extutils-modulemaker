@@ -2,8 +2,7 @@ use ExtUtils::MakeMaker;
 
 WriteMakefile(
     NAME         => 'ExtUtils::ModuleMaker',
-    VERSION_FROM => 'lib/ExtUtils/ModuleMaker.pm', # finds $VERSION
-#    AUTHOR       => 'R. Geoffrey Avery (modulemaker@PlatypiVentures.com)',
+    VERSION_FROM => 'lib/ExtUtils/ModuleMaker.pm',
     AUTHOR       => 'James E Keenan (jkeenan@cpan.org)',
     ABSTRACT     => 'A simple replacement for h2xs -XA',
     EXE_FILES    => [
@@ -16,5 +15,6 @@ WriteMakefile(
                         File::Path      => 0, # in the Perl core
                         File::Temp      => 0, # in the Perl core since 5.6
                     },
+    test        => { TESTS => join q{ }, map {glob} qw( t/*.t t/*/*.t ) },
 );
 

@@ -30,6 +30,17 @@ t/11_license.t
 t/12_make_selections_defaults.t
 t/13_alt_block_new_method.t
 t/14_mmkr_alt_block_new_method.t
+t/failsafe/201.t
+t/failsafe/202.t
+t/failsafe/203.t
+t/failsafe/204.t
+t/failsafe/205.t
+t/failsafe/206.t
+t/failsafe/207.t
+t/failsafe/208.t
+t/failsafe/209.t
+t/failsafe/210.t
+t/failsafe/211.t
 t/testlib/arbitrary.txt
 t/testlib/ExtUtils/ModuleMaker/Alt_block_new_method.pm
 t/testlib/ExtUtils/ModuleMaker/Testing/Defaults.pm
