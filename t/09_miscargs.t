@@ -96,7 +96,7 @@ SKIP: {
             "original presence/absence of .modulemaker directory restored");
 
     }
-     
+
     {   # Set 2
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
@@ -286,7 +286,7 @@ SKIP: {
             "original presence/absence of .modulemaker directory restored");
 
     }
-        
+
     {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
@@ -334,7 +334,7 @@ SKIP: {
             "original presence/absence of .modulemaker directory restored");
 
     }
-        
+
     {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
@@ -383,7 +383,7 @@ SKIP: {
             "original presence/absence of .modulemaker directory restored");
 
     }
-        
+
     ######### Set #8:  Test of EXTRA_MODULES Option ##########
      
     {
