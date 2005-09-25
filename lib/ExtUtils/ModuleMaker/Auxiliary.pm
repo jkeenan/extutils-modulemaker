@@ -221,25 +221,12 @@ sub constructor_present {
 
 sub failsafe {
     my ($caller, $argslistref, $pattern, $message) = @_;
-    my $odir = cwd();
     my ($tdir, $obj);
     $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
-    my $mmkr_dir_ref = _preexists_mmkr_directory();
-    my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
-    ok( $mmkr_dir, "personal defaults directory now present on system");
-    my $pers_file = File::Spec->catfile(
-       qw| ExtUtils ModuleMaker Personal Defaults.pm |
-    );
-    my $pers_def_ref = 
-        _process_personal_defaults_file( $mmkr_dir, $pers_file );
     local $@ = undef;
     eval { $obj  = $caller->new (@$argslistref); };
     like($@, qr/$pattern/, $message);
-    _reprocess_personal_defaults_file($pers_def_ref);
-    ok(chdir $odir, 'changed back to original directory after testing');
-    ok( _restore_mmkr_dir_status($mmkr_dir_ref),
-        "original presence/absence of .modulemaker directory restored");
 }
 
 sub licensetest {

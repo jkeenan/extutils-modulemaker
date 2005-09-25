@@ -3,7 +3,13 @@ use strict;
 local $^W = 1;
 use Test::More tests => 12;
 use_ok( 'ExtUtils::ModuleMaker' );
-use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(failsafe) ); 
+use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
+    failsafe
+    _save_pretesting_status
+    _restore_pretesting_status
+) ); 
+
+my $statusref = _save_pretesting_status();
 
 SKIP: {
     eval { require 5.006_001 };
@@ -12,10 +18,14 @@ SKIP: {
     use warnings;
     my $caller = 'ExtUtils::ModuleMaker';
 
-failsafe($caller,  [ 'NAME' => "My'BadModule", ], 
-    "^Module NAME contains illegal characters",
-    "Perl 4-style single-quote path separators no longer supported"
-);
+    failsafe($caller,  [ 'NAME' => "My'BadModule", ], 
+        "^Module NAME contains illegal characters",
+        "Perl 4-style single-quote path separators no longer supported"
+    );
 
 } # end SKIP block
+
+END {
+    _restore_pretesting_status($statusref);
+}
 
