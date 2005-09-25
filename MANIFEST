@@ -40,6 +40,14 @@ t/failsafe/208.t
 t/failsafe/209.t
 t/failsafe/210.t
 t/failsafe/211.t
+t/mmkr/801.t
+t/mmkr/802.t
+t/mmkr/803.t
+t/mmkr/804.t
+t/mmkr/805.t
+t/mmkr/806.t
+t/mmkr/807.t
+t/mmkr/808.t
 t/testlib/arbitrary.txt
 t/testlib/ExtUtils/ModuleMaker/Alt_block_new_method.pm
 t/testlib/ExtUtils/ModuleMaker/Testing/Defaults.pm
