@@ -1,13 +1,9 @@
 # t/06_build.t
 use strict;
 local $^W = 1;
-use Test::More 
-tests =>  22;
-# qw(no_plan);
+use Test::More tests =>  22;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
-        _process_personal_defaults_file 
-        _reprocess_personal_defaults_file 
         _save_pretesting_status
         _restore_pretesting_status
     )
