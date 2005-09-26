@@ -2,7 +2,7 @@
 # tests of miscellaneous arguments passed to constructor
 use strict;
 local $^W = 1;
-use Test::More tests =>  38;
+use Test::More tests => 39;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
         _save_pretesting_status
@@ -16,7 +16,7 @@ my $statusref = _save_pretesting_status();
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (38 - 2) if $@;
+        (39 - 2) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
 
@@ -66,7 +66,7 @@ SKIP: {
             );
         
         $filetext = read_file_string("t/001_load.t");
-        my $number_line = q{use Test::More tests => 4;};
+        my $number_line = q{use Test::More tests => 14;};
         ok( (index($filetext, $number_line)) > -1, 
             "test file lists predicted number in plan");
         my @use = qw(

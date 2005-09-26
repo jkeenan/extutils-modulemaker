@@ -2,7 +2,7 @@
 # tests of miscellaneous arguments passed to constructor
 use strict;
 local $^W = 1;
-use Test::More tests =>  40;
+use Test::More tests => 41;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
         _save_pretesting_status
@@ -16,7 +16,7 @@ my $statusref = _save_pretesting_status();
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (40 - 2) if $@;
+        (41 - 2) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
 
