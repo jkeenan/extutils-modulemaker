@@ -81,6 +81,9 @@ SKIP: {
                 "$pm contains pod header, key-value pair, sub");
         }
     }
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

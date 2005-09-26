@@ -24,6 +24,9 @@ SKIP: {
         'mitre',
         qr/MITRE Collaborative Virtual Workspace License \(CVW License\)/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

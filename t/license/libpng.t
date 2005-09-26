@@ -24,6 +24,9 @@ SKIP: {
         'libpng',
         qr/The zlib\/libpng License/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

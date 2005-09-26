@@ -24,6 +24,9 @@ SKIP: {
         'sun',
         qr/Sun Internet Standards Source License \(SISSL\)/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

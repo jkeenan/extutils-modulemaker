@@ -24,6 +24,9 @@ SKIP: {
         'gpl_2',
         qr/The General Public License \(GPL\)\s+Version 2, June 1991/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

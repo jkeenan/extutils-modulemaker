@@ -49,6 +49,9 @@ SKIP: {
             "keys intended to be excluded were excluded");
         
     }
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

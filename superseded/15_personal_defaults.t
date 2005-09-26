@@ -172,5 +172,8 @@ SKIP: {
         check_MakefilePL($topdir, \@pred);
         ok(chdir $cwd, 'changed back to original directory after testing');
     }
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 

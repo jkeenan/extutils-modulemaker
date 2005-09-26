@@ -24,6 +24,9 @@ SKIP: {
         'apache',
         qr/Apache Software License/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

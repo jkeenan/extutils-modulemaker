@@ -1,7 +1,7 @@
 # t/07_proxy.t
 use strict;
 local $^W = 1;
-use Test::More tests =>  56;
+use Test::More tests =>  57;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
         _save_pretesting_status
@@ -14,7 +14,7 @@ my $statusref = _save_pretesting_status();
 SKIP: {
     eval { require 5.006_001 and require Module::Build };
     skip "tests require File::Temp, core with 5.6, and require Module::Build", 
-        (56 - 2) if $@;
+        (57 - 2) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use ExtUtils::ModuleMaker::Auxiliary qw(
@@ -109,6 +109,9 @@ SKIP: {
 
     six_file_tests(8, $testmod); # first arg is # entries in MANIFEST
  
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

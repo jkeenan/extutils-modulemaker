@@ -24,6 +24,9 @@ SKIP: {
         'jabber',
         qr/Jabber Open Source License \(Version 1\.0\)/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

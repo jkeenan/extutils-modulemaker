@@ -24,6 +24,9 @@ SKIP: {
         'r_bsd',
         qr/The BSD License\s+The following/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

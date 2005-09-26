@@ -24,6 +24,9 @@ SKIP: {
         'mpl_1_0',
         qr/Mozilla Public License \(Version 1\.0\)\s+1\. Definitions\./s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

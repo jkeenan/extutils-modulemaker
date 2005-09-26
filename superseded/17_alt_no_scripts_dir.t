@@ -102,6 +102,9 @@ SKIP: {
             "original presence/absence of .modulemaker directory restored");
 
     }
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 

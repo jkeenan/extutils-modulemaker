@@ -1,7 +1,7 @@
 # t/03_quick.t
 use strict;
 local $^W = 1;
-use Test::More tests => 35;
+use Test::More tests => 36;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
         _save_pretesting_status
@@ -14,7 +14,7 @@ my $statusref = _save_pretesting_status();
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with Perl 5.6", 
-        (35 - 2) if $@;
+        (36 - 2) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     my $tdir = tempdir( CLEANUP => 1);
@@ -88,6 +88,8 @@ SKIP: {
     is($modgrandchild->{ABSTRACT}, 'The quick brown vixen', 
         "explicitly coded ABSTRACT is correct");
 
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

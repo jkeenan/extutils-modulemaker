@@ -1,7 +1,7 @@
 # t/06_build.t
 use strict;
 local $^W = 1;
-use Test::More tests =>  22;
+use Test::More tests =>  23;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
         _save_pretesting_status
@@ -14,7 +14,7 @@ my $statusref = _save_pretesting_status();
 SKIP: {
     eval { require 5.006_001 and require Module::Build };
     skip "tests require File::Temp, core with 5.6, and require Module::Build", 
-        (22 - 2) if $@;
+        (23 - 2) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
     use ExtUtils::ModuleMaker::Auxiliary qw(
@@ -55,6 +55,9 @@ SKIP: {
 
     six_file_tests(7, $testmod); # first arg is # entries in MANIFEST
 
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

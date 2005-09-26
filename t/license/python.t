@@ -24,6 +24,9 @@ SKIP: {
         'python',
         qr/Python License\s+CNRI OPEN SOURCE LICENSE AGREEMENT/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

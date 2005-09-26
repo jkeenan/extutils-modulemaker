@@ -24,6 +24,9 @@ SKIP: {
         'nethack',
         qr/Nethack General Public License/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

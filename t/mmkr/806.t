@@ -49,6 +49,9 @@ SKIP: {
         check_pm_file($pmfile, \%pred);
     }
 
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

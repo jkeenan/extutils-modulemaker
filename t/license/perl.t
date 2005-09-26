@@ -24,6 +24,9 @@ SKIP: {
         'perl',
         qr/Terms of Perl itself.*GNU General Public License.*Artistic License/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

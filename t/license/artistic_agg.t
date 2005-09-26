@@ -24,6 +24,9 @@ SKIP: {
         'artistic_agg',
         qr/The Artistic License.*Preamble.*Aggregation of this Package with a commercial distribution/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

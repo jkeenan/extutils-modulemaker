@@ -2,7 +2,7 @@
 use strict;
 local $^W = 1;
 use Test::More 
-tests =>  38;
+tests =>  39;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
@@ -26,7 +26,7 @@ my $mmkr_dir_ref    = $prepref->{mmkr_dir_ref};
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (38 - 4) if $@;
+        (39 - 4) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
 
@@ -73,6 +73,9 @@ ENDNEW
         # end of real tests
 
     } # end of Set
+
+    ok(chdir $odir, "changed back to original directory");
+
 } # end SKIP block
 
 END {

@@ -24,6 +24,9 @@ SKIP: {
         'q',
         qr/The Q Public License\s+Version 1\.0/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

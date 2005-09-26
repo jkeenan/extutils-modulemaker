@@ -55,6 +55,9 @@ SKIP: {
         ok($filetext = read_file_string('Makefile.PL'),
             'Able to read Makefile.PL');
     }
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

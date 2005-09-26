@@ -24,6 +24,9 @@ SKIP: {
         'vovida_1_0',
         qr//s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

@@ -24,6 +24,9 @@ SKIP: {
         'vovida',
         qr/Vovida Software License v\. 1\.0/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

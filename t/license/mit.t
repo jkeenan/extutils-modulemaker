@@ -24,6 +24,9 @@ SKIP: {
         'mit',
         qr/The MIT License\s+Copyright/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

@@ -49,6 +49,9 @@ SKIP: {
             "VERSION number is correct and properly quoted");
     }
 
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

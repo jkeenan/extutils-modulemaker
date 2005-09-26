@@ -50,6 +50,9 @@ SKIP: {
         check_MakefilePL($topdir, \@pred);
     }
 
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

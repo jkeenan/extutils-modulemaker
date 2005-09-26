@@ -61,6 +61,9 @@ SKIP: {
             "formatting for license and copyright found as expected"
         );
     }
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

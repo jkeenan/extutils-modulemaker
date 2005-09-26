@@ -58,6 +58,9 @@ SKIP: {
             "no sub new() or POD correctly detected in module");
 
     }
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

@@ -24,6 +24,9 @@ SKIP: {
         'artistic',
         qr/The Artistic License.*Preamble/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

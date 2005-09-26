@@ -67,6 +67,9 @@ SKIP: {
         } );
 
     } # end of Set
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 

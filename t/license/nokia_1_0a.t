@@ -24,6 +24,9 @@ SKIP: {
         'nokia_1_0a',
         qr/Nokia Open Source License \(NOKOS License\) Version 1\.0a/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {

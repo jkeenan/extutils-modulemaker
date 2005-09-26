@@ -24,6 +24,9 @@ SKIP: {
         'sleepycat',
         qr/The Sleepycat License/s
     );
+
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
 } # end SKIP block
 
 END {
