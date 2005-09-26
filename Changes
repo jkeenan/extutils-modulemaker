@@ -1,4 +1,14 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
+
+0.41_01 September 25, 2005
+    - In process of converting all test files to have an END block which does
+      the 'reprocessing' of the .modulemaker directory and personal defaults
+files as needed, notwithstanding any die or croak.  In cases where t/*.t files
+encompassed several test blocks, this entailed extracting each block from such
+a file and creating a separate test file for it.  Thus, this meant the
+creation of several new directories beneath t/, including failsafe/, mmkr/, 
+miscargs/, license/, makedefaults/.
+
 0.41    September 19, 2005
     - Corrected error in lib/ExtUtils/ModuleMaker/Utility.pm
       _get_home_directory():  double backslashes messed up tests on Windows.
