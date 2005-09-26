@@ -23,7 +23,6 @@ t/05_abstract.t
 t/06_build.t
 t/07_proxy.t
 t/10_standard_text.t
-t/12_make_selections_defaults.t
 t/13_alt_block_new_method.t
 t/14_mmkr_alt_block_new_method.t
 t/failsafe/201.t
@@ -79,6 +78,9 @@ t/license/sun.t
 t/license/vovida.t
 t/license/vovida_1_0.t
 t/license/zlib.t
+t/makedefaults/1201.t
+t/makedefaults/1202.t
+t/makedefaults/1203.t
 t/miscargs/901.t
 t/miscargs/902.t
 t/miscargs/903.t
