@@ -69,7 +69,7 @@ SKIP: {
         );
         
         $filetext = read_file_string("t/load.t");
-        my $number_line = q{use Test::More tests => 14;};
+        my $number_line = q{use Test::More tests => 4;};
         ok( (index($filetext, $number_line)) > -1, 
             "test file lists predicted number in plan");
         my @use = qw(
