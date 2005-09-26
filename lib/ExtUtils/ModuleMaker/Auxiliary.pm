@@ -465,14 +465,18 @@ sub _save_pretesting_status {
     my $mmkr_dir_ref = _preexists_mmkr_directory();
     my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
     ok( $mmkr_dir, "personal defaults directory now present on system");
+    my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
     my $pers_def_ref = _process_personal_defaults_file(
         $mmkr_dir, 
-        "ExtUtils/ModuleMaker/Personal/Defaults.pm"
+#        "ExtUtils/ModuleMaker/Personal/Defaults.pm"
+        $pers_file,
     );
     return {
         cwd             => cwd(),
         mmkr_dir_ref    => $mmkr_dir_ref,
         pers_def_ref    => $pers_def_ref,
+        mmkr_dir        => $mmkr_dir,   # needed in make_selections_defaults
+        pers_file       => $pers_file,  # needed in make_selections_defaults
     }
 }
 

@@ -26,12 +26,10 @@ SKIP: {
     use_ok( 'File::Temp', qw| tempdir |);
     use ExtUtils::ModuleMaker::Auxiliary qw(
         check_MakefilePL 
-        check_pm_file
-        make_compact
     );
 
     my $cwd = cwd();
-    my ($tdir, $topdir, @pred, $module_name, $pmfile, %pred);
+    my ($tdir, $topdir, @pred);
 
 =pod TestingModality:
     Suppress any Personal::Defaults currently installed on system.  Create a
