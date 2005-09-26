@@ -1,7 +1,7 @@
 # t/mmkr/806.t
 use strict;
 local $^W = 1;
-use Test::More tests => 25;
+use Test::More tests => 26;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
         _save_pretesting_status
@@ -16,7 +16,7 @@ my $statusref = _save_pretesting_status();
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (25 - 2) if $@;
+        (26 - 2) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
 
@@ -48,7 +48,6 @@ SKIP: {
         like($filetext, qr/\$VERSION\s+=\s+'0\.3'/,
             "VERSION number is correct and properly quoted");
     }
-
 
     ok(chdir $statusref->{cwd},
         "changed back to original directory");

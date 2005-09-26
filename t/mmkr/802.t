@@ -1,7 +1,7 @@
 # t/mmkr/802.t
 use strict;
 local $^W = 1;
-use Test::More tests => 23;
+use Test::More tests => 24;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
         _save_pretesting_status
@@ -15,7 +15,7 @@ my $statusref = _save_pretesting_status();
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (23 - 2) if $@;
+        (24 - 2) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
 
@@ -54,7 +54,10 @@ SKIP: {
         check_MakefilePL($topdir, \@pred);
     }
 
+    ok(chdir $statusref->{cwd},
+        "changed back to original directory");
+} # end SKIP block
+
 END {
     _restore_pretesting_status($statusref);
-}
 }

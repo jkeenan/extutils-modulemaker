@@ -1,7 +1,7 @@
 # t/license/looselips.t
 use strict;
 local $^W = 1;
-use Test::More tests =>  32;
+use Test::More tests => 33;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Licenses::Local' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
@@ -17,7 +17,7 @@ my $statusref = _save_pretesting_status();
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (32 - 3) if $@;
+        (33 - 3) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
 
