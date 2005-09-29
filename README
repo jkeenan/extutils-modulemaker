@@ -1,14 +1,14 @@
 ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
-This document refers to version 0.42 of ExtUtils::ModuleMaker.  
-his version was released September 28, 2005.
+This document refers to version 0.42_01 of ExtUtils::ModuleMaker.  
+his version was released September 29, 2005.
 
 To install this module on your system, place the tarball archive file in a 
 temporary directory and call the following:
 
-% gunzip ExtUtils-ModuleMaker-0.42.tar.gz
-% tar xf ExtUtils-ModuleMaker-0.42.tar
-% cd ExtUtils-ModuleMaker-0.42
+% gunzip ExtUtils-ModuleMaker-0.42_01.tar.gz
+% tar xf ExtUtils-ModuleMaker-0.42_01.tar
+% cd ExtUtils-ModuleMaker-0.42_01
 % perl Makefile.PL
 % make
 % make test
