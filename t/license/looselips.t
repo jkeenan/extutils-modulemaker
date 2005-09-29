@@ -17,7 +17,7 @@ my $statusref = _save_pretesting_status();
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (33 - 3) if $@;
+        (33 - 11) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
 

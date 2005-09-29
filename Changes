@@ -1,8 +1,17 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
-0.41_01 September 25, 2005
-    - In process of converting all test files to have an END block which does
-      the 'reprocessing' of the .modulemaker directory and personal defaults
+0.43    September 29, 2005
+    - In response to report from CPAN tester imacat, corrected the number of
+      unskipped tests in the SKIP block call in all test files.  I had failed
+to account for the tests found within subroutines such as
+Auxiliary::_save_pretesting_status() (3) and _restore_pretesting_status (5) in
+computing the number of unskipped tests.  This became evident when I tested
+without Module::Build on the system.
+
+0.42    September 28, 2005
+
+    - Converted all test files (except t/01_ini.t) to have an END block which 
+does the 'reprocessing' of the .modulemaker directory and personal defaults
 files as needed, notwithstanding any die or croak.  In cases where t/*.t files
 encompassed several test blocks, this entailed extracting each block from such
 a file and creating a separate test file for it.  Thus, this meant the

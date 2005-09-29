@@ -26,7 +26,7 @@ my $mmkr_dir_ref    = $prepref->{mmkr_dir_ref};
 SKIP: {
     eval { require 5.006_001 };
     skip "tests require File::Temp, core with 5.6", 
-        (39 - 4) if $@;
+        (39 - 20) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
 
