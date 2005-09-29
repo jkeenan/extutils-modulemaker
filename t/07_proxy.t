@@ -6,6 +6,8 @@ use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
         _save_pretesting_status
         _restore_pretesting_status
+        read_file_string
+        six_file_tests
     )
 );
 
@@ -14,13 +16,10 @@ my $statusref = _save_pretesting_status();
 SKIP: {
     eval { require 5.006_001 and require Module::Build };
     skip "tests require File::Temp, core with 5.6, and require Module::Build", 
-        (57 - 2) if $@;
+        (57 - 10) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
-    use ExtUtils::ModuleMaker::Auxiliary qw(
-        read_file_string
-        six_file_tests
-    );
+
     my $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
 
@@ -31,8 +30,7 @@ SKIP: {
 
     ########## Variant:  'Module::Build and proxy Makefile.PL' ##########
 
-    ok( 
-        $mod = ExtUtils::ModuleMaker->new(
+    ok( $mod = ExtUtils::ModuleMaker->new(
             NAME           => "Alpha::$testmod",
             ABSTRACT       => 'Test of the capacities of EU::MM',
             COMPACT        => 1,
@@ -109,9 +107,8 @@ SKIP: {
 
     six_file_tests(8, $testmod); # first arg is # entries in MANIFEST
  
+    ok(chdir $statusref->{cwd}, "changed back to original directory");
 
-    ok(chdir $statusref->{cwd},
-        "changed back to original directory");
 } # end SKIP block
 
 END {
