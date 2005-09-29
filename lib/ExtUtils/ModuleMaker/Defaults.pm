@@ -2,7 +2,7 @@ package ExtUtils::ModuleMaker::Defaults;
 # as of 09-29-2005
 use strict;
 use vars qw( $VERSION );
-$VERSION = '0.42_01';
+$VERSION = '0.43';
 
 my $usage = <<ENDOFUSAGE;
 

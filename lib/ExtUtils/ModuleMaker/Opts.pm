@@ -3,7 +3,7 @@ package ExtUtils::ModuleMaker::Opts;
 use strict;
 local $^W = 1;
 use vars qw( $VERSION );
-$VERSION = '0.42_01';
+$VERSION = '0.43';
 use Getopt::Std;
 use Carp;
 
