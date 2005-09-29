@@ -6,8 +6,6 @@ use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
         _save_pretesting_status
         _restore_pretesting_status
-        read_file_string
-        six_file_tests
     )
 );
 
@@ -19,6 +17,10 @@ SKIP: {
         (35 - 2) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
+    use ExtUtils::ModuleMaker::Auxiliary qw(
+        read_file_string
+        six_file_tests
+    );
 
     my $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
@@ -28,7 +30,8 @@ SKIP: {
     my $mod;
     my $testmod = 'Beta';
 
-    ok( $mod = ExtUtils::ModuleMaker->new( 
+    ok( 
+        $mod = ExtUtils::ModuleMaker->new( 
             NAME           => "Alpha::$testmod",
             ABSTRACT       => 'Test of the capacities of EU::MM',
             COMPACT        => 1,
