@@ -1257,7 +1257,7 @@ org).
 
 Send email to jkeenan [at] cpan [dot] org.  Please include 'modulemaker'
 in the subject line.  Please report any bugs or feature requests to
-C<bug-ExtUtils-ModuleMaker\@rt.cpan.org>, or through the web interface at
+C<bug-ExtUtils-ModuleMaker@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
 =head1 ACKNOWLEDGMENTS
