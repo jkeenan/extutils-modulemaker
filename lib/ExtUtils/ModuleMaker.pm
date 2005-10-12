@@ -1269,7 +1269,7 @@ Raton) and YAPC::EU::2003 (Paris).
 Soon after I took over maintenance of ExtUtils::ModuleMaker, David A
 Golden became a driving force in its ongoing development, providing
 suggestions for additional functionality as well as bug reports.  David is the
-author of ExtUtils::ModuleMaker::PBP which, while not a pure subclass of
+author of ExtUtils::ModuleMaker::TT which, while not a pure subclass of
 ExtUtils::ModuleMaker, extends its functionality for users of
 Template::Toolkit.
 
