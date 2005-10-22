@@ -13,7 +13,6 @@ WriteMakefile(
                         Getopt::Std     => 0, # in the Perl core
                         File::Basename  => 0, # in the Perl core
                         File::Path      => 0, # in the Perl core
-                        File::Temp      => 0, # in the Perl core since 5.6
                     },
     test        => { TESTS => join q{ }, map {glob} qw( t/*.t t/*/*.t ) },
 );

@@ -278,22 +278,29 @@ use strict;
 my %default_values = (
 END_TOPFILE
     
-my @keys_needed;
-for my $k (@dv) {
-    push @keys_needed, $k
-        unless (
-            $k eq 'ABSTRACT'         or 
-            $k eq 'SAVE_AS_DEFAULTS'
-        );
-}
-
-my $kvpairs;
-foreach my $k (@keys_needed) {
-    $kvpairs .=
-        (' ' x 8) . (sprintf '%-16s', $k) . '=> q{' . $selections{$k} .  "},\n";
-}
-$kvpairs .= (' ' x 8) . (sprintf '%-16s', 'ABSTRACT') . 
-    '=> q{Module abstract (<= 44 characters) goes here}' . "\n";
+    my @keys_needed;
+    for my $k (@dv) {
+        push @keys_needed, $k
+            unless (
+                $k eq 'ABSTRACT'         or 
+                $k eq 'SAVE_AS_DEFAULTS'
+            );
+    }
+    
+    my $kvpairs;
+    foreach my $k (@keys_needed) {
+        $kvpairs .=
+            (' ' x 8) . 
+            (sprintf '%-16s', $k) . 
+            '=> q{' . 
+            $selections{$k} .  
+            "},\n";
+    }
+    $kvpairs .= 
+        (' ' x 8) . 
+        (sprintf '%-16s', 'ABSTRACT') . 
+        '=> q{Module abstract (<= 44 characters) goes here}' . 
+        "\n";
 
     my $bottomfile = <<'END_BOTTOMFILE';
 );
