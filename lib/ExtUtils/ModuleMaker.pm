@@ -81,18 +81,21 @@ sub new {
         $self->{$param} = $parameters{$param};
     }
 
-    # 5.  Initialize keys set from information supplied above, system
+    # 5.  Validate values supplied so far to weed out most likely errors
+    $self->validate_values();
+
+    # 6.  Initialize keys set from information supplied above, system
     # info or EU::MM itself.
     $self->set_author_composite();
     $self->set_dates();
     $self->{eumm_version} = $VERSION;
     $self->{MANIFEST} = ['MANIFEST'];
 
-    # 6.  Validate values supplied so far to weed out most likely errors
-    $self->validate_values();
+#    # 6.  Validate values supplied so far to weed out most likely errors
+#    $self->validate_values();
 
     # 7.  Initialize $self->{FILE} (done here because it presumes a validated
-    # NAME, which was only done in step 6).  But allow exception for
+    # NAME, which was only done in step 5).  But allow exception for
     # Interactive mode because it throws a spurious warning.
     $self->set_file_composite() unless $self->{INTERACTIVE};
 

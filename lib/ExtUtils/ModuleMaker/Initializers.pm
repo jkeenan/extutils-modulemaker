@@ -63,17 +63,35 @@ Happy subclassing!
 sub set_author_composite {
     my $self = shift;
 
-    my $cpan_message = "CPAN ID: $self->{CPANID}"; 
-    $self->{COMPOSITE} = (
-        "\t"
-         . join( "\n\t",
-            $self->{AUTHOR},
-            $cpan_message,
-            $self->{ORGANIZATION},
-            $self->{EMAIL}, 
-            $self->{WEBSITE}, 
-        ),
+#    my $cpan_message = "CPAN ID: $self->{CPANID}"; 
+#    $self->{COMPOSITE} = (
+#        "\t"
+#         . join( "\n\t",
+#            $self->{AUTHOR},
+#            $cpan_message,
+#            $self->{ORGANIZATION},
+#            $self->{EMAIL}, 
+#            $self->{WEBSITE}, 
+#        ),
+#    );
+#warn "cpanid:   $self->{CPANID}";
+#warn "org:      $self->{ORGANIZATION}";
+#warn "web:      $self->{WEBSITE}";
+    my $cpan_message = "CPAN ID: $self->{CPANID}" if $self->{CPANID}; 
+    my $org = $self->{ORGANIZATION} if $self->{ORGANIZATION};
+    my $web = $self->{WEBSITE} if $self->{WEBSITE};
+    my @data = (
+        $self->{AUTHOR},
+        $cpan_message,
+        $org,
+        $self->{EMAIL}, 
+        $web, 
     );
+    my $composite = "\t$data[0]";
+    foreach my $el (@data[1..$#data]) {
+        $composite .= "\n\t$el" if defined $el;
+    }
+    $self->{COMPOSITE} = $composite;
 }
 
 =head3 C<set_file_composite>
@@ -92,7 +110,7 @@ sub set_file_composite {
     my @layers = split( /::/, $self->{NAME} );
     my $file   = pop(@layers);
     $file .= '.pm';
-    my $dir         = join( '/', 'lib', @layers );
+    my $dir       = join( '/', 'lib', @layers );
     $self->{FILE} = join( '/', $dir, $file );
 }
 
@@ -147,7 +165,17 @@ sub validate_values {
         ],
         CPANID      	=> [
             q{CPAN IDs are 3-9 characters},
-            eval { $self->{CPANID} !~ m/^\w{3,9}$/; },
+#            eval { $self->{CPANID} !~ m/^\w{3,9}$/; },
+            eval {
+                (  $self->{CPANID} )
+                    &&
+                (  $self->{CPANID} !~ m/^\w{3,9}$/ );
+#                ! ( 
+#                    ! $self->{CPANID}
+#                        or 
+#                      $self->{CPANID} !~ m/^\w{3,9}$/
+#                  );
+            },
         ],
         EMAIL       	=> [
             q{EMAIL addresses need to have an at sign},
@@ -155,7 +183,12 @@ sub validate_values {
         ],
         WEBSITE     	=> [
             q{WEBSITEs should start with an "http:" or "https:"},
-            eval { $self->{WEBSITE} !~ m{https?://.*}; },
+#            eval { $self->{WEBSITE} !~ m{https?://.*}; },
+            eval {
+                (  $self->{WEBSITE} )
+                    &&
+                (  $self->{WEBSITE} !~ m{https?://.*} );
+            },
         ],
         LICENSE     	=> [
             q{LICENSE is not recognized},
@@ -184,7 +217,8 @@ sub validate_values {
         push @errors, $error_msg{$attr}[0] 
                    if $error_msg{$attr}[1];
     }
-        
+# print STDERR "Errors:  @errors\n";        
+warn "Errors:  @errors";        
     return 1 unless @errors;
     $self->death_message(\@errors);
 }
