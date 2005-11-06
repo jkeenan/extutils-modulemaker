@@ -1,5 +1,38 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.43_02 November 6, 2005
+
+Intermediate version not uploaded to CPAN.
+
+Corrected one typo in ModuleMaker.pm:  '\' before @ in e-mail address in 
+BUGS section.
+
+Corrected typo in POD erroneously crediting David Golden with
+ExtUtils::ModuleMaker::PBP.  It should have been ExtUtils::ModuleMaker::TT.
+
+Deleted File::Temp from PM_PREREQ key in Makefile.PL.
+
+Per bug report from David Golden, changed remaining references to 
+generate_pm_file() in StandardText.pm and Utility.pm to refer to 
+complete_build().
+
+Rewrote Initializers::validate_values() and set_author_composite() in response
+to bug reports from David Golden and Terrence Brannon.  Added
+t/miscargs/919.t, 920.t and 921.t to test these revisions.  There remains one
+minor problem with the modulemaker command-line mode, however.  If in
+command-line mode you try to specify an empty string as the argument to -p
+(CPANID), -o (ORGANIZATION) or -w (WEBSITE) (and perhaps others not yet
+discovered), those values do *not* appear on the interactive mode's AUTHOR
+menu.  Instead, you get the default values -- either
+ExtUtils::ModuleMaker::Defaults or ExtUtils::ModuleMaker::Personal Defaults,
+if the latter is installed.  OTOH, if you store a personal defaults file with
+an empty string as the value for, say, ORGANIZATION, your lib/*.pm file will
+be created correctly (with no extra linespace for the missing attribute).
+Furthermore, if on the command-line you specify an empty string for any of
+those three attributes and you suppress interactive mode with -I option, the
+lib/*.pm file will use the default value, which is not what you wanted.
+
+
 0.43    September 29, 2005
     - In response to report from CPAN tester imacat, corrected the number of
       unskipped tests in the SKIP block call in all test files.  I had failed

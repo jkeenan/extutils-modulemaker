@@ -1,10 +1,5 @@
 27 August 2005
 
-User can now save selections as new defaults either (a) as explicit method
-call within a program; (b) as command-line option provided to modulemaker; or
-(c) as choice made at modulemaker prompt.
-
-Projects still outstanding:
 1.  Testing of modulemaker interactive mode.  I wasn't able to apply
 Expect::Simple successfully to this task.  It wasn't capturing the text
 printed to STDOUT at program launch, nor was it capturing the final text so
@@ -12,8 +7,18 @@ printed.  And it gave different results with new invocations of a given test
 file.  So, other than my own idiosyncratic testing, the interactive mode is
 untested.
 
-2.  Ways to easily subclass StandardText.
+06 November 2006
 
-OUCH!  Now that I have *my* own personal defaults file installed, I'm getting
-failing test results in t/03 ('cause I prefer COMPACT => 1).  So I have to fix
-all tests to temporarily suppress any existing personal defaults file.
+2.  Still trying to resolve moderate problems with modulemaker utility.  If in
+command-line mode you try to specify an empty string as the argument to -p
+(CPANID), -o (ORGANIZATION) or -w (WEBSITE) (and perhaps others not yet
+discovered), those values do *not* appear on the interactive mode's AUTHOR
+menu.  Instead, you get the default values -- either
+ExtUtils::ModuleMaker::Defaults or ExtUtils::ModuleMaker::Personal Defaults,
+if the latter is installed.  OTOH, if you store a personal defaults file with
+an empty string as the value for, say, ORGANIZATION, your lib/*.pm file will
+be created correctly (with no extra linespace for the missing attribute).
+Furthermore, if on the command-line you specify an empty string for any of
+those three attributes and you suppress interactive mode with -I option, the
+lib/*.pm file will use the default value, which is not what you wanted.
+
