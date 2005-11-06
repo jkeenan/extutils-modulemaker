@@ -21,4 +21,5 @@ be created correctly (with no extra linespace for the missing attribute).
 Furthermore, if on the command-line you specify an empty string for any of
 those three attributes and you suppress interactive mode with -I option, the
 lib/*.pm file will use the default value, which is not what you wanted.
+RESOLVED 06 November 2006
 

@@ -152,7 +152,6 @@ sub validate_values {
         ],
         CPANID      	=> [
             q{CPAN IDs are 3-9 characters},
-#            eval { $self->{CPANID} !~ m/^\w{3,9}$/; },
             eval { $self->{CPANID} and $self->{CPANID} !~ m/^\w{3,9}$/; },
         ],
         EMAIL       	=> [
@@ -161,7 +160,6 @@ sub validate_values {
         ],
         WEBSITE     	=> [
             q{WEBSITEs should start with an "http:" or "https:"},
-#            eval { $self->{WEBSITE} !~ m{https?://.*}; },
             eval { $self->{WEBSITE} and $self->{WEBSITE} !~ m{https?://.*}; },
         ],
         LICENSE     	=> [

@@ -1,5 +1,12 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.43_03 November 6, 2005
+
+By tossing in 'defined' at three points in ExtUtils::ModuleMaker::Opts, I
+solved the problem of supplying an empty string to CPANID, ORGANIZATION and
+WEBSITE in the modulemaker command-line utility.
+
+
 0.43_02 November 6, 2005
 
 Intermediate version not uploaded to CPAN.
