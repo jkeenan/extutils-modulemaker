@@ -63,17 +63,6 @@ Happy subclassing!
 sub set_author_composite {
     my $self = shift;
 
-#    my $cpan_message = "CPAN ID: $self->{CPANID}"; 
-#    $self->{COMPOSITE} = (
-#        "\t"
-#         . join( "\n\t",
-#            $self->{AUTHOR},
-#            $cpan_message,
-#            $self->{ORGANIZATION},
-#            $self->{EMAIL}, 
-#            $self->{WEBSITE}, 
-#        ),
-#    );
     my ($cpan_message, $org, $web, $composite);
     $cpan_message = "CPAN ID: $self->{CPANID}" if $self->{CPANID}; 
     $org = $self->{ORGANIZATION} if $self->{ORGANIZATION}; 
