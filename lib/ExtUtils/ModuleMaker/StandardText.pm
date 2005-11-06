@@ -901,12 +901,12 @@ sub death_message {
     my @errors = @{$errorref};
 
     croak( join "\n", @errors, q{}, $self->{USAGE_MESSAGE} )
-        unless $self->{INTERACTIVE};
+      unless $self->{INTERACTIVE};
     my %err = map {$_, 1} @errors;
     delete $err{'NAME is required'} if $err{'NAME is required'};
     @errors = keys %err;
     if (@errors) {
-        print STDERR ( join "\n", 
+        print( join "\n", 
             'Oops, there are the following errors:', @errors, q{} );
         return 1;
     } else {
@@ -1005,4 +1005,5 @@ F<ExtUtils::ModuleMaker>, F<ExtUtils::ModuleMaker::Initializers>.
 =cut
 
 1;
+
 
