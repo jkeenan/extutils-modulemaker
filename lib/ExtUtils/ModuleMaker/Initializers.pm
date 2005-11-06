@@ -63,17 +63,33 @@ Happy subclassing!
 sub set_author_composite {
     my $self = shift;
 
-    my $cpan_message = "CPAN ID: $self->{CPANID}"; 
-    $self->{COMPOSITE} = (
-        "\t"
-         . join( "\n\t",
+#    my $cpan_message = "CPAN ID: $self->{CPANID}"; 
+#    $self->{COMPOSITE} = (
+#        "\t"
+#         . join( "\n\t",
+#            $self->{AUTHOR},
+#            $cpan_message,
+#            $self->{ORGANIZATION},
+#            $self->{EMAIL}, 
+#            $self->{WEBSITE}, 
+#        ),
+#    );
+    my ($cpan_message, $org, $web, $composite);
+    $cpan_message = "CPAN ID: $self->{CPANID}" if $self->{CPANID}; 
+    $org = $self->{ORGANIZATION} if $self->{ORGANIZATION}; 
+    $web = $self->{WEBSITE} if $self->{WEBSITE}; 
+    my @data = (
             $self->{AUTHOR},
             $cpan_message,
-            $self->{ORGANIZATION},
+            $org,
             $self->{EMAIL}, 
-            $self->{WEBSITE}, 
-        ),
+            $web,
     );
+    $composite = "    $data[0]";
+    for my $el (@data[1..$#data]) {
+        $composite .= "\n    $el" if defined $el;
+    }
+    $self->{COMPOSITE} = $composite;
 }
 
 =head3 C<set_file_composite>
@@ -131,7 +147,7 @@ sub validate_values {
     # Key:    short-hand name for error condition
     # Value:  anonymous array holding:
     #   [0]:  error message
-    #   [1]:  condition which will generate error message
+    #   [1]:  condition which will generate error message if evals true
     my %error_msg = (
         NAME_REQ    	=> [
             q{NAME is required},
@@ -147,7 +163,8 @@ sub validate_values {
         ],
         CPANID      	=> [
             q{CPAN IDs are 3-9 characters},
-            eval { $self->{CPANID} !~ m/^\w{3,9}$/; },
+#            eval { $self->{CPANID} !~ m/^\w{3,9}$/; },
+            eval { $self->{CPANID} and $self->{CPANID} !~ m/^\w{3,9}$/; },
         ],
         EMAIL       	=> [
             q{EMAIL addresses need to have an at sign},
@@ -155,7 +172,8 @@ sub validate_values {
         ],
         WEBSITE     	=> [
             q{WEBSITEs should start with an "http:" or "https:"},
-            eval { $self->{WEBSITE} !~ m{https?://.*}; },
+#            eval { $self->{WEBSITE} !~ m{https?://.*}; },
+            eval { $self->{WEBSITE} and $self->{WEBSITE} !~ m{https?://.*}; },
         ],
         LICENSE     	=> [
             q{LICENSE is not recognized},
