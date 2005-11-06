@@ -96,7 +96,7 @@ sub create_directory {
 
 =head3 C<print_file()>
 
-  Usage     : $self->print_file($filename, $filetext) within generate_pm_file()
+  Usage     : $self->print_file($filename, $filetext) within complete_build()
   Purpose   : Adds the file being created to MANIFEST, then prints text to new
               file.  Logs file creation under verbose.  Adds info for
               death_message in event of failure. 
@@ -553,7 +553,7 @@ END_OF_POD_TEST
 
 =head3 C<text_pm_file()>
 
-  Usage     : $self->text_pm_file($module) within generate_pm_file()
+  Usage     : $self->text_pm_file($module) within complete_build()
   Purpose   : Composes a string holding all elements for a pm file
   Returns   : String holding text for a pm file
   Argument  : $module: pointer to the module being built
