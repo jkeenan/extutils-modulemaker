@@ -11,10 +11,10 @@ BEGIN {
     );
 };
 use ExtUtils::ModuleMaker::Utility qw( 
-    _preexists_mmkr_directory
-    _make_mmkr_directory
     _get_dir_and_file
 );
+#    _preexists_mmkr_directory
+#    _make_mmkr_directory
 use Carp;
 use File::Path;
 use File::Spec;
