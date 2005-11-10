@@ -20,6 +20,10 @@ use File::Path;
 use File::Spec;
 # use Data::Dumper;
 use Cwd;
+use File::Save::Home qw(
+    get_subhome_directory_status
+    make_subhome_directory
+);
 
 #################### PUBLICLY CALLABLE METHODS ####################
 
@@ -38,10 +42,13 @@ sub new {
     # _preexists_mmkr_directory and which is then stored in the object.
     # NOTE:  If the directory does not yet exists, it is NOT automatically
     # created.
-    $self->{mmkr_dir_ref} =  _preexists_mmkr_directory();
+#    $self->{mmkr_dir_ref} =  _preexists_mmkr_directory();
+    $self->{mmkr_dir_ref} =  get_subhome_directory_status(".modulemaker");
     {
-        my $mmkr_dir = $self->{mmkr_dir_ref}->[0];
-        if (defined $self->{mmkr_dir_ref}->[1]) {
+#        my $mmkr_dir = $self->{mmkr_dir_ref}->[0];
+#        if (defined $self->{mmkr_dir_ref}->[1]) {
+        my $mmkr_dir = $self->{mmkr_dir_ref}->{abs};
+        if (defined $self->{mmkr_dir_ref}->{flag}) {
             push @INC, $mmkr_dir;
         }
         my $pers_file = File::Spec->catfile( $mmkr_dir,
@@ -316,7 +323,8 @@ END_BOTTOMFILE
 
     my $output =  $topfile . $kvpairs . $bottomfile;
 
-    my $mmkr_dir = _make_mmkr_directory($self->{mmkr_dir_ref});
+#    my $mmkr_dir = _make_mmkr_directory($self->{mmkr_dir_ref});
+    my $mmkr_dir = make_subhome_directory($self->{mmkr_dir_ref});
     my $full_dir = File::Spec->catdir($mmkr_dir,
         qw| ExtUtils ModuleMaker Personal |
     );
