@@ -54,7 +54,13 @@ sub new {
     # _preexists_mmkr_directory and which is then stored in the object.
     # NOTE:  If the directory does not yet exists, it is NOT automatically
     # created.
-    $self->{mmkr_dir_ref} =  get_subhome_directory_status(".modulemaker");
+    my $top_subhome = $supplied_params{TESTING_SUBHOME}
+                    ? $supplied_params{TESTING_SUBHOME}
+                    : '.modulemaker';
+    delete $supplied_params{TESTING_SUBHOME}
+        if exists $supplied_params{TESTING_SUBHOME};
+
+    $self->{mmkr_dir_ref} =  get_subhome_directory_status($top_subhome);
     {
         my $mmkr_dir = $self->{mmkr_dir_ref}->{abs};
         if (defined $self->{mmkr_dir_ref}->{flag}) {
