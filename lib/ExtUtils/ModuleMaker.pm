@@ -35,18 +35,27 @@ sub new {
 
     # multi-stage initialization of EU::MM object
     
-    # 1. Determine if there already exists on system a directory capable of
+    # 1.  Pull in arguments supplied to constructor.
+    # These will come from one of three sources:
+    # a.  In a script, KEY => 'Value' pairs supplied to new();
+    # b.  From modulemaker command-line, -option 'Value' pairs following
+    # 'modulemaker';
+    # c.  From modulemaker interactive mode, hard-wired values which may
+    # supersede (b) values.
+    my @arglist = @_;
+    croak "Must be hash or balanced list of key-value pairs: $!"
+        if (@arglist % 2);
+    my %supplied_params = @arglist;
+
+    # 2. Determine if there already exists on system a directory capable of
     # holding user ExtUtils::ModuleMaker::Personal::Defaults.  The name of
     # such a directory and whether it exists at THIS point are stored in an
     # array, a reference to which is the return value of
     # _preexists_mmkr_directory and which is then stored in the object.
     # NOTE:  If the directory does not yet exists, it is NOT automatically
     # created.
-#    $self->{mmkr_dir_ref} =  _preexists_mmkr_directory();
     $self->{mmkr_dir_ref} =  get_subhome_directory_status(".modulemaker");
     {
-#        my $mmkr_dir = $self->{mmkr_dir_ref}->[0];
-#        if (defined $self->{mmkr_dir_ref}->[1]) {
         my $mmkr_dir = $self->{mmkr_dir_ref}->{abs};
         if (defined $self->{mmkr_dir_ref}->{flag}) {
             push @INC, $mmkr_dir;
@@ -60,32 +69,21 @@ sub new {
         }
     }
 
-    # 2.  Populate object with default values.  These values will come from
+    # 3.  Populate object with default values.  These values will come from
     # lib/ExtUtils/ModuleMaker/Defaults.pm, unless a Personal::Defaults file
     # has been located in step 1 above.
     my $defaults_ref;
     $defaults_ref = $self->default_values();
-    foreach my $def ( keys %{$defaults_ref} ) {
-        $self->{$def} = $defaults_ref->{$def};
+    foreach my $param ( keys %{$defaults_ref} ) {
+        $self->{$param} = $defaults_ref->{$param};
     }
     
-    # 3.  Pull in arguments supplied to constructor.
-    # These will come from one of three sources:
-    # a.  In a script, KEY => 'Value' pairs supplied to new();
-    # b.  From modulemaker command-line, -option 'Value' pairs following
-    # 'modulemaker';
-    # c.  From modulemaker interactive mode, hard-wired values which may
-    # supersede (b) values.
-    my @arglist = @_;
-    croak "Must be hash or balanced list of key-value pairs: $!"
-        if (@arglist % 2);
-    my %parameters = @arglist;
 
     # 4.  Process key-value pairs supplied as arguments to new() either
     # from user-written program or from modulemaker utility.
     # These override default values (or may provide additional elements).
-    foreach my $param ( keys %parameters ) {
-        $self->{$param} = $parameters{$param};
+    foreach my $param ( keys %supplied_params ) {
+        $self->{$param} = $supplied_params{$param};
     }
 
     # 5.  Initialize keys set from information supplied above, system
@@ -323,7 +321,6 @@ END_BOTTOMFILE
 
     my $output =  $topfile . $kvpairs . $bottomfile;
 
-#    my $mmkr_dir = _make_mmkr_directory($self->{mmkr_dir_ref});
     my $mmkr_dir = make_subhome_directory($self->{mmkr_dir_ref});
     my $full_dir = File::Spec->catdir($mmkr_dir,
         qw| ExtUtils ModuleMaker Personal |
