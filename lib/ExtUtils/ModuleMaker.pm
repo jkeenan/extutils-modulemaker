@@ -35,12 +35,12 @@ sub new {
 
     # multi-stage initialization of EU::MM object
     
-    # 1.  Pull in arguments supplied to constructor.
-    # These will come from one of three sources:
-    # a.  In a script, KEY => 'Value' pairs supplied to new();
-    # b.  From modulemaker command-line, -option 'Value' pairs following
+    # 1.  Pull in arguments supplied to constructor -- but don't do anything
+    # with them yet.  These will come from one of three sources:
+    # a.  In a script:  KEY => 'Value' pairs supplied to new();
+    # b.  From modulemaker command-line:  -option 'Value' pairs following
     # 'modulemaker';
-    # c.  From modulemaker interactive mode, hard-wired values which may
+    # c.  From modulemaker interactive mode:  hard-wired values which may
     # supersede (b) values.
     my @arglist = @_;
     croak "Must be hash or balanced list of key-value pairs: $!"
@@ -54,13 +54,7 @@ sub new {
     # _preexists_mmkr_directory and which is then stored in the object.
     # NOTE:  If the directory does not yet exists, it is NOT automatically
     # created.
-    my $top_subhome = $supplied_params{TESTING_SUBHOME}
-                    ? $supplied_params{TESTING_SUBHOME}
-                    : '.modulemaker';
-    delete $supplied_params{TESTING_SUBHOME}
-        if exists $supplied_params{TESTING_SUBHOME};
-
-    $self->{mmkr_dir_ref} =  get_subhome_directory_status($top_subhome);
+    $self->{mmkr_dir_ref} =  get_subhome_directory_status(".modulemaker");
     {
         my $mmkr_dir = $self->{mmkr_dir_ref}->{abs};
         if (defined $self->{mmkr_dir_ref}->{flag}) {
