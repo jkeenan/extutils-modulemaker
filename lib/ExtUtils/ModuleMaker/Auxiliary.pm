@@ -40,6 +40,11 @@ use ExtUtils::ModuleMaker::Utility qw(
     _make_mmkr_directory
     _restore_mmkr_dir_status
 );
+use File::Save::Home qw(
+    get_subhome_directory_status
+    make_subhome_directory
+    restore_subhome_directory_status
+);
 
 =head1 NAME
 
@@ -304,8 +309,10 @@ sub _subclass_preparatory_tests {
     my $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
 
-    my $mmkr_dir_ref = _preexists_mmkr_directory();
-    my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
+#    my $mmkr_dir_ref = _preexists_mmkr_directory();
+#    my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
+    my $mmkr_dir_ref = get_subhome_directory_status(".modulemaker");
+    my $mmkr_dir = make_subhome_directory($mmkr_dir_ref);
     ok($mmkr_dir, "home/.modulemaker directory now present on system");
     my $eumm = File::Spec->catfile( qw| ExtUtils ModuleMaker | );
     my $eumm_dir = File::Spec->catfile( $mmkr_dir, $eumm );
@@ -383,7 +390,8 @@ sub _subclass_cleanup_tests {
 
     ok(chdir $odir, 'changed back to original directory after testing');
 
-    ok( _restore_mmkr_dir_status($mmkr_dir_ref),
+#    ok( _restore_mmkr_dir_status($mmkr_dir_ref),
+    ok( restore_subhome_directory_status($mmkr_dir_ref),
         "original presence/absence of .modulemaker directory restored");
 }
 
@@ -449,8 +457,10 @@ sub _reveal_pm_files_under_mmkr_dir {
 }
 
 sub _save_pretesting_status {
-    my $mmkr_dir_ref = _preexists_mmkr_directory();
-    my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
+#    my $mmkr_dir_ref = _preexists_mmkr_directory();
+#    my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
+    my $mmkr_dir_ref = get_subhome_directory_status(".modulemaker");
+    my $mmkr_dir = make_subhome_directory($mmkr_dir_ref);
     ok( $mmkr_dir, "personal defaults directory now present on system");
     my $pers_file = "ExtUtils/ModuleMaker/Personal/Defaults.pm";
     my $pers_def_ref = _process_personal_defaults_file(
@@ -471,7 +481,8 @@ sub _restore_pretesting_status {
     _reprocess_personal_defaults_file($statusref->{pers_def_ref});
     ok(chdir $statusref->{cwd},
         "changed back to original directory after testing");
-    ok( _restore_mmkr_dir_status($statusref->{mmkr_dir_ref}),
+#    ok( _restore_mmkr_dir_status($statusref->{mmkr_dir_ref}),
+    ok( restore_subhome_directory_status($statusref->{mmkr_dir_ref}),
         "original presence/absence of .modulemaker directory restored");
 }
 
