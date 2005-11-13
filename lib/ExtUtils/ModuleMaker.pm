@@ -13,12 +13,9 @@ BEGIN {
 use ExtUtils::ModuleMaker::Utility qw( 
     _get_dir_and_file
 );
-#    _preexists_mmkr_directory
-#    _make_mmkr_directory
 use Carp;
 use File::Path;
 use File::Spec;
-# use Data::Dumper;
 use Cwd;
 use File::Save::Home qw(
     get_subhome_directory_status

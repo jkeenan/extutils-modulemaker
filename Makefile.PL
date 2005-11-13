@@ -12,6 +12,7 @@ WriteMakefile(
         File::Basename  => 0, # in the Perl core
         File::Path      => 0, # in the Perl core
         ($^O =~ /Win32/ ? (Win32 => 0) : ()),
+        File::Save::Home => 0.03,
     },
     test        => { TESTS => join q{ }, map {glob} qw( t/*.t t/*/*.t ) },
 );
