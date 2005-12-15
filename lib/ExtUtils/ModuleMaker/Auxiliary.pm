@@ -1,10 +1,10 @@
 package ExtUtils::ModuleMaker::Auxiliary;
 # Contains test subroutines for distribution with ExtUtils::ModuleMaker
-# As of:  November 6, 2005
+# As of:  November 13, 2005
 use strict;
 local $^W = 1;
 use vars qw( $VERSION @ISA @EXPORT_OK );
-$VERSION = '0.43_03';
+$VERSION = '0.43_04';
 require Exporter;
 @ISA         = qw(Exporter);
 @EXPORT_OK   = qw(
@@ -35,11 +35,6 @@ use File::Temp qw| tempdir |;
 *like = *Test::More::like;
 *copy = *File::Copy::copy;
 *move = *File::Copy::move;
-use ExtUtils::ModuleMaker::Utility qw(
-    _preexists_mmkr_directory
-    _make_mmkr_directory
-    _restore_mmkr_dir_status
-);
 use File::Save::Home qw(
     get_subhome_directory_status
     make_subhome_directory
@@ -309,8 +304,6 @@ sub _subclass_preparatory_tests {
     my $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
 
-#    my $mmkr_dir_ref = _preexists_mmkr_directory();
-#    my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
     my $mmkr_dir_ref = get_subhome_directory_status(".modulemaker");
     my $mmkr_dir = make_subhome_directory($mmkr_dir_ref);
     ok($mmkr_dir, "home/.modulemaker directory now present on system");
@@ -390,7 +383,6 @@ sub _subclass_cleanup_tests {
 
     ok(chdir $odir, 'changed back to original directory after testing');
 
-#    ok( _restore_mmkr_dir_status($mmkr_dir_ref),
     ok( restore_subhome_directory_status($mmkr_dir_ref),
         "original presence/absence of .modulemaker directory restored");
 }
@@ -457,8 +449,6 @@ sub _reveal_pm_files_under_mmkr_dir {
 }
 
 sub _save_pretesting_status {
-#    my $mmkr_dir_ref = _preexists_mmkr_directory();
-#    my $mmkr_dir = _make_mmkr_directory($mmkr_dir_ref);
     my $mmkr_dir_ref = get_subhome_directory_status(".modulemaker");
     my $mmkr_dir = make_subhome_directory($mmkr_dir_ref);
     ok( $mmkr_dir, "personal defaults directory now present on system");
@@ -481,7 +471,6 @@ sub _restore_pretesting_status {
     _reprocess_personal_defaults_file($statusref->{pers_def_ref});
     ok(chdir $statusref->{cwd},
         "changed back to original directory after testing");
-#    ok( _restore_mmkr_dir_status($statusref->{mmkr_dir_ref}),
     ok( restore_subhome_directory_status($statusref->{mmkr_dir_ref}),
         "original presence/absence of .modulemaker directory restored");
 }

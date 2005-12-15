@@ -2,8 +2,8 @@
 use strict;
 local $^W = 1;
 use Test::More 
-# tests => 11;
-qw(no_plan);
+tests =>  5;
+# qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( ' File::Save::Home', qw|
     get_home_directory

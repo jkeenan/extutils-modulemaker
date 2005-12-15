@@ -1,5 +1,12 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.43_04 November 13, 2005
+
+Modified 4 subs in lib/ExtUtils/ModuleMaker/Auxiliary.pm to use subs from new
+CPAN module File::Save::Home rather than subs from
+lib/ExtUtils/ModuleMaker/Utility.pm.
+
+
 0.43_03 November 6, 2005
 
 By tossing in 'defined' at three points in ExtUtils::ModuleMaker::Opts, I
