@@ -2,7 +2,7 @@ package ExtUtils::ModuleMaker;
 use strict;
 local $^W = 1;
 BEGIN {
-    use vars qw( $VERSION @ISA ); 
+    use vars qw( $VERSION @ISA );
     $VERSION = '0.44';
     use base qw(
         ExtUtils::ModuleMaker::Defaults
@@ -10,7 +10,7 @@ BEGIN {
         ExtUtils::ModuleMaker::StandardText
     );
 };
-use ExtUtils::ModuleMaker::Utility qw( 
+use ExtUtils::ModuleMaker::Utility qw(
     _get_dir_and_file
 );
 use Carp;
@@ -31,7 +31,7 @@ sub new {
                            : bless( {}, $class );
 
     # multi-stage initialization of EU::MM object
-    
+
     # 1.  Pull in arguments supplied to constructor -- but don't do anything
     # with them yet.  These will come from one of three sources:
     # a.  In a script:  KEY => 'Value' pairs supplied to new();
@@ -74,7 +74,7 @@ sub new {
     foreach my $param ( keys %{$defaults_ref} ) {
         $self->{$param} = $defaults_ref->{$param};
     }
-    
+
 
     # 4.  Process key-value pairs supplied as arguments to new() either
     # from user-written program or from modulemaker utility.
@@ -134,7 +134,7 @@ sub complete_build {
             if $self->{INCLUDE_SCRIPTS_DIRECTORY};          # default is on
 
     $self->print_file( 'README',  $self->text_README() );   # always on
-    
+
     $self->print_file( 'LICENSE', $self->{LicenseParts}{LICENSETEXT} )
         if $self->{INCLUDE_LICENSE};                        # default is on 
 
@@ -279,7 +279,7 @@ use strict;
 
 my %default_values = (
 END_TOPFILE
-    
+
     my @keys_needed;
     for my $k (@dv) {
         push @keys_needed, $k
@@ -288,7 +288,7 @@ END_TOPFILE
                 $k eq 'SAVE_AS_DEFAULTS'
             );
     }
-    
+
     my $kvpairs;
     foreach my $k (@keys_needed) {
         $kvpairs .=
@@ -984,7 +984,7 @@ Your Perl program would look like this:
     use strict;
     use warnings;
     use ExtUtils::ModuleMaker;
-    
+
     my $mod = ExtUtils::ModuleMaker->new(
         NAME        => 'Sample::Module',
         AUTHOR      => 'John Q Public',
@@ -994,7 +994,7 @@ Your Perl program would look like this:
         TEST_NAME_SEPARATOR  => q{.},
         TEST_NAME_DERIVED_FROM_MODULE_NAME => 1,
     );
-    
+
     $mod->make_selections_defaults();
 
 A subsequent call to the F<modulemaker> utility,
@@ -1093,14 +1093,14 @@ methods including the following:
         $defaults_ref->{INCLUDE_POD_TEST}               = 1;
         return $defaults_ref;;
     }
-    
+
     sub text_Makefile {
         my $self = shift;
         my $Makefile_format = q~
     use strict;
     use warnings;
     use ExtUtils::MakeMaker;
-    
+
     WriteMakefile(
         NAME            => '%s',
         AUTHOR          => '%s <%s>',
@@ -1155,7 +1155,7 @@ depending on which you chose in creating your subclass.
     use strict;
     use warnings;
     use ExtUtils::ModuleMaker::PBP;
-    
+
     my $mod = ExtUtils::ModuleMaker::PBP->new(
         NAME        => 'Sample::Module',
     );
