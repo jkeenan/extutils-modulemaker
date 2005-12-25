@@ -1,30 +1,16 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
-0.43_04 November 13, 2005
+0.44    December 24, 2005
 
-Modified 4 subs in lib/ExtUtils/ModuleMaker/Auxiliary.pm to use subs from new
-CPAN module File::Save::Home rather than subs from
-lib/ExtUtils/ModuleMaker/Utility.pm.
-
-
-0.43_03 November 6, 2005
-
-By tossing in 'defined' at three points in ExtUtils::ModuleMaker::Opts, I
-solved the problem of supplying an empty string to CPANID, ORGANIZATION and
-WEBSITE in the modulemaker command-line utility.
-
-
-0.43_02 November 6, 2005
-
-Intermediate version not uploaded to CPAN.
-
-Corrected one typo in ModuleMaker.pm:  '\' before @ in e-mail address in 
-BUGS section.
+Corrected one typo in ExtUtils/ModuleMaker.pm:  '\' before @ in e-mail 
+address in BUGS section.
 
 Corrected typo in POD erroneously crediting David Golden with
 ExtUtils::ModuleMaker::PBP.  It should have been ExtUtils::ModuleMaker::TT.
 
-Deleted File::Temp from PM_PREREQ key in Makefile.PL.
+Deleted File::Temp from PM_PREREQ key in Makefile.PL.  It's only used in the
+test suite, and when it appears there it's within SKIP blocks in case user is
+using Perl older than 5.6y.
 
 Per bug report from David Golden, changed remaining references to 
 generate_pm_file() in StandardText.pm and Utility.pm to refer to 
@@ -32,7 +18,7 @@ complete_build().
 
 Rewrote Initializers::validate_values() and set_author_composite() in response
 to bug reports from David Golden and Terrence Brannon.  Added
-t/miscargs/919.t, 920.t and 921.t to test these revisions.  There remains one
+t/miscargs/919.t, 920.t and 921.t to test these revisions.  There remained one
 minor problem with the modulemaker command-line mode, however.  If in
 command-line mode you try to specify an empty string as the argument to -p
 (CPANID), -o (ORGANIZATION) or -w (WEBSITE) (and perhaps others not yet
@@ -46,6 +32,14 @@ Furthermore, if on the command-line you specify an empty string for any of
 those three attributes and you suppress interactive mode with -I option, the
 lib/*.pm file will use the default value, which is not what you wanted.
 
+By tossing in 'defined' at three points in ExtUtils::ModuleMaker::Opts, I
+solved the problem of supplying an empty string to CPANID, ORGANIZATION and
+WEBSITE in the modulemaker command-line utility.
+
+Modified 4 subs in lib/ExtUtils/ModuleMaker/Auxiliary.pm to use subs from new
+CPAN module File::Save::Home rather than subs from
+lib/ExtUtils/ModuleMaker/Utility.pm.  Added File::Save::Home to the PREREQ_PM
+key in Makefile.PL.
 
 0.43    September 29, 2005
     - In response to report from CPAN tester imacat, corrected the number of

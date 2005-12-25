@@ -1,8 +1,8 @@
 package ExtUtils::ModuleMaker::Defaults;
-# as of 11-13-2005
+# as of 12-24-2005
 use strict;
 use vars qw( $VERSION );
-$VERSION = '0.43_04';
+$VERSION = '0.44';
 
 my $usage = <<ENDOFUSAGE;
 
