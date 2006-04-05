@@ -7,7 +7,7 @@ local $^W = 1;
 use ExtUtils::ModuleMaker::Interactive;
 use ExtUtils::ModuleMaker::Opts;
 use vars qw ( $VERSION );
-$VERSION = '0.44';
+$VERSION = '0.45';
 
 my $opt = ExtUtils::ModuleMaker::Opts->new(
     q{ExtUtils::ModuleMaker},
@@ -32,8 +32,8 @@ modulemaker - interactive interface to ExtUtils::ModuleMaker; replaces C<h2xs -A
 
 =head1 VERSION
 
-This document references version 0.44 of modulemaker, released
-to CPAN on December 24, 2005.
+This document references version 0.45 of modulemaker, released
+to CPAN on April 5, 2006.
 
 =head1 USAGE::Simple
 

@@ -1,10 +1,10 @@
 package ExtUtils::ModuleMaker::Utility;
-# as of 12-24-2005
+# as of 04-05-2006
 use strict;
 local $^W = 1;
 use base qw(Exporter);
 use vars qw( @EXPORT_OK $VERSION );
-$VERSION = '0.44';
+$VERSION = '0.45';
 @EXPORT_OK   = qw(
     _get_home_directory
     _get_mmkr_directory

@@ -1,11 +1,11 @@
 package ExtUtils::ModuleMaker::Interactive;
-# as of 12-24-2005
+# as of 04-05-2006
 use strict;
 local $^W = 1;
 BEGIN {
     use base qw( ExtUtils::ModuleMaker );
     use vars qw ( $VERSION ); 
-    $VERSION = '0.44';
+    $VERSION = '0.45';
 }
 use Carp;
 use Data::Dumper;

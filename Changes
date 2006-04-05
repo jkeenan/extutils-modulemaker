@@ -1,5 +1,9 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.45    April 5, 2006
+
+In response to bug report from Gabriel Fortuna, corrected bug in t/01_ini.t.
+
 0.44    December 24, 2005
 
 Corrected one typo in ExtUtils/ModuleMaker.pm:  '\' before @ in e-mail 

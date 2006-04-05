@@ -5,7 +5,7 @@ use Test::More
 tests =>  5;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
-use_ok( ' File::Save::Home', qw|
+use_ok( 'File::Save::Home', qw|
     get_home_directory
     get_subhome_directory_status
     make_subhome_directory

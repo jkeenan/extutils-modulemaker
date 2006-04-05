@@ -5,7 +5,7 @@ local $^W = 1;
 BEGIN {
     use base qw(Exporter);
     use vars qw( @EXPORT_OK $VERSION );
-    $VERSION = '0.44';
+    $VERSION = '0.45';
     @EXPORT_OK   = qw(Get_Local_License Verify_Local_License);
 }
 
