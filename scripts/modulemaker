@@ -1,4 +1,5 @@
 #!/usr/local/bin/perl
+#$Id$
 # modulemaker:  command-line utility implementing ExtUtils::ModuleMaker
 eval 'exec /usr/local/bin/perl  -S $0 ${1+"$@"}'
   if 0;    # not running under some shell
