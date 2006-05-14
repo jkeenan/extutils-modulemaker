@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::StandardText;
-# as of 04-29-2006
+#$Id$
 use strict;
 local $^W = 1;
 use vars qw ( $VERSION );
@@ -625,7 +625,8 @@ sub block_begin {
     my ( $self, $module ) = @_;
     my $version = $self->process_attribute( $module, 'VERSION' );
     my $package_line  = "package $module->{NAME};\n";
-    my $strict_line   = "use strict;\n";
+    my $strict_line   = "#$Id$
+use strict;\n";
     my $warnings_line = "use warnings;\n";  # not included in standard version
     my $begin_block   = <<"END_OF_BEGIN";
 

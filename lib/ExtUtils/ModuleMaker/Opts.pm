@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::Opts;
-# as of 04-29-2006
+#$Id$
 use strict;
 local $^W = 1;
 use vars qw( $VERSION );

@@ -1,4 +1,5 @@
 package ExtUtils::ModuleMaker::Licenses::Local;
+#$Id$
 use strict;
 local $^W = 1;
 

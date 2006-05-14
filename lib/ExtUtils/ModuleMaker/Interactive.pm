@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::Interactive;
-# as of 04-29-2006
+#$Id$
 use strict;
 local $^W = 1;
 BEGIN {

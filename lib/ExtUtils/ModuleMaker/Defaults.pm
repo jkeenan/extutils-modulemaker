@@ -1,5 +1,5 @@
 package ExtUtils::ModuleMaker::Defaults;
-# as of 04-29-2006
+#$Id$
 use strict;
 use vars qw( $VERSION );
 $VERSION = 0.46;
