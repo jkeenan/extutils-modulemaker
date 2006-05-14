@@ -1,5 +1,14 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.46    April 29, 2006
+
+Use of Devel::Cover for coverage analysis indicated that most subroutines in
+lib/ExtUtils/ModuleMaker/Utility.pm were no longer covered.  It turned out
+that, with one exception, they had all been superseded by calls to
+File::Save::Home functions.  Hence, they could safely be deleted from the file
+and the distribution.  The one exception, _get_dir_and_file(), was moved into
+lib/ExtUtils/ModuleMaker.pm.
+
 0.45    April 5, 2006
 
 In response to bug report from Gabriel Fortuna, corrected bug in t/01_ini.t.

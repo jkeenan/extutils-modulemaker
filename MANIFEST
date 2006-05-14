@@ -8,7 +8,6 @@ lib/ExtUtils/ModuleMaker/Licenses/Local.pm
 lib/ExtUtils/ModuleMaker/Licenses/Standard.pm
 lib/ExtUtils/ModuleMaker/Opts.pm
 lib/ExtUtils/ModuleMaker/StandardText.pm
-lib/ExtUtils/ModuleMaker/Utility.pm
 LICENSE
 Makefile.PL
 MANIFEST

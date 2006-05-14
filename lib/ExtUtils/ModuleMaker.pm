@@ -3,16 +3,13 @@ use strict;
 local $^W = 1;
 BEGIN {
     use vars qw( $VERSION @ISA );
-    $VERSION = '0.45';
+    $VERSION = 0.46;
     use base qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::Initializers
         ExtUtils::ModuleMaker::StandardText
     );
 };
-use ExtUtils::ModuleMaker::Utility qw(
-    _get_dir_and_file
-);
 use Carp;
 use File::Path;
 use File::Spec;
@@ -340,6 +337,31 @@ END_BOTTOMFILE
     close $fh or croak "Unable to close $pers_full after writing: $!";
 }
 
+## C<_get_dir_and_file()>
+## 
+## This subroutine was originally in lib/ExtUtils/ModuleMaker/Utility.pm.  
+## As other subroutines therein were superseded by calls to File::Save::Home
+## functions, they were no longer called in the .pm or .t files, hence, became
+## superfluous and uncovered by test suite.  When _get_dir_and_file() became the
+## last called subroutine from Utility.pm, I decided it was simpler to pull it
+## into the current package.
+## 
+## Usage     : _get_dir_and_file($module) within complete_build()
+## Purpose   : Get directory and name for .pm file being processed
+## Returns   : 2-element list: First $dir; Second: $file
+## Argument  : $module: pointer to the module being built
+##             (as there can be more than one module built by EU::MM);
+##             for the primary module it is a pointer to $self
+## Comment   : Merely a utility subroutine to refactor code; not a method call.
+
+sub _get_dir_and_file {
+    my $module = shift;
+    my @layers      = split( /::/, $module->{NAME} );
+    my $file        = pop(@layers) . '.pm';
+    my $dir         = join( '/', 'lib', @layers );
+    return ($dir, $file);
+}
+
 1;
 
 #################### DOCUMENTATION ####################
@@ -380,8 +402,8 @@ Inside a Perl program:
 
 =head1 VERSION
 
-This document references version 0.45 of ExtUtils::ModuleMaker, released
-to CPAN on April 5, 2006.
+This document references version 0.46 of ExtUtils::ModuleMaker, released
+to CPAN on April 29, 2006.
 
 =head1 DESCRIPTION
 
@@ -1341,6 +1363,4 @@ F<modulemaker>, F<perlnewmod>, F<h2xs>, F<ExtUtils::MakeMaker>, F<Module::Build>
 F<ExtUtils::ModuleMaker::PBP>, F<ExtUtils::ModuleMaker::TT>, F<mmkrpbp>.
 
 =cut
-
-
 
