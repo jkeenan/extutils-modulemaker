@@ -559,8 +559,6 @@ END_OF_POD_TEST
   Argument  : $module: pointer to the module being built
               (as there can be more than one module built by EU::MM);
               for the primary module it is a pointer to $self
-  Comment   : [Method name is inaccurate; it's not building a 'page' but
-              rather the text for a pm file.
 
 =cut
 
@@ -625,8 +623,8 @@ sub block_begin {
     my ( $self, $module ) = @_;
     my $version = $self->process_attribute( $module, 'VERSION' );
     my $package_line  = "package $module->{NAME};\n";
-    my $strict_line   = "#$Id$
-use strict;\n";
+    my $Id_line       = q{#$Id#} . "\n";
+    my $strict_line   = "use strict;\n";
     my $warnings_line = "use warnings;\n";  # not included in standard version
     my $begin_block   = <<"END_OF_BEGIN";
 
@@ -642,11 +640,16 @@ BEGIN {
 }
 
 END_OF_BEGIN
-    my $text = 
-        $package_line . 
-        $strict_line . 
-        # $warnings_line . 
-        $begin_block;
+#    my $text = 
+#        $package_line . 
+#        $strict_line . 
+#        # $warnings_line . 
+#        $begin_block;
+    my $text = $package_line;
+    $text .= $Id_line       if $self->{INCLUDE_ID_LINE};
+    $text .= $strict_line;
+    $text .= $warnings_line if $self->{INCLUDE_WARNINGS};
+    $text .= $begin_block;
     return $text;
 }
 

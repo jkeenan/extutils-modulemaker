@@ -614,6 +614,17 @@ Boolean value which, if true, includes a F<LICENSE> file in the distribution.
 Boolean value which, if true, includes a F<scripts/> directory (at the same
 level as F<lib/> or F<t/>).  (Default is on.)
 
+=item * INCLUDE_WARNINGS
+
+Boolean value which, if true, inserts C<use warnings;> in all Perl modules
+created by use of this module.  (Default is off.)
+
+=item * INCLUDE_ID_LINE
+
+Boolean value which, if true, inserts C<#$Id$> in all Perl modules
+created by use of this module for the purpose of inserting a Subversion file
+'Id' string.  (Default is off.)
+
 =back
 
 =item * Arguments Related to the Module's Author
