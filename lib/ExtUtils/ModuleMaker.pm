@@ -273,9 +273,6 @@ sub make_selections_defaults {
     my @dv = keys %{ $self->default_values() };
     my $topfile = <<'END_TOPFILE';
 package ExtUtils::ModuleMaker::Personal::Defaults;
-#n#$Idn#$Id$
-#$Id$
-#$Id$
 use strict;
 
 my %default_values = (
@@ -1018,10 +1015,7 @@ name rather than ExtUtils::ModuleMaker's default of C<load>.
 Your Perl program would look like this:
 
     #!/usr/local/bin/perl
-    #n#$Idn#$Id$
-#$Id$
-#$Id$
-use strict;
+    use strict;
     use warnings;
     use ExtUtils::ModuleMaker;
 
@@ -1137,10 +1131,7 @@ methods including the following:
     sub text_Makefile {
         my $self = shift;
         my $Makefile_format = q~
-    #n#$Idn#$Id$
-#$Id$
-#$Id$
-use strict;
+    use strict;
     use warnings;
     use ExtUtils::MakeMaker;
 
@@ -1195,10 +1186,7 @@ distribution, I<i.e.,> with either ExtUtils::MakeMaker or Module::Build,
 depending on which you chose in creating your subclass.
 
     #!/usr/local/bin/perl
-    #n#$Idn#$Id$
-#$Id$
-#$Id$
-use strict;
+    use strict;
     use warnings;
     use ExtUtils::ModuleMaker::PBP;
 
