@@ -101,6 +101,8 @@ t/miscargs/918.t
 t/miscargs/919.t
 t/miscargs/920.t
 t/miscargs/921.t
+t/miscargs/922.t
+t/miscargs/923.t
 t/mmkr/801.t
 t/mmkr/802.t
 t/mmkr/803.t

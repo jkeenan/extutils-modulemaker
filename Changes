@@ -1,5 +1,12 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.47    May 17, 2006
+
+Added two more options:  INCLUDE_ID_LINE and INCLUDE_WARNINGS.  Both are off
+by default.  Setting either to a true value includes a Subversion-style 'Id'
+keyword at the top of each Perl module created by ModuleMaker or inserts 'use
+warnings;' in the same location.
+
 0.46    April 29, 2006
 
 Use of Devel::Cover for coverage analysis indicated that most subroutines in
