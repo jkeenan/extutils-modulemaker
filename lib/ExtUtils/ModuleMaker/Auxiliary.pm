@@ -62,10 +62,6 @@ suites for distributions which subclass ExtUtils::ModuleMaker.
                 etc. was created correctly by returning a string against which
                 a pattern can be matched.
 
-=head1 SEE ALSO
-
-F<ExtUtils::ModuleMaker>.
-
 =cut
 
 sub read_file_string {
@@ -474,6 +470,12 @@ sub _restore_pretesting_status {
     ok( restore_subhome_directory_status($statusref->{mmkr_dir_ref}),
         "original presence/absence of .modulemaker directory restored");
 }
+
+=head1 SEE ALSO
+
+F<ExtUtils::ModuleMaker>.
+
+=cut
 
 1;
 
