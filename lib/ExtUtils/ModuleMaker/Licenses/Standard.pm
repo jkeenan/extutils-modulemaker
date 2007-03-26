@@ -6,7 +6,7 @@ local $^W = 1;
 BEGIN {
     use base qw(Exporter);
     use vars qw( @EXPORT_OK $VERSION );
-    $VERSION = 0.47;
+    $VERSION = 0.48;
     @EXPORT_OK   = qw(Get_Standard_License Verify_Standard_License);
 #    $VERSION     : taken from lib/ExtUtils/ModuleMaker.pm
 }

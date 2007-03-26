@@ -1,5 +1,13 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.48    March 26, 2006
+
+Responded to bug report http://rt.cpan.org/Ticket/Display.html?id=25830 of
+warnings being thrown during 'make test' in a situation where requestor
+Paul_AV had added a local license to EU::MM::Licenses::Local.  It turned out
+that at line 80 of EU::MM::Interactive I had failed to s/Standard/Local/g.
+Fixed.
+
 0.47    May 17, 2006
 
 Added two more options:  INCLUDE_ID_LINE and INCLUDE_WARNINGS.  Both are off

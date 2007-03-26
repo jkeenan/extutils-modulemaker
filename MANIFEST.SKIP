@@ -19,6 +19,7 @@ CVS/.*
 \.DS_Store$
 _uu$
 \.svn
+bug/
 cover_db/
 coverage/
 html/

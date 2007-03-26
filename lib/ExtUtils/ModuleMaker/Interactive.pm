@@ -5,7 +5,7 @@ local $^W = 1;
 BEGIN {
     use base qw( ExtUtils::ModuleMaker );
     use vars qw ( $VERSION ); 
-    $VERSION = 0.47;
+    $VERSION = 0.48;
 }
 use Carp;
 use Data::Dumper;
@@ -77,7 +77,7 @@ my @lic              = (
     ),
     (
         map { [ $_, $License_Local->{$_} ] }
-          sort { $License_Standard->{$a} cmp $License_Standard->{$b} }
+          sort { $License_Local->{$a} cmp $License_Local->{$b} }
           keys( %{$License_Local} )
     ),
 );
