@@ -4,7 +4,7 @@ use strict;
 local $^W = 1;
 BEGIN {
     use vars qw( $VERSION @ISA );
-    $VERSION = 0.48;
+    $VERSION = 0.49;
     use base qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::Initializers
@@ -146,12 +146,10 @@ sub complete_build {
         $self->text_MANIFEST_SKIP() )
             if $self->{INCLUDE_MANIFEST_SKIP};              # default is off
 
-    $self->print_file( File::Spec->catfile( qw| t pod-coverage.t | ),
-        $self->text_pod_coverage_test() )
+    $self->print_file( qq|t/pod-coverage.t|, $self->text_pod_coverage_test() )
             if $self->{INCLUDE_POD_COVERAGE_TEST};          # default is off
             
-    $self->print_file( File::Spec->catfile( qw| t pod.t | ),
-        $self->text_pod_test() )
+    $self->print_file( qq|t/pod.t|, $self->text_pod_test() )
             if $self->{INCLUDE_POD_TEST};                   # default is off
 
     if ( $self->{BUILD_SYSTEM} eq 'ExtUtils::MakeMaker' ) {
@@ -403,8 +401,8 @@ Inside a Perl program:
 
 =head1 VERSION
 
-This document references version 0.48 of ExtUtils::ModuleMaker, released
-to CPAN on March 26, 2007.
+This document references version 0.49 of ExtUtils::ModuleMaker, released
+to CPAN on March 27, 2007.
 
 =head1 DESCRIPTION
 
@@ -1336,10 +1334,14 @@ different systems -- I<i.e.,> to problems outside ExtUtils::ModuleMaker
 itself.  Several Perlmonks helped investigate this problem:  chromatic,
 dave_the_m, randyk, and njh.
 
+Thanks to Paul M Sirianni for reporting bugs that led to versions 0.48 and
+0.49.
+
 =head1 COPYRIGHT
 
 Copyright (c) 2001-2002 R. Geoffrey Avery.
-Revisions from v0.33 forward (c) 2005 James E. Keenan.  All rights reserved.
+Revisions from v0.33 forward (c) 2005-2007 James E. Keenan.  
+All rights reserved.
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
 

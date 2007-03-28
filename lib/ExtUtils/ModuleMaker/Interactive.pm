@@ -5,7 +5,7 @@ local $^W = 1;
 BEGIN {
     use base qw( ExtUtils::ModuleMaker );
     use vars qw ( $VERSION ); 
-    $VERSION = 0.48;
+    $VERSION = 0.49;
 }
 use Carp;
 use Data::Dumper;

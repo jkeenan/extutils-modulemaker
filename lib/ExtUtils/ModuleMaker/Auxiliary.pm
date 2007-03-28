@@ -4,7 +4,7 @@ use strict;
 # Contains test subroutines for distribution with ExtUtils::ModuleMaker
 local $^W = 1;
 use vars qw( $VERSION @ISA @EXPORT_OK );
-$VERSION = 0.48;
+$VERSION = 0.49;
 require Exporter;
 @ISA         = qw(Exporter);
 @EXPORT_OK   = qw(
