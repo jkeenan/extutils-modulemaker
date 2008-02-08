@@ -1,5 +1,17 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.51    February 8, 2008
+
+ExtUtils::ModuleMaker::Interactive:: Change prompt for Abstract; make it
+44-characters long.
+
+0.50    February 8, 2008
+
+'modulemaker' script was failing to initialize certain variables.  Diagnosed
+as problems in ExtUtils::ModuleMaker::Opts.  Perl 5.10-related upgrade to
+Getopts::Std required declaration of $Getopts::Std::STANDARD_HELP_VERSION with
+assignment of true value.  Eliminated croak(Usage()).
+
 0.49    March 27, 2007
 
 Responded to bug report http://rt.cpan.org/Ticket/Display.html?id=25830 that

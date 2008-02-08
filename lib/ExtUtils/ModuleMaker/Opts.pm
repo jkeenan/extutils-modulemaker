@@ -3,13 +3,13 @@ package ExtUtils::ModuleMaker::Opts;
 use strict;
 local $^W = 1;
 use vars qw( $VERSION );
-$VERSION = 0.49;
+$VERSION = 0.51;
 use Getopt::Std;
+$Getopt::Std::STANDARD_HELP_VERSION = 1;
 use Carp;
 
 my %opts;
 getopts( "bhqsCIPVcn:a:v:l:u:p:o:w:e:t:r:d:", \%opts );
-croak Usage() if ( $opts{h} );
 
 sub new {
     my $class = shift;

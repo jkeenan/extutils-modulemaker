@@ -5,7 +5,7 @@ local $^W = 1;
 BEGIN {
     use base qw( ExtUtils::ModuleMaker );
     use vars qw ( $VERSION ); 
-    $VERSION = 0.49;
+    $VERSION = 0.51;
 }
 use Carp;
 use Data::Dumper;
@@ -373,7 +373,7 @@ sub Main_Menu {
         }
         elsif ( $response eq 'S' ) {
             my $value =
-              Question_User( "Please enter a 44-character max Abstract for this extension",
+              Question_User( "Please enter Abstract (suggest: 44-char max)",
                 'data' );
             $MOD->{ABSTRACT} = $value;
         }

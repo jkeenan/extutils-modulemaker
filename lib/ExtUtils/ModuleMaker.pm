@@ -4,7 +4,7 @@ use strict;
 local $^W = 1;
 BEGIN {
     use vars qw( $VERSION @ISA );
-    $VERSION = 0.49;
+    $VERSION = 0.51;
     use base qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::Initializers
@@ -401,8 +401,8 @@ Inside a Perl program:
 
 =head1 VERSION
 
-This document references version 0.49 of ExtUtils::ModuleMaker, released
-to CPAN on March 27, 2007.
+This document references version 0.51 of ExtUtils::ModuleMaker, released
+to CPAN on February 9, 2008.
 
 =head1 DESCRIPTION
 
@@ -1335,7 +1335,7 @@ itself.  Several Perlmonks helped investigate this problem:  chromatic,
 dave_the_m, randyk, and njh.
 
 Thanks to Paul M Sirianni for reporting bugs that led to versions 0.48 and
-0.49.
+0.51.
 
 =head1 COPYRIGHT
 
