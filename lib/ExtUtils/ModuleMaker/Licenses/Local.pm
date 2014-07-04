@@ -1,12 +1,11 @@
 package ExtUtils::ModuleMaker::Licenses::Local;
-#$Id$
 use strict;
 local $^W = 1;
 
 BEGIN {
     use base qw(Exporter);
     use vars qw( @EXPORT_OK $VERSION );
-    $VERSION = 0.51;
+    $VERSION = 0.52;
     @EXPORT_OK   = qw(Get_Local_License Verify_Local_License);
 }
 
@@ -123,7 +122,7 @@ in the subject line.
 =head1 COPYRIGHT
 
 Copyright (c) 2001-2002 R. Geoffrey Avery.
-Revisions from v0.33 forward (c) 2005 James E. Keenan.  All rights reserved.
+Revisions from v0.33 forward (c) 2005, 2014 James E. Keenan.  All rights reserved.
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
 

@@ -1,5 +1,11 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.52    July 4, 2014
+
+Move version control from Subversion to git.  Establish development
+repository at https://github.com/jkeenan/extutils-modulemaker.  Adapt
+code to prevent warnings to be added in Perl 5.22.
+
 0.51    February 8, 2008
 
 ExtUtils::ModuleMaker::Interactive:: Change prompt for Abstract; make it

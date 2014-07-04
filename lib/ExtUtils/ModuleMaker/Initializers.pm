@@ -1,9 +1,8 @@
 package ExtUtils::ModuleMaker::Initializers;
-#$Id$
 use strict;
 local $^W = 1;
 use vars qw( $VERSION );
-$VERSION = 0.51;
+$VERSION = 0.52;
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
     Get_Standard_License
     Verify_Standard_License

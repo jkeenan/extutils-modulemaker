@@ -77,7 +77,7 @@ SKIP: {
         ok( -f, "file $_ exists" ) for ( @pm_pred, @t_pred);
         for my $pm (@pm_pred) {
             my $line = read_file_string($pm);
-            like($line, qr<=pod.+INCLUDE_FILE_IN_PM.+sub marine {}>s,
+            like($line, qr<=pod.+INCLUDE_FILE_IN_PM.+sub marine \{}>s,
                 "$pm contains pod header, key-value pair, sub");
         }
     }
