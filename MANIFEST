@@ -13,9 +13,6 @@ LICENSE
 Makefile.PL
 MANIFEST
 MANIFEST.SKIP
-META.yml			Module meta-data (added by MakeMaker)
-MYMETA.json
-MYMETA.yml
 README
 scripts/modulemaker
 t/01_ini.t
@@ -117,8 +114,3 @@ t/mmkr/808.t
 t/testlib/arbitrary.txt
 t/testlib/ExtUtils/ModuleMaker/Alt_block_new_method.pm
 t/testlib/ExtUtils/ModuleMaker/Testing/Defaults.pm
-t/testlib/IO/Capture.pm
-t/testlib/IO/Capture/ErrorMessages.pm
-t/testlib/IO/Capture/Stderr.pm
-t/testlib/IO/Capture/Stdout.pm
-t/testlib/IO/Capture/Tie_STDx.pm

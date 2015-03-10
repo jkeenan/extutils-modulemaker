@@ -1,5 +1,10 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.53    March 10, 2015
+
+Add metadata to Makefile.PL.  Remove IO::Capture from distribution.  Instead,
+add it to TEST_REQUIRES metadata in Makefile.PL.
+
 0.52    July 4, 2014
 
 Move version control from Subversion to git.  Establish development
