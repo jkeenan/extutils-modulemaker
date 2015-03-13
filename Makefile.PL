@@ -16,7 +16,7 @@ WriteMakefile(
         File::Save::Home => 0.03,
     },
     ( $mm_ver < 6.63_03 ? 'BUILD_REQUIRES' : 'TEST_REQUIRES' ) => {
-                     'IO::CaptureOutput' => 0,
+                     'IO::Capture' => 0,
                      'Test::More' => 0.44,
                     },
     LICENSE      => "perl",

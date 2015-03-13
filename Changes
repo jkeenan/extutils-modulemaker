@@ -1,5 +1,10 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.54    March 13, 2015
+
+Correct error in TEST_REQUIRES: should have been IO::Capture rather than
+IO::CaptureOutput.
+
 0.53    March 10, 2015
 
 Add metadata to Makefile.PL.  Remove IO::Capture from distribution.  Instead,
