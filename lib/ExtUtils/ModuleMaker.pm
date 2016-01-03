@@ -3,7 +3,7 @@ use strict;
 local $^W = 1;
 BEGIN {
     use vars qw( $VERSION @ISA );
-    $VERSION = 0.54;
+    $VERSION = 0.55;
     use base qw(
         ExtUtils::ModuleMaker::Defaults
         ExtUtils::ModuleMaker::Initializers
@@ -404,8 +404,8 @@ Inside a Perl program:
 
 =head1 VERSION
 
-This document references version 0.52 of ExtUtils::ModuleMaker, released
-to CPAN on July 04 2014.
+This document references version 0.55 of ExtUtils::ModuleMaker, released
+to CPAN on January 03 2016.
 
 =head1 DESCRIPTION
 
@@ -1341,6 +1341,10 @@ dave_the_m, randyk, and njh.
 
 Thanks to Paul M Sirianni for reporting bugs that led to versions 0.48 and
 0.51.
+
+Thanks to Chris Kirke for pointing to reports at
+http://cpants.cpanauthors.org/dist/ExtUtils-ModuleMaker of inconsistent
+$VERSION numbers across the component files.
 
 =head1 COPYRIGHT
 

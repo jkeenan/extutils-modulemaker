@@ -33,3 +33,4 @@ svndiff/
 ^htmlify
 ^.git/
 ^MYMETA.*
+\.version_info.pl

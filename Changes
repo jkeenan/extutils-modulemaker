@@ -1,5 +1,11 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.55    January 03, 2016
+
+Prodded by Chris Kirke during the CPAN Pull Request Challenge, standardized
+$VERSION numbers and release dates across all files.  No changes in
+functionality or tests.
+
 0.54    March 13, 2015
 
 Correct error in TEST_REQUIRES: should have been IO::Capture rather than

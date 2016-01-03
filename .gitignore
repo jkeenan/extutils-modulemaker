@@ -17,4 +17,4 @@ nytprof.out
 /pm_to_blib
 *.o
 *.bs
-ExtUtils-ModuleMaker.*.tar.gz
+ExtUtils-ModuleMaker*.tar.gz
