@@ -1,7 +1,7 @@
 package ExtUtils::ModuleMaker::Licenses::Standard;
 #$Id$
 use strict;
-local $^W = 1;
+use warnings;
 
 BEGIN {
     use base qw(Exporter);

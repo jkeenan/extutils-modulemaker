@@ -1,6 +1,6 @@
 # t/05_abstract.t
 use strict;
-local $^W = 1;
+use warnings;
 use Test::More tests =>  35;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(

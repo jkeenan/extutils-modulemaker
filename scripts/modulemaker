@@ -4,7 +4,7 @@
 eval 'exec /usr/local/bin/perl  -S $0 ${1+"$@"}'
   if 0;    # not running under some shell
 use strict;
-local $^W = 1;
+use warnings;
 use ExtUtils::ModuleMaker::Interactive;
 use ExtUtils::ModuleMaker::Opts;
 use vars qw ( $VERSION );

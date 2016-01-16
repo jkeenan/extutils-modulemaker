@@ -2,7 +2,7 @@
 # tests of importation of standard text from
 # lib/ExtUtils/Modulemaker/Defaults.pm
 use strict;
-local $^W = 1;
+use warnings;
 use Test::More tests =>   43;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(

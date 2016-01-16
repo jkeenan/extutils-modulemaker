@@ -1,7 +1,7 @@
 package ExtUtils::ModuleMaker::Interactive;
 #$Id$
 use strict;
-local $^W = 1;
+use warnings;
 BEGIN {
     use base qw( ExtUtils::ModuleMaker );
     use vars qw ( $VERSION ); 

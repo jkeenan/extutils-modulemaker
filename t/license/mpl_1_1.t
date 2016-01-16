@@ -1,6 +1,6 @@
 # t/license/mpl_1_1.t
 use strict;
-local $^W = 1;
+use warnings;
 use Test::More tests => 17;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Licenses::Local' );

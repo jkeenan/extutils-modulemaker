@@ -1,6 +1,6 @@
 # t/01_ini.t - check module loading
 use strict;
-local $^W = 1;
+use warnings;
 use Test::More 
 tests =>  5;
 # qw(no_plan);

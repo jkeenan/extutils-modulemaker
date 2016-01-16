@@ -1,6 +1,6 @@
 # t/07_proxy.t
 use strict;
-local $^W = 1;
+use warnings;
 use Test::More tests =>  57;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(

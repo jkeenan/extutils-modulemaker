@@ -1,6 +1,6 @@
 # t/mmkr/805.t
 use strict;
-local $^W = 1;
+use warnings;
 use Test::More tests => 24;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(

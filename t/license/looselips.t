@@ -1,6 +1,6 @@
 # t/license/looselips.t
 use strict;
-local $^W = 1;
+use warnings;
 use Test::More tests => 33;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Licenses::Local' );

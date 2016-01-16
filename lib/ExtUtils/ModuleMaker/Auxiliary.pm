@@ -1,7 +1,7 @@
 package ExtUtils::ModuleMaker::Auxiliary;
 use strict;
 # Contains test subroutines for distribution with ExtUtils::ModuleMaker
-local $^W = 1;
+use warnings;
 use vars qw( $VERSION @ISA @EXPORT_OK );
 $VERSION = 0.55;
 require Exporter;

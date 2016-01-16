@@ -1,6 +1,6 @@
 # t/license/ibm_1_0.t
 use strict;
-local $^W = 1;
+use warnings;
 use Test::More tests => 17;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Licenses::Local' );

@@ -1,6 +1,6 @@
 # t/failsafe/211.t
 use strict;
-local $^W = 1;
+use warnings;
 use Test::More tests => 13;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(

@@ -2,7 +2,7 @@
 # test whether methods overriding those provided by EU::MM::StandardText
 # create files as intended
 use strict;
-local $^W = 1;
+use warnings;
 use Test::More 
 tests =>  40;
 # qw(no_plan);

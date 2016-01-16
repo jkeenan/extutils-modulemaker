@@ -1,7 +1,7 @@
 # t/makedefaults/1203.t
 # tests of options to make modulemaker selections default personal values
 use strict;
-local $^W = 1;
+use warnings;
 use Test::More tests => 37;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(

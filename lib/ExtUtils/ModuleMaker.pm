@@ -1,6 +1,6 @@
 package ExtUtils::ModuleMaker;
 use strict;
-local $^W = 1;
+use warnings;
 BEGIN {
     use vars qw( $VERSION @ISA );
     $VERSION = 0.55;

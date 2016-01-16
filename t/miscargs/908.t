@@ -1,7 +1,7 @@
 # t/miscargs/908.t
 # tests of miscellaneous arguments passed to constructor
 use strict;
-local $^W = 1;
+use warnings;
 use Test::More tests => 37;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
