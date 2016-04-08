@@ -78,7 +78,7 @@ ExtUtils::ModuleMaker::Licenses::Local - Templates for the module's License/Copy
 
 =head1 SYNOPSIS
 
-  use ExtUtils::ModuleMaker::Local::Licenses;
+  use ExtUtils::ModuleMaker::Licenses::Local;
   blah blah blah
 
 =head1 DESCRIPTION
