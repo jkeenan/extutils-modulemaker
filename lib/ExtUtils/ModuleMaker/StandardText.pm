@@ -3,7 +3,7 @@ package ExtUtils::ModuleMaker::StandardText;
 use strict;
 use warnings;
 use vars qw ( $VERSION );
-$VERSION = 0.55;
+$VERSION = 0.56;
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
     Get_Standard_License
     Verify_Standard_License

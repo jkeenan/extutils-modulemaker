@@ -1,5 +1,12 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.56    January 30, 2017
+
+Removed all test files using 'scripts/modulemaker' as first step in
+diagnosing problem reported in
+https://rt.cpan.org/Ticket/Display.html?id=111637.  No changes in
+functionality.
+
 0.55    January 03, 2016
 
 Prodded by Chris Kirke during the CPAN Pull Request Challenge, standardized

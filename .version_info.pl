@@ -1,7 +1,7 @@
 %trans = (
-    version => { old => '0.54', new => '0.55' },
-    date    => { old => 'July 04 2014', new => 'January 03 2016' },
-    copyright => { old => '2014', new => '2016' },
+    version => { old => '0.55', new => '0.56' },
+    date    => { old => 'January 03 2016', new => 'January 30 2017' },
+    copyright => { old => '2016', new => '2017' },
 );
 
 1;
