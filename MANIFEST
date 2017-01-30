@@ -11,7 +11,7 @@ lib/ExtUtils/ModuleMaker/Opts.pm
 lib/ExtUtils/ModuleMaker/StandardText.pm
 LICENSE
 Makefile.PL
-MANIFEST
+MANIFEST			This list of files
 MANIFEST.SKIP
 README
 scripts/modulemaker
@@ -23,7 +23,6 @@ t/06_build.t
 t/07_proxy.t
 t/10_standard_text.t
 t/13_alt_block_new_method.t
-t/14_mmkr_alt_block_new_method.t
 t/failsafe/201.t
 t/failsafe/202.t
 t/failsafe/203.t
@@ -79,7 +78,6 @@ t/license/vovida_1_0.t
 t/license/zlib.t
 t/makedefaults/1201.t
 t/makedefaults/1202.t
-t/makedefaults/1203.t
 t/miscargs/901.t
 t/miscargs/902.t
 t/miscargs/903.t
@@ -103,14 +101,6 @@ t/miscargs/920.t
 t/miscargs/921.t
 t/miscargs/922.t
 t/miscargs/923.t
-t/mmkr/801.t
-t/mmkr/802.t
-t/mmkr/803.t
-t/mmkr/804.t
-t/mmkr/805.t
-t/mmkr/806.t
-t/mmkr/807.t
-t/mmkr/808.t
 t/testlib/arbitrary.txt
 t/testlib/ExtUtils/ModuleMaker/Alt_block_new_method.pm
 t/testlib/ExtUtils/ModuleMaker/Testing/Defaults.pm
