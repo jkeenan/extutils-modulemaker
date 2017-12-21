@@ -104,3 +104,15 @@ t/miscargs/923.t
 t/testlib/arbitrary.txt
 t/testlib/ExtUtils/ModuleMaker/Alt_block_new_method.pm
 t/testlib/ExtUtils/ModuleMaker/Testing/Defaults.pm
+xt/14_mmkr_alt_block_new_method.t
+xt/makedefaults/1201.t
+xt/makedefaults/1202.t
+xt/makedefaults/1203.t
+xt/mmkr/801.t
+xt/mmkr/802.t
+xt/mmkr/803.t
+xt/mmkr/804.t
+xt/mmkr/805.t
+xt/mmkr/806.t
+xt/mmkr/807.t
+xt/mmkr/808.t
