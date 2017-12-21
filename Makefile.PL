@@ -3,6 +3,9 @@ require 5.006;
 
 my $mm_ver = ExtUtils::MakeMaker->VERSION;
 
+my $regular_tests_str = join q{ }, map {glob} qw( t/*.t t/*/*.t );
+my $author_tests_str  = join q{ }, map {glob} qw( xt/*.t xt/*/*.t );
+
 WriteMakefile(
     NAME         => 'ExtUtils::ModuleMaker',
     VERSION_FROM => 'lib/ExtUtils/ModuleMaker.pm',
@@ -21,7 +24,11 @@ WriteMakefile(
                      'Test::More' => 0.44,
                     },
     LICENSE      => "perl",
-    test        => { TESTS => join q{ }, map {glob} qw( t/*.t t/*/*.t ) },
+    test        => (
+                    $ENV{PERL_MODULEMAKER_AUTHOR_TESTING}
+                        ? { TESTS => join q{ } => ( $regular_tests_str, $author_tests_str ) }
+                        : { TESTS => $regular_tests_str }
+                ),
     ($mm_ver < 6.46 ? () : (META_MERGE => {
         'meta-spec' => { version => 2 },
         dynamic_config => 1,
