@@ -6,7 +6,7 @@ use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
         _save_pretesting_status
         _restore_pretesting_status
-        check_MakefilePL 
+        check_MakefilePL
     )
 );
 
@@ -14,7 +14,7 @@ my $statusref = _save_pretesting_status();
 
 SKIP: {
     eval { require 5.006_001 };
-    skip "tests require File::Temp, core with 5.6", 
+    skip "tests require File::Temp, core with 5.6",
         (24 - 10) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
@@ -33,16 +33,16 @@ SKIP: {
         $tdir = tempdir( CLEANUP => 1);
         ok(chdir $tdir, 'changed to temp directory for testing');
 
-        ok(! system(qq{$^X -I"$cwd/blib/lib" "$cwd/blib/script/modulemaker" -In My::Research::Module }), 
+        ok(! system(qq{$^X -I"$cwd/blib/lib" "$cwd/blib/script/modulemaker" -In My::Research::Module }),
             "able to call modulemaker utility");
 
-        $topdir = "My/Research/Module"; 
+        $topdir = "My/Research/Module";
         ok(-d $topdir, "by default, non-compact top directory created");
         ok(-f "$topdir/$_", "$_ file created")
             for qw| Changes LICENSE MANIFEST Makefile.PL README Todo |;
         ok(-d "$topdir/$_", "$_ directory created")
             for qw| lib t |;
-        
+
         @pred = (
             "My::Research::Module",
             "lib\/My\/Research\/Module\.pm",

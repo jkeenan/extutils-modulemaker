@@ -1,7 +1,7 @@
 # t/14_mmkr_alt_block_new_method.t
 use strict;
 use warnings;
-use Test::More 
+use Test::More
 tests =>  39;
 # qw(no_plan);
 use_ok( 'ExtUtils::ModuleMaker' );
@@ -25,7 +25,7 @@ my $mmkr_dir_ref    = $prepref->{mmkr_dir_ref};
 
 SKIP: {
     eval { require 5.006_001 };
-    skip "tests require File::Temp, core with 5.6", 
+    skip "tests require File::Temp, core with 5.6",
         (39 - 20) if $@;
     use warnings;
     use_ok( 'File::Temp', qw| tempdir |);
@@ -43,7 +43,7 @@ SKIP: {
 
         my $testmod = 'Beta';
 
-        ok(! system(qq{$^X -I"$odir/blib/lib" "$odir/blib/script/modulemaker" -Icn Alpha::$testmod -d ExtUtils::ModuleMaker::Alt_block_new_method }), 
+        ok(! system(qq{$^X -I"$odir/blib/lib" "$odir/blib/script/modulemaker" -Icn Alpha::$testmod -d ExtUtils::ModuleMaker::Alt_block_new_method }),
             "able to call modulemaker utility");
 
         ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
@@ -63,7 +63,7 @@ sub new {
 }
 ENDNEW
 
-        ok( (index($filetext, $newstr)) > -1, 
+        ok( (index($filetext, $newstr)) > -1,
             "string present in file as predicted");
 
         unlink( "$eumm_dir/$alt" )
