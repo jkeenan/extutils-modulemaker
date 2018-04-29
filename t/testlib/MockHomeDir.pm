@@ -16,7 +16,7 @@ my $temp_home = tempdir(
 my $home_dir = File::Spec->rel2abs( $temp_home );
 my $subdir = '.modulemaker';
 my $personal_defaults_dir =
-    File::Spec->catdir($home_dir, $subdir, qw| lib ExtUtils Modulemaker Personal | );
+    File::Spec->catdir($home_dir, $subdir, qw| ExtUtils Modulemaker Personal | );
 make_path($personal_defaults_dir, { mode => 0711 });
 die "Unable to create $personal_defaults_dir for testing"
     unless -d $personal_defaults_dir;
