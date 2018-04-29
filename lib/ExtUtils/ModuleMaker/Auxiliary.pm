@@ -11,8 +11,6 @@ require Exporter;
     read_file_array
     six_file_tests
     check_MakefilePL 
-    check_pm_file
-    make_compact
     failsafe
     licensetest
     _process_personal_defaults_file 
@@ -165,53 +163,6 @@ sub check_MakefilePL {
             ($pred[3]).+
             ABSTRACT.+($pred[4]).+
         /sx, "Makefile.PL has predicted values");
-}
-
-sub check_pm_file {
-    my ($pmfile, $predictref) = @_;
-    my %pred = %$predictref;
-    my @pmlines;
-    @pmlines = read_file_array($pmfile);
-    ok( scalar(@pmlines), ".pm file has content");
-    if (defined $pred{'pod_present'}) {
-         pod_present(\@pmlines, \%pred);
-    }
-    if (defined $pred{'constructor_present'}) {
-         constructor_present(\@pmlines, \%pred);
-    }
-}
-
-sub make_compact {
-    my $module_name = shift;
-    my ($topdir, $path, $pmfile);
-    $topdir = $path = $module_name;
-    $topdir =~ s{::}{-}g;
-    $path   =~ s{::}{/}g;
-    $path .= q{.pm};
-    $pmfile = File::Spec->catfile( $topdir, q{lib}, $path );
-    return ($topdir, $pmfile);
-}
-
-sub pod_present {
-    my $linesref = shift;
-    my $predictref = shift;
-    my $podcount  = grep {/^=(head|cut)/} @{$linesref};
-    if (${$predictref}{'pod_present'} == 0) {  
-        is( $podcount, 0, "no POD correctly detected in module");
-    } else {
-        isnt( $podcount, 0, "POD detected in module");
-    }
-}
-
-sub constructor_present {
-    my $linesref = shift;
-    my $predictref = shift;
-    my $constructorcount  = grep {/^=sub new/} @{$linesref};
-    if (${$predictref}{'constructor_present'} == 0) {  
-        is( $constructorcount, 0, "constructor correctly absent from module");
-    } else {
-        isnt( $constructorcount, 0, "constructor correctly present in module");
-    }
 }
 
 sub failsafe {
