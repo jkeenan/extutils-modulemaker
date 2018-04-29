@@ -19,6 +19,7 @@ WriteMakefile(
     ( $mm_ver < 6.63_03 ? 'BUILD_REQUIRES' : 'TEST_REQUIRES' ) => {
                      'IO::Capture' => 0,
                      'Test::More' => 0.44,
+                     'File::Path' => 2.15,
                     },
     LICENSE      => "perl",
     test        => { TESTS => join q{ }, map {glob} qw( t/*.t t/*/*.t ) },
