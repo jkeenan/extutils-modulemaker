@@ -1233,7 +1233,7 @@ C<ExtUtils::ModuleMaker::new()>:
 =item * Tests Require Perl 5.6
 
 While the maintainer has attempted to make the code in
-F<lib/ExtUtils/Modulemaker.pm> and the F<modulemaker> utility compatible
+F<lib/ExtUtils/ModuleMaker.pm> and the F<modulemaker> utility compatible
 with versions of Perl older than 5.6, the test suite currently requires
 5.6 or later.  The tests which require 5.6 or later are placed in SKIP blocks.
 Since the overwhelming majority of the tests I<do> require 5.6, running the
@@ -1308,7 +1308,7 @@ Development repository: L<https://github.com/jkeenan/extutils-modulemaker>
 
 =head1 ACKNOWLEDGMENTS
 
-Thanks first and foremost to Geoff Avery for creating ExtUtils::Modulemaker
+Thanks first and foremost to Geoff Avery for creating ExtUtils::ModuleMaker
 and popularizing it via presentations I attended at YAPC::NA::2003 (Boca
 Raton) and YAPC::EU::2003 (Paris).
 

@@ -16,9 +16,11 @@ ok(-d $personal_defaults_dir, "Able to create directory $personal_defaults_dir f
 
 note("Case 1: No personal defaults file");
 
+local $ENV{HOME} = $home_dir;
+
 {
     my $cwd = cwd();
-    local $ENV{HOME} = $home_dir;
+    #local $ENV{HOME} = $home_dir;
 
     my $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
@@ -104,7 +106,7 @@ ok(-f $personal_defaults_file, "Able to create file $personal_defaults_file for 
 
 {
     my $cwd = cwd();
-    local $ENV{HOME} = $home_dir;
+    #    local $ENV{HOME} = $home_dir;
 
     my $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
