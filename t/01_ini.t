@@ -2,7 +2,6 @@
 use strict;
 use warnings;
 use File::Spec;
-use File::Path 2.15 qw(make_path);
 use Test::More tests =>  7;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'File::Save::Home', qw|
@@ -27,8 +26,6 @@ $mmkr_dir_ref = get_subhome_directory_status($subdir);
 my ($home_dir, $personal_defaults_dir);
 $home_dir = MockHomeDir::home_dir();
 ok(-d $home_dir, "Directory $home_dir created to mock home directory");
-$personal_defaults_dir =
-    File::Spec->catdir($home_dir, $subdir, qw| lib ExtUtils Modulemaker Personal | );
-ok(make_path($personal_defaults_dir, { mode => 0711 }),
-    "Able to create directory $personal_defaults_dir for testing");
+$personal_defaults_dir = MockHomeDir::personal_defaults_dir();
+ok(-d $personal_defaults_dir, "Able to create directory $personal_defaults_dir for testing");
 
