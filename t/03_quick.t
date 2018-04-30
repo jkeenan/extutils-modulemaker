@@ -157,6 +157,7 @@ ok(-f $personal_defaults_file, "Able to create file $personal_defaults_file for 
     #    AUTHOR           => q{Hilton Stallone},
     ok($modparent  = ExtUtils::ModuleMaker->new(
         NAME => 'Sample::Module',
+        debug => 1,
     ), "call ExtUtils::ModuleMaker->new for Sample-Module");
     isa_ok($modparent, "ExtUtils::ModuleMaker", "object is an EU::MM object");
     is($modparent->{NAME}, 'Sample::Module', "NAME '$modparent->{NAME}' is correct");
@@ -165,7 +166,8 @@ ok(-f $personal_defaults_file, "Able to create file $personal_defaults_file for 
 
     $modchild = $modparent->new(
         'NAME'     => 'Alpha::Beta',
-        ABSTRACT => 'The quick brown fox'
+        ABSTRACT => 'The quick brown fox',
+        debug => 1,
     );
     isa_ok($modchild, "ExtUtils::ModuleMaker", "constructor is inheritable");
     is($modchild->{NAME}, 'Alpha::Beta', "child NAME '$modchild->{NAME}' is correct");
@@ -174,7 +176,8 @@ ok(-f $personal_defaults_file, "Able to create file $personal_defaults_file for 
 
     ok($modgrandchild  = $modchild->new(
         NAME => 'Gamma::Delta',
-        ABSTRACT => 'The quick brown vixen'
+        ABSTRACT => 'The quick brown vixen',
+        debug => 1,
     ), "call ExtUtils::ModuleMaker->new for Sample-Module");
     isa_ok($modgrandchild, "ExtUtils::ModuleMaker", "object is an EU::MM object");
     is($modgrandchild->{NAME}, 'Gamma::Delta', "grandchild NAME '$modgrandchild->{NAME}' is correct");
