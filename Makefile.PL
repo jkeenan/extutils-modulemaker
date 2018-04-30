@@ -6,6 +6,11 @@ my $mm_ver = ExtUtils::MakeMaker->VERSION;
 my @tests_confirmed = map { "t/$_" } qw(
     01_ini.t
     03_quick.t
+	04_compact.t
+	05_abstract.t
+	06_build.t
+	07_proxy.t
+	10_standard_text.t
 );
 
 WriteMakefile(

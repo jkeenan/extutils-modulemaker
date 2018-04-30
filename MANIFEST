@@ -12,11 +12,6 @@ LICENSE
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
-not-yet-ready/04_compact.t
-not-yet-ready/05_abstract.t
-not-yet-ready/06_build.t
-not-yet-ready/07_proxy.t
-not-yet-ready/10_standard_text.t
 not-yet-ready/13_alt_block_new_method.t
 not-yet-ready/failsafe/201.t
 not-yet-ready/failsafe/202.t
@@ -100,6 +95,11 @@ README
 scripts/modulemaker
 t/01_ini.t
 t/03_quick.t
+t/04_compact.t
+t/05_abstract.t
+t/06_build.t
+t/07_proxy.t
+t/10_standard_text.t
 t/testlib/arbitrary.txt
 t/testlib/ExtUtils/ModuleMaker/Alt_block_new_method.pm
 t/testlib/ExtUtils/ModuleMaker/Testing/Defaults.pm
