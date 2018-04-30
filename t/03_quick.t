@@ -9,6 +9,8 @@ use File::Temp qw(tempdir);
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
     prepare_mockdirs
+    basic_file_and_directory_tests
+    license_text_test
 ) );
 use lib ( qw| ./t/testlib | );
 use_ok( 'MockHomeDir' );
@@ -31,42 +33,16 @@ note("Case 1: No personal defaults file");
     my @components = qw| Sample Module |;
     my $module_name = join('::' => @components);
     my $dist_name = join('-' => @components);
+    my $path_str = File::Spec->catdir(@components);
     ok($mod  = ExtUtils::ModuleMaker->new ( NAME => $module_name),
         "call ExtUtils::ModuleMaker->new for $dist_name");
 
     ok( $mod->complete_build(), 'call complete_build()' );
 
-    #basic_file_and_directory_tests($dist_name);
-    basic_file_and_directory_tests(File::Spec->catdir(@components));
+    basic_file_and_directory_tests($path_str);
+    license_text_test($path_str, qr/Terms of Perl itself/);
 
     ########################################################################
-
-#    ok(chdir "Sample/Module",
-#        "cd Sample/Module");
-#
-#    for (qw/Changes MANIFEST Makefile.PL LICENSE
-#            README lib t/) {
-#        ok (-e,
-#            "$_ exists");
-#    }
-#
-#    ########################################################################
-#
-#    my $filetext;
-#    {
-#        local *FILE;
-#        ok(open (FILE, 'LICENSE'),
-#            "reading 'LICENSE'");
-#        $filetext = do {local $/; <FILE>};
-#        close FILE;
-#    }
-#
-#    ok($filetext =~ m/Terms of Perl itself/,
-#        "correct LICENSE generated");
-#
-#    ok(chdir $tdir, 'change back to previous temp directory');
-#
-#    ########################################################################
 
     # tests of inheritability of constructor
     # note:  attributes must not be thought of as inherited because
@@ -195,27 +171,3 @@ ok(-f $personal_defaults_file, "Able to create file $personal_defaults_file for 
     ok(chdir $cwd, "Changed back to original directory");
 }
 
-
-sub basic_file_and_directory_tests {
-    my $dist_name = shift;
-    for my $f ( qw| Changes MANIFEST Makefile.PL LICENSE README | ) {
-        my $ff = File::Spec->catfile($dist_name, $f);
-        ok (-e $ff, "$ff exists");
-    }
-    for my $d ( qw| lib t | ) {
-        my $dd = File::Spec->catdir($dist_name, $d);
-        ok(-d $dd, "Directory '$dd' exists");
-    }   
-
-    my $filetext;
-    {
-        open my $FILE, '<', File::Spec->catfile($dist_name, 'LICENSE')
-            or croak "Unable to open LICENSE for reading";
-        $filetext = do {local $/; <$FILE>};
-        close $FILE or croak "Unable to close LICENSE after reading";
-    }
-
-    ok($filetext =~ m/Terms of Perl itself/,
-        "correct LICENSE generated");
-    return 1;
-}

@@ -21,6 +21,8 @@ require Exporter;
     _save_pretesting_status
     _restore_pretesting_status
     prepare_mockdirs
+    basic_file_and_directory_tests
+    license_text_test
 ); 
 use Carp;
 use Cwd;
@@ -443,6 +445,29 @@ sub prepare_mockdirs {
     return ($home_dir, $personal_defaults_dir);
 }
 
+sub basic_file_and_directory_tests {
+    my $dist_name = shift;
+    for my $f ( qw| Changes MANIFEST Makefile.PL LICENSE README | ) {
+        my $ff = File::Spec->catfile($dist_name, $f);
+        ok (-e $ff, "$ff exists");
+    }
+    for my $d ( qw| lib t | ) {
+        my $dd = File::Spec->catdir($dist_name, $d);
+        ok(-d $dd, "Directory '$dd' exists");
+    }   
+}
+
+sub license_text_test {
+    my ($dist_name, $regex) = @_;
+    my $filetext;
+    {
+        open my $FILE, '<', File::Spec->catfile($dist_name, 'LICENSE')
+            or croak "Unable to open LICENSE for reading";
+        $filetext = do {local $/; <$FILE>};
+        close $FILE or croak "Unable to close LICENSE after reading";
+    }
+    ok($filetext =~ m/$regex/, "correct LICENSE generated");
+}
 =head1 SEE ALSO
 
 F<ExtUtils::ModuleMaker>.
