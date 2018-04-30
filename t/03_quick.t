@@ -1,7 +1,7 @@
 # t/03_quick.t
 use strict;
 use warnings;
-use Test::More tests => 61;
+use Test::More tests => 58;
 use Carp;
 use Cwd;
 use File::Spec;
@@ -98,37 +98,17 @@ ok(-f $personal_defaults_file, "Able to create file $personal_defaults_file for 
 
     my $mod;
 
-    ok($mod  = ExtUtils::ModuleMaker->new ( NAME => 'Sample::Module'),
-        "call ExtUtils::ModuleMaker->new for Sample-Module");
+    my @components = qw| Sample Module |;
+    my $module_name = join('::' => @components);
+    my $dist_name = join('-' => @components);
+    my $path_str = File::Spec->catdir(@components);
+    ok($mod  = ExtUtils::ModuleMaker->new ( NAME => $module_name),
+        "call ExtUtils::ModuleMaker->new for $dist_name");
 
     ok( $mod->complete_build(), 'call complete_build()' );
 
-    ########################################################################
-
-    ok(chdir "Sample/Module",
-        "cd Sample/Module");
-
-    for (qw/Changes MANIFEST Makefile.PL LICENSE
-            README lib t/) {
-        ok (-e,
-            "$_ exists");
-    }
-
-    ########################################################################
-
-    my $filetext;
-    {
-        local *FILE;
-        ok(open (FILE, 'LICENSE'),
-            "reading 'LICENSE'");
-        $filetext = do {local $/; <FILE>};
-        close FILE;
-    }
-
-    ok($filetext =~ m/Terms of Perl itself/,
-        "correct LICENSE generated");
-
-    ok(chdir $tdir, 'change back to previous temp directory');
+    basic_file_and_directory_tests($path_str);
+    license_text_test($path_str, qr/Terms of Perl itself/);
 
     ########################################################################
 

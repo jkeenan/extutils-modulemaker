@@ -1,24 +1,21 @@
 # t/07_proxy.t
 use strict;
 use warnings;
-use Test::More tests =>  57;
+use Carp;
+use File::Spec;
+use File::Temp qw(tempdir);
+use Module::Build;
+use Test::More tests =>  43;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
-        _save_pretesting_status
-        _restore_pretesting_status
-        read_file_string
-        six_file_tests
-    )
-);
+    prepare_mockdirs
+    read_file_string
+    five_file_tests
+) );
 
-my $statusref = _save_pretesting_status();
-
-SKIP: {
-    eval { require 5.006_001 and require Module::Build };
-    skip "tests require File::Temp, core with 5.6, and require Module::Build", 
-        (57 - 10) if $@;
-    use warnings;
-    use_ok( 'File::Temp', qw| tempdir |);
+{
+    my ($home_dir, $personal_defaults_dir) = prepare_mockdirs();
+    local $ENV{HOME} = $home_dir;
 
     my $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
@@ -27,11 +24,14 @@ SKIP: {
 
     my ($mod, $filetext);
     my $testmod = 'Delta';
+    my @components = ( 'Alpha', $testmod );
+    my $module_name = join('::' => @components);
+    my $dist_name = join('-' => @components);
 
-    ########## Variant:  'Module::Build and proxy Makefile.PL' ##########
+    note("Case 1: Module::Build and proxy Makefile.PL");
 
     ok( $mod = ExtUtils::ModuleMaker->new(
-            NAME           => "Alpha::$testmod",
+            NAME           => $module_name,
             ABSTRACT       => 'Test of the capacities of EU::MM',
             COMPACT        => 1,
             CHANGES_IN_POD => 1,
@@ -42,36 +42,38 @@ SKIP: {
             WEBSITE        => 'http://www.anonymous.com/~phineas',
             EMAIL          => 'phineas@anonymous.com',
         ),
-        "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
+        "call ExtUtils::ModuleMaker->new for $dist_name"
     );
 
     ok( $mod->complete_build(), 'call complete_build()' );
 
-    ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
-
-    for ( qw/Build.PL LICENSE Makefile.PL MANIFEST README Todo/) {
-        ok( -f, "file $_ exists" );
+    for my $f ( qw| MANIFEST Makefile.PL Build.PL LICENSE README | ) {
+        my $ff = File::Spec->catfile($dist_name, $f);
+        ok (-e $ff, "$ff exists");
     }
-    ok(! -f 'Changes', 'Changes file correctly not created');
-    for ( qw/lib scripts t/) {
-        ok( -d, "directory $_ exists" );
+    ok(! -f File::Spec->catfile($dist_name, 'Changes'),
+        "Changes file not created");
+    for my $d ( qw| lib scripts t | ) {
+        my $dd = File::Spec->catdir($dist_name, $d);
+        ok(-d $dd, "Directory '$dd' exists");
     }
 
-    ok($filetext = read_file_string('Makefile.PL'),
+    ok($filetext = read_file_string(File::Spec->catfile($dist_name, 'Makefile.PL')),
         'Able to read Makefile.PL');
     ok($filetext =~ m|Module::Build::Compat|,
         'Makefile.PL will call Module::Build or install it');
 
-    ok($filetext = read_file_string('Build.PL'),
+    ok($filetext = read_file_string(File::Spec->catfile($dist_name, 'Build.PL')),
         'Able to read Build.PL');
 
-    six_file_tests(8, $testmod); # first arg is # entries in MANIFEST
+    five_file_tests(8, \@components); # first arg is # entries in MANIFEST
 
     ########## Variant:  'Module::Build and Proxy' ##########
 
-    ok( 
-        $mod = ExtUtils::ModuleMaker->new(
-            NAME           => "Alpha::$testmod",
+    note("Case 2: Module::Build and Proxy");
+
+    ok( $mod = ExtUtils::ModuleMaker->new(
+            NAME           => $module_name,
             ABSTRACT       => 'Test of the capacities of EU::MM',
             COMPACT        => 1,
             CHANGES_IN_POD => 1,
@@ -82,36 +84,29 @@ SKIP: {
             WEBSITE        => 'http://www.anonymous.com/~phineas',
             EMAIL          => 'phineas@anonymous.com',
         ),
-        "call ExtUtils::ModuleMaker->new for Alpha-$testmod"
+        "call ExtUtils::ModuleMaker->new for $dist_name"
     );
 
     ok( $mod->complete_build(), 'call complete_build()' );
 
-    ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
-
-    for ( qw/Build.PL LICENSE Makefile.PL MANIFEST README Todo/) {
-        ok( -f, "file $_ exists" );
+    for my $f ( qw| MANIFEST Makefile.PL Build.PL LICENSE README | ) {
+        my $ff = File::Spec->catfile($dist_name, $f);
+        ok (-e $ff, "$ff exists");
     }
-    ok(! -f 'Changes', 'Changes file correctly not created');
-    for ( qw/lib scripts t/) {
-        ok( -d, "directory $_ exists" );
+    ok(! -f File::Spec->catfile($dist_name, 'Changes'),
+        "Changes file not created");
+    for my $d ( qw| lib scripts t | ) {
+        my $dd = File::Spec->catdir($dist_name, $d);
+        ok(-d $dd, "Directory '$dd' exists");
     }
 
-    ok($filetext = read_file_string('Makefile.PL'),
+    ok($filetext = read_file_string(File::Spec->catfile($dist_name, 'Makefile.PL')),
         'Able to read Makefile.PL');
     ok($filetext =~ m|Module::Build::Compat|,
         'Makefile.PL will call Module::Build or install it');
 
-    ok($filetext = read_file_string('Build.PL'),
+    ok($filetext = read_file_string(File::Spec->catfile($dist_name, 'Build.PL')),
         'Able to read Build.PL');
 
-    six_file_tests(8, $testmod); # first arg is # entries in MANIFEST
- 
-    ok(chdir $statusref->{cwd}, "changed back to original directory");
-
-} # end SKIP block
-
-END {
-    _restore_pretesting_status($statusref);
+    five_file_tests(8, \@components); # first arg is # entries in MANIFEST
 }
-

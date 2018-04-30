@@ -32,6 +32,7 @@ WriteMakefile(
         'Test::More'    => 0.44,
         'File::Copy'    => 0,
         'File::Path'    => 2.15,
+        'Module::Build' => 0,
                     },
     LICENSE      => "perl",
     #test        => { TESTS => join q{ }, map {glob} qw( t/*.t t/*/*.t ) },

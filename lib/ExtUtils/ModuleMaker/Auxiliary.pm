@@ -9,7 +9,7 @@ require Exporter;
 @EXPORT_OK   = qw(
     read_file_string
     read_file_array
-    six_file_tests
+    five_file_tests
     check_MakefilePL 
     failsafe
     licensetest
@@ -30,11 +30,13 @@ use File::Copy;
 use File::Path;
 use File::Spec;
 use File::Temp qw| tempdir |;
+no warnings 'once';
 *ok = *Test::More::ok;
 *is = *Test::More::is;
 *like = *Test::More::like;
 *copy = *File::Copy::copy;
 *move = *File::Copy::move;
+use warnings;
 use File::Save::Home qw(
     get_subhome_directory_status
     make_subhome_directory
@@ -93,14 +95,14 @@ sub read_file_array {
     return @filetext;
 }
 
-=head2 C<six_file_tests()>
+=head2 C<five_file_tests()>
 
     Function:   Verify that content of MANIFEST and lib/*.pm were created
                 correctly.
     Argument:   Two arguments:
                 1.  A number predicting the number of entries in the MANIFEST.
-                2.  The stem of the lib/*.pm file, i.e., what immediately
-                    precedes the .pm.
+                2.  A reference to an array holding the components of the module's name, e.g.:
+                    [ qw( Alpha Beta Gamma ) ].
     Returns:    n/a.
     Used:       To see whether MANIFEST and lib/*.pm have correct text.  
                 Runs 6 Test::More tests:
@@ -114,17 +116,26 @@ sub read_file_array {
 
 =cut
 
-sub six_file_tests {
-    my ($manifest_entries, $testmod) = @_;
-    my @filetext = read_file_array('MANIFEST');
+sub five_file_tests {
+    my ($manifest_entries, $components) = @_;
+    my $module_name = join('::' => @{$components});
+    my $dist_name = join('-' => @{$components});
+    my $path_str = File::Spec->catdir('lib', @{$components});
+
+    my @filetext = read_file_array(File::Spec->catfile($dist_name, 'MANIFEST'));
     is(scalar(@filetext), $manifest_entries,
         'Correct number of entries in MANIFEST');
     
+    my $module = File::Spec->catfile(
+        $dist_name,
+        'lib',
+        @{$components}[0 .. ($#$components - 1)],
+        "$components->[-1].pm",
+    );
     my $str;
-    ok(chdir 'lib/Alpha', 'Directory is now lib/Alpha');
-    ok($str = read_file_string("$testmod.pm"),
-        "Able to read $testmod.pm");
-    ok($str =~ m|Alpha::$testmod\s-\sTest\sof\sthe\scapacities\sof\sEU::MM|,
+    ok($str = read_file_string($module),
+        "Able to read $module");
+    ok($str =~ m|$module_name\s-\sTest\sof\sthe\scapacities\sof\sEU::MM|,
         'POD contains module name and abstract');
     ok($str =~ m|=head1\sHISTORY|,
         'POD contains history head');
