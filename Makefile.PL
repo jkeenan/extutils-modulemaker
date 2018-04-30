@@ -15,18 +15,18 @@ WriteMakefile(
     ABSTRACT     => 'Better than h2xs for creating modules',
     EXE_FILES    => [ 'scripts/modulemaker' ],
     PREREQ_PM    => {
-        Getopt::Std     => 0, # in the Perl core
-        File::Basename  => 0, # in the Perl core
-        File::Path      => 0, # in the Perl core
-        ($^O =~ /Win32/ ? (Win32 => 0) : ()),
-        File::Save::Home => 0.03,
-        File::Home::Dir => 0.86,
+        'Getopt::Std'       => 0, # in the Perl core
+        'File::Basename'    => 0, # in the Perl core
+        'File::Path'        => 0, # in the Perl core
+        ($^O =~ /Win32/ ? ('Win32' => 0) : ()),
+        'File::Save::Home'  => 0.03,
+        'File::HomeDir'     => 0.86,
     },
     ( $mm_ver < 6.63_03 ? 'BUILD_REQUIRES' : 'TEST_REQUIRES' ) => {
-                     'IO::Capture' => 0,
-                     'Test::More' => 0.44,
-                     'File::Copy' => 0,
-                     'File::Path' => 2.15,
+        'IO::Capture'   => 0,
+        'Test::More'    => 0.44,
+        'File::Copy'    => 0,
+        'File::Path'    => 2.15,
                     },
     LICENSE      => "perl",
     #test        => { TESTS => join q{ }, map {glob} qw( t/*.t t/*/*.t ) },
