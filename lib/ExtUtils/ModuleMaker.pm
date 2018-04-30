@@ -53,6 +53,11 @@ sub new {
         print "AAA: \@ISA: @ISA\n";
     }
     $self->{mmkr_dir_ref} =  get_subhome_directory_status(".modulemaker");
+    if ($supplied_params{debug}) {
+        for my $k (sort keys %{$self->{mmkr_dir_ref}}) {
+            printf("    %-12s%s\n" => $k, $self->{mmkr_dir_ref}->{$k});
+        }
+    }
     {
         my $mmkr_dir = $self->{mmkr_dir_ref}->{abs};
         if (defined $self->{mmkr_dir_ref}->{flag}) {
