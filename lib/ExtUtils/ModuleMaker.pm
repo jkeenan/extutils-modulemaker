@@ -49,7 +49,7 @@ sub new {
         print "AAA: \@INC: @INC\n";
         print "AAA: \@ISA: @ISA\n";
     }
-    $self->{mmkr_dir_ref} =  get_subhome_directory_status(".modulemaker");
+    $self->{mmkr_dir_ref} =  _get_subhome_directory_status(".modulemaker");
     if ($supplied_params{debug}) {
         for my $k (sort keys %{$self->{mmkr_dir_ref}}) {
             printf("    %-12s%s\n" => $k, $self->{mmkr_dir_ref}->{$k});
@@ -337,7 +337,7 @@ END_BOTTOMFILE
 
     my $output =  $topfile . $kvpairs . $bottomfile;
 
-    my $mmkr_dir = make_subhome_directory($self->{mmkr_dir_ref});
+    my $mmkr_dir = _make_subhome_directory($self->{mmkr_dir_ref});
     my $full_dir = File::Spec->catdir($mmkr_dir,
         qw| ExtUtils ModuleMaker Personal |
     );
@@ -384,7 +384,7 @@ sub _get_dir_and_file {
     return ($dir, $file);
 }
 
-sub get_subhome_directory_status {
+sub _get_subhome_directory_status {
     my $subdir = shift;
     my $home = File::HomeDir->my_home;
     my $dirname = File::Spec->catdir($home, $subdir);
@@ -407,7 +407,7 @@ sub get_subhome_directory_status {
     }
 }
 
-sub make_subhome_directory {
+sub _make_subhome_directory {
     my $desired_dir_ref = shift;
     my $dirname = $desired_dir_ref->{abs};
     if (! -d $dirname) {

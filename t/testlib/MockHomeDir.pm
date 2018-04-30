@@ -70,7 +70,9 @@ BOTTOM_OF_PACKAGE
 
 package File::HomeDir;
 our $VERSION = 999;
+no warnings 'redefine';
 sub my_home { return $home_dir };
+use warnings;
 
 1;
 

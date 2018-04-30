@@ -114,39 +114,39 @@ ok(-f $personal_defaults_file, "Able to create file $personal_defaults_file for 
 
     ###########################################################################
 
-#    my $mod;
-#
-#    ok($mod  = ExtUtils::ModuleMaker->new ( NAME => 'Sample::Module'),
-#        "call ExtUtils::ModuleMaker->new for Sample-Module");
-#
-#    ok( $mod->complete_build(), 'call complete_build()' );
-#
-#    ########################################################################
-#
-#    ok(chdir "Sample/Module",
-#        "cd Sample/Module");
-#
-#    for (qw/Changes MANIFEST Makefile.PL LICENSE
-#            README lib t/) {
-#        ok (-e,
-#            "$_ exists");
-#    }
-#
-#    ########################################################################
-#
-#    my $filetext;
-#    {
-#        local *FILE;
-#        ok(open (FILE, 'LICENSE'),
-#            "reading 'LICENSE'");
-#        $filetext = do {local $/; <FILE>};
-#        close FILE;
-#    }
-#
-#    ok($filetext =~ m/Terms of Perl itself/,
-#        "correct LICENSE generated");
-#
-#    ok(chdir $tdir, 'change back to previous temp directory');
+    my $mod;
+
+    ok($mod  = ExtUtils::ModuleMaker->new ( NAME => 'Sample::Module'),
+        "call ExtUtils::ModuleMaker->new for Sample-Module");
+
+    ok( $mod->complete_build(), 'call complete_build()' );
+
+    ########################################################################
+
+    ok(chdir "Sample/Module",
+        "cd Sample/Module");
+
+    for (qw/Changes MANIFEST Makefile.PL LICENSE
+            README lib t/) {
+        ok (-e,
+            "$_ exists");
+    }
+
+    ########################################################################
+
+    my $filetext;
+    {
+        local *FILE;
+        ok(open (FILE, 'LICENSE'),
+            "reading 'LICENSE'");
+        $filetext = do {local $/; <FILE>};
+        close FILE;
+    }
+
+    ok($filetext =~ m/Terms of Perl itself/,
+        "correct LICENSE generated");
+
+    ok(chdir $tdir, 'change back to previous temp directory');
 
     ########################################################################
 
@@ -156,11 +156,9 @@ ok(-f $personal_defaults_file, "Able to create file $personal_defaults_file for 
 
     my ($modparent, $modchild, $modgrandchild);
 
-    #        ABSTRACT         => q{Module abstract (<= 44 characters) goes here},
-    #    AUTHOR           => q{Hilton Stallone},
     ok($modparent  = ExtUtils::ModuleMaker->new(
         NAME => 'Sample::Module',
-        debug => 1,
+        debug => 0,
     ), "call ExtUtils::ModuleMaker->new for Sample-Module");
     isa_ok($modparent, "ExtUtils::ModuleMaker", "object is an EU::MM object");
     is($modparent->{NAME}, 'Sample::Module', "NAME '$modparent->{NAME}' is correct");
@@ -170,7 +168,7 @@ ok(-f $personal_defaults_file, "Able to create file $personal_defaults_file for 
     $modchild = $modparent->new(
         'NAME'     => 'Alpha::Beta',
         ABSTRACT => 'The quick brown fox',
-        debug => 1,
+        debug => 0,
     );
     isa_ok($modchild, "ExtUtils::ModuleMaker", "constructor is inheritable");
     is($modchild->{NAME}, 'Alpha::Beta', "child NAME '$modchild->{NAME}' is correct");
@@ -180,7 +178,7 @@ ok(-f $personal_defaults_file, "Able to create file $personal_defaults_file for 
     ok($modgrandchild  = $modchild->new(
         NAME => 'Gamma::Delta',
         ABSTRACT => 'The quick brown vixen',
-        debug => 1,
+        debug => 0,
     ), "call ExtUtils::ModuleMaker->new for Sample-Module");
     isa_ok($modgrandchild, "ExtUtils::ModuleMaker", "object is an EU::MM object");
     is($modgrandchild->{NAME}, 'Gamma::Delta', "grandchild NAME '$modgrandchild->{NAME}' is correct");
