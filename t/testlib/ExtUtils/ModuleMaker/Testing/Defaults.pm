@@ -10,7 +10,9 @@ Please fix the problems listed above and try again.
 
 ENDOFUSAGE
 
-my %default_values = (
+sub get_usage_as_string { return $usage; }
+
+my @default_values = (
         NAME             => q{EU::MM::Testing::Defaults},
         LICENSE          => q{perl},
         VERSION          => 0.01,
@@ -45,9 +47,20 @@ my %default_values = (
         INCLUDE_FILE_IN_PM                  => 0,
 );
 
+my %default_values = @default_values;
+
 sub default_values {
     my $self = shift;
     return { %default_values };
+}
+
+sub get_default_values_as_string {
+    my $str = '';
+    for (my $i=0; $i<=$#default_values; $i += 2) {
+        my $j = $i + 1;
+        $str .= sprintf("    %-36s  => '%s',\n" => ($default_values[$i], $default_values[$j]));
+    }
+    return $str;
 }
 
 1;

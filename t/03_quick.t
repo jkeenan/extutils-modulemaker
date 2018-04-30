@@ -165,24 +165,24 @@ ok(-f $personal_defaults_file, "Able to create file $personal_defaults_file for 
     is($modparent->{ABSTRACT}, q{Module abstract (<= 44 characters) goes here}, "ABSTRACT '$modparent->{ABSTRACT}' is correct");
     is($modparent->{AUTHOR}, q{Hilton Stallone}, "AUTHOR '$modparent->{AUTHOR}' is correct");
 
-#    $modchild = $modparent->new(
-#        'NAME'     => 'Alpha::Beta',
-#        ABSTRACT => 'The quick brown fox'
-#    );
-#    isa_ok($modchild, "ExtUtils::ModuleMaker", "constructor is inheritable");
-#    is($modchild->{NAME}, 'Alpha::Beta', "child NAME is correct");
-#    is($modchild->{ABSTRACT}, 'The quick brown fox', "child ABSTRACT is correct");
-#    is($modchild->{AUTHOR}, q{Hilton Stallone}, "child AUTHOR is correct");
-#
-#    ok($modgrandchild  = $modchild->new(
-#        NAME => 'Gamma::Delta',
-#        ABSTRACT => 'The quick brown vixen'
-#    ), "call ExtUtils::ModuleMaker->new for Sample-Module");
-#    isa_ok($modgrandchild, "ExtUtils::ModuleMaker", "object is an EU::MM object");
-#    is($modgrandchild->{NAME}, 'Gamma::Delta', "grandchild NAME is correct");
-#    is($modgrandchild->{ABSTRACT}, 'The quick brown vixen',
-#        "grandchild's explicitly coded ABSTRACT is correct");
-#    is($modgrandchild->{AUTHOR}, q{Hilton Stallone}, "grandchild AUTHOR is correct");
+    $modchild = $modparent->new(
+        'NAME'     => 'Alpha::Beta',
+        ABSTRACT => 'The quick brown fox'
+    );
+    isa_ok($modchild, "ExtUtils::ModuleMaker", "constructor is inheritable");
+    is($modchild->{NAME}, 'Alpha::Beta', "child NAME '$modchild->{NAME}' is correct");
+    is($modchild->{ABSTRACT}, 'The quick brown fox', "child ABSTRACT '$modchild->{ABSTRACT}' is correct");
+    is($modchild->{AUTHOR}, q{Hilton Stallone}, "child AUTHOR '$modchild->{AUTHOR}' is correct");
+
+    ok($modgrandchild  = $modchild->new(
+        NAME => 'Gamma::Delta',
+        ABSTRACT => 'The quick brown vixen'
+    ), "call ExtUtils::ModuleMaker->new for Sample-Module");
+    isa_ok($modgrandchild, "ExtUtils::ModuleMaker", "object is an EU::MM object");
+    is($modgrandchild->{NAME}, 'Gamma::Delta', "grandchild NAME '$modgrandchild->{NAME}' is correct");
+    is($modgrandchild->{ABSTRACT}, 'The quick brown vixen',
+        "grandchild's explicitly coded ABSTRACT is correct");
+    is($modgrandchild->{AUTHOR}, q{Hilton Stallone}, "grandchild AUTHOR '$modgrandchild->{AUTHOR}' is correct");
 
     ok(chdir $cwd, "Changed back to original directory");
 }

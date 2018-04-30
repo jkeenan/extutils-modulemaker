@@ -8,9 +8,17 @@ use File::Spec;
 use File::Path 2.15 qw(make_path);
 use File::Temp qw/tempdir/;
 
+my $testlib_dir = File::Spec->catdir(qw| . t testlib |);
+my @components = qw| ExtUtils ModuleMaker Testing Defaults |;
+my $package = join('::' => @components);
+my $per_package = join('::' => @components[0..1], 'Personal', $components[3]);
+my @pmfile_components = (@components[0..2], "$components[3].pm");
 my $testing_defaults_file =
-    File::Spec->catfile(qw| t testlib ExtUtils ModuleMaker Testing Defaults.pm |);
+    File::Spec->catfile($testlib_dir, @pmfile_components);
 die "Could not locate $testing_defaults_file" unless -f $testing_defaults_file;
+
+unshift @INC, $testlib_dir;
+eval "require $package" or die "Unable";
 
 $INC{"File/HomeDir.pm"} = 1; # fake load
 
@@ -28,10 +36,35 @@ die "Unable to create $personal_defaults_dir for testing"
 
 sub home_dir { $home_dir }
 sub personal_defaults_dir { $personal_defaults_dir }
+
 sub personal_defaults_file {
     my $newfile = File::Spec->catfile($personal_defaults_dir, 'Defaults.pm');
-    copy $testing_defaults_file => $newfile
-        or die "Could not copy $testing_defaults_file";
+    open my $OUT, '>', $newfile or die "Unable to open $newfile for writing";
+    print $OUT <<TOP_OF_PACKAGE;
+package $per_package;
+use strict;
+use warnings;
+
+my \$usage = <<ENDOFUSAGE;
+TOP_OF_PACKAGE
+    print $OUT ExtUtils::ModuleMaker::Testing::Defaults::get_usage_as_string();
+    print $OUT <<MIDDLE_OF_PACKAGE;
+ENDOFUSAGE
+
+my \%default_values = (
+MIDDLE_OF_PACKAGE
+    print $OUT ExtUtils::ModuleMaker::Testing::Defaults::get_default_values_as_string();
+    print $OUT <<BOTTOM_OF_PACKAGE;
+);
+
+sub default_values {
+    my \$self = shift;
+    return { %default_values };
+}
+
+1;
+BOTTOM_OF_PACKAGE
+    close $OUT or die "Unable to close $newfile after writing";
     return $newfile;
 }
 
