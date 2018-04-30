@@ -48,38 +48,45 @@ sub new {
     # _preexists_mmkr_directory and which is then stored in the object.
     # NOTE:  If the directory does not yet exists, it is NOT automatically
     # created.
-    print "ZZZ: \@ISA: @ISA\n" if $supplied_params{debug};
+    if ($supplied_params{debug}) {
+        print "AAA: \@INC: @INC\n";
+        print "AAA: \@ISA: @ISA\n";
+    }
     $self->{mmkr_dir_ref} =  get_subhome_directory_status(".modulemaker");
     {
         my $mmkr_dir = $self->{mmkr_dir_ref}->{abs};
         if (defined $self->{mmkr_dir_ref}->{flag}) {
-            push @INC, $mmkr_dir;
+            print "BBB: mmkr_dir_ref flag: $self->{mmkr_dir_ref}->{flag}\n" if $supplied_params{debug};
+            push @INC, $mmkr_dir unless $INC[-1] eq $mmkr_dir;
+        }
+        else {
+            print "BBB: mmkr_dir_ref flag not found\n" if $supplied_params{debug};
         }
         my $pers_file = File::Spec->catfile( $mmkr_dir,
             qw| ExtUtils ModuleMaker Personal Defaults.pm |
         );
         if (-f $pers_file) {
-            print "AAA: Personal::Defaults module '$pers_file' found\n" if $supplied_params{debug};
+            print "CCC: Personal::Defaults module '$pers_file' found\n" if $supplied_params{debug};
             require ExtUtils::ModuleMaker::Personal::Defaults;
             unshift @ISA, qw(ExtUtils::ModuleMaker::Personal::Defaults)
                 unless $ISA[0] eq 'ExtUtils::ModuleMaker::Personal::Defaults';
         }
         else {
-            print "AAA: No Personal::Defaults module\n" if $supplied_params{debug};
+            print "CCC: No Personal::Defaults module\n" if $supplied_params{debug};
         }
     }
 
-    print "BBB: \@ISA: @ISA\n" if $supplied_params{debug};
+    print "DDD: \@ISA: @ISA\n" if $supplied_params{debug};
     # 3.  Populate object with default values.  These values will come from
     # lib/ExtUtils/ModuleMaker/Defaults.pm, unless a Personal::Defaults file
     # has been located in step 1 above.
     my $defaults_ref;
     $defaults_ref = $self->default_values();
-    print "CCC: AUTHOR: $defaults_ref->{AUTHOR}\n" if $supplied_params{debug};
+    print "EEE: AUTHOR: $defaults_ref->{AUTHOR}\n" if $supplied_params{debug};
     foreach my $param ( keys %{$defaults_ref} ) {
         $self->{$param} = $defaults_ref->{$param};
     }
-    print "DDD: AUTHOR: $self->{AUTHOR}\n" if $supplied_params{debug};
+    print "FFF: AUTHOR: $self->{AUTHOR}\n" if $supplied_params{debug};
 
 
     # 4.  Process key-value pairs supplied as arguments to new() either
@@ -88,7 +95,7 @@ sub new {
     foreach my $param ( keys %supplied_params ) {
         $self->{$param} = $supplied_params{$param};
     }
-    print "EEE: AUTHOR: $self->{AUTHOR}\n" if $supplied_params{debug};
+    #print "EEE: AUTHOR: $self->{AUTHOR}\n" if $supplied_params{debug};
 
     # 5.  Initialize keys set from information supplied above, system
     # info or EU::MM itself.
@@ -99,7 +106,7 @@ sub new {
 
     # 6.  Validate values supplied so far to weed out most likely errors
     $self->validate_values();
-    print "FFF: AUTHOR: $self->{AUTHOR}\n" if $supplied_params{debug};
+    #print "FFF: AUTHOR: $self->{AUTHOR}\n" if $supplied_params{debug};
 
     # 7.  Initialize $self->{FILE} (done here because it presumes a validated
     # NAME, which was only done in step 6).  But allow exception for
