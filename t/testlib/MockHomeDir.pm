@@ -70,9 +70,7 @@ BOTTOM_OF_PACKAGE
 
 package File::HomeDir;
 our $VERSION = 999;
-sub my_documents { return $home_dir };
 sub my_home { return $home_dir };
-sub my_data { return $home_dir };
 
 1;
 

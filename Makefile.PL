@@ -20,6 +20,7 @@ WriteMakefile(
         File::Path      => 0, # in the Perl core
         ($^O =~ /Win32/ ? (Win32 => 0) : ()),
         File::Save::Home => 0.03,
+        File::Home::Dir => 0.86,
     },
     ( $mm_ver < 6.63_03 ? 'BUILD_REQUIRES' : 'TEST_REQUIRES' ) => {
                      'IO::Capture' => 0,

@@ -11,13 +11,10 @@ BEGIN {
     );
 };
 use Carp;
-use File::Path;
+use File::Path qw(mkpath);
 use File::Spec;
 use Cwd;
-use File::Save::Home qw(
-    get_subhome_directory_status
-    make_subhome_directory
-);
+use File::HomeDir 0.86;
 
 #################### PUBLICLY CALLABLE METHODS ####################
 
@@ -385,6 +382,39 @@ sub _get_dir_and_file {
     my $file        = pop(@layers) . '.pm';
     my $dir         = join( '/', 'lib', @layers );
     return ($dir, $file);
+}
+
+sub get_subhome_directory_status {
+    my $subdir = shift;
+    my $home = File::HomeDir->my_home;
+    my $dirname = File::Spec->catdir($home, $subdir);
+    my $subdir_top = (File::Spec->splitdir($subdir))[0];
+
+    if (-d $dirname) {
+        return {
+            home    => $home,
+            top     => $subdir_top,
+            abs     => $dirname,
+            flag    => 1,
+       };
+    } else {
+        return {
+            home    => $home,
+            top     => $subdir_top,
+            abs     => $dirname,
+            flag    => undef,
+       };
+    }
+}
+
+sub make_subhome_directory {
+    my $desired_dir_ref = shift;
+    my $dirname = $desired_dir_ref->{abs};
+    if (! -d $dirname) {
+        mkpath $dirname
+            or croak "Unable to create desired directory $dirname: $!";
+    }
+    return $dirname;
 }
 
 1;
