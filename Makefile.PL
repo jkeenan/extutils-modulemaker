@@ -6,12 +6,14 @@ my $mm_ver = ExtUtils::MakeMaker->VERSION;
 my @tests_confirmed = map { "t/$_" } qw(
     01_ini.t
     03_quick.t
-	04_compact.t
-	05_abstract.t
-	06_build.t
-	07_proxy.t
-	10_standard_text.t
+    04_compact.t
+    05_abstract.t
+    06_build.t
+    07_proxy.t
+    10_standard_text.t
+    91_miscargs.t
 );
+#push @tests_confirmed, 't/miscargs/901.t';
 
 WriteMakefile(
     NAME         => 'ExtUtils::ModuleMaker',
@@ -20,6 +22,7 @@ WriteMakefile(
     ABSTRACT     => 'Better than h2xs for creating modules',
     EXE_FILES    => [ 'scripts/modulemaker' ],
     PREREQ_PM    => {
+        'Data::Dumper'      => 0, # in the Perl core
         'Getopt::Std'       => 0, # in the Perl core
         'File::Basename'    => 0, # in the Perl core
         'File::Path'        => 0, # in the Perl core
