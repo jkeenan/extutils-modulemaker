@@ -20,6 +20,7 @@ require Exporter;
     _subclass_cleanup_tests
     _save_pretesting_status
     _restore_pretesting_status
+    prepare_mockdirs
 ); 
 use Carp;
 use Cwd;
@@ -37,6 +38,8 @@ use File::Save::Home qw(
     make_subhome_directory
     restore_subhome_directory_status
 );
+use lib ( qw| ./t/testlib | );
+use MockHomeDir;
 
 =head1 NAME
 
@@ -419,6 +422,25 @@ sub _restore_pretesting_status {
         "changed back to original directory after testing");
     ok( restore_subhome_directory_status($statusref->{mmkr_dir_ref}),
         "original presence/absence of .modulemaker directory restored");
+}
+
+sub prepare_mockdirs {
+    my ($home_dir, $personal_defaults_dir);
+    $home_dir = MockHomeDir::home_dir();
+    unless (-d $home_dir) {
+        croak "Unable to locate '$home_dir'";
+    }
+    else {
+        ok(-d $home_dir, "Directory $home_dir created to mock home directory");
+    }
+    $personal_defaults_dir = MockHomeDir::personal_defaults_dir();
+    unless (-d $personal_defaults_dir) {
+        croak "Unable to locate '$personal_defaults_dir'";
+    }
+    else {
+        ok(-d $personal_defaults_dir, "Directory $personal_defaults_dir created to mock home directory");
+    }
+    return ($home_dir, $personal_defaults_dir);
 }
 
 =head1 SEE ALSO

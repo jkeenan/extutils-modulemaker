@@ -1,19 +1,19 @@
 # t/03_quick.t
 use strict;
 use warnings;
-use Test::More qw(no_plan); # tests => 32;
+use Test::More tests => 61;
+use Carp;
 use Cwd;
+use File::Spec;
 use File::Temp qw(tempdir);
 use_ok( 'ExtUtils::ModuleMaker' );
+use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
+    prepare_mockdirs
+) );
 use lib ( qw| ./t/testlib | );
 use_ok( 'MockHomeDir' );
 
-my ($home_dir, $personal_defaults_dir);
-$home_dir = MockHomeDir::home_dir();
-ok(-d $home_dir, "Directory $home_dir created to mock home directory");
-$personal_defaults_dir = MockHomeDir::personal_defaults_dir();
-ok(-d $personal_defaults_dir, "Able to create directory $personal_defaults_dir for testing");
-
+my ($home_dir, $personal_defaults_dir) = prepare_mockdirs();
 local $ENV{HOME} = $home_dir;
 
 note("Case 1: No personal defaults file");
@@ -28,39 +28,45 @@ note("Case 1: No personal defaults file");
 
     my $mod;
 
-    ok($mod  = ExtUtils::ModuleMaker->new ( NAME => 'Sample::Module'),
-        "call ExtUtils::ModuleMaker->new for Sample-Module");
+    my @components = qw| Sample Module |;
+    my $module_name = join('::' => @components);
+    my $dist_name = join('-' => @components);
+    ok($mod  = ExtUtils::ModuleMaker->new ( NAME => $module_name),
+        "call ExtUtils::ModuleMaker->new for $dist_name");
 
     ok( $mod->complete_build(), 'call complete_build()' );
 
-    ########################################################################
-
-    ok(chdir "Sample/Module",
-        "cd Sample/Module");
-
-    for (qw/Changes MANIFEST Makefile.PL LICENSE
-            README lib t/) {
-        ok (-e,
-            "$_ exists");
-    }
+    #basic_file_and_directory_tests($dist_name);
+    basic_file_and_directory_tests(File::Spec->catdir(@components));
 
     ########################################################################
 
-    my $filetext;
-    {
-        local *FILE;
-        ok(open (FILE, 'LICENSE'),
-            "reading 'LICENSE'");
-        $filetext = do {local $/; <FILE>};
-        close FILE;
-    }
-
-    ok($filetext =~ m/Terms of Perl itself/,
-        "correct LICENSE generated");
-
-    ok(chdir $tdir, 'change back to previous temp directory');
-
-    ########################################################################
+#    ok(chdir "Sample/Module",
+#        "cd Sample/Module");
+#
+#    for (qw/Changes MANIFEST Makefile.PL LICENSE
+#            README lib t/) {
+#        ok (-e,
+#            "$_ exists");
+#    }
+#
+#    ########################################################################
+#
+#    my $filetext;
+#    {
+#        local *FILE;
+#        ok(open (FILE, 'LICENSE'),
+#            "reading 'LICENSE'");
+#        $filetext = do {local $/; <FILE>};
+#        close FILE;
+#    }
+#
+#    ok($filetext =~ m/Terms of Perl itself/,
+#        "correct LICENSE generated");
+#
+#    ok(chdir $tdir, 'change back to previous temp directory');
+#
+#    ########################################################################
 
     # tests of inheritability of constructor
     # note:  attributes must not be thought of as inherited because
@@ -190,3 +196,26 @@ ok(-f $personal_defaults_file, "Able to create file $personal_defaults_file for 
 }
 
 
+sub basic_file_and_directory_tests {
+    my $dist_name = shift;
+    for my $f ( qw| Changes MANIFEST Makefile.PL LICENSE README | ) {
+        my $ff = File::Spec->catfile($dist_name, $f);
+        ok (-e $ff, "$ff exists");
+    }
+    for my $d ( qw| lib t | ) {
+        my $dd = File::Spec->catdir($dist_name, $d);
+        ok(-d $dd, "Directory '$dd' exists");
+    }   
+
+    my $filetext;
+    {
+        open my $FILE, '<', File::Spec->catfile($dist_name, 'LICENSE')
+            or croak "Unable to open LICENSE for reading";
+        $filetext = do {local $/; <$FILE>};
+        close $FILE or croak "Unable to close LICENSE after reading";
+    }
+
+    ok($filetext =~ m/Terms of Perl itself/,
+        "correct LICENSE generated");
+    return 1;
+}
