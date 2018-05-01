@@ -1,15 +1,13 @@
 package ExtUtils::ModuleMaker;
 use strict;
 use warnings;
-BEGIN {
-    use vars qw( $VERSION @ISA );
-    $VERSION = 0.56;
-    use base qw(
-        ExtUtils::ModuleMaker::Defaults
-        ExtUtils::ModuleMaker::Initializers
-        ExtUtils::ModuleMaker::StandardText
-    );
-};
+our (@ISA);
+our $VERSION = 0.56;
+use base qw(
+    ExtUtils::ModuleMaker::Defaults
+    ExtUtils::ModuleMaker::Initializers
+    ExtUtils::ModuleMaker::StandardText
+);
 use Carp;
 use File::Path qw(mkpath);
 use File::Spec;
