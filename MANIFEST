@@ -68,6 +68,8 @@ t/10_standard_text.t
 t/13_alt_block_new_method.t
 t/21_failsafe.t
 t/22_debug.t
+t/31_make-defaults.t
+t/32_make-defaults-alt.t
 t/91_miscargs.t
 t/testlib/arbitrary.txt
 t/testlib/ExtUtils/ModuleMaker/Alt_block_new_method.pm

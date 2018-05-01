@@ -6,7 +6,7 @@ use Carp;
 use Cwd;
 use File::Spec;
 use File::Temp qw(tempdir);
-use Test::More qw(no_plan); # tests => 38;
+use Test::More tests => 39;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
     prepare_mockdirs
@@ -14,7 +14,6 @@ use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
     license_text_test
     check_MakefilePL
 ) );
-#use Data::Dump qw( dd pp );
 
 my $cwd = cwd();
 

@@ -338,9 +338,8 @@ END_BOTTOMFILE
         qw| ExtUtils ModuleMaker Personal |
     );
     if (! -d $full_dir) {
-        mkpath( $full_dir );
-        if ($@) {
-            croak "Unable to make directory for placement of personal defaults file: $!"; };
+        mkpath( $full_dir )
+            or croak "Unable to make directory for placement of personal defaults file: $!";
     }
     my $pers_full = File::Spec->catfile( $full_dir, q{Defaults.pm} );
     if (-f $pers_full ) {
