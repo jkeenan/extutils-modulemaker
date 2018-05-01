@@ -23,6 +23,7 @@ require Exporter;
     prepare_mockdirs
     basic_file_and_directory_tests
     license_text_test
+    compact_build_tests
 ); 
 use Carp;
 use Cwd;
@@ -478,6 +479,36 @@ sub license_text_test {
         close $FILE or croak "Unable to close LICENSE after reading";
     }
     ok($filetext =~ m/$regex/, "correct LICENSE generated");
+}
+
+sub compact_build_tests {
+    # Assumes COMPACT => 1
+    #my ($dist_name) = @_;
+    my ($components) = @_;
+    my $dist_name = join('-' => @{$components});
+    ok( -d $dist_name, "compact top-level directory exists" );
+    basic_file_and_directory_tests($dist_name);
+    license_text_test($dist_name, qr/Terms of Perl itself/);
+
+    my ($filetext);
+    ok($filetext = read_file_string(File::Spec->catfile($dist_name, 'Makefile.PL')),
+        'Able to read Makefile.PL');
+
+    my $module_file = File::Spec->catfile(
+        $dist_name,
+        'lib',
+        @{$components}[0 .. ($#$components - 1)],
+        "$components->[-1].pm",
+    );
+    my $test_file = File::Spec->catfile(
+        $dist_name,
+        't',
+        '001_load.t',
+    );
+    for my $ff ($module_file, $test_file) {
+        ok( -f $ff, "$ff exists");
+    }
+    return ($module_file, $test_file);
 }
 =head1 SEE ALSO
 

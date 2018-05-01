@@ -6,7 +6,7 @@ use Carp;
 use Cwd;
 use File::Spec;
 use File::Temp qw(tempdir);
-use Test::More; # tests => 32;
+use Test::More;
 use_ok( 'IO::Capture::Stdout' );
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
@@ -15,6 +15,7 @@ use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
     license_text_test
     read_file_string
     read_file_array
+    compact_build_tests
 ) );
 
 my $cwd = cwd();
@@ -1065,32 +1066,3 @@ done_testing();
 
 ################### SUBROUTINES ###################
 
-sub compact_build_tests {
-    # Assumes COMPACT => 1
-    #my ($dist_name) = @_;
-    my ($components) = @_;
-    my $dist_name = join('-' => @{$components});
-    ok( -d $dist_name, "compact top-level directory exists" );
-    basic_file_and_directory_tests($dist_name);
-    license_text_test($dist_name, qr/Terms of Perl itself/);
-
-    my ($filetext);
-    ok($filetext = read_file_string(File::Spec->catfile($dist_name, 'Makefile.PL')),
-        'Able to read Makefile.PL');
-
-    my $module_file = File::Spec->catfile(
-        $dist_name,
-        'lib',
-        @{$components}[0 .. ($#$components - 1)],
-        "$components->[-1].pm",
-    );
-    my $test_file = File::Spec->catfile(
-        $dist_name,
-        't',
-        '001_load.t',
-    );
-    for my $ff ($module_file, $test_file) {
-        ok( -f $ff, "$ff exists");
-    }
-    return ($module_file, $test_file);
-}
