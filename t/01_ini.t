@@ -1,24 +1,21 @@
 # t/01_ini.t - check module loading
 use strict;
 use warnings;
+use File::HomeDir;
 use File::Spec;
-use Test::More tests =>  7;
+use Test::More tests =>  6;
 use_ok( 'ExtUtils::ModuleMaker' );
-use_ok( 'File::Save::Home', qw|
-    get_home_directory
-    get_subhome_directory_status
-| );
 use lib ( qw| ./t/testlib | );
 use_ok( 'MockHomeDir' );
 
 
 my ($realhome, $subdir, $mmkr_dir_ref);
 
-ok( $realhome = get_home_directory(),
+ok( $realhome = File::HomeDir->my_home(),
     "\$HOME or home-equivalent directory found on system");
 
 $subdir = '.modulemaker';
-$mmkr_dir_ref = get_subhome_directory_status($subdir);
+$mmkr_dir_ref = ExtUtils::ModuleMaker::_get_subhome_directory_status($subdir);
 (-d $mmkr_dir_ref->{abs})
     ? pass("Directory $mmkr_dir_ref->{abs} found on this system")
     : pass("Directory $mmkr_dir_ref->{abs} not found on this system");
