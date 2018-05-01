@@ -39,14 +39,6 @@ use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
     
     ok( $mod->complete_build(), 'call complete_build()' );
 
-#    ok( -d qq{Alpha-$testmod}, "compact top-level directory exists" );
-#    ok( chdir "Alpha-$testmod", "cd Alpha-$testmod" );
-#    ok( -d, "directory $_ exists" ) for ( qw/lib scripts t/);
-#    ok( -f, "file $_ exists" )
-#        for ( qw/Changes LICENSE Makefile.PL MANIFEST README Todo/);
-#    ok( -f, "file $_ exists" )
-#        for ( "lib/Alpha/${testmod}.pm", "t/001_load.t" );
-    
     basic_file_and_directory_tests($dist_name);
     license_text_test($dist_name, qr/Terms of Perl itself/);
 

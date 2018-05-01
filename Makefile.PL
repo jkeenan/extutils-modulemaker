@@ -11,6 +11,7 @@ my @tests_confirmed = map { "t/$_" } qw(
     06_build.t
     07_proxy.t
     10_standard_text.t
+    12_make-defaults.t
     13_alt_block_new_method.t
     21_failsafe.t
     22_debug.t
