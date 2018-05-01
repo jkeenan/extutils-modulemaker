@@ -1,4 +1,4 @@
-# t/12_make-defaults.t
+# t/31_make-defaults.t
 # tests of options to make modulemaker selections default personal values
 use strict;
 use warnings;
