@@ -97,7 +97,6 @@ sub new {
     foreach my $param ( keys %supplied_params ) {
         $self->{$param} = $supplied_params{$param};
     }
-    #print "EEE: AUTHOR: $self->{AUTHOR}\n" if $supplied_params{debug};
 
     # 5.  Initialize keys set from information supplied above, system
     # info or EU::MM itself.
@@ -108,7 +107,6 @@ sub new {
 
     # 6.  Validate values supplied so far to weed out most likely errors
     $self->validate_values();
-    #print "FFF: AUTHOR: $self->{AUTHOR}\n" if $supplied_params{debug};
 
     # 7.  Initialize $self->{FILE} (done here because it presumes a validated
     # NAME, which was only done in step 6).  But allow exception for

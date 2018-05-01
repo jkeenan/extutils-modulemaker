@@ -13,6 +13,7 @@ my @tests_confirmed = map { "t/$_" } qw(
     10_standard_text.t
     13_alt_block_new_method.t
     21_failsafe.t
+    22_debug.t
     91_miscargs.t
 );
 #push @tests_confirmed, 't/miscargs/901.t';
