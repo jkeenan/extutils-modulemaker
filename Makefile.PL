@@ -35,7 +35,7 @@ my %Makefile_Args = (
         'IO::Capture'   => 0,
         'Test::More'    => 0.44,
         'File::Copy'    => 0,
-        'File::Copy::Recursive::Reduced' => 0.06,
+        'File::Copy::Recursive::Reduced' => 0.006,
         'File::Path'    => 2.15,
         'Module::Build' => 0,
                     },

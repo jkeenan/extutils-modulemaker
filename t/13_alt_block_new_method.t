@@ -8,6 +8,7 @@ use Cwd;
 use File::Copy;
 use File::Spec;
 use File::Temp qw(tempdir);
+use File::Copy::Recursive::Reduced 0.006 qw(fcopy);
 use Test::More tests =>  26;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'Cwd');
@@ -16,7 +17,6 @@ use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
     read_file_string
     compact_build_tests
 ) );
-use_ok( 'File::Copy::Recursive::Reduced', qw( fcopy ) );
 my $cwd = cwd();
 
 {
