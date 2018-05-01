@@ -11,11 +11,12 @@ my @tests_confirmed = map { "t/$_" } qw(
     06_build.t
     07_proxy.t
     10_standard_text.t
+    13_alt_block_new_method.t
     91_miscargs.t
 );
 #push @tests_confirmed, 't/miscargs/901.t';
 
-WriteMakefile(
+my %Makefile_Args = (
     NAME         => 'ExtUtils::ModuleMaker',
     VERSION_FROM => 'lib/ExtUtils/ModuleMaker.pm',
     AUTHOR       => 'James E Keenan (jkeenan@cpan.org)',
@@ -34,6 +35,7 @@ WriteMakefile(
         'IO::Capture'   => 0,
         'Test::More'    => 0.44,
         'File::Copy'    => 0,
+        'File::Copy::Recursive::Reduced' => 0.06,
         'File::Path'    => 2.15,
         'Module::Build' => 0,
                     },
@@ -56,4 +58,6 @@ WriteMakefile(
         },
     })),
 );
+
+WriteMakefile(%Makefile_Args);
 
