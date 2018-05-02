@@ -3,7 +3,6 @@ package MockHomeDir;
 use 5.006001;
 use strict;
 use warnings;
-use File::Copy;
 use File::Spec;
 use File::Path 2.15 qw(make_path);
 use File::Temp qw/tempdir/;

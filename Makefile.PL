@@ -20,7 +20,6 @@ my %Makefile_Args = (
     ( $mm_ver < 6.63_03 ? 'BUILD_REQUIRES' : 'TEST_REQUIRES' ) => {
         'IO::Capture'   => 0,
         'Test::More'    => 0.44,
-        'File::Copy'    => 0,
         'File::Copy::Recursive::Reduced' => 0.006,
         'File::Path'    => 2.15,
         'Module::Build' => 0,

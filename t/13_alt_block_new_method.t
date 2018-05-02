@@ -5,7 +5,6 @@ use strict;
 use warnings;
 use Carp;
 use Cwd;
-use File::Copy;
 use File::Spec;
 use File::Temp qw(tempdir);
 use File::Copy::Recursive::Reduced 0.006 qw(fcopy);
