@@ -41,6 +41,7 @@ was done.
 =cut
 
     my ($module_name, @components, $dist_name, $path_str, $module_file, @pred);
+    my ($mf);
 
     my $tdir = tempdir( CLEANUP => 1);
     ok(chdir $tdir, 'changed to temp directory for testing');
@@ -49,6 +50,7 @@ was done.
     require ExtUtils::ModuleMaker::Personal::Defaults;
     my $testing_defaults_ref = ExtUtils::ModuleMaker::Personal::Defaults::default_values();
 
+    note("Object 1");
     my $obj1 = ExtUtils::ModuleMaker->new( %{$testing_defaults_ref} );
     isa_ok( $obj1, 'ExtUtils::ModuleMaker' );
 
@@ -74,6 +76,7 @@ was done.
 
     $obj1->make_selections_defaults();
 
+    note("Object 2");
     my $obj2 = ExtUtils::ModuleMaker->new(
         NAME    => q{Ackus::Frackus},
         AUTHOR  => q{Marilyn Shmarilyn},
@@ -89,15 +92,16 @@ was done.
     @components = split(/::/, $module_name);
     $dist_name = join('-' => @components);
     $path_str = File::Spec->catdir(@components);
-    $module_file = File::Spec->catfile(
-        'lib', @components[0 .. ($#components - 1)], "$components[-1].pm");
+    $mf = join('\/' => (
+        'lib', @components[0 .. ($#components - 1)], "$components[-1].pm"));
+
 
     basic_file_and_directory_tests($dist_name);
     license_text_test($dist_name, qr/Terms of Perl itself/);
 
     @pred = (
         $module_name,
-        $module_file,
+        $mf,
         qq{Marilyn\\sShmarilyn},
         qq{marilyns\@nineteenthcenturyfox\.com},
         qq{Module\\sabstract\\s\\(<=\\s44\\scharacters\\)\\sgoes\\shere},
@@ -105,6 +109,7 @@ was done.
 
     check_MakefilePL($dist_name, \@pred);
 
+    note("Object 3");
     do 'ExtUtils/ModuleMaker/Personal/Defaults.pm';
     my $obj3 = ExtUtils::ModuleMaker->new(
         NAME    => q{Hocus::Pocus},
@@ -117,15 +122,15 @@ was done.
     @components = split(/::/, $module_name);
     $dist_name = join('-' => @components);
     $path_str = File::Spec->catdir(@components);
-    $module_file = File::Spec->catfile(
-        'lib', @components[0 .. ($#components - 1)], "$components[-1].pm");
+    $mf = join('\/' => (
+        'lib', @components[0 .. ($#components - 1)], "$components[-1].pm"));
 
     basic_file_and_directory_tests($dist_name);
     license_text_test($dist_name, qr/Terms of Perl itself/);
 
     @pred = (
         $module_name,
-        $module_file,
+        $mf,
         qq{Marilyn\\sShmarilyn},
         qq{marilyns\@nineteenthcenturyfox\.com},
         qq{Module\\sabstract\\s\\(<=\\s44\\scharacters\\)\\sgoes\\shere},
