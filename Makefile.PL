@@ -16,9 +16,10 @@ my @tests_confirmed = map { "t/$_" } qw(
     22_debug.t
     31_make-defaults.t
     32_make-defaults-alt.t
+    41_license.t
+    42_looselips.t
     91_miscargs.t
 );
-#push @tests_confirmed, 't/miscargs/901.t';
 
 my %Makefile_Args = (
     NAME         => 'ExtUtils::ModuleMaker',

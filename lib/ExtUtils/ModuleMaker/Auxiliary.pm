@@ -208,6 +208,7 @@ sub licensetest {
     ok(chdir "Alpha-$license", "changed to Alpha-$license directory");
     my $licensetext = read_file_string('LICENSE');
     like($licensetext, $pattern, "$license license has predicted content");
+    ok(chdir $tdir, "CLEANUP tempdir");
 }
 
 sub _process_personal_defaults_file {
@@ -488,7 +489,6 @@ sub license_text_test {
 
 sub compact_build_tests {
     # Assumes COMPACT => 1
-    #my ($dist_name) = @_;
     my ($components) = @_;
     my $dist_name = join('-' => @{$components});
     ok( -d $dist_name, "compact top-level directory exists" );
