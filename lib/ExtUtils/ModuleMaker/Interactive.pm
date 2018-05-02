@@ -5,7 +5,7 @@ use warnings;
 BEGIN {
     use base qw( ExtUtils::ModuleMaker );
     use vars qw ( $VERSION ); 
-    $VERSION = 0.56;
+    $VERSION = 0.57;
 }
 use Carp;
 use Data::Dumper;
@@ -630,7 +630,7 @@ James E Keenan.  CPANID:  JKEENAN.
 
 =head1 COPYRIGHT
 
-Copyright (c) 2005, 2017 James E. Keenan.  All rights reserved.
+Copyright (c) 2005, 2018 James E. Keenan.  All rights reserved.
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
 

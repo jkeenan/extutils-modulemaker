@@ -1,5 +1,21 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.57    May 02, 2018
+
+Perl-5.6.1 was previously required; removed all code intended to handle
+earlier versions of perl.  Otherwise, no change in ExtUtils::ModuleMaker or
+'modulemaker' functionality (or, at least, no intended changes).
+
+Removed dependency on File::Save::Home in modules and test suite.  Replaced it
+with File::HomeDir.  Borrowed technique for mocking one's home directory
+during testing from CPAN-Reporter's test suite (thanks to David Golden, Breno
+G. de Oliveira and Perl Toolchain Gang).  This facilitated removal from
+ExtUtils::ModuleMaker::Auxiliary of many subroutines no longer used in test
+suite.  Extensive consolidation of files within the test suite to improve
+maintainability and test suite running time.
+
+Provided configuration files for Travis and Appveyor.
+
 0.56    January 30, 2017
 
 Removed all test files using 'scripts/modulemaker' as first step in

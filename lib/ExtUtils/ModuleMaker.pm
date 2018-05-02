@@ -2,7 +2,7 @@ package ExtUtils::ModuleMaker;
 use strict;
 use warnings;
 our (@ISA);
-our $VERSION = 0.56;
+our $VERSION = 0.57;
 use base qw(
     ExtUtils::ModuleMaker::Defaults
     ExtUtils::ModuleMaker::Initializers
@@ -452,8 +452,8 @@ Inside a Perl program:
 
 =head1 VERSION
 
-This document references version 0.56 of ExtUtils::ModuleMaker, released
-to CPAN on January 30 2017.
+This document references version 0.57 of ExtUtils::ModuleMaker, released
+to CPAN on May 02 2018.
 
 =head1 DESCRIPTION
 
@@ -614,7 +614,7 @@ is off.)
 
 =item * PERMISSIONS
 
-Used to create new directories.  (Default is 0.56:  group and world can not
+Used to create new directories.  (Default is 0755:  group and world can not
 write.)
 
 =item * USAGE_MESSAGE
