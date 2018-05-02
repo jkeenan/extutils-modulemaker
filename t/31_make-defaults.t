@@ -92,7 +92,7 @@ was done.
     @components = split(/::/, $module_name);
     $dist_name = join('-' => @components);
     $path_str = File::Spec->catdir(@components);
-    $mf = join('\/' => (
+    $mf = join('/' => (
         'lib', @components[0 .. ($#components - 1)], "$components[-1].pm"));
 
 
@@ -101,7 +101,7 @@ was done.
 
     @pred = (
         $module_name,
-        $mf,
+        quotemeta($mf),
         qq{Marilyn\\sShmarilyn},
         qq{marilyns\@nineteenthcenturyfox\.com},
         qq{Module\\sabstract\\s\\(<=\\s44\\scharacters\\)\\sgoes\\shere},
@@ -122,7 +122,7 @@ was done.
     @components = split(/::/, $module_name);
     $dist_name = join('-' => @components);
     $path_str = File::Spec->catdir(@components);
-    $mf = join('\/' => (
+    $mf = join('/' => (
         'lib', @components[0 .. ($#components - 1)], "$components[-1].pm"));
 
     basic_file_and_directory_tests($dist_name);
@@ -130,7 +130,7 @@ was done.
 
     @pred = (
         $module_name,
-        $mf,
+        quotemeta($mf),
         qq{Marilyn\\sShmarilyn},
         qq{marilyns\@nineteenthcenturyfox\.com},
         qq{Module\\sabstract\\s\\(<=\\s44\\scharacters\\)\\sgoes\\shere},
