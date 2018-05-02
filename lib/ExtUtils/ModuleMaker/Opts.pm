@@ -8,13 +8,14 @@ use Getopt::Std;
 $Getopt::Std::STANDARD_HELP_VERSION = 1;
 use Carp;
 
-my %opts;
-getopts( "bhqsCIPVcn:a:v:l:u:p:o:w:e:t:r:d:", \%opts );
-
 sub new {
     my $class = shift;
     my $eumm_package  = shift;
     my $eumm_script   = shift;
+
+    my %opts;
+    getopts( "bhqsCIPVcn:a:v:l:u:p:o:w:e:t:r:d:", \%opts );
+
     my $self = bless( {}, $class );
     $self->{NAME} = $class;
     {

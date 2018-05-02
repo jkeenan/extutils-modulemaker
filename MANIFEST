@@ -28,6 +28,7 @@ t/31_make-defaults.t
 t/32_make-defaults-alt.t
 t/41_license.t
 t/42_looselips.t
+t/81_opts.t
 t/91_miscargs.t
 t/testlib/arbitrary.txt
 t/testlib/ExtUtils/ModuleMaker/Alt_block_new_method.pm
