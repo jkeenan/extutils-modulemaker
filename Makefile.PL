@@ -3,24 +3,6 @@ require 5.006001;
 
 my $mm_ver = ExtUtils::MakeMaker->VERSION;
 
-my @tests_confirmed = map { "t/$_" } qw(
-    01_ini.t
-    03_quick.t
-    04_compact.t
-    05_abstract.t
-    06_build.t
-    07_proxy.t
-    10_standard_text.t
-    13_alt_block_new_method.t
-    21_failsafe.t
-    22_debug.t
-    31_make-defaults.t
-    32_make-defaults-alt.t
-    41_license.t
-    42_looselips.t
-    91_miscargs.t
-);
-
 my %Makefile_Args = (
     NAME         => 'ExtUtils::ModuleMaker',
     VERSION_FROM => 'lib/ExtUtils/ModuleMaker.pm',
@@ -33,7 +15,6 @@ my %Makefile_Args = (
         'File::Basename'    => 0, # in the Perl core
         'File::Path'        => 0, # in the Perl core
         ($^O =~ /Win32/ ? ('Win32' => 0) : ()),
-        'File::Save::Home'  => 0.03,
         'File::HomeDir'     => 0.86,
     },
     ( $mm_ver < 6.63_03 ? 'BUILD_REQUIRES' : 'TEST_REQUIRES' ) => {
@@ -45,8 +26,6 @@ my %Makefile_Args = (
         'Module::Build' => 0,
                     },
     LICENSE      => "perl",
-    #test        => { TESTS => join q{ }, map {glob} qw( t/*.t t/*/*.t ) },
-    test        => { TESTS => join q{ }, @tests_confirmed },
     ($mm_ver < 6.46 ? () : (META_MERGE => {
         'meta-spec' => { version => 2 },
         dynamic_config => 1,
