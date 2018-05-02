@@ -114,11 +114,11 @@ sub print_file {
     $self->log_message( qq{writing file '$filename'});
 
     my $file = File::Spec->catfile( $self->{Base_Dir}, $filename );
-    local *FILE;
-    open( FILE, ">$file" )
-      or $self->death_message( [ qq{Could not write '$filename', $!} ] );
-    print FILE $filetext;
-    close FILE;
+    open my $FILE, '>', $file or
+        $self->death_message( [ qq{Could not write '$filename', $!} ] );
+    print $FILE $filetext;
+    close $FILE or
+        $self->death_message( [ qq{Unable to close after writing, $!} ] );
 }
 
 =head2 Methods Called within C<complete_build()> as an Argument to C<print_file()>
