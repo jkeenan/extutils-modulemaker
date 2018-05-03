@@ -1062,6 +1062,118 @@ my $cwd = cwd();
     ok(chdir $cwd, "Able to change back to starting directory");
 }
 
+{
+    note("Set 24: https://rt.cpan.org/Ticket/Display.html?id=15563:\n  Suppress printing of CPANID, WEBSITE or ORGANIZATION");
+
+    my ($home_dir, $personal_defaults_dir) = prepare_mockdirs();
+    local $ENV{HOME} = $home_dir;
+
+    my $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
+
+    my ($testmod, @components, $module_name, $dist_name, $path_str);
+    my (%these_args);
+    my ($module_file, $test_file, $pm_pred, $line);
+
+    my %sample_args = (
+        COMPACT        => 1,
+        AUTHOR         => 'Phineas T. Bluster',
+        EMAIL          => 'phineas@anonymous.com',
+        CPANID         => 'PTBLUSTER',
+        WEBSITE        => 'http://example.com',
+        ORGANIZATION   => 'Peanut Gallery',
+    );
+
+    note("    24a:  WEBSITE omitted; default to dummy copy");
+    $testmod = 'Epsilon';
+    @components = ( 'Alpha', $testmod );
+    $module_name = join('::' => @components);
+    $dist_name = join('-' => @components);
+    $path_str = File::Spec->catdir(@components);
+
+    %these_args = (
+        NAME           => $module_name,
+        %sample_args,
+    );
+    delete $these_args{WEBSITE};
+
+    my $mod1 = ExtUtils::ModuleMaker->new(%these_args);
+    ok($mod1, "call ExtUtils::ModuleMaker->new for $dist_name");
+
+    ok( $mod1->complete_build(), 'call complete_build()' );
+
+    ($module_file, $test_file) = compact_build_tests(\@components);
+
+    $pm_pred = (
+        File::Spec->catfile($dist_name, 'lib', 'Alpha', "${testmod}.pm"),
+    );
+    $line = read_file_string($pm_pred);
+        WEBSITE          => 'http://a.galaxy.far.far.away/modules',
+    like($line, qr/http:\/\/a\.galaxy\.far\.far\.away\/modules/s,
+        "Omission of WEBSITE from constructor args inserts dummy copy into documentation");
+
+    note("    24b:  WEBSITE set to Perl-false value; no website printed");
+    $testmod = 'Zeta';
+    @components = ( 'Alpha', $testmod );
+    $module_name = join('::' => @components);
+    $dist_name = join('-' => @components);
+    $path_str = File::Spec->catdir(@components);
+
+    %these_args = (
+        NAME           => $module_name,
+        %sample_args,
+    );
+    $these_args{WEBSITE} = '';
+
+    my $mod2 = ExtUtils::ModuleMaker->new(%these_args);
+    ok($mod2, "call ExtUtils::ModuleMaker->new for $dist_name");
+
+    ok( $mod2->complete_build(), 'call complete_build()' );
+
+    ($module_file, $test_file) = compact_build_tests(\@components);
+
+    $pm_pred = (
+        File::Spec->catfile($dist_name, 'lib', 'Alpha', "${testmod}.pm"),
+    );
+    $line = read_file_string($pm_pred);
+    unlike($line, qr/http:\/\/a\.galaxy\.far\.far\.away\/modules/s,
+        "Assignment of Perl-false value to WEBSITE in constructor prevents insertion of dummy copy into documentation");
+
+    note("    24c:  CPANID, WEBSITE and ORGANIZATION all set to Perl-false value");
+    $testmod = 'Eta';
+    @components = ( 'Alpha', $testmod );
+    $module_name = join('::' => @components);
+    $dist_name = join('-' => @components);
+    $path_str = File::Spec->catdir(@components);
+
+    %these_args = (
+        NAME           => $module_name,
+        %sample_args,
+    );
+    @these_args{qw| CPANID WEBSITE ORGANIZATION|} = ('') x 3;
+
+    my $mod3 = ExtUtils::ModuleMaker->new(%these_args);
+    ok($mod3, "call ExtUtils::ModuleMaker->new for $dist_name");
+
+    ok( $mod3->complete_build(), 'call complete_build()' );
+
+    ($module_file, $test_file) = compact_build_tests(\@components);
+
+    $pm_pred = (
+        File::Spec->catfile($dist_name, 'lib', 'Alpha', "${testmod}.pm"),
+    );
+
+    my $AUTHOR_section = `grep -A4 '^=head1 AUTHOR' $pm_pred`;
+    unlike($AUTHOR_section, qr/MODAUTHOR/,
+        "Assignment of Perl-false value to CPANID in constructor prevents insertion of dummy copy into documentation");
+    unlike($AUTHOR_section, qr/http:\/\/a\.galaxy\.far\.far\.away\/modules/s,
+        "Assignment of Perl-false value to WEBSITE in constructor prevents insertion of dummy copy into documentation");
+    unlike($AUTHOR_section, qr/XYZ Corp\./,
+        "Assignment of Perl-false value to ORGANIZATION in constructor prevents insertion of dummy copy into documentation");
+
+    ok(chdir $cwd, "Able to change back to starting directory");
+}
+
 done_testing();
 
 ################### SUBROUTINES ###################

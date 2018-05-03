@@ -693,19 +693,21 @@ F<Makefile.PL> gets messed up.  (Defaults to dummy copy.)
 
 =item * CPANID
 
-The CPANID of the author.  If this is omitted, then the line will not
-be added to the documentation.  (Defaults to dummy copy.)
+The CPANID of the author.  (Defaults to dummy copy. To suppress printing of
+this line entirely, set C<CPANID> to a Perl-false value such as an empty
+string.)
 
 =item * WEBSITE
 
-The personal or organizational website of the author.  If this is
-omitted, then the line will not be added to the documentation.
-(Defaults to dummy copy.)
+The personal or organizational website of the author.  (Defaults to dummy
+copy. To suppress printing of this line entirely, set C<CPANID> to a
+Perl-false value such as an empty string.)
 
 =item * ORGANIZATION
 
-Company or group owning the module.  If this is omitted, then the line
-will not be added to the documentation.  (Defaults to dummy copy.)
+Company or group owning the module.  (Defaults to dummy copy. To suppress
+printing of this line entirely, set C<CPANID> to a Perl-false value such as an
+empty string.)
 
 =back
 
