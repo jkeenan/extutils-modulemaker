@@ -18,6 +18,7 @@ my %Makefile_Args = (
         'File::HomeDir'     => 0.86,
     },
     ( $mm_ver < 6.63_03 ? 'BUILD_REQUIRES' : 'TEST_REQUIRES' ) => {
+        'Capture::Tiny' => 0,
         'IO::Capture'   => 0,
         'Test::More'    => 0.44,
         'File::Copy::Recursive::Reduced' => 0.006,

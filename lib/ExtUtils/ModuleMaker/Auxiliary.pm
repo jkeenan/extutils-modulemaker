@@ -160,11 +160,11 @@ sub check_MakefilePL {
     open MAK, $mkfl or die "Unable to open Makefile.PL: $!";
     my $bigstr = read_file_string($mkfl);
     like($bigstr, qr/
-            NAME.+($pred[0]).+
-            VERSION_FROM.+($pred[1]).+
-            AUTHOR.+($pred[2]).+
-            ($pred[3]).+
-            ABSTRACT.+($pred[4]).+
+            NAME.+$pred[0].+
+            VERSION_FROM.+$pred[1].+
+            AUTHOR.+$pred[2].+
+            \($pred[3]\).+
+            ABSTRACT.+$pred[4]
         /sx, "Makefile.PL has predicted values");
 }
 
