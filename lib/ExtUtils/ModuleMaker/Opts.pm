@@ -2,8 +2,7 @@ package ExtUtils::ModuleMaker::Opts;
 #$Id$
 use strict;
 use warnings;
-use vars qw( $VERSION );
-$VERSION = 0.57;
+our $VERSION = 0.57;
 use Getopt::Std;
 $Getopt::Std::STANDARD_HELP_VERSION = 1;
 use Carp;
@@ -15,6 +14,10 @@ sub new {
 
     my %opts;
     getopts( "bhqsCIPVcn:a:v:l:u:p:o:w:e:r:d:", \%opts );
+    if ($opts{h}) {
+        print Usage($eumm_script, $eumm_package);
+        exit 0;
+    }
 
     my $self = bless( {}, $class );
     $self->{NAME} = $class;
@@ -65,7 +68,7 @@ sub get_standard_options {
 }
 
 sub Usage {
-    my ($script, $eumm_package, $eumm_version) = @_;
+    my ($script, $eumm_package) = @_;
     my $message = <<ENDOFUSAGE;
 modulemaker [-CIPVch] [-v version] [-n module_name] [-a abstract]
         [-u author_name] [-p author_CPAN_ID] [-o organization]
@@ -94,8 +97,8 @@ Currently Supported Features
     -V   Flag for verbose messages during module creation
     -w   Specify author's web site
 
-$script version: $VERSION
-$eumm_package version: $eumm_version
+$script
+$eumm_package version: $VERSION
 ENDOFUSAGE
 
     return ($message);

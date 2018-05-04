@@ -348,4 +348,32 @@ my %reg_def = (
     ok(chdir $cwd, "Able to change back to starting directory");
 }
 
+{
+    note("Set 8:  test help switch: '-h'");
+
+    my ($home_dir, $personal_defaults_dir) = prepare_mockdirs();
+    local $ENV{HOME} = $home_dir;
+
+    my $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
+
+    my @system_args = (
+        $^X, qq{-I$cwd/blib/lib}, qq{$cwd/blib/script/modulemaker},
+        '-h',
+    );
+    my ($stdout, $stderr, @results);
+    ($stdout, $stderr, @results) = capture { system(@system_args); };
+    ok(! $results[0], "system call to modulemaker exited successfully");
+
+    like($stdout, qr/^modulemaker \[-CIPVch\]/s,
+        "Got expected start of Usage message");
+    like($stdout, qr/Currently Supported Features/s,
+        "Got expected middle of Usage message");
+    like($stdout, qr/modulemaker\s+ExtUtils::ModuleMaker\sversion:\s+\d\.\d{2}$/s,
+        "Got expected end of Usage message");
+
+    ok(chdir $cwd, "Able to change back to starting directory");
+}
+
+
 done_testing();

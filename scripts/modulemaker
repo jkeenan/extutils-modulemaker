@@ -7,8 +7,7 @@ use strict;
 use warnings;
 use ExtUtils::ModuleMaker::Interactive;
 use ExtUtils::ModuleMaker::Opts;
-use vars qw ( $VERSION );
-$VERSION = 0.57;
+our $VERSION = 0.57;
 
 my $opt = ExtUtils::ModuleMaker::Opts->new(
     q{ExtUtils::ModuleMaker},
