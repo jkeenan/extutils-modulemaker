@@ -39,7 +39,7 @@ sub new {
         
         ( ( $opts{n} ) ? ( NAME                  => $opts{n} ) : () ),
         ( ( $opts{a} ) ? ( ABSTRACT              => $opts{a} ) : () ),
-        ( ( $opts{b} ) ? ( BUILD_SYSTEM          => $opts{b} ) : () ),
+        ( ( $opts{b} ) ? ( BUILD_SYSTEM          => 'Module::Build' ) : () ),
         ( ( $opts{v} ) ? ( VERSION               => $opts{v} ) : () ),
         ( ( $opts{l} ) ? ( LICENSE               => $opts{l} ) : () ),
         ( ( $opts{u} ) ? ( AUTHOR                => $opts{u} ) : () ),
@@ -72,11 +72,11 @@ sub Usage {
 modulemaker [-CIPVch] [-v version] [-n module_name] [-a abstract]
         [-u author_name] [-p author_CPAN_ID] [-o organization]
         [-w author_website] [-e author_e-mail]
-        [-l license_name] [-b build_system] [-s save_selections_as_defaults ]
+        [-l license_name] [-s save_selections_as_defaults ]
 
 Currently Supported Features
     -a   Specify (in quotes) an abstract for this extension
-    -b   Specify a build system for this extension
+    -b   Use Module::Build as build system for this extension
     -c   Flag for compact base directory name
     -C   Omit creating the Changes file, add HISTORY heading to stub POD
     -d   Call methods which override default methods from this module

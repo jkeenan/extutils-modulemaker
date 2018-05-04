@@ -358,6 +358,7 @@ sub Main_Menu {
             : $string =~ s|##name##||;
         $string =~ s|##abstract##|$MOD->{ABSTRACT}|;
         $string =~ s|##license##|$MOD->{LICENSE}|;
+        $MOD->{BUILD_SYSTEM} = 'Module::Build' if $MOD->{USE_MODULE_BUILD};
         $string =~ s|##build##|$MOD->{BUILD_SYSTEM}|;
     
         my $response = Question_User( $string, 'menu' );
