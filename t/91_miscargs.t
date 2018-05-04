@@ -1108,7 +1108,6 @@ my $cwd = cwd();
         File::Spec->catfile($dist_name, 'lib', 'Alpha', "${testmod}.pm"),
     );
     $line = read_file_string($pm_pred);
-        WEBSITE          => 'http://a.galaxy.far.far.away/modules',
     like($line, qr/http:\/\/a\.galaxy\.far\.far\.away\/modules/s,
         "Omission of WEBSITE from constructor args inserts dummy copy into documentation");
 
