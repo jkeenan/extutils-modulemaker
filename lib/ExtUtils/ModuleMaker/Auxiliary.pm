@@ -10,7 +10,7 @@ require Exporter;
     read_file_string
     read_file_array
     five_file_tests
-    check_MakefilePL 
+    check_MakefilePL
     failsafe
     licensetest
     prepare_mockdirs
@@ -18,7 +18,10 @@ require Exporter;
     basic_file_and_directory_tests
     license_text_test
     compact_build_tests
-); 
+    check_pm_file
+    pod_present
+    constructor_present
+);
 use Carp;
 use Cwd;
 use File::Path;
@@ -27,6 +30,7 @@ use File::Temp qw| tempdir |;
 no warnings 'once';
 *ok = *Test::More::ok;
 *is = *Test::More::is;
+*isnt = *Test::More::isnt;
 *like = *Test::More::like;
 use warnings;
 use lib ( qw| ./t/testlib | );
@@ -69,7 +73,7 @@ sub read_file_string {
     Argument:   String holding name of a file created by complete_build().
     Returns:    Array holding the lines of the file read.
     Used:       To see whether text of files such as README, Makefile.PL,
-                etc. was created correctly by returning an array against whose 
+                etc. was created correctly by returning an array against whose
                 elements patterns can be matched.
 
 =cut
@@ -91,7 +95,7 @@ sub read_file_array {
                 2.  A reference to an array holding the components of the module's name, e.g.:
                     [ qw( Alpha Beta Gamma ) ].
     Returns:    n/a.
-    Used:       To see whether MANIFEST and lib/*.pm have correct text.  
+    Used:       To see whether MANIFEST and lib/*.pm have correct text.
                 Runs 6 Test::More tests:
                 1.  Number of entries in MANIFEST.
                 2.  Change to directory under lib.
@@ -112,7 +116,7 @@ sub five_file_tests {
     my @filetext = read_file_array(File::Spec->catfile($dist_name, 'MANIFEST'));
     is(scalar(@filetext), $manifest_entries,
         'Correct number of entries in MANIFEST');
-    
+
     my $module = File::Spec->catfile(
         $dist_name,
         'lib',
@@ -134,7 +138,7 @@ sub five_file_tests {
             \s+http:\/\/www\.anonymous\.com\/~phineas
             |xs,
         'POD contains correct author info');
-} 
+}
 
 =head2 C<check_MakefilePL()>
 
@@ -147,7 +151,7 @@ sub five_file_tests {
     Returns:    n/a.
     Used:       To see whether Makefile.PL created by complete_build() has
                 correct entries.  Runs 1 Test::More test which checks NAME,
-                VERSION_FROM, AUTHOR and ABSTRACT.  
+                VERSION_FROM, AUTHOR and ABSTRACT.
 
 =cut
 
@@ -220,7 +224,7 @@ sub basic_file_and_directory_tests {
     for my $d ( qw| lib t | ) {
         my $dd = File::Spec->catdir($dist_name, $d);
         ok(-d $dd, "Directory '$dd' exists");
-    }   
+    }
 }
 
 sub license_text_test {
@@ -263,6 +267,43 @@ sub compact_build_tests {
     }
     return ($module_file, $test_file);
 }
+
+sub check_pm_file {
+    my ($pmfile, $predictref) = @_;
+    my %pred = %$predictref;
+    my @pmlines;
+    @pmlines = read_file_array($pmfile);
+    ok( scalar(@pmlines), ".pm file has content");
+    if (defined $pred{'pod_present'}) {
+         pod_present(\@pmlines, \%pred);
+    }
+    if (defined $pred{'constructor_present'}) {
+         constructor_present(\@pmlines, \%pred);
+    }
+}
+
+sub pod_present {
+    my $linesref = shift;
+    my $predictref = shift;
+    my $podcount  = grep {/^=(head|cut)/} @{$linesref};
+    if (${$predictref}{'pod_present'} == 0) {
+        is( $podcount, 0, "no POD correctly detected in module");
+    } else {
+        isnt( $podcount, 0, "POD detected in module");
+    }
+}
+
+sub constructor_present {
+    my $linesref = shift;
+    my $predictref = shift;
+    my $constructorcount  = grep {/^=sub new/} @{$linesref};
+    if (${$predictref}{'constructor_present'} == 0) {
+        is( $constructorcount, 0, "constructor correctly absent from module");
+    } else {
+        isnt( $constructorcount, 0, "constructor correctly present in module");
+    }
+}
+
 =head1 SEE ALSO
 
 F<ExtUtils::ModuleMaker>.

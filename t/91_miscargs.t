@@ -1159,11 +1159,7 @@ my $cwd = cwd();
 
     ($module_file, $test_file) = compact_build_tests(\@components);
 
-    $pm_pred = (
-        File::Spec->catfile($dist_name, 'lib', 'Alpha', "${testmod}.pm"),
-    );
-
-    my $AUTHOR_section = `grep -A4 '^=head1 AUTHOR' $pm_pred`;
+    my $AUTHOR_section = `grep -A4 '^=head1 AUTHOR' $module_file`;
     unlike($AUTHOR_section, qr/MODAUTHOR/,
         "Assignment of Perl-false value to CPANID in constructor prevents insertion of dummy copy into documentation");
     unlike($AUTHOR_section, qr/http:\/\/a\.galaxy\.far\.far\.away\/modules/s,
