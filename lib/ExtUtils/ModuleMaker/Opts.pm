@@ -14,7 +14,7 @@ sub new {
     my $eumm_script   = shift;
 
     my %opts;
-    getopts( "bhqsCIPVcn:a:v:l:u:p:o:w:e:t:r:d:", \%opts );
+    getopts( "bhqsCIPVcn:a:v:l:u:p:o:w:e:r:d:", \%opts );
 
     my $self = bless( {}, $class );
     $self->{NAME} = $class;
