@@ -6,9 +6,9 @@ This version was released May 05 2018.
 To install this module on your system, place the tarball archive file in a
 temporary directory and call the following:
 
-% gunzip ExtUtils-ModuleMaker-0.52.tar.gz
-% tar xf ExtUtils-ModuleMaker-0.52.tar
-% cd ExtUtils-ModuleMaker-0.52
+% gunzip ExtUtils-ModuleMaker-0.58.tar.gz
+% tar xf ExtUtils-ModuleMaker-0.58.tar
+% cd ExtUtils-ModuleMaker-0.58
 % perl Makefile.PL
 % make
 % make test
