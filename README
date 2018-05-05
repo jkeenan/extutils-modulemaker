@@ -1,7 +1,7 @@
 ExtUtils::ModuleMaker - Better than h2xs for creating modules
 
-This document refers to version 0.57 of ExtUtils::ModuleMaker.
-This version was released May 02 2018.
+This document refers to version 0.58 of ExtUtils::ModuleMaker.
+This version was released May 05 2018.
 
 To install this module on your system, place the tarball archive file in a
 temporary directory and call the following:

@@ -1,5 +1,12 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.58    May 05, 2018
+
+Address RTC 15563 (Discrepancy between documentation and results re author
+information), 125266 ('modulemaker -h' fails to display help message; launches
+interactive mode) and 125267 (modulemaker '-b' switch's documentation is
+misleading).
+
 0.57    May 02, 2018
 
 Perl-5.6.1 was previously required; removed all code intended to handle
@@ -9,9 +16,10 @@ earlier versions of perl.  Otherwise, no change in ExtUtils::ModuleMaker or
 Removed dependency on File::Save::Home in modules and test suite.  Replaced it
 with File::HomeDir.  Borrowed technique for mocking one's home directory
 during testing from CPAN-Reporter's test suite (thanks to David Golden, Breno
-G. de Oliveira and Perl Toolchain Gang).  This facilitated removal from
-ExtUtils::ModuleMaker::Auxiliary of many subroutines no longer used in test
-suite.  Extensive consolidation of files within the test suite to improve
+G. de Oliveira and Perl Toolchain Gang).  This should substantially address
+RTC 111637 (Not safe against parallel runs?).  This also facilitated removal
+from ExtUtils::ModuleMaker::Auxiliary of many subroutines no longer used in
+test suite.  Extensive consolidation of files within the test suite to improve
 maintainability and test suite running time.
 
 Provided configuration files for Travis and Appveyor.

@@ -5,7 +5,7 @@ use warnings;
 BEGIN {
     use base qw( ExtUtils::ModuleMaker );
     use vars qw ( $VERSION ); 
-    $VERSION = 0.57;
+    $VERSION = 0.58;
 }
 use Carp;
 use Data::Dumper;
