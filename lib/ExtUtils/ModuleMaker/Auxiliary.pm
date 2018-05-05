@@ -160,8 +160,6 @@ sub check_MakefilePL {
     my @pred = @$predictref;
 
     my $mkfl = File::Spec->catfile( $topdir, q{Makefile.PL} );
-    local *MAK;
-    open MAK, $mkfl or die "Unable to open Makefile.PL: $!";
     my $bigstr = read_file_string($mkfl);
     like($bigstr, qr/
             NAME.+$pred[0].+

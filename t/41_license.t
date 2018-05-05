@@ -215,8 +215,8 @@ use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw( licensetest ) );
 my $self = ExtUtils::ModuleMaker::Licenses::Standard->interact();
 isa_ok($self, 'ExtUtils::ModuleMaker::Licenses::Standard');
 
-my %licenses = ExtUtils::ModuleMaker::Licenses::Standard::Custom_Licenses();
-like($licenses{COPYRIGHT}, qr/The full text/s, "Custom_Licenses() returned expected text");
+my $license = ExtUtils::ModuleMaker::Licenses::Standard::Custom_Licenses();
+like($license->{COPYRIGHT}, qr/The full text/s, "Custom_Licenses() returned expected text");
 
 done_testing();
 

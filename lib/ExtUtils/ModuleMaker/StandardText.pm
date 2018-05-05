@@ -31,14 +31,14 @@ methods, but they are documented here primarily so that users
 writing plug-ins for ExtUtils::ModuleMaker's standard text will know what methods
 need to be subclassed.
 
-The methods below are called in C<ExtUtils::ModuleMaker::complete_build()> 
+The methods below are called in C<ExtUtils::ModuleMaker::complete_build()>
 but not in that same package's C<new()>.  For methods called in
 C<new()>, please see ExtUtils::ModuleMaker::Initializers.
 
 The descriptions below are presented in hierarchical order rather than
 alphabetically.  The order is that of ''how close to the surface can a
 particular method called?'', where 'surface' means being called within
-C<ExtUtils::ModuleMaker::complete_build()>. 
+C<ExtUtils::ModuleMaker::complete_build()>.
 So methods called within C<complete_build()> are described before
 methods which are only called within other quasi-private methods.  Some of the
 methods described are also called within ExtUtils::ModuleMaker::Interactive
@@ -76,12 +76,12 @@ sub create_base_directory {
 =head3 C<create_directory()>
 
   Usage     : create_directory( [ I<list of directories to be built> ] )
-              in complete_build; create_base_directory; create_pm_basics 
+              in complete_build; create_base_directory; create_pm_basics
   Purpose   : Creates directory(ies) requested.
   Returns   : n/a
   Argument  : Reference to an array holding list of directories to be created.
   Comment   : Essentially a wrapper around File::Path::mkpath.  Will use
-              values in $self keys VERBOSE and PERMISSIONS to provide 
+              values in $self keys VERBOSE and PERMISSIONS to provide
               2nd and 3rd arguments to mkpath if requested.
   Comment   : Adds to death message in event of failure.
 
@@ -99,10 +99,10 @@ sub create_directory {
   Usage     : $self->print_file($filename, $filetext) within complete_build()
   Purpose   : Adds the file being created to MANIFEST, then prints text to new
               file.  Logs file creation under verbose.  Adds info for
-              death_message in event of failure. 
+              death_message in event of failure.
   Returns   : n/a
   Argument  : 2 arguments: filename and text to be printed
-  Comment   : 
+  Comment   :
 
 =cut
 
@@ -170,7 +170,7 @@ END_OF_BOTTOM
         ( $self->{BUILD_SYSTEM} eq 'ExtUtils::MakeMaker' )
             ? $README_text{eumm_instructions}
             : $README_text{mb_instructions};
-    return $pod2textline . 
+    return $pod2textline .
         $README_text{readme_top} .
         $build_instructions .
         $README_text{readme_bottom};
@@ -204,7 +204,7 @@ EOF
 
 =head3 C<text_Changes()>
 
-  Usage     : $self->text_Changes($only_in_pod) within complete_build; 
+  Usage     : $self->text_Changes($only_in_pod) within complete_build;
               block_pod()
   Purpose   : Composes text for Changes file
   Returns   : String holding text for Changes file
@@ -359,7 +359,7 @@ WriteMakefile(
 
 =head3 C<text_Buildfile()>
 
-  Usage     : $self->text_Buildfile() within complete_build() 
+  Usage     : $self->text_Buildfile() within complete_build()
   Purpose   : Composes text for a Buildfile for Module::Build
   Returns   : String holding text for Buildfile
   Argument  : n/a
@@ -477,7 +477,7 @@ sub text_MANIFEST_SKIP {
 ^blibdirs$
 ^PM_to_blib$
 ^MakeMaker-\d
-                                                                                                                    
+
 # Module::Build
 ^Build$
 ^_build
@@ -565,7 +565,7 @@ END_OF_POD_TEST
 sub text_pm_file {
     my $self = shift;
     my $module = shift;
-      
+
     my $text_of_pm_file = $self->block_begin($module);
 
     $text_of_pm_file .= (
@@ -613,7 +613,7 @@ sub text_pm_file {
               for the primary module it is a pointer to $self
   Throws    : n/a
   Comment   : This method is a likely candidate for alteration in a subclass,
-              e.g., you don't need Exporter-related code if you're building 
+              e.g., you don't need Exporter-related code if you're building
               an OO-module.
   Comment   : References $self keys NAME and (indirectly) VERSION
 
@@ -640,10 +640,10 @@ BEGIN {
 }
 
 END_OF_BEGIN
-#    my $text = 
-#        $package_line . 
-#        $strict_line . 
-#        # $warnings_line . 
+#    my $text =
+#        $package_line .
+#        $strict_line .
+#        # $warnings_line .
 #        $begin_block;
     my $text = $package_line;
     $text .= $Id_line       if $self->{INCLUDE_ID_LINE};
@@ -655,18 +655,18 @@ END_OF_BEGIN
 
 =head3 C<process_attribute()>
 
-  Usage     : $self->process_attribute($module, @keys) 
+  Usage     : $self->process_attribute($module, @keys)
               within block_begin(), text_test(),
               text_pm_file(),  block_pod(), complete_build()
-  Purpose   : 
+  Purpose   :
               For the particular .pm file now being processed (value of the
               NAME key of the first argument: $module), see if there exists a
-              key whose name is the second argument.  If so, return it.  
+              key whose name is the second argument.  If so, return it.
               Otherwise, return the value of the key by that name in the
               EU::MM object.  If we have a two-level hash (currently only in
               License_Parts, process down to that level.
   Arguments : First argument is a reference to an anonymous hash which has at
-              least one element with key NAME and value of the module being 
+              least one element with key NAME and value of the module being
               processed.  Second is an array of key names, although in all but
               one case it's a single-element (NAME) array.
   Comment   : [The method's name is very opaque and not self-documenting.
@@ -721,7 +721,7 @@ sub block_subroutine_header {
  Comment   : This is a sample subroutine header.
            : It is polite to include more pod and fewer comments.
 
-See Also   : 
+See Also   :
 
  ====cut
 
@@ -783,10 +783,9 @@ EOFBLOCK
 sub block_include_file_in_pm {
     my ( $self, $module ) = @_;
     my $arb = $self->{INCLUDE_FILE_IN_PM};
-    local *ARB;
-    open ARB, $arb or croak "Could not open $arb for inclusion: $!";
-    my $text_included = do { local $/; <ARB> }; 
-    close ARB or croak "Could not close $arb after reading: $!";
+    open my $ARB, '<', $arb or croak "Could not open $arb for inclusion: $!";
+    my $text_included = do { local $/; <$ARB> };
+    close $ARB or croak "Could not close $arb after reading: $!";
     return $text_included;
 }
 
@@ -836,7 +835,7 @@ END_OF_DESC
 
     my $text_of_pod = join(
         q{},
-        $self->pod_section( NAME => $name . 
+        $self->pod_section( NAME => $name .
             ( (defined $abstract) ? qq{ - $abstract} : q{} )
         ),
         $self->pod_section( SYNOPSIS    => $synopsis ),
@@ -889,7 +888,7 @@ EOFBLOCK
 
 =head3 C<death_message()>
 
-  Usage     : $self->death_message( [ I<list of error messages> ] ) 
+  Usage     : $self->death_message( [ I<list of error messages> ] )
               in validate_values; create_directory; print_file
   Purpose   : Croaks with error message composed from elements in the list
               passed by reference as argument
@@ -910,7 +909,7 @@ sub death_message {
     delete $err{'NAME is required'} if $err{'NAME is required'};
     @errors = keys %err;
     if (@errors) {
-        print( join "\n", 
+        print( join "\n",
             'Oops, there are the following errors:', @errors, q{} );
         return 1;
     } else {
@@ -920,11 +919,11 @@ sub death_message {
 
 =head3 C<log_message()>
 
-  Usage     : $self->log_message( $message ) in print_file; 
+  Usage     : $self->log_message( $message ) in print_file;
   Purpose   : Prints log_message (currently, to STDOUT) if $self->{VERBOSE}
   Returns   : n/a
   Argument  : Scalar holding message to be logged
-  Comment   : 
+  Comment   :
 
 =cut
 
@@ -935,10 +934,10 @@ sub log_message {
 
 =head3 C<pod_section()>
 
-  Usage     : $self->pod_section($heading, $content) within 
+  Usage     : $self->pod_section($heading, $content) within
               block_pod()
-  Purpose   : When writing POD sections, you have to 'escape' 
-              the POD markers to prevent the compiler from treating 
+  Purpose   : When writing POD sections, you have to 'escape'
+              the POD markers to prevent the compiler from treating
               them as real POD.  This method 'unescapes' them and puts header
               and closer around individual POD headings within pm file.
   Arguments : Variables holding POD section name and text of POD section.
@@ -961,14 +960,14 @@ END_OF_SECTION
 =head3 C<pod_wrapper()>
 
   Usage     : $self->pod_wrapper($string) within block_pod()
-  Purpose   : When writing POD sections, you have to 'escape' 
-              the POD markers to prevent the compiler from treating 
+  Purpose   : When writing POD sections, you have to 'escape'
+              the POD markers to prevent the compiler from treating
               them as real POD.  This method 'unescapes' them and puts header
               and closer around main POD block in pm file, along with warning
               about stub documentation.
-  Argument  : String holding text of POD which has been built up 
+  Argument  : String holding text of POD which has been built up
               within block_pod().
-  Comment   : $head and $tail inside pod_wrapper() are optional and, in a 
+  Comment   : $head and $tail inside pod_wrapper() are optional and, in a
               subclass, could be redefined as empty strings;
               but $cutline is mandatory as it supplies the last =cut
 
@@ -979,7 +978,7 @@ sub pod_wrapper {
     my $head = <<'END_OF_HEAD';
 
 #################### main pod documentation begin ###################
-## Below is the stub of documentation for your module. 
+## Below is the stub of documentation for your module.
 ## You better edit it!
 
 END_OF_HEAD
@@ -994,10 +993,10 @@ END_OF_CUT
 END_OF_TAIL
 
     $cutline =~ s/\n ====/\n=/g;
-    return join( q{}, 
+    return join( q{},
         $head,     # optional
-        $podtext,  # required 
-        $cutline,  # required 
+        $podtext,  # required
+        $cutline,  # required
         $tail      # optional
     );
 }
