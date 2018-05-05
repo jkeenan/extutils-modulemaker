@@ -4,7 +4,7 @@ use warnings;
 use Carp;
 use File::Spec;
 use File::Temp qw(tempdir);
-use Test::More tests => 19;
+use Test::More tests => 20;
 use_ok( 'ExtUtils::ModuleMaker' );
 use_ok( 'ExtUtils::ModuleMaker::Licenses::Local' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
@@ -58,3 +58,5 @@ use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
     );
 }
 
+my $self = ExtUtils::ModuleMaker::Licenses::Local->interact();
+isa_ok($self, 'ExtUtils::ModuleMaker::Licenses::Local');

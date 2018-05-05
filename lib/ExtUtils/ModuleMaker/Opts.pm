@@ -1,5 +1,4 @@
 package ExtUtils::ModuleMaker::Opts;
-#$Id$
 use strict;
 use warnings;
 our $VERSION = 0.57;
@@ -16,7 +15,7 @@ sub new {
     getopts( "bhqsCIPVcn:a:v:l:u:p:o:w:e:r:d:", \%opts );
     if ($opts{h}) {
         print Usage($eumm_script, $eumm_package);
-        exit 0;
+        return;
     }
 
     my $self = bless( {}, $class );

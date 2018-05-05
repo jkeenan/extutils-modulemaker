@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Test::More;
 use_ok( 'ExtUtils::ModuleMaker' );
-use_ok( 'ExtUtils::ModuleMaker::Licenses::Local' );
+use_ok( 'ExtUtils::ModuleMaker::Licenses::Standard' );
 use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw( licensetest ) );
 
 
@@ -211,6 +211,12 @@ use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw( licensetest ) );
     licensetest( 'ExtUtils::ModuleMaker', 'zlib',
         qr/The zlib\/libpng License/s );
 }
+
+my $self = ExtUtils::ModuleMaker::Licenses::Standard->interact();
+isa_ok($self, 'ExtUtils::ModuleMaker::Licenses::Standard');
+
+my %licenses = ExtUtils::ModuleMaker::Licenses::Standard::Custom_Licenses();
+like($licenses{COPYRIGHT}, qr/The full text/s, "Custom_Licenses() returned expected text");
 
 done_testing();
 

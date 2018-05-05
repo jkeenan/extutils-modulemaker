@@ -13,6 +13,7 @@ my $opt = ExtUtils::ModuleMaker::Opts->new(
     q{ExtUtils::ModuleMaker},
     q{modulemaker},
 );
+exit 0 unless defined $opt;
 
 my $mod = ExtUtils::ModuleMaker::Interactive->new(
     $opt->get_standard_options()

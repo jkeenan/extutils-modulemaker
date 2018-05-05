@@ -375,5 +375,115 @@ my %reg_def = (
     ok(chdir $cwd, "Able to change back to starting directory");
 }
 
+{
+    note("Set 9:  compact build; -b flag sets Module::Build");
+
+    my ($home_dir, $personal_defaults_dir) = prepare_mockdirs();
+    local $ENV{HOME} = $home_dir;
+
+    my $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
+
+    my (@components, $module_name, $dist_name, $path_str);
+    my ($mf);
+    @components = ( qw| XYZ ABC | );
+    $module_name = join('::' => @components);
+    $dist_name = join('-' => @components);
+    $path_str = File::Spec->catdir(@components);
+    $mf = join('/' => (
+        'lib', @components[0 .. ($#components - 1)], "$components[-1].pm"));
+
+    my ($abstract, $author, $cpanid, $organization, $website, $email);
+    my @system_args = (
+        $^X, qq{-I$cwd/blib/lib}, qq{$cwd/blib/script/modulemaker},
+        '-I',
+        '-c',
+        '-n' . $module_name,
+        '-b',
+    );
+    my ($stdout, $stderr, @results);
+    ($stdout, $stderr, @results) = capture { system(@system_args); };
+    ok(! $results[0], "system call to modulemaker exited successfully");
+
+    for my $f ( qw| Changes MANIFEST Build.PL LICENSE README | ) {
+        my $ff = File::Spec->catfile($dist_name, $f);
+        ok (-e $ff, "$ff exists");
+    }
+    ok(! -e File::Spec->catfile($dist_name, 'Makefile.PL'),
+        "Makefile.PL does not exist");
+    for my $d ( qw| lib t | ) {
+        my $dd = File::Spec->catdir($dist_name, $d);
+        ok(-d $dd, "Directory '$dd' exists");
+    }
+
+    ok(chdir $cwd, "Able to change back to starting directory");
+}
+
+{
+    note("Set 10:  compact build; various other previously untested options");
+
+    my ($home_dir, $personal_defaults_dir) = prepare_mockdirs();
+    local $ENV{HOME} = $home_dir;
+
+    my $tdir = tempdir( CLEANUP => 1);
+    ok(chdir $tdir, 'changed to temp directory for testing');
+
+    my (@components, $module_name, $dist_name, $path_str);
+    my ($mf);
+    @components = ( qw| XYZ ABC | );
+    $module_name = join('::' => @components);
+    $dist_name = join('-' => @components);
+    $path_str = File::Spec->catdir(@components);
+    $mf = join('/' => (
+        'lib', @components[0 .. ($#components - 1)], "$components[-1].pm"));
+
+    my ($abstract, $author, $cpanid, $organization, $website, $email);
+    $organization = 'World Wide Web, Inc.';
+    $website = 'http://example.com';
+    my $license = 'apache_1_1';
+    my @system_args = (
+        $^X, qq{-I$cwd/blib/lib}, qq{$cwd/blib/script/modulemaker},
+        '-I',
+        '-c',
+        '-C',  # Changes in POD
+        '-n' . $module_name,
+        '-l' . $license,
+        '-o' . $organization,
+        '-w' . $website,
+    );
+    my ($stdout, $stderr, @results);
+    ($stdout, $stderr, @results) = capture { system(@system_args); };
+    ok(! $results[0], "system call to modulemaker exited successfully");
+
+    for my $f ( qw| MANIFEST Makefile.PL LICENSE README | ) {
+        my $ff = File::Spec->catfile($dist_name, $f);
+        ok (-e $ff, "$ff exists");
+    }
+    for my $f ( qw| Build.PL Changes | ) {
+        my $ff = File::Spec->catfile($dist_name, $f);
+        ok (! -e $ff, "$ff does not exist");
+    }
+    for my $d ( qw| lib t | ) {
+        my $dd = File::Spec->catdir($dist_name, $d);
+        ok(-d $dd, "Directory '$dd' exists");
+    }
+    license_text_test($dist_name, qr/Apache Software License.*Version 1\.1/s);
+
+    my $fmf = File::Spec->catfile($dist_name, $mf);
+
+    my $HISTORY_section = `grep -A4 '^=head1 HISTORY' $fmf`;
+	ok($HISTORY_section, "HISTORY section placed in POD");
+	like($HISTORY_section, qr/original version; created by ExtUtils::ModuleMaker/s,
+		"Got expected text in HISTORY");
+
+    my $AUTHOR_section = `grep -A6 '^=head1 AUTHOR' $fmf`;
+    like($AUTHOR_section, qr/\Q$organization\E/s,
+        "Got expected ORGANIZATION");
+    like($AUTHOR_section, qr/\Q$website\E/s,
+        "Got expected WEBSITE");
+
+    ok(chdir $cwd, "Able to change back to starting directory");
+}
+
 
 done_testing();
