@@ -63,7 +63,6 @@ $eumm_script  = q{modulemaker};
 {
     note("Case 3: Simplest possible use; mix options with take/do not take values (grouped); INTERACTIVE declined");
 
-    #getopts( "hqsCIPVcn:a:v:l:u:p:o:w:e:t:r:d:b:", \%opts );
     my $name = 'Alpha::Beta';
     my $abstract = 'Traverse the Greek alphabet';
     my $author = 'Chango Ta Beni';
