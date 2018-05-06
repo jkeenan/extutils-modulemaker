@@ -147,7 +147,7 @@ $eumm_script  = q{modulemaker};
 }
 
 {
-    note("Set 5:  test help switch '-h'");
+    note("Case 5:  test help switch '-h'");
 
     local @ARGV = ( '-h' );
 
@@ -167,9 +167,177 @@ $eumm_script  = q{modulemaker};
 }
 
 {
-    note("Set 6:  test absence of switch: '-n'");
+    note("Case 6:  test absence of switch: '-n'");
 
     local @ARGV = ( '-cI' );
+
+    my $opt = ExtUtils::ModuleMaker::Opts->new( $eumm_package, $eumm_script );
+    my %stan = $opt->get_standard_options();
+    ok(! $stan{NAME}, "NAME not set");
+    ok($stan{COMPACT}, "COMPACT build requested");
+}
+
+note("Long options");
+
+{
+    note("Case 101: Simplest possible use; INTERACTIVE declined");
+
+    my $name = 'Alpha::Beta';
+    local @ARGV = ('--name' => $name, '--no-interactive' => 0);
+
+    $opt = ExtUtils::ModuleMaker::Opts->new( $eumm_package, $eumm_script );
+    ok(defined $opt, "ExtUtils::ModuleMaker::Opts returned defined value");
+    isa_ok($opt, 'ExtUtils::ModuleMaker::Opts');
+
+    my %stan = $opt->get_standard_options();
+    is($stan{NAME}, $name, "NAME correctly set to $name");
+    ok(! exists $stan{ABSTRACT}, "No ABSTRACT set");
+
+    like($stan{USAGE_MESSAGE},
+        qr/^modulemaker.*Currently Supported Features/s,
+        "Got USAGE MESSAGE"
+    );
+}
+
+{
+    note("Case 102: Simplest possible use; assign values to several options; INTERACTIVE declined");
+
+    my $name = 'Alpha::Beta';
+    my $abstract = 'Traverse the Greek alphabet';
+    my $author = 'Chango Ta Beni';
+    my $cpanid = 'CHANGO';
+    my $email = 'chango_ta_beni@example.com';
+    local @ARGV = (
+        '--abstract' => $abstract,
+        '--author' => $author,
+        '--cpanid' => $cpanid,
+        '--email' => $email,
+        '--name' => $name,
+        '--no_interactive' => ''   # -I must go last
+    );
+
+    $opt = ExtUtils::ModuleMaker::Opts->new( $eumm_package, $eumm_script );
+    ok(defined $opt, "ExtUtils::ModuleMaker::Opts returned defined value");
+    isa_ok($opt, 'ExtUtils::ModuleMaker::Opts');
+
+    my %stan = $opt->get_standard_options();
+    is($stan{NAME}, $name, "NAME correctly set to $name");
+    is($stan{ABSTRACT}, $abstract, "ABSTRACT correctly set to $abstract");
+    is($stan{AUTHOR}, $author, "AUTHOR correctly set to $author");
+    is($stan{CPANID}, $cpanid, "CPANID correctly set to $cpanid");
+    is($stan{EMAIL}, $email, "EMAIL correctly set to $email");
+}
+
+{
+    note("Case 103: Simplest possible use; mix options with take/do not take values (grouped); INTERACTIVE declined");
+
+    my $name = 'Alpha::Beta';
+    my $abstract = 'Traverse the Greek alphabet';
+    my $author = 'Chango Ta Beni';
+    my $cpanid = 'CHANGO';
+    my $email = 'chango_ta_beni@example.com';
+    local @ARGV = (
+        '--abstract' => $abstract,
+        '--author' => $author,
+        '--cpanid' => $cpanid,
+        '--email' => $email,
+        '--name' => $name,
+        '-cVPq',
+        '--no_interactive' => ''   # -I must go last
+    );
+
+    $opt = ExtUtils::ModuleMaker::Opts->new( $eumm_package, $eumm_script );
+    ok(defined $opt, "ExtUtils::ModuleMaker::Opts returned defined value");
+    isa_ok($opt, 'ExtUtils::ModuleMaker::Opts');
+
+    my %stan = $opt->get_standard_options();
+    is($stan{NAME}, $name, "NAME correctly set to $name");
+    is($stan{ABSTRACT}, $abstract, "ABSTRACT correctly set to $abstract");
+    is($stan{AUTHOR}, $author, "AUTHOR correctly set to $author");
+    is($stan{CPANID}, $cpanid, "CPANID correctly set to $cpanid");
+    is($stan{EMAIL}, $email, "EMAIL correctly set to $email");
+    ok($stan{COMPACT}, "COMPACT build requested");
+    ok($stan{VERBOSE}, "VERBOSE output requested");
+    ok(!$stan{NEED_POD}, "NEED_POD output requested");
+    ok(!$stan{NEED_NEW_METHOD}, "NEED_NEW_METHOD output requested");
+}
+
+{
+    note("Case 104: Simplest possible use; mix options with take/do not take values (ungrouped); INTERACTIVE declined");
+
+    my $name = 'Alpha::Beta';
+    my $abstract = 'Traverse the Greek alphabet';
+    my $author = 'Chango Ta Beni';
+    my $cpanid = 'CHANGO';
+    my $email = 'chango_ta_beni@example.com';
+    my $organization = 'World Wide Web, Inc.';
+    my $website = 'http://example.com';
+    my $permissions = '0711';
+    my $version = '0.03';
+    my $license = 'apache';
+    local @ARGV = (
+        '--abstract' => $abstract,
+        '--author' => $author,
+        '--cpanid' => $cpanid,
+        '--email' => $email,
+        '--name' => $name,
+        '--organization' => $organization,
+        '--website' => $website,
+        '--permissions' => $permissions,
+        '--version' => $version,
+        '--license' => $license,
+        '--compact',
+        '--changes_in_pod',  # Changes in POD
+        '--verbose',
+        '--build_system',
+        '--no_interactive' => ''   # -I must go last
+    );
+
+    $opt = ExtUtils::ModuleMaker::Opts->new( $eumm_package, $eumm_script );
+    ok(defined $opt, "ExtUtils::ModuleMaker::Opts returned defined value");
+    isa_ok($opt, 'ExtUtils::ModuleMaker::Opts');
+
+    my %stan = $opt->get_standard_options();
+    is($stan{NAME}, $name, "NAME correctly set to $name");
+    is($stan{ABSTRACT}, $abstract, "ABSTRACT correctly set to $abstract");
+    is($stan{AUTHOR}, $author, "AUTHOR correctly set to $author");
+    is($stan{CPANID}, $cpanid, "CPANID correctly set to $cpanid");
+    is($stan{EMAIL}, $email, "EMAIL correctly set to $email");
+    is($stan{ORGANIZATION}, $organization, "ORGANIZATION correctly set to $organization");
+    is($stan{WEBSITE}, $website, "WEBSITE correctly set to $website");
+    is($stan{PERMISSIONS}, $permissions, "PERMISSIONS correctly set to $permissions");
+    is($stan{VERSION}, $version, "VERSION correctly set to $version");
+    is($stan{LICENSE}, $license, "LICENSE correctly set to $license");
+    ok($stan{COMPACT}, "COMPACT build requested");
+    ok($stan{CHANGES_IN_POD}, "CHANGES_IN_POD build requested");
+    ok($stan{VERBOSE}, "VERBOSE output requested");
+    ok($stan{BUILD_SYSTEM}, "BUILD_SYSTEM set to true; will request Module::Build");
+}
+
+{
+    note("Case 105:  test help switch '--help'");
+
+    local @ARGV = ( '--help' );
+
+	my $capture = IO::Capture::Stdout->new();
+    $capture->start();
+    my $opt =  ExtUtils::ModuleMaker::Opts->new( $eumm_package, $eumm_script );
+    $capture->stop();
+    ok(! $opt, "system call to modulemaker exited successfully");
+
+    my $stdout = join("\n" => $capture->read());
+    like($stdout, qr/^modulemaker \[-CIPVch\]/s,
+        "Got expected start of Usage message");
+    like($stdout, qr/Currently Supported Features/s,
+        "Got expected middle of Usage message");
+    like($stdout, qr/modulemaker\s+ExtUtils::ModuleMaker\sversion:\s+\d\.\d{2}$/s,
+        "Got expected end of Usage message");
+}
+
+{
+    note("Case 1066:  test absence of switch: '--name'");
+
+    local @ARGV = ( '--compact', '--no-interactive' );
 
     my $opt = ExtUtils::ModuleMaker::Opts->new( $eumm_package, $eumm_script );
     my %stan = $opt->get_standard_options();
