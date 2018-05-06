@@ -12,6 +12,7 @@ my %Makefile_Args = (
     PREREQ_PM    => {
         'Data::Dumper'      => 0, # in the Perl core
         'Getopt::Std'       => 0, # in the Perl core
+        'Getopt::Long'      => 0, # in the Perl core
         'File::Basename'    => 0, # in the Perl core
         'File::Path'        => 0, # in the Perl core
         ($^O =~ /Win32/ ? ('Win32' => 0) : ()),
