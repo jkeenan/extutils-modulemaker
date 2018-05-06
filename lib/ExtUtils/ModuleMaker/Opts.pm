@@ -30,8 +30,8 @@ sub new {
         "changes_in_pod|changes-in-pod|C"       => \$opts{C},
         "help|h"                                => \$opts{h},
         "no_interactive|no-interactive|I"       => \$opts{I},
-        "need_pod|need-pod|P"                   => \$opts{P},
-        "need_new_method|need-new-method|q"     => \$opts{q},
+        "no_pod|no-pod|P"                       => \$opts{P},
+        "no_new_method|no-new-method|q"         => \$opts{q},
         "save_as_defaults|save-as-defaults|s"   => \$opts{s},
         "verbose|V"                             => \$opts{V},
 
@@ -100,32 +100,32 @@ sub get_standard_options {
 sub Usage {
     my ($script, $eumm_package) = @_;
     my $message = <<ENDOFUSAGE;
-modulemaker [-CIPVch] [-v version] [-n module_name] [-a abstract]
+modulemaker [-CIPVbch] [-n module_name] [-a abstract]
         [-u author_name] [-p author_CPAN_ID] [-o organization]
         [-w author_website] [-e author_e-mail]
-        [-l license_name] [-s save_selections_as_defaults ]
+        [-l license_name] [-v version] [-s save_selections_as_defaults ]
 
 Currently Supported Features
-    -a   Specify (in quotes) an abstract for this extension
-    -b   Use Module::Build as build system for this extension
-    -c   Flag for compact base directory name
-    -C   Omit creating the Changes file, add HISTORY heading to stub POD
-    -d   Call methods which override default methods from this module
-    -e   Specify author's e-mail address
-    -h   Display this help message
-    -I   Disable INTERACTIVE mode, the command line arguments better be complete
-    -l   Specify a license for this extension
-    -n   Specify a name to use for the extension (required)
-    -o   Specify (in quotes) author's organization
-    -p   Specify author's CPAN ID
-    -P   Omit the stub POD section
-    -q   Flag to omit a constructor from module
-    -r   Specify permissions
-    -s   Flag to save selections as new personal default values
-    -u   Specify (in quotes) author's name
-    -v   Specify a version number for this extension
-    -V   Flag for verbose messages during module creation
-    -w   Specify author's web site
+    -a|--abstract           Specify (in quotes) an abstract for this extension
+    -b|--build_system       Use Module::Build as build system for this extension
+    -c|--compact            Flag for compact base directory name
+    -C|--changes_in_pod     Omit creating the Changes file, add HISTORY heading to stub POD
+    -d|--alt_build          Call methods which override default methods from this module
+    -e|--email              Specify author's e-mail address
+    -h|--help               Display this help message and exit
+    -I|--no_interactive     Disable INTERACTIVE mode, the command line arguments better be complete
+    -l|--license            Specify a license for this extension
+    -n|--name               Specify a name to use for the extension (required)
+    -o|--organization       Specify (in quotes) author's organization
+    -p|--cpanid             Specify author's CPAN ID
+    -P|--no_pod             Flag to omit the stub POD section from module
+    -q|--no_new_method      Flag to omit a constructor from module
+    -r|--permissions        Specify permissions
+    -s|--save_as_defaults   Flag to save selections as new personal default values
+    -u|--author             Specify (in quotes) author's name
+    -v|--version            Specify an initial version number for this extension
+    -V|--verbose            Flag for verbose messages during module creation
+    -w|--website            Specify author's web site
 
 $script
 $eumm_package version: $VERSION

@@ -365,7 +365,7 @@ my %reg_def = (
     ($stdout, $stderr, @results) = capture { system(@system_args); };
     ok(! $results[0], "system call to modulemaker exited successfully");
 
-    like($stdout, qr/^modulemaker \[-CIPVch\]/s,
+    like($stdout, qr/^modulemaker \[-CIPVbch\]/s,
         "Got expected start of Usage message");
     like($stdout, qr/Currently Supported Features/s,
         "Got expected middle of Usage message");

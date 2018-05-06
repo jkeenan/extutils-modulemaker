@@ -158,7 +158,7 @@ $eumm_script  = q{modulemaker};
     ok(! $opt, "system call to modulemaker exited successfully");
 
     my $stdout = join("\n" => $capture->read());
-    like($stdout, qr/^modulemaker \[-CIPVch\]/s,
+    like($stdout, qr/^modulemaker \[-CIPVbch\]/s,
         "Got expected start of Usage message");
     like($stdout, qr/Currently Supported Features/s,
         "Got expected middle of Usage message");
@@ -326,7 +326,7 @@ note("Long options");
     ok(! $opt, "system call to modulemaker exited successfully");
 
     my $stdout = join("\n" => $capture->read());
-    like($stdout, qr/^modulemaker \[-CIPVch\]/s,
+    like($stdout, qr/^modulemaker \[-CIPVbch\]/s,
         "Got expected start of Usage message");
     like($stdout, qr/Currently Supported Features/s,
         "Got expected middle of Usage message");
