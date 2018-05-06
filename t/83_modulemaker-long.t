@@ -55,13 +55,13 @@ my %reg_def = (
     my @system_args = (
         $^X, qq{-I$cwd/blib/lib}, qq{$cwd/blib/script/modulemaker},
         '--no-interactive',
-        '-n' . $module_name,
-        '-a' . qq{$abstract},
-        '-u' . $author,
-        '-p' . $cpanid,
-        '-o' . $organization,
-        '-w' . $website,
-        '-e' . $email,
+        '--name' => $module_name,
+        '--abstract' => qq{$abstract},
+        '--author' => $author,
+        '--cpanid' => $cpanid,
+        '--organization' => $organization,
+        '--website' => $website,
+        '--email' => $email,
     );
     my ($stdout, $stderr, @results);
     ($stdout, $stderr, @results) = capture { system(@system_args); };
@@ -107,8 +107,8 @@ my %reg_def = (
         $^X, qq{-I$cwd/blib/lib}, qq{$cwd/blib/script/modulemaker},
         '--no-interactive',
         '--compact',
-        '-n' . $module_name,
-        '-a' . qq{$abstract},
+        '--name' => $module_name,
+        '--abstract' => qq{$abstract},
     );
     my ($stdout, $stderr, @results);
     ($stdout, $stderr, @results) = capture { system(@system_args); };
@@ -154,9 +154,9 @@ my %reg_def = (
         $^X, qq{-I$cwd/blib/lib}, qq{$cwd/blib/script/modulemaker},
         '--no-interactive',
         '--compact',
-        '-n' . $module_name,
-        '-a' . qq{$abstract},
-        '-u' . $author,
+        '--name' => $module_name,
+        '--abstract' => qq{$abstract},
+        '--author' => $author,
     );
     my ($stdout, $stderr, @results);
     ($stdout, $stderr, @results) = capture { system(@system_args); };
@@ -203,10 +203,10 @@ my %reg_def = (
         $^X, qq{-I$cwd/blib/lib}, qq{$cwd/blib/script/modulemaker},
         '--no-interactive',
         '--compact',
-        '-n' . $module_name,
-        '-a' . qq{$abstract},
-        '-u' . $author,
-        '-e' . $email,
+        '--name' => $module_name,
+        '--abstract' => qq{$abstract},
+        '--author' => $author,
+        '--email' => $email,
     );
     my ($stdout, $stderr, @results);
     ($stdout, $stderr, @results) = capture { system(@system_args); };
@@ -251,7 +251,7 @@ my %reg_def = (
         '--no-interactive',
         '--compact',
         '--need-pod',
-        '-n' . $module_name,
+        '--name' => $module_name,
     );
     my ($stdout, $stderr, @results);
     ($stdout, $stderr, @results) = capture { system(@system_args); };
@@ -291,7 +291,7 @@ my %reg_def = (
         '--no-interactive',
         '--compact',
         '--need-new-method',
-        '-n' . $module_name,
+        '--name' => $module_name,
     );
     my ($stdout, $stderr, @results);
     ($stdout, $stderr, @results) = capture { system(@system_args); };
@@ -329,10 +329,9 @@ my %reg_def = (
     my $version = '0.3';
     my @system_args = (
         $^X, qq{-I$cwd/blib/lib}, qq{$cwd/blib/script/modulemaker},
-        '--no-interactive',
-        '--compact',
-        '-n' . $module_name,
-        '-v' . $version,
+        '-cI',
+        '--name' => $module_name,
+        '--version' => $version,
     );
     my ($stdout, $stderr, @results);
     ($stdout, $stderr, @results) = capture { system(@system_args); };
@@ -398,7 +397,7 @@ my %reg_def = (
         $^X, qq{-I$cwd/blib/lib}, qq{$cwd/blib/script/modulemaker},
         '--no-interactive',
         '--compact',
-        '-n' . $module_name,
+        '--name' => $module_name,
         '--build-system',
     );
     my ($stdout, $stderr, @results);
@@ -446,10 +445,10 @@ my %reg_def = (
         '--no-interactive',
         '--compact',
         '--changes-in-pod',  # Changes in POD
-        '-n' . $module_name,
-        '-l' . $license,
-        '-o' . $organization,
-        '-w' . $website,
+        '--name' => $module_name,
+        '--license' => $license,
+        '--organization' => $organization,
+        '--website' => $website,
     );
     my ($stdout, $stderr, @results);
     ($stdout, $stderr, @results) = capture { system(@system_args); };
