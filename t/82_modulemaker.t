@@ -469,18 +469,14 @@ my %reg_def = (
     }
     license_text_test($dist_name, qr/Apache Software License.*Version 1\.1/s);
 
-    my $fmf = File::Spec->catfile($dist_name, $mf);
-
-    my $HISTORY_section = `grep -A4 '^=head1 HISTORY' $fmf`;
-	ok($HISTORY_section, "HISTORY section placed in POD");
-	like($HISTORY_section, qr/original version; created by ExtUtils::ModuleMaker/s,
-		"Got expected text in HISTORY");
-
-    my $AUTHOR_section = `grep -A6 '^=head1 AUTHOR' $fmf`;
-    like($AUTHOR_section, qr/\Q$organization\E/s,
-        "Got expected ORGANIZATION");
-    like($AUTHOR_section, qr/\Q$website\E/s,
-        "Got expected WEBSITE");
+    my $filetext = read_file_string(File::Spec->catfile($dist_name, $mf));
+    ok($filetext, "Able to read $mf");
+    like($filetext, qr/=head1 HISTORY/s, "HISTORY section placed in POD");
+    like($filetext, qr/original version; created by ExtUtils::ModuleMaker/s,
+        "Got expected text in HISTORY");
+    like($filetext, qr/=head1 AUTHOR/s, "AUTHOR section placed in POD");
+    like($filetext, qr/\Q$organization\E/s, "Got expected ORGANIZATION");
+    like($filetext, qr/\Q$website\E/s, "Got expected WEBSITE");
 
     ok(chdir $cwd, "Able to change back to starting directory");
 }

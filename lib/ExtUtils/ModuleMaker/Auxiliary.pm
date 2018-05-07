@@ -2,8 +2,8 @@ package ExtUtils::ModuleMaker::Auxiliary;
 use strict;
 # Contains test subroutines for distribution with ExtUtils::ModuleMaker
 use warnings;
-use vars qw( $VERSION @ISA @EXPORT_OK );
-$VERSION = 0.59;
+our ( $VERSION, @ISA, @EXPORT_OK );
+$VERSION = "0.60";
 require Exporter;
 @ISA         = qw(Exporter);
 @EXPORT_OK   = qw(

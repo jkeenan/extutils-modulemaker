@@ -335,7 +335,7 @@ note("Long options");
 }
 
 {
-    note("Case 1066:  test absence of switch: '--name'");
+    note("Case 106:  test absence of switch: '--name'");
 
     local @ARGV = ( '--compact', '--no-interactive' );
 

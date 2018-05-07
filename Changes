@@ -1,5 +1,10 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.60    May 07, 2018
+
+No functional changes.  Correct syntax in two test files for better results on
+Windows.
+
 0.59    May 06, 2018
 
 Address RTC 125281 (Replace Getopt::Std::getopts() with

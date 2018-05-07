@@ -1,11 +1,9 @@
 package ExtUtils::ModuleMaker::Interactive;
-#$Id$
 use strict;
 use warnings;
 BEGIN {
     use base qw( ExtUtils::ModuleMaker );
-    use vars qw ( $VERSION ); 
-    $VERSION = 0.59;
+    our $VERSION = "0.60";
 }
 use Carp;
 use Data::Dumper;
