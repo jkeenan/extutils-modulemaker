@@ -50,10 +50,12 @@ At the command-prompt, simply call:
 
 At the command-prompt, call C<modulemaker> with as many options as you can type correctly:
 
-    modulemaker [-CIPVchqs] [-v version] [-n module_name] [-a abstract]
+    modulemaker [-CIPVbch] [-n module_name] [-a abstract]
         [-u author_name] [-p author_CPAN_ID] [-o organization]
         [-w author_website] [-e author_e-mail]
-        [-l license_name] [-b build_system]
+        [-l license_name] [-v version] [-s save_selections_as_defaults ]
+
+Type C<modulemaker -h> at the command-prompt for long options and more complete descriptions.
 
 =head2 Mix and Match
 
@@ -225,89 +227,93 @@ defaults' feature in the Main Menu.
 
 =head2 Features Currently Supported with Command-Line Options
 
+Short options; long options in parentheses.  In the long options, hyphens
+('C<->') can generally be used where you see underscores ('C<_>').
+
 =over 4
 
-=item * -a
+=item * -a (--abstract)
 
 Specify (in quotes) an abstract for this extension
 
-=item * -b
+=item * -b (--build_system)
 
-Specify a build system for this extension
+Specify Module::Build for the build system for this extension;
+default is ExtUtils::MakeMaker
 
-=item * -c
+=item * -c (--compact)
 
 Flag for compact base directory name
 
-=item * -C
+=item * -C (--changes_in_pod)
 
 Omit creating the Changes file, add HISTORY heading to stub POD
 
-=item * -d
+=item * -d (--alt_build)
 
 Name of Perl module whose methods will override defaults provided in
 F<ExtUtils/ModuleMaker.pm> and F<ExtUtils/ModuleMaker/StandardText.pm>.
 
-=item * -e
+=item * -e (--email)
 
 Specify author's e-mail address
 
-=item * -h
+=item * -h (--help)
 
 Display this help message
 
-=item * -I
+=item * -I (--no_interactive)
 
 Disable INTERACTIVE mode, the command line arguments better be complete
 
-=item * -l
+=item * -l (--license)
 
 Specify a license for this extension
 
-=item * -n
+=item * -n (--name)
 
-Specify a name to use for the extension (required)
+Specify a name to use for the extension (required); note that this is the module's name, not the author's.
 
-=item * -o
+=item * -o (--organization)
 
 Specify (in quotes) author's organization
 
-=item * -p
+=item * -p (--cpanid)
 
 Specify author's CPAN ID
 
-=item * -P
+=item * -P (--no_pod)
 
 Omit the stub POD section
 
-=item * -q
+=item * -q (--no_new_method)
 
 Do not include a constructor (C<new()>) in the F<*.pm> file.
 
-=item * -r
+=item * -r (--permissions)
 
 Set permissions.
 
-=item * -s
+=item * -s (--save_as_defaults)
 
 Save the selections entered (either as command-line options or as responses to
 F<modulemaker>'s prompts) as your new personal defaults.  These will be the
 values provided by ExtUtils::ModuleMaker or F<modulemaker> the next time you
 invoke either one of them.
 
-=item * -u
+=item * -u (--author)
 
 Specify (in quotes) author's name
 
-=item * -v
+=item * -v (--version)
 
 Specify a version number for this extension
 
-=item * -V
+=item * -V (--verbose)
 
 Flag for verbose messages during module creation
 
-=item * -w
+=item * -w (--website)
 
 Specify author's web site
 
@@ -326,7 +332,7 @@ org).
 =head1 COPYRIGHT
 
 Copyright (c) 2001-2002 R. Geoffrey Avery.
-Revisions from v0.33 forward (c) 2005 James E. Keenan.  All rights reserved.
+Revisions from v0.33 forward (c) 2005-2018 James E. Keenan.  All rights reserved.
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
 

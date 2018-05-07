@@ -492,10 +492,10 @@ the files built by F<modulemaker> either by supplying command-line options or
 -- easier still -- replying to the screen prompts in F<modulemaker>'s
 interactive mode.
 
-B<I<If you are encountering ExtUtils::ModuleMaker for the
-first time, you should turn now to the documentation for F<modulemaker> which
-is bundled this distribution.>>  Return to this document once you have become
-familiar with F<modulemaker>.
+B<If you are encountering ExtUtils::ModuleMaker for the first time, you should
+turn now to the documentation for F<modulemaker> which is bundled this
+distribution.>  Return to this document once you have become familiar with
+F<modulemaker>.
 
 =head2 Use of Public Methods within a Perl Program
 
@@ -506,22 +506,21 @@ described in the next section.  These two methods control the
 building of the file and directory structure for a new Perl distribution.
 
 There are four other publicly available methods in this version of
-ExtUtils::ModuleMaker.  C<dump_keys>, C<dump_keys_except> and
-C<get_license> are intended primarily as shortcuts for
-trouble-shooting problems with an ExtUtils::ModuleMaker object.
-C<make_selections_defaults> enables you to be even lazier in your use of
-ExtUtils::ModuleMaker by saving keystrokes entered for attributes.
+ExtUtils::ModuleMaker.  C<dump_keys>, C<dump_keys_except> and C<get_license>
+are intended primarily as shortcuts for trouble-shooting problems with an
+ExtUtils::ModuleMaker object.  C<make_selections_defaults> enables you to be
+even lazier in your use of ExtUtils::ModuleMaker by saving keystrokes entered
+for attributes.
 
 =head3 C<new>
 
-Creates and returns an ExtUtils::ModuleMaker object.  Takes a list
-containing key-value pairs with information specifying the
-structure and content of the new module(s).  (In this documentation, we will
-sometimes refer to these key-value pairs as the I<attributes> of the
-ExtUtils::ModuleMaker object.)  With the exception of
-key C<EXTRA_MODULES> (see below), the values in these pairs
-are all strings.  Like most such lists of key-value pairs, this list
-is probably best held in a hash.   Keys which may be specified are:
+Creates and returns an ExtUtils::ModuleMaker object.  Takes a list containing
+key-value pairs with information specifying the structure and content of the
+new module(s).  (In this documentation, we will sometimes refer to these
+key-value pairs as the I<attributes> of the ExtUtils::ModuleMaker object.)
+With the exception of key C<EXTRA_MODULES> (see below), the values in these
+pairs are all strings.  Like most such lists of key-value pairs, this list is
+probably best held in a hash.   Keys which may be specified are:
 
 =over 4
 
@@ -531,9 +530,9 @@ is probably best held in a hash.   Keys which may be specified are:
 
 =item * NAME
 
-The I<only> required feature.  This is the name of the primary module
+The B<only> required feature.  This is the name of the primary module
 (with 'C<::>' separators if needed).  Will no longer support the older,
-Perl 4-style separator ''C<'>'' like the module F<D'Oh>.  There is no
+Perl 4-style separator "C<'>" like the module F<D'Oh>.  There is no
 current default for NAME; you must supply a name explicitly.
 
 =back
@@ -544,13 +543,13 @@ current default for NAME; you must supply a name explicitly.
 
 =item * ABSTRACT
 
-A short description of the module.  CPAN likes
-to use this feature to describe the module.  If the abstract contains an
-apostrophe (C<'>), then the value corresponding to key C<ABSTRACT> in
-the list passed to the constructor must be double-quoted; otherwise
-F<Makefile.PL> gets messed up.  Certain CPAN indexing features still work
-better if the abstract is 44 or fewer characters in length, but this does not
-appear to be as mandatory as in the past.  (Defaults to dummy copy.)
+A short description of the module.  CPAN likes to use this feature to describe
+the module.  If the abstract contains an apostrophe (C<'>), then the value
+corresponding to key C<ABSTRACT> in the list passed to the constructor must be
+double-quoted; otherwise F<Makefile.PL> gets messed up.  Certain CPAN indexing
+features still work better if the abstract is 44 or fewer characters in
+length, but this does not appear to be as mandatory as in the past.  (Defaults
+to dummy copy.)
 
 =item * VERSION
 
@@ -562,7 +561,7 @@ underscore to the right of the dot like C<0.31_21>. (Default is C<0.01>.)
 Which license to include in the Copyright section.  You can choose one of
 the standard licenses by including 'perl', 'gpl', 'artistic', and 18 others
 approved by opensource.org.  The default is to choose the 'perl' flavor
-which is to share it ''under the same terms as Perl itself.''
+which is to share it "under the same terms as Perl itself."
 
 Other licenses can be added by individual module authors to
 ExtUtils::ModuleMaker::Licenses::Local to keep your company lawyers happy.
@@ -604,8 +603,8 @@ this synonym for the third option:
 
 =item * COMPACT
 
-For a module named ''Foo::Bar::Baz'' creates a base directory named
-''Foo-Bar-Baz'' instead of Foo/Bar/Baz.  (Default is off.)
+For a module named "Foo::Bar::Baz" creates a base directory named
+"Foo-Bar-Baz" instead of Foo/Bar/Baz.  (Default is off.)
 
 =item * VERBOSE
 
@@ -1039,22 +1038,21 @@ Suppose, for example,
 
 =item 1
 
-that you want the files in your test suite to appear in a numerical
-order starting from C<0> rather than ExtUtils::ModuleMaker's own default
-starting point of C<1>;
+that you want the files in your test suite to appear in a numerical order
+starting from C<0> rather than ExtUtils::ModuleMaker's own default starting
+point of C<1>;
 
 =item 2
 
-that you want the number in
-the test file's name to be formatted as a two-digit string padded with zeroes
-rather than ExtUtils::ModuleMaker's own default format of a three-digit,
-zero-padded string;
+that you want the number in the test file's name to be formatted as a
+two-digit string padded with zeroes rather than ExtUtils::ModuleMaker's own
+default format of a three-digit, zero-padded string;
 
 =item 3
 
 that you want the numerical part of the test filename to be joined to the
-lexical part with a dot (C<.>) rather than ExtUtils::ModuleMaker's own
-default linkage character of an underscore (C<_>); and
+lexical part with a dot (C<.>) rather than ExtUtils::ModuleMaker's own default
+linkage character of an underscore (C<_>); and
 
 =item 4
 
@@ -1094,15 +1092,15 @@ F<Second-Balcony-Jump/t/00.Second.Balcony.Jump.t>.
 =head2 Via Subclassing ExtUtils::ModuleMaker
 
 If you're a power-user, once you start playing with ExtUtils::ModuleMaker, you
-won't be able to stop.  You'll ask yourself, ''Self, if I can change the
+won't be able to stop.  You'll ask yourself, "Self, if I can change the
 default values, why can't I change the 'boilerplate' copy that appears inside
-the files which ExtUtils::ModuleMaker creates?''
+the files which ExtUtils::ModuleMaker creates?"
 
 Now, you can.  You can hack on the methods which
 C<ExtUtils::ModuleMaker::new()> and C<complete_build()> call internally to
 customize their results to your heart's desire.  The key:  build an entirely
-new Perl extension whose F<lib/*.pm> file has methods that override the methods
-you need overridden -- and I<only> those methods.  Follow these steps:
+new Perl extension whose F<lib/*.pm> file has methods that override the
+methods you need overridden -- and I<only> those methods.  Follow these steps:
 
 =head3 1. Study F<ExtUtils::ModuleMaker::Defaults>, F<::Initializers> and F<::StandardText>
 
@@ -1280,14 +1278,10 @@ C<ExtUtils::ModuleMaker::new()>:
 
 =over 4
 
-=item * Tests Require Perl 5.6
+=item * Require Perl 5.6.1
 
-While the maintainer has attempted to make the code in
-F<lib/ExtUtils/ModuleMaker.pm> and the F<modulemaker> utility compatible
-with versions of Perl older than 5.6, the test suite currently requires
-5.6 or later.  The tests which require 5.6 or later are placed in SKIP blocks.
-Since the overwhelming majority of the tests I<do> require 5.6, running the
-test suite on earlier Perl versions won't report much that is meaningful.
+Support for versions of Perl earlier than 5.6.1 was dropped in version 0.57
+released in May 2018.
 
 =item * Testing of F<modulemaker>'s Interactive Mode
 
@@ -1333,10 +1327,6 @@ user's new module will inherit.
 
 Such an attribute would require replacement copy for
 C<ExtUtils::ModuleMaker::StandardText::block_begin()>.
-
-=item *
-
-Creation of a mailing list for ExtUtils::ModuleMaker.
 
 =back
 
@@ -1412,7 +1402,7 @@ LICENSE file included with this module.
 BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
 FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
 OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
-PROVIDE THE SOFTWARE ''AS IS'' WITHOUT WARRANTY OF ANY KIND, EITHER
+PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
 EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
 ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
