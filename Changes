@@ -1,5 +1,11 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.59    May 06, 2018
+
+Address RTC 125281 (Replace Getopt::Std::getopts() with
+Getopt::Long::GetOptions()).  Users can now provide long options when invoking
+modulemaker on the command-line.
+
 0.58    May 05, 2018
 
 Address RTC 15563 (Discrepancy between documentation and results re author
