@@ -58,6 +58,7 @@ $eumm_script  = q{modulemaker};
     is($stan{AUTHOR}, $author, "AUTHOR correctly set to $author");
     is($stan{CPANID}, $cpanid, "CPANID correctly set to $cpanid");
     is($stan{EMAIL}, $email, "EMAIL correctly set to $email");
+    ok(! exists $stan{GIT_READY}, "GIT_READY not set");
 }
 
 {
@@ -158,7 +159,7 @@ $eumm_script  = q{modulemaker};
     ok(! $opt, "system call to modulemaker exited successfully");
 
     my $stdout = join("\n" => $capture->read());
-    like($stdout, qr/^modulemaker \[-CIPVbch\]/s,
+    like($stdout, qr/^modulemaker \[-CIPVbcgh\]/s,
         "Got expected start of Usage message");
     like($stdout, qr/Currently Supported Features/s,
         "Got expected middle of Usage message");
@@ -175,6 +176,18 @@ $eumm_script  = q{modulemaker};
     my %stan = $opt->get_standard_options();
     ok(! $stan{NAME}, "NAME not set");
     ok($stan{COMPACT}, "COMPACT build requested");
+}
+
+{
+    note("Case 7:  test git-readiness switch: '-g'");
+
+    local @ARGV = ( '-cIg' );
+
+    my $opt = ExtUtils::ModuleMaker::Opts->new( $eumm_package, $eumm_script );
+    my %stan = $opt->get_standard_options();
+    ok(! $stan{NAME}, "NAME not set");
+    ok($stan{COMPACT}, "COMPACT build requested");
+    ok($stan{GIT_READY}, "GIT_READY set");
 }
 
 note("Long options");
@@ -226,6 +239,7 @@ note("Long options");
     is($stan{AUTHOR}, $author, "AUTHOR correctly set to $author");
     is($stan{CPANID}, $cpanid, "CPANID correctly set to $cpanid");
     is($stan{EMAIL}, $email, "EMAIL correctly set to $email");
+    ok(! exists $stan{GIT_READY}, "GIT_READY not set");
 }
 
 {
@@ -326,7 +340,7 @@ note("Long options");
     ok(! $opt, "system call to modulemaker exited successfully");
 
     my $stdout = join("\n" => $capture->read());
-    like($stdout, qr/^modulemaker \[-CIPVbch\]/s,
+    like($stdout, qr/^modulemaker \[-CIPVbcgh\]/s,
         "Got expected start of Usage message");
     like($stdout, qr/Currently Supported Features/s,
         "Got expected middle of Usage message");
@@ -343,6 +357,18 @@ note("Long options");
     my %stan = $opt->get_standard_options();
     ok(! $stan{NAME}, "NAME not set");
     ok($stan{COMPACT}, "COMPACT build requested");
+}
+
+{
+    note("Case 107:  test git-readiness switch: '-g'");
+
+    local @ARGV = ( '-cIg' );
+
+    my $opt = ExtUtils::ModuleMaker::Opts->new( $eumm_package, $eumm_script );
+    my %stan = $opt->get_standard_options();
+    ok(! $stan{NAME}, "NAME not set");
+    ok($stan{COMPACT}, "COMPACT build requested");
+    ok($stan{GIT_READY}, "GIT_READY set");
 }
 
 done_testing();

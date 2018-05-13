@@ -28,6 +28,7 @@ sub new {
         "build_system|build-system|b"           => \$opts{b},
         "compact|c"                             => \$opts{c},
         "changes_in_pod|changes-in-pod|C"       => \$opts{C},
+        "git_ready|git-ready|g"                 => \$opts{g},
         "help|h"                                => \$opts{h},
         "no_interactive|no-interactive|I"       => \$opts{I},
         "no_pod|no-pod|P"                       => \$opts{P},
@@ -56,10 +57,11 @@ sub new {
     }
 
     my %standard_options = (
-        # bcCIPqsV
+        # bcCgIPqsV
         ( ( $opts{b} ) ? ( BUILD_SYSTEM          => 'Module::Build' ) : () ),
         ( ( $opts{c} ) ? ( COMPACT               => $opts{c} ) : () ),
         ( ( $opts{C} ) ? ( CHANGES_IN_POD        => $opts{C} ) : () ),
+        ( ( $opts{g} ) ? ( GIT_READY             => $opts{g} ) : () ),
         INTERACTIVE      => ( ( $opts{I} ) ? 0 : 1 ),
         ( ( $opts{P} ) ? ( NEED_POD              => 0        ) : () ),
         ( ( $opts{q} ) ? ( NEED_NEW_METHOD       => 0        ) : () ),
@@ -100,7 +102,7 @@ sub get_standard_options {
 sub Usage {
     my ($script, $eumm_package) = @_;
     my $message = <<ENDOFUSAGE;
-modulemaker [-CIPVbch] [-n module_name] [-a abstract]
+modulemaker [-CIPVbcgh] [-n module_name] [-a abstract]
         [-u author_name] [-p author_CPAN_ID] [-o organization]
         [-w author_website] [-e author_e-mail]
         [-l license_name] [-v version] [-s save_selections_as_defaults ]
@@ -112,6 +114,7 @@ Currently Supported Features
     -C|--changes_in_pod     Omit creating the Changes file, add HISTORY heading to stub POD
     -d|--alt_build          Call methods which override default methods from this module
     -e|--email              Specify author's e-mail address
+    -g|--git_ready          Flag to include files useful for development with git and github.com
     -h|--help               Display this help message and exit
     -I|--no_interactive     Disable INTERACTIVE mode, the command line arguments better be complete
     -l|--license            Specify a license for this extension
