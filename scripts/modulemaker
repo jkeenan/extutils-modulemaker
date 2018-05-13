@@ -49,7 +49,7 @@ At the command-prompt, simply call:
 
 At the command-prompt, call C<modulemaker> with as many options as you can type correctly:
 
-    modulemaker [-CIPVbch] [-n module_name] [-a abstract]
+    modulemaker [-CIPVbcgh] [-n module_name] [-a abstract]
         [-u author_name] [-p author_CPAN_ID] [-o organization]
         [-w author_website] [-e author_e-mail]
         [-l license_name] [-v version] [-s save_selections_as_defaults ]
@@ -256,6 +256,10 @@ F<ExtUtils/ModuleMaker.pm> and F<ExtUtils/ModuleMaker/StandardText.pm>.
 =item * -e (--email)
 
 Specify author's e-mail address
+
+=item * -g (--git_ready)
+
+Flag to include files useful for development with git and github.com
 
 =item * -h (--help)
 
