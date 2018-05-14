@@ -21,6 +21,7 @@ my %default_values = (
         BUILD_SYSTEM     => 'ExtUtils::MakeMaker',
         COMPACT          => 0,
         VERBOSE          => 0,
+        GIT_READY        => 0,
         INTERACTIVE      => 0,
         NEED_POD         => 1,
         NEED_NEW_METHOD  => 1,
