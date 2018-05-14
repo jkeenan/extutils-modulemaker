@@ -59,7 +59,7 @@ use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
     ok($filetext = read_file_string(File::Spec->catfile($dist_name, 'Makefile.PL')),
         'Able to read Makefile.PL');
     ok($filetext =~ m|AUTHOR\s+=>\s+.Phineas\sT.\sBluster|,
-        'Makefile.PL contains correct author');
+        'Makefile.PL contains correct author') or diag($filetext);
     ok($filetext =~ m|AUTHOR.*\(phineas\@anonymous\.com\)|,
         'Makefile.PL contains correct e-mail');
     ok($filetext =~ m|ABSTRACT\s+=>\s+'Test\sof\sthe\scapacities\sof\sEU::MM'|,

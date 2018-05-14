@@ -330,28 +330,49 @@ END_OF_TOP
 
 sub text_Makefile {
     my $self = shift;
-    my $Makefile_format = q~
+    my %escaped = ();
+    for my $k (qw| NAME FILE AUTHOR EMAIL ABSTRACT |) {
+        my $v = $self->{$k};
+        ($escaped{$k} = $v) =~ s{'}{\\'}g;
+    }
 
+    my $text_of_Makefile = <<END_OF_MAKEFILE_TEXT;
 use ExtUtils::MakeMaker;
-# See lib/ExtUtils/MakeMaker.pm for details of how to influence
+use strict;
+use warnings;
+
+# Call 'perldoc ExtUtils::MakeMaker' for details of how to influence
 # the contents of the Makefile that is written.
-WriteMakefile(
-    NAME         => '%s',
-    VERSION_FROM => '%s', # finds \$VERSION
-    AUTHOR       => '%s (%s)',
-    ABSTRACT     => '%s',
-    PREREQ_PM    => {
-                     'Test::Simple' => 0.44,
-                    },
+
+my %WriteMakefileArgs = (
+    NAME                => '$escaped{NAME}',
+    VERSION_FROM        => '$escaped{FILE}',
+    AUTHOR              => '$escaped{AUTHOR} ($escaped{EMAIL})',
+    ABSTRACT            => '$escaped{ABSTRACT}',
+    INSTALLDIRS         => (\$] < 5.011 ? 'perl' : 'site'),
+    PREREQ_PM           => {
+        'Test::Simple' => 0.44,
+    },
+    ( eval { ExtUtils::MakeMaker->VERSION(6.46) } ? () : ( META_MERGE => {
+        'meta-spec' => { version => 2 },
+        dynamic_config => 1,
+        #resources => {
+        #    homepage    => undef,
+        #    repository  => {
+        #        url         => undef,
+        #        web         => undef,
+        #        type        => undef,
+        #    },
+        #    bugtracker => {
+        #        web         => undef,
+        #    },
+        #},
+    })),
 );
-~;
-    my $text_of_Makefile = sprintf $Makefile_format,
-        map { my $s = $_; $s =~ s{'}{\\'}g; $s; }
-            $self->{NAME},
-            $self->{FILE},
-            $self->{AUTHOR},
-            $self->{EMAIL},
-            $self->{ABSTRACT};
+
+WriteMakefile(\%WriteMakefileArgs);
+END_OF_MAKEFILE_TEXT
+
     return $text_of_Makefile;
 }
 

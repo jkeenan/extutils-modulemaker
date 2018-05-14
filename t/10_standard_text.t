@@ -83,7 +83,9 @@ use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
 
     ok(@makefilelines = read_file_array(File::Spec->catfile($dist_name, 'Makefile.PL')),
         'Able to read Makefile.PL into array');
-    is( (grep {/^# See lib\/ExtUtils\/MakeMaker.pm for details of how to influence/} @makefilelines), 1, 
+    is(
+        (grep {/^# Call 'perldoc ExtUtils::MakeMaker' for details of how to influence/} @makefilelines),
+        1,
         "Makefile.PL has standard text");
 
     # test of README text
