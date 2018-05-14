@@ -619,6 +619,12 @@ my $cwd = cwd();
             File::Spec->catfile($dist_name, 'MANIFEST.SKIP'),
         );
 
+    my $mskip_str = read_file_string(File::Spec->catfile($dist_name, 'MANIFEST.SKIP'));
+    like($mskip_str, qr/\^\\\.travis\.yml/s,
+        ".travis.yml located in MANIFEST.SKIP");
+    like($mskip_str, qr/\^\\\.appveyor\.yml/s,
+        ".appveyor.yml located in MANIFEST.SKIP");
+
     ok(chdir $cwd, "Able to change back to starting directory");
 }
 

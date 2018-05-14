@@ -454,7 +454,10 @@ EOF
   Argument  : n/a
   Throws    : n/a
   Comment   : References $self key NAME
-  Comment   : Adapted from David Golden's ExtUtils::ModuleMaker::TT
+  Comment   : Originally adapted from David Golden's ExtUtils::ModuleMaker::TT
+  Comment   : Updated to reflect ExtUtils::Manifest 1.70
+              (distributed with Perl 5.26) plus travis and appveyor
+              configuration files
 
 =cut
 
@@ -462,31 +465,75 @@ sub text_MANIFEST_SKIP {
     my $self = shift;
 
     my $text_of_SKIP = <<'END_OF_SKIP';
-# Version control files and dirs.
+# Avoid version control files.
 \bRCS\b
 \bCVS\b
+\bSCCS\b
 ,v$
-.svn/
+\B\.svn\b
+\B\.git\b
+\B\.gitignore\b
+\b_darcs\b
+\B\.cvsignore$
 
-# ExtUtils::MakeMaker generated files and dirs.
-^MANIFEST\.(?!SKIP)
-^Makefile$
-^blib/
-^blibdirs$
-^PM_to_blib$
-^MakeMaker-\d
+# Avoid VMS specific MakeMaker generated files
+\bDescrip.MMS$
+\bDESCRIP.MMS$
+\bdescrip.mms$
 
-# Module::Build
-^Build$
-^_build
+# Avoid Makemaker generated and utility files.
+\bMANIFEST\.bak
+\bMakefile$
+\bblib/
+\bMakeMaker-\d
+\bpm_to_blib\.ts$
+\bpm_to_blib$
+\bblibdirs\.ts$         # 6.18 through 6.25 generated this
+\b_eumm/                # 7.05_05 and above
 
-# Temp, old, vi and emacs files.
+# Avoid Module::Build generated and utility files.
+\bBuild$
+\b_build/
+\bBuild.bat$
+\bBuild.COM$
+\bBUILD.COM$
+\bbuild.com$
+
+# and Module::Build::Tiny generated files
+\b_build_params$
+
+# Avoid temp and backup files.
 ~$
 \.old$
-^#.*#$
-^\.#
-\.swp$
+\#$
+\b\.#
 \.bak$
+\.tmp$
+\.#
+\.rej$
+\..*\.sw.?$
+
+# Avoid OS-specific files/dirs
+# Mac OSX metadata
+\B\.DS_Store
+# Mac OSX SMB mount metadata files
+\B\._
+
+# Avoid Devel::Cover and Devel::CoverX::Covered files.
+\bcover_db\b
+\bcovered\b
+
+# Avoid prove files
+\B\.prove$
+
+# Avoid MYMETA files
+^MYMETA\.
+
+# Avoid travis-ci.org file
+^\.travis.yml
+
+# Avoid appveyor.com file
+^\.appveyor.yml
 END_OF_SKIP
 
     return $text_of_SKIP;
