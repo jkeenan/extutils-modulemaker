@@ -1,6 +1,6 @@
 package ExtUtils::ModuleMaker::Defaults;
 use strict;
-our $VERSION = "0.60";
+our $VERSION = "0.61";
 
 my $usage = <<ENDOFUSAGE;
 

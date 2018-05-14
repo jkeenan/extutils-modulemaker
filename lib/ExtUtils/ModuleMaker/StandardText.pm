@@ -1,7 +1,7 @@
 package ExtUtils::ModuleMaker::StandardText;
 use strict;
 use warnings;
-our $VERSION = "0.60";
+our $VERSION = "0.61";
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
     Get_Standard_License
     Verify_Standard_License
