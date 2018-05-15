@@ -1,7 +1,7 @@
 package ExtUtils::ModuleMaker::Opts;
 use strict;
 use warnings;
-our $VERSION = "0.61";
+our $VERSION = "0.62";
 use Getopt::Long;
 use Carp;
 

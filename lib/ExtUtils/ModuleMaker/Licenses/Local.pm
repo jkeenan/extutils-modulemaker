@@ -4,7 +4,7 @@ use warnings;
 
 BEGIN {
     use base qw(Exporter);
-    our $VERSION = "0.61";
+    our $VERSION = "0.62";
     our @EXPORT_OK   = qw(Get_Local_License Verify_Local_License);
 }
 

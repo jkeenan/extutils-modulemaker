@@ -1,5 +1,12 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.62    May 15, 2018
+
+Update content of generated Makefile.PL to include META_MERGE where the
+system's ExtUtils::MakeMaker is new enough to accommodate that element.  While
+this is a step on the road to a "git-ready" module, this does not amount to a
+change in effective functionality.
+
 0.61    May 14, 2018
 
 Update content of MANIFEST.SKIP (when INCLUDE_MANIFEST_SKIP is set to true

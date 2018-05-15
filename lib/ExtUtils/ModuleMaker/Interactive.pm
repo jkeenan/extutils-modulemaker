@@ -3,7 +3,7 @@ use strict;
 use warnings;
 BEGIN {
     use base qw( ExtUtils::ModuleMaker );
-    our $VERSION = "0.61";
+    our $VERSION = "0.62";
 }
 use Carp;
 use Data::Dumper;
