@@ -1,8 +1,9 @@
-package MockHomeDir;
+package ExtUtils::ModuleMaker::MockHomeDir;
 # Adapted from CPAN-Reporter's t/lib/MockHomeDir.pm
 use 5.006001;
 use strict;
 use warnings;
+our $VERSION = "0.62";
 use File::Spec;
 use File::Path 2.15 qw(make_path);
 use File::Temp qw/tempdir/;

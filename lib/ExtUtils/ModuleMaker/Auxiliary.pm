@@ -34,7 +34,7 @@ no warnings 'once';
 *like = *Test::More::like;
 use warnings;
 use lib ( qw| ./t/testlib | );
-use MockHomeDir;
+use ExtUtils::ModuleMaker::MockHomeDir;
 
 =head1 NAME
 
@@ -200,14 +200,14 @@ sub licensetest {
 
 sub prepare_mockdirs {
     my $home_dir = prepare_mock_homedir();
-    my $personal_defaults_dir = MockHomeDir::personal_defaults_dir();
+    my $personal_defaults_dir = ExtUtils::ModuleMaker::MockHomeDir::personal_defaults_dir();
     croak "Unable to locate '$personal_defaults_dir'" unless (-d $personal_defaults_dir);
     ok(-d $personal_defaults_dir, "Directory $personal_defaults_dir created to mock home directory");
     return ($home_dir, $personal_defaults_dir);
 }
 
 sub prepare_mock_homedir {
-    my $home_dir = MockHomeDir::home_dir();
+    my $home_dir = ExtUtils::ModuleMaker::MockHomeDir::home_dir();
     croak "Unable to locate '$home_dir'" unless (-d $home_dir);
     ok(-d $home_dir, "Directory $home_dir created to mock home directory");
     return $home_dir;

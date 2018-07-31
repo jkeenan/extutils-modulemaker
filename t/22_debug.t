@@ -13,7 +13,7 @@ use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
     compact_build_tests
 ) );
 use lib ( qw| ./t/testlib | );
-use_ok( 'MockHomeDir' );
+use_ok( 'ExtUtils::ModuleMaker::MockHomeDir' );
 
 my ($home_dir, $personal_defaults_dir) = prepare_mockdirs();
 local $ENV{HOME} = $home_dir;
@@ -62,7 +62,7 @@ note("Case 1: No personal defaults file");
 
 note("Case 2: Personal defaults file present");
 
-my $personal_defaults_file = MockHomeDir::personal_defaults_file();
+my $personal_defaults_file = ExtUtils::ModuleMaker::MockHomeDir::personal_defaults_file();
 ok(-f $personal_defaults_file, "Able to create file $personal_defaults_file for testing");
 
 {

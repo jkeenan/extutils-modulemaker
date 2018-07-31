@@ -6,6 +6,7 @@ lib/ExtUtils/ModuleMaker/Initializers.pm
 lib/ExtUtils/ModuleMaker/Interactive.pm
 lib/ExtUtils/ModuleMaker/Licenses/Local.pm
 lib/ExtUtils/ModuleMaker/Licenses/Standard.pm
+lib/ExtUtils/ModuleMaker/MockHomeDir.pm
 lib/ExtUtils/ModuleMaker/Opts.pm
 lib/ExtUtils/ModuleMaker/StandardText.pm
 LICENSE
@@ -35,4 +36,3 @@ t/91_miscargs.t
 t/testlib/arbitrary.txt
 t/testlib/ExtUtils/ModuleMaker/Alt_block_new_method.pm
 t/testlib/ExtUtils/ModuleMaker/Testing/Defaults.pm
-t/testlib/MockHomeDir.pm

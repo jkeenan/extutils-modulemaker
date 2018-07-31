@@ -6,7 +6,7 @@ use File::Spec;
 use Test::More tests =>  6;
 use_ok( 'ExtUtils::ModuleMaker' );
 use lib ( qw| ./t/testlib | );
-use_ok( 'MockHomeDir' );
+use_ok( 'ExtUtils::ModuleMaker::MockHomeDir' );
 
 
 my ($realhome, $subdir, $mmkr_dir_ref);
@@ -21,8 +21,8 @@ $mmkr_dir_ref = ExtUtils::ModuleMaker::_get_subhome_directory_status($subdir);
     : pass("Directory $mmkr_dir_ref->{abs} not found on this system");
 
 my ($home_dir, $personal_defaults_dir);
-$home_dir = MockHomeDir::home_dir();
+$home_dir = ExtUtils::ModuleMaker::MockHomeDir::home_dir();
 ok(-d $home_dir, "Directory $home_dir created to mock home directory");
-$personal_defaults_dir = MockHomeDir::personal_defaults_dir();
+$personal_defaults_dir = ExtUtils::ModuleMaker::MockHomeDir::personal_defaults_dir();
 ok(-d $personal_defaults_dir, "Able to create directory $personal_defaults_dir for testing");
 

@@ -20,7 +20,7 @@ my $cwd = cwd();
 my ($home_dir, $personal_defaults_dir) = prepare_mockdirs();
 local $ENV{HOME} = $home_dir;
 
-my $personal_defaults_file = MockHomeDir::personal_defaults_file();
+my $personal_defaults_file = ExtUtils::ModuleMaker::MockHomeDir::personal_defaults_file();
 ok(-f $personal_defaults_file, "Able to create file $personal_defaults_file for testing");
 
 {
