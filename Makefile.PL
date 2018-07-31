@@ -41,6 +41,9 @@ my %Makefile_Args = (
                 web => 'https://rt.cpan.org/Public/Dist/Display.html?Name=ExtUtils-ModuleMaker',
             },
         },
+        no_index => {
+            package   => [ qw( File::HomeDir ) ],
+        },
     })),
 );
 
