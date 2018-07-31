@@ -3,23 +3,15 @@ package ExtUtils::ModuleMaker::MockHomeDir;
 use 5.006001;
 use strict;
 use warnings;
-our $VERSION = "0.64";
+our $VERSION = "0.65";
 use File::Spec;
 use File::Path 2.15 qw(make_path);
 use File::Temp qw/tempdir/;
 
-#my $testlib_dir = File::Spec->catdir(qw| . t testlib |);
-my $testlib_dir = File::Spec->catdir(qw| . lib |);
 my @components = qw| ExtUtils ModuleMaker Testing Defaults |;
 my $package = join('::' => @components);
+eval "require $package";
 my $per_package = join('::' => @components[0..1], 'Personal', $components[3]);
-my @pmfile_components = (@components[0..2], "$components[3].pm");
-my $testing_defaults_file =
-    File::Spec->catfile($testlib_dir, @pmfile_components);
-die "Could not locate $testing_defaults_file" unless -f $testing_defaults_file;
-
-unshift @INC, $testlib_dir;
-eval "require $package" or die "Unable";
 
 $INC{"File/HomeDir.pm"} = 1; # fake load
 

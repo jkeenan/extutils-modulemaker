@@ -2,7 +2,7 @@ package ExtUtils::ModuleMaker;
 use strict;
 use warnings;
 our (@ISA);
-our $VERSION = "0.64";
+our $VERSION = "0.65";
 use base qw(
     ExtUtils::ModuleMaker::Defaults
     ExtUtils::ModuleMaker::Initializers
@@ -452,7 +452,7 @@ Inside a Perl program:
 
 =head1 VERSION
 
-This document references version 0.64 of ExtUtils::ModuleMaker, released
+This document references version 0.65 of ExtUtils::ModuleMaker, released
 to CPAN on July 31 2018.
 
 =head1 DESCRIPTION
