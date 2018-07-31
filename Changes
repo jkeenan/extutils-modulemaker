@@ -1,5 +1,16 @@
 Revision history for Perl extension ExtUtils::ModuleMaker.
 
+0.63    July 31, 2018
+
+Move MockHomeDir.pm from underneath t/ to underneath lib/.
+    
+The functions exported by ExtUtils::ModuleMaker::Auxiliary are intended to be
+used in testing this distribution -- and all distributions which subclass it,
+such as ExtUtils::ModuleMaker::PBP.  Auxiliary.pm uses functions found in
+MockHomeDir.pm.  But unless MockHomeDir.pm is underneath lib/ExtUtils/, it
+won't be indexed by CPAN and won't be found by the test suites of subclasses.
+Hence, move it to underneath lib/.
+
 0.62    May 15, 2018
 
 Update content of generated Makefile.PL to include META_MERGE where the

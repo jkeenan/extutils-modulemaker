@@ -6,7 +6,7 @@ use strict;
 use warnings;
 use ExtUtils::ModuleMaker::Interactive;
 use ExtUtils::ModuleMaker::Opts;
-our $VERSION = 0.62;
+our $VERSION = 0.63;
 
 my $opt = ExtUtils::ModuleMaker::Opts->new(
     q{ExtUtils::ModuleMaker},
@@ -32,8 +32,8 @@ modulemaker - interactive interface to ExtUtils::ModuleMaker; replaces C<h2xs -A
 
 =head1 VERSION
 
-This document references version 0.62 of modulemaker, released
-to CPAN on May 15 2018.
+This document references version 0.63 of modulemaker, released
+to CPAN on July 31 2018.
 
 =head1 USAGE::Simple
 

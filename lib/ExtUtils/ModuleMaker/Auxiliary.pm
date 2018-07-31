@@ -3,7 +3,7 @@ use strict;
 # Contains test subroutines for distribution with ExtUtils::ModuleMaker
 use warnings;
 our ( $VERSION, @ISA, @EXPORT_OK );
-$VERSION = "0.62";
+$VERSION = "0.63";
 require Exporter;
 @ISA         = qw(Exporter);
 @EXPORT_OK   = qw(
