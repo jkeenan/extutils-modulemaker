@@ -1,7 +1,7 @@
 package ExtUtils::ModuleMaker::Testing::Defaults;
-# as of 08/24/2005
 use strict;
-local $^W = 1;
+use warnings;
+our $VERSION = "0.64";
 
 my $usage = <<ENDOFUSAGE;
 

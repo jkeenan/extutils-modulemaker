@@ -1,7 +1,7 @@
 package ExtUtils::ModuleMaker::Initializers;
 use strict;
 use warnings;
-our $VERSION = "0.63";
+our $VERSION = "0.64";
 use ExtUtils::ModuleMaker::Licenses::Standard qw(
     Get_Standard_License
     Verify_Standard_License

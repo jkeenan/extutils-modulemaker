@@ -9,6 +9,7 @@ lib/ExtUtils/ModuleMaker/Licenses/Standard.pm
 lib/ExtUtils/ModuleMaker/MockHomeDir.pm
 lib/ExtUtils/ModuleMaker/Opts.pm
 lib/ExtUtils/ModuleMaker/StandardText.pm
+lib/ExtUtils/ModuleMaker/Testing/Defaults.pm
 LICENSE
 Makefile.PL
 MANIFEST			This list of files
@@ -35,4 +36,3 @@ t/83_modulemaker-long.t
 t/91_miscargs.t
 t/testlib/arbitrary.txt
 t/testlib/ExtUtils/ModuleMaker/Alt_block_new_method.pm
-t/testlib/ExtUtils/ModuleMaker/Testing/Defaults.pm
