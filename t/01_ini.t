@@ -5,7 +5,6 @@ use File::HomeDir;
 use File::Spec;
 use Test::More tests =>  6;
 use_ok( 'ExtUtils::ModuleMaker' );
-use lib ( qw| ./t/testlib | );
 use_ok( 'ExtUtils::ModuleMaker::MockHomeDir' );
 
 

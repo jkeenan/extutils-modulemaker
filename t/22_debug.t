@@ -12,7 +12,6 @@ use_ok( 'ExtUtils::ModuleMaker::Auxiliary', qw(
     prepare_mockdirs
     compact_build_tests
 ) );
-use lib ( qw| ./t/testlib | );
 use_ok( 'ExtUtils::ModuleMaker::MockHomeDir' );
 
 my ($home_dir, $personal_defaults_dir) = prepare_mockdirs();

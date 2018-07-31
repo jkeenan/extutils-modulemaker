@@ -33,7 +33,6 @@ no warnings 'once';
 *isnt = *Test::More::isnt;
 *like = *Test::More::like;
 use warnings;
-use lib ( qw| ./t/testlib | );
 use ExtUtils::ModuleMaker::MockHomeDir;
 
 =head1 NAME
