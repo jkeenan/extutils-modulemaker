@@ -3,7 +3,7 @@ package ExtUtils::ModuleMaker::MockHomeDir;
 use 5.006001;
 use strict;
 use warnings;
-our $VERSION = "0.65";
+our $VERSION = "0.66";
 use File::Spec;
 use File::Path 2.15 qw(make_path);
 use File::Temp qw/tempdir/;
