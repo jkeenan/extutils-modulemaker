@@ -6,6 +6,7 @@ use Carp;
 use Cwd;
 use File::Spec;
 use File::Temp qw(tempdir);
+use Path::Tiny ();
 use Test::More;
 use_ok( 'IO::Capture::Stdout' );
 use_ok( 'ExtUtils::ModuleMaker' );
@@ -1164,7 +1165,15 @@ my $cwd = cwd();
 
     ($module_file, $test_file) = compact_build_tests(\@components);
 
-    my $AUTHOR_section = `grep -A4 '^=head1 AUTHOR' $module_file`;
+    my @lines = Path::Tiny::path($module_file)->lines_utf8;
+    my $author_index;
+    for (my $i=0;$i<=$#lines;$i++) {
+        if ($lines[$i] =~ m/^=head1 AUTHOR/) {
+            $author_index = $i;
+            last;
+        }
+    }
+    my $AUTHOR_section = join("\n" => @lines[$author_index .. ($author_index +4)]);
     unlike($AUTHOR_section, qr/MODAUTHOR/,
         "Assignment of Perl-false value to CPANID in constructor prevents insertion of dummy copy into documentation");
     unlike($AUTHOR_section, qr/http:\/\/a\.galaxy\.far\.far\.away\/modules/s,
