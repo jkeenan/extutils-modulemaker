@@ -6,7 +6,6 @@ use Carp;
 use Cwd;
 use File::Spec;
 use File::Temp qw(tempdir);
-use Path::Tiny ();
 use Test::More;
 use_ok( 'IO::Capture::Stdout' );
 use_ok( 'ExtUtils::ModuleMaker' );
@@ -1165,7 +1164,9 @@ my $cwd = cwd();
 
     ($module_file, $test_file) = compact_build_tests(\@components);
 
-    my @lines = Path::Tiny::path($module_file)->lines_utf8;
+    my @lines;
+    ok(@lines = read_file_array($module_file),
+        'Able to read module into array');
     my $author_index;
     for (my $i=0;$i<=$#lines;$i++) {
         if ($lines[$i] =~ m/^=head1 AUTHOR/) {

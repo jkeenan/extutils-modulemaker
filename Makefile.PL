@@ -25,8 +25,7 @@ my %Makefile_Args = (
         'File::Copy::Recursive::Reduced' => 0.006,
         'File::Path'    => 2.15,
         'Module::Build' => 0,
-        'Path::Tiny'    => 0,
-                    },
+     },
     LICENSE      => "perl",
     ($mm_ver < 6.46 ? () : (META_MERGE => {
         'meta-spec' => { version => 2 },
